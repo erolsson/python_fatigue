@@ -43,3 +43,4 @@ def get_node_data_from_set(odb, node_set_name):
 if __name__ == '__main__':
     odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
     odb.close()
+    print "Odb closed "
