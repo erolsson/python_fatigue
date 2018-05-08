@@ -1,0 +1,45 @@
+import odbAccess
+
+
+def create_fatigue_sets(odb, set_data, name='fatigue'):
+    if name + 'VolumeNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:
+        odb.rootAssembly.instances['PART-1-1'].NodeSetFromNodeLabels(name=name + 'VolumeNodes', nodeLabels=set_data[0])
+    if name + 'VolumeElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
+        odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'VolumeElements',
+                                                                           elementLabels=set_data[1])
+    if name + 'SurfNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:
+        odb.rootAssembly.instances['PART-1-1'].NodeSetFromNodeLabels(name=name + 'SurfNodes', nodeLabels=set_data[2])
+    if name + 'SurfElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
+        odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'SurfElements',
+                                                                           elementLabels=set_data[3])
+
+
+def get_odb_data(odb, variable, element_set_name, step=0, frame=0, transform=False):
+    element_set = odb.rootAssembly.instances['PART-1-1'].elementSets[element_set_name]
+
+    if transform is True and 'cylSys2' not in odb.rootAssembly.datumCsyses:
+        cylindrical_sys = odb.rootAssembly.DatumCsysByThreePoints(name='cylSys2',
+                                                                  coordSysType=CYLINDRICAL,
+                                                                  origin=(0., 0., 0.),
+                                                                  point1=(0., 1., 0.),
+                                                                  point2=(1., 0., 0.))
+    else:
+        cylindrical_sys = odb.rootAssembly.datumCsyses['cylSys2']
+
+    field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(element_set)
+    field = field.getSubset(position=ELEMENT_NODAL).values
+
+    print len(field)
+
+
+def get_node_data_from_set(odb, node_set_name):
+    node_set = odb.rootAssembly.instances['PART-1-1'].nodeSets[node_set_name]
+    node_dict = {}
+    for node in node_set.nodes:
+        node_dict[node.label] = node.coordinates
+
+    return node_dict
+
+if __name__ == '__main__':
+    odb = odbAccess.openOdb('scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth201702200')
+    odb.close()
