@@ -31,7 +31,7 @@ def get_odb_data(odb, variable, element_set_name, step=0, frame=0, transform=Fal
 
     print len(field)
 
-
+# This is a comment
 def get_node_data_from_set(odb, node_set_name):
     node_set = odb.rootAssembly.instances['PART-1-1'].nodeSets[node_set_name]
     node_dict = {}
