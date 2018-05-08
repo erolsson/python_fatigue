@@ -14,7 +14,7 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
                                                                            elementLabels=set_data[3])
 
 
-def get_odb_data(odb, variable, element_set_name, step=0, frame=0, transform=False):
+def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False):
     element_set = odb.rootAssembly.instances['PART-1-1'].elementSets[element_set_name]
     print odb.steps
     if transform is True and 'cylSys2' not in odb.rootAssembly.datumCsyses:
@@ -42,6 +42,6 @@ def get_node_data_from_set(odb, node_set_name):
 
 if __name__ == '__main__':
     dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
-    get_odb_data(dante_odb, 'S', 'fatigueVolumeElements')
+    get_odb_data(dante_odb, 'S', 'fatigueVolumeElements', step='danteResults_DC05')
     dante_odb.close()
     print "Odb closed "
