@@ -42,6 +42,6 @@ def get_node_data_from_set(odb, node_set_name):
 
 if __name__ == '__main__':
     dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
-    get_odb_data(dante_odb, 'S', 'fatigueVolumeElements', step='danteResults_DC05')
+    get_odb_data(dante_odb, 'S', 'fatigueVolumeElements', step='danteResults_DC_05')
     dante_odb.close()
     print "Odb closed "
