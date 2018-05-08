@@ -41,5 +41,5 @@ def get_node_data_from_set(odb, node_set_name):
     return node_dict
 
 if __name__ == '__main__':
-    odb = odbAccess.openOdb('scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth201702200')
+    odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth201702200')
     odb.close()
