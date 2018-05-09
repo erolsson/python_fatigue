@@ -30,7 +30,9 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
     field = field.getSubset(position=ELEMENT_NODAL).values
 
-    print len(field)
+    n1 =  len(field)
+    n2 = len(field.data)
+    print n1, n2
 
 
 def get_node_data_from_set(odb, node_set_name):
@@ -44,5 +46,6 @@ def get_node_data_from_set(odb, node_set_name):
 if __name__ == '__main__':
     dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
     get_odb_data(dante_odb, 'S', 'fatigueVolumeElements', step='danteResults_DC0_5')
+    get_odb_data(dante_odb, 'HV', 'fatigueVolumeElements', step='danteResults_DC0_5')
     dante_odb.close()
     print "Odb closed "
