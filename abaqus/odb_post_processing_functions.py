@@ -1,5 +1,5 @@
 import odbAccess
-from AbaqusConstants import *
+from abaqusConstants import *
 
 
 def create_fatigue_sets(odb, set_data, name='fatigue'):
