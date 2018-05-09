@@ -33,7 +33,7 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
 
     n1 = len(field)
     n2 = 1
-    if type(field[0]) != float:
+    if type(field[0].data) != float:
         n2 = len(field[0].data)
     data = np.zeros((n1, n2))
 
