@@ -1,6 +1,8 @@
 import odbAccess
 from abaqusConstants import *
 
+import numpy as np
+
 
 def create_fatigue_sets(odb, set_data, name='fatigue'):
     if name + 'VolumeNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:
@@ -17,7 +19,6 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
 
 def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False):
     element_set = odb.rootAssembly.instances['PART-1-1'].elementSets[element_set_name]
-    print odb.steps
     if transform is True and 'cylSys2' not in odb.rootAssembly.datumCsyses:
         cylindrical_sys = odb.rootAssembly.DatumCsysByThreePoints(name='cylSys2',
                                                                   coordSysType=CYLINDRICAL,
@@ -31,7 +32,13 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     field = field.getSubset(position=ELEMENT_NODAL).values
 
     n1 = len(field)
-    n2 = len(field[0].data)
+    n2 = 1
+    if type(field[0]) != float:
+        n2 = len(field[0].data)
+    data = np.zeros((n1, n2))
+
+    for i, data_point in enumerate(field):
+        data[i, :] = data_point.data
     print n1, n2
 
 
