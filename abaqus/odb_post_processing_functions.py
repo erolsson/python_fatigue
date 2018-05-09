@@ -30,8 +30,8 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
     field = field.getSubset(position=ELEMENT_NODAL).values
 
-    n1 =  len(field)
-    n2 = len(field.data)
+    n1 = len(field)
+    n2 = len(field[0].data)
     print n1, n2
 
 
