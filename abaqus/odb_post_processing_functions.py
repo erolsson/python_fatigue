@@ -77,6 +77,7 @@ if __name__ == '__main__':
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
     for eset in ['Volume', 'Surface']:
+        print eset
         nodal_dict = get_node_data_from_set(dante_odb, 'root' + eset + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
