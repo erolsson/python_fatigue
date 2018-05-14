@@ -45,7 +45,7 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     if node_numbers is not None:
         coords = np.zeros((n1, 3))
         for i, data_point in enumerate(field):
-            coords = node_numbers[data_point.nodeLabel]
+            coords[i, :] = node_numbers[data_point.nodeLabel]
         return data, coords
     return data
 
@@ -77,7 +77,6 @@ if __name__ == '__main__':
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
     for eset in ['Volume']:
-        print eset
         nodal_dict = get_node_data_from_set(dante_odb, 'root' + eset + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')

@@ -22,18 +22,25 @@ haiback = True
 
 
 def calculate_life(load, case_depth):
-    findley_file_name = 'CD' + str(case_depth).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + '.pkl'
-    findley_pickle = open('pickles/tooth_root_data/volume_data/findley_R=0.1/' + findley_file_name)
+    findley_file_name = 'CD' + str(case_depth).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
+    findley_pickle = open('pickles/tooth_root_data/volume_data/findley_R=0_1/' + findley_file_name)
     stress = pickle.load(findley_pickle)
+    findley_pickle.close()
     n_vol = stress.shape[0]
-    hardness = pickle.load(pickle_handle)
-    steel_data_volume = SteelData(HV=hardness.reshape(n_vol / 8, 8))
-    position = pickle.load(pickle_handle)
+
+    dante_pickle = open('pickles/tooth_root_data/volume_data/danteCD' + str(case_depth).replace('.', '_') + '.pkl')
+    dante_data = pickle.load(dante_pickle)
+    dante_pickle.close()
+    steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
+
+    position_pickle = open('pickles/tooth_root_data/volume_data/nodal_positions.pkl')
+    position = pickle.load(position_pickle)
+    print position
+    position_pickle.close()
 
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
                           steel_data=steel_data_volume,
                           nodal_positions=position.reshape(n_vol / 8, 8, 3))
-    pickle_handle.close()
 
     wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=4)
     lives = 0*pf_levels
@@ -46,7 +53,7 @@ case_depths = [0.5, 0.8, 1.1, 1.4]
 # case_depths = [1.4]
 pf_levels = np.array([0.25, 0.5, 0.75])
 test_directory = '/home/erolsson/postDoc/planetryGear/planetGearTests/'
-sim_forces = np.arange(29., 41., 1.)
+sim_forces = np.arange(30., 41., 1.)
 simulation_directory = '/home/erolsson/postDoc/planetryGear/dataSets20180220/'
 
 for i, case_depth in enumerate(case_depths):
@@ -68,7 +75,7 @@ for i, case_depth in enumerate(case_depths):
     for force in sim_forces:
         sim_name = 'findleyResultsPamp=' + str(force).replace('.', '_') + 'kN_DC=' + str(case_depth).replace('.', '_')
         pickle_file_name = simulation_directory + sim_name + '.pkl'
-        job_list.append((calculate_life, [pickle_file_name], {}))
+        job_list.append((calculate_life, [force, case_depth], {}))
 
     wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
 
