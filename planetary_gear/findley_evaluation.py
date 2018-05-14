@@ -9,7 +9,7 @@ from materials.gear_materials import SS2506
 from materials.gear_materials import SteelData
 
 case_depth = float(sys.argv[1])
-loads = np.arange(30., 41., 1.)
+loads = np.arange(29., 41., 1.)
 residual_stress_multiplier = 0.5
 stress_ratio = float(sys.argv[2])
 
@@ -56,7 +56,7 @@ for eval_type in ['surface', 'volume']:
 
         # Adding the residual stresses
         for i in range(stress_history.shape[0]):
-            stress_history[i, :, :] += dante_data['S']
+            stress_history[i, :, :] += dante_data['S']*residual_stress_multiplier
 
         findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
                                         num_workers=8, chunk_size=300, search_grid=10)

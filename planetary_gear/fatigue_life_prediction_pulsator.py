@@ -35,7 +35,6 @@ def calculate_life(load, case_depth):
 
     position_pickle = open('pickles/tooth_root_data/volume_data/nodal_positions.pkl')
     position = pickle.load(position_pickle)
-    print position
     position_pickle.close()
 
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
