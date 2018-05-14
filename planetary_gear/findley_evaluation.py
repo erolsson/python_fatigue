@@ -11,7 +11,7 @@ from materials.gear_materials import SteelData
 case_depth = sys.argv[1]
 loads = np.arange(30., 41., 1.)
 residual_stress_multiplier = 0.5
-stress_ratio = 0.1
+stress_ratio = sys.argv[2]
 
 data_directory = 'pickles/tooth_root_data/'
 
