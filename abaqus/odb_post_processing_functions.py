@@ -73,8 +73,8 @@ if __name__ == '__main__':
     for eset in ['Volume', 'Surface']:
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
-            residual_stress = get_odb_data(dante_odb, 'S', eset + 'Elements', step_name, 0, transform=True)
-            hardness = get_odb_data(dante_odb, 'HV', eset + 'Elements', step_name, 0)
+            residual_stress = get_odb_data(dante_odb, 'S', 'root' + eset + 'Elements', step_name, 0, transform=True)
+            hardness = get_odb_data(dante_odb, 'HV', 'root' + eset + 'Elements', step_name, 0)
             data_dict = {'S': residual_stress, 'HV': hardness}
             pickle_name = pickle_dir + '/' + eset.lower() + '_data/danteCD' + str(case_depth).replace('.', '_') + '.pkl'
             pickle_handle = open(pickle_name, 'w')
