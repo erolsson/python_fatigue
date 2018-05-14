@@ -98,7 +98,7 @@ if __name__ == '__main__':
         mechanical_pickle.close()
 
         nodal_pickle = open(pickle_dir + '/' + eset.lower() + '_data/nodal_positions.pkl', 'w')
-        pickle.dump(nodal_coords, nodal_pickle)
+        pickle.dump(node_coords, nodal_pickle)
         nodal_pickle.close()
     dante_odb.close()
     mechanical_odb.close()
