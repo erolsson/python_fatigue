@@ -31,9 +31,9 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
         cylindrical_sys = odb.rootAssembly.datumCsyses['cylSys2']
 
     field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
+    field = field.getSubset(position=ELEMENT_NODAL).values
     if transform:
         field = field.getTransformedField(cylindrical_sys).values
-    field = field.getSubset(position=ELEMENT_NODAL).values
 
     n1 = len(field)
     n2 = 1
