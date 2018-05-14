@@ -24,10 +24,10 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     if transform:
         if 'cylSys2' not in odb.rootAssembly.datumCsyses:
             cylindrical_sys = odb.rootAssembly.DatumCsysByThreePoints(name='cylSys2',
-                                                                  coordSysType=CYLINDRICAL,
-                                                                  origin=(0., 0., 0.),
-                                                                  point1=(0., 1., 0.),
-                                                                  point2=(1., 0., 0.))
+                                                                      coordSysType=CYLINDRICAL,
+                                                                      origin=(0., 0., 0.),
+                                                                      point1=(0., 1., 0.),
+                                                                      point2=(1., 0., 0.))
         else:
             cylindrical_sys = odb.rootAssembly.datumCsyses['cylSys2']
 
@@ -88,9 +88,8 @@ if __name__ == '__main__':
         max_load = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'maxLoad', 0)
         mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
         pickle_handle = open(pickle_dir + '/' + eset.lower() + '_data/mechanical_loads.pkl', 'w')
-        pickle.dump(mechanical_dict)
+        pickle.dump(mechanical_dict, pickle_handle)
         pickle_handle.close()
 
     dante_odb.close()
     mechanical_odb.close()
-
