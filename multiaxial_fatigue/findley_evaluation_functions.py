@@ -1,11 +1,11 @@
 # Import standard python modules
 import numpy as np
-import time,sys,pickle,multiprocessing,shutil,getopt
-from math import sin,cos,pi,sqrt,log10
+import time, sys, pickle, multiprocessing
+from math import sin, cos, pi, sqrt
 
 
 def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num_workers=multiprocessing.cpu_count(), 
-                     w_pool=None):
+                     w_pool=None, search_grid=5):
     s_time = time.time()    
     if not w_pool:
         worker_pool = multiprocessing.Pool(processes=num_workers)                    
@@ -32,7 +32,8 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num
             findley_load_step_jobs.append(worker_pool.apply_async(findley_worker, 
                                                                   [[a_cp[work_loads[workLoad]:work_loads[workLoad+1]],
                                                                     combined_stress[:, work_loads[workLoad]:
-                                                                    work_loads[workLoad+1], :]]]))
+                                                                    work_loads[workLoad+1], :],
+                                                                   search_grid]]))
         # Retrieve results for workloads
         for workLoad, findley_load_step_job in enumerate(findley_load_step_jobs):
             # print "Working with workload " + str(workLoad)
@@ -67,7 +68,7 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def eval_findley(a_cp, stress_matrix, mod=False):
+def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
     
     def smallest_enclosing_circle(xp, yp, xo=None, yo=None):
         # [xc, yc, R] = smallest_enclosing_circle(X, Y)
@@ -174,11 +175,6 @@ def eval_findley(a_cp, stress_matrix, mod=False):
                                  [a21*a31,  a22*a32,  a23*a33,   a21*a32+a22*a31,  a23*a31+a21*a33,   a22*a33+a23*a32]])
         return trans_matrix                
                     
-    # Initial setting
-    #     Search grid, degrees between planes
-    search_grid = 5   # Default accuracy    
-    # search_grid=30 # Coarser
-
     #     Search Space
     phi_space = 90
     theta_space = 360
@@ -254,9 +250,8 @@ def findley_worker(job_arguments):
 
     # Create results array
 
-
     try:
-        return eval_findley(job_arguments[0], job_arguments[1])
+        return eval_findley(job_arguments[0], job_arguments[1], job_arguments[2])
 
     except KeyboardInterrupt:
         raise KeyboardInterruptError()

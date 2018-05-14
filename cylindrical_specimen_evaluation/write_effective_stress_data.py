@@ -14,7 +14,7 @@ from cylindrical_specimen_evaluation.test_results import TestResults
 from cylindrical_specimen_evaluation.test_results import Loading
 from post_processing_functions import get_radial_data_from_pickle
 
-from multiaxial_fatigue.findleyEvaluationFunctions import evaluateFindley
+from multiaxial_fatigue.findley_evaluation_functions import evaluateFindley
 
 
 def create_load_sequence(stresses, factors, cycles):
