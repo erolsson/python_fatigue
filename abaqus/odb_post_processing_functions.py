@@ -58,8 +58,9 @@ if __name__ == '__main__':
     dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
     mechanical_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb')
     pickle_handle = open('/scratch/users/erik/python_fatigue/planetary_gear/rootSetLabels.pkl', 'r')
-    root_set_data = pickle.load(pickle_handle)
-    print root_set_data
+    root_set_data = []
+    for _ in range(4):
+        root_set_data.append(pickle.load(pickle_handle))
     pickle_handle.close()
     create_fatigue_sets(dante_odb, root_set_data, name='root')
     create_fatigue_sets(mechanical_odb, root_set_data, name='root')
