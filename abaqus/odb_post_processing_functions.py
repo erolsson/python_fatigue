@@ -97,6 +97,7 @@ if __name__ == '__main__':
 
         nodal_data = np.zeros((min_load.shape[0], 3))
         for i, n in enumerate(node_labels):
+            print n
             nodal_data[i, :] = nodal_dict[n]
         nodal_pickle = open(pickle_dir + '/' + eset.lower() + '_data/nodal_positions.pkl', 'w')
         pickle.dump(nodal_data, nodal_pickle)
