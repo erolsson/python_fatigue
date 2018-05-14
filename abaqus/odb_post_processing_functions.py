@@ -55,7 +55,7 @@ def get_node_data_from_set(odb, node_set_name):
     node_dict = {}
     for node in node_set.nodes:
         node_dict[node.label] = node.coordinates
-
+        print node_labels.label
     return node_dict
 
 if __name__ == '__main__':
