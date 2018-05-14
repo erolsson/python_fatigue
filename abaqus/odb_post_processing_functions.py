@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     pickle_dir = '/scratch/users/erik/python_fatigue/planetary_gear/pickles/tooth_root_data'
     if not os.path.exists(pickle_dir):
-        os.mkdirs(pickle_dir)
+        os.makedirs(pickle_dir)
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
     for eset in ['Volume', 'Surface']:
