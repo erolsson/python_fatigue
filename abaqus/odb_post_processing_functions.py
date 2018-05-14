@@ -76,7 +76,7 @@ if __name__ == '__main__':
         os.makedirs(pickle_dir)
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
-    for eset in ['Volume', 'Surface']:
+    for eset in ['Volume']:
         print eset
         nodal_dict = get_node_data_from_set(dante_odb, 'root' + eset + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
