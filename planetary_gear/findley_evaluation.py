@@ -8,10 +8,10 @@ from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 from materials.gear_materials import SS2506
 from materials.gear_materials import SteelData
 
-case_depth = sys.argv[1]
+case_depth = float(sys.argv[1])
 loads = np.arange(30., 41., 1.)
 residual_stress_multiplier = 0.5
-stress_ratio = sys.argv[2]
+stress_ratio = float(sys.argv[2])
 
 data_directory = 'pickles/tooth_root_data/'
 
