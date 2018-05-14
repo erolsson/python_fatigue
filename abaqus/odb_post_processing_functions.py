@@ -21,6 +21,8 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
 
 def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False):
     element_set = odb.rootAssembly.instances['PART-1-1'].elementSets[element_set_name]
+    field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
+    field = field.getSubset(position=ELEMENT_NODAL)
     if transform:
         if 'cylSys2' not in odb.rootAssembly.datumCsyses:
             cylindrical_sys = odb.rootAssembly.DatumCsysByThreePoints(name='cylSys2',
@@ -30,17 +32,13 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
                                                                       point2=(1., 0., 0.))
         else:
             cylindrical_sys = odb.rootAssembly.datumCsyses['cylSys2']
-
-    field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
-    field = field.getSubset(position=ELEMENT_NODAL)
-    if transform:
         field = field.getTransformedField(cylindrical_sys)
+
     field = field.values
 
     n1 = len(field)
-    n2 = 1
-    if type(field[0].data) != float:
-        n2 = len(field[0].data)
+    n2 = 1 if type(field[0].data) is float else len(field[0].data)
+
     data = np.zeros((n1, n2))
 
     for i, data_point in enumerate(field):
