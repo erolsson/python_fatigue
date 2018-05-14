@@ -1,6 +1,8 @@
 import odbAccess
 from abaqusConstants import *
 
+import os
+import pickle
 import numpy as np
 
 
@@ -10,10 +12,10 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
     if name + 'VolumeElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
         odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'VolumeElements',
                                                                            elementLabels=set_data[1])
-    if name + 'SurfNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:
-        odb.rootAssembly.instances['PART-1-1'].NodeSetFromNodeLabels(name=name + 'SurfNodes', nodeLabels=set_data[2])
-    if name + 'SurfElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
-        odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'SurfElements',
+    if name + 'SurfaceNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:
+        odb.rootAssembly.instances['PART-1-1'].NodeSetFromNodeLabels(name=name + 'SurfaceNodes', nodeLabels=set_data[2])
+    if name + 'SurfaceElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
+        odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'SurfaceElements',
                                                                            elementLabels=set_data[3])
 
 
@@ -29,6 +31,8 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
         cylindrical_sys = odb.rootAssembly.datumCsyses['cylSys2']
 
     field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
+    if transform:
+        field = field.getTransformedField(cylindrical_sys).values
     field = field.getSubset(position=ELEMENT_NODAL).values
 
     n1 = len(field)
@@ -39,7 +43,7 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
 
     for i, data_point in enumerate(field):
         data[i, :] = data_point.data
-    print n1, n2
+    return data
 
 
 def get_node_data_from_set(odb, node_set_name):
@@ -52,7 +56,37 @@ def get_node_data_from_set(odb, node_set_name):
 
 if __name__ == '__main__':
     dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
-    get_odb_data(dante_odb, 'S', 'fatigueVolumeElements', step='danteResults_DC0_5')
-    get_odb_data(dante_odb, 'HV', 'fatigueVolumeElements', step='danteResults_DC0_5')
+    mechanical_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb')
+    pickle_handle = open('/scratch/users/erik/python_fatigue/planetary_gear/rootSetLabels.pkl', 'r')
+    root_set_data = pickle.load(pickle_handle)
+    pickle_handle.close()
+    create_fatigue_sets(dante_odb, root_set_data, name='root')
+    create_fatigue_sets(mechanical_odb, root_set_data, name='root')
+
+    pickle_dir = '/scratch/users/erik/python_fatigue/planetary_gear/pickles/tooth_root_data'
+    if not os.path.exists(pickle_dir):
+        os.mkdir(pickle_dir)
+        os.mkdir(pickle_dir + '/volume_data')
+        os.mkdir(pickle_dir + '/surface_data')
+    for eset in ['Volume', 'Surface']:
+        for case_depth in [0.5, 0.8, 1.1, 1.4]:
+            step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
+            residual_stress = get_odb_data(dante_odb, 'S', eset + 'Elements', step_name, 0, transform=True)
+            hardness = get_odb_data(dante_odb, 'HV', eset + 'Elements', step_name, 0)
+            data_dict = {'S': residual_stress, 'HV': hardness}
+            pickle_name = pickle_dir + '/' + eset.lower() + '_data/danteCD' + str(case_depth).replace('.', '_') + '.pkl'
+            pickle_handle = open(pickle_name, 'w')
+            pickle.dump(data_dict, pickle_handle)
+            pickle_handle.close()
+
+        # Maximum load corresponds to Pamp = 32 kN
+        min_load = get_odb_data(mechanical_odb, 'S', eset + 'Elements', 'minLoad', 0)
+        max_load = get_odb_data(mechanical_odb, 'S', eset + 'Elements', 'maxLoad', 0)
+        mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
+        pickle_handle = open(pickle_dir + '/' + eset.lower() + '_data/mechanical_loads.pkl', 'w')
+        pickle.dump(mechanical_dict)
+        pickle_handle.close()
+
     dante_odb.close()
-    print "Odb closed "
+    mechanical_odb.close()
+
