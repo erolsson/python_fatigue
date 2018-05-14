@@ -21,9 +21,10 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 haiback = True
 
 
-def calculate_life(pickle_file):
-    pickle_handle = open(pickle_file)
-    stress = pickle.load(pickle_handle)
+def calculate_life(load, case_depth):
+    findley_file_name = 'CD' + str(case_depth).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + '.pkl'
+    findley_pickle = open('pickles/tooth_root_data/volume_data/findley_R=0.1/' + findley_file_name)
+    stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
     hardness = pickle.load(pickle_handle)
     steel_data_volume = SteelData(HV=hardness.reshape(n_vol / 8, 8))
