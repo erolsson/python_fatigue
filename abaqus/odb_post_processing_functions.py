@@ -83,8 +83,8 @@ if __name__ == '__main__':
             pickle_handle.close()
 
         # Maximum load corresponds to Pamp = 32 kN
-        min_load = get_odb_data(mechanical_odb, 'S', eset + 'Elements', 'minLoad', 0)
-        max_load = get_odb_data(mechanical_odb, 'S', eset + 'Elements', 'maxLoad', 0)
+        min_load = get_odb_data(mechanical_odb, 'S', eset + 'root' + 'Elements', 'minLoad', 0)
+        max_load = get_odb_data(mechanical_odb, 'S', eset + 'root' + 'Elements', 'maxLoad', 0)
         mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
         pickle_handle = open(pickle_dir + '/' + eset.lower() + '_data/mechanical_loads.pkl', 'w')
         pickle.dump(mechanical_dict)
