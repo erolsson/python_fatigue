@@ -19,7 +19,7 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
                                                                            elementLabels=set_data[3])
 
 
-def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False, node_numbers=False):
+def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False, node_numbers=None):
     element_set = odb.rootAssembly.instances['PART-1-1'].elementSets[element_set_name]
     field = odb.steps[step].frames[frame].fieldOutputs[variable].getSubset(region=element_set)
     field = field.getSubset(position=ELEMENT_NODAL)
@@ -42,11 +42,11 @@ def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False
     data = np.zeros((n1, n2))
     for i, data_point in enumerate(field):
         data[i, :] = data_point.data
-    if node_numbers:
-        node_labels = []
+    if node_numbers is not None:
+        coords = np.zeros((n1, 3))
         for i, data_point in enumerate(field):
-            node_labels.append(data_point.nodeLabel)
-        return data, node_labels
+            coords = node_numbers[data_point.nodeLabel]
+        return data, coords
     return data
 
 
@@ -89,20 +89,16 @@ if __name__ == '__main__':
             pickle_handle.close()
 
         # Maximum load corresponds to Pamp = 32 kN
-        min_load, node_labels = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'minLoad', 0,
-                                             node_numbers=True)
+        min_load, node_coords = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'minLoad', 0,
+                                             node_numbers=nodal_dict)
         max_load = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'maxLoad', 0)
         mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
         mechanical_pickle = open(pickle_dir + '/' + eset.lower() + '_data/mechanical_loads.pkl', 'w')
         pickle.dump(mechanical_dict, mechanical_pickle)
         mechanical_pickle.close()
 
-        nodal_data = np.zeros((min_load.shape[0], 3))
-        for i, n in enumerate(node_labels):
-            print n
-            nodal_data[i, :] = nodal_dict[n]
         nodal_pickle = open(pickle_dir + '/' + eset.lower() + '_data/nodal_positions.pkl', 'w')
-        pickle.dump(nodal_data, nodal_pickle)
+        pickle.dump(nodal_coords, nodal_pickle)
         nodal_pickle.close()
     dante_odb.close()
     mechanical_odb.close()
