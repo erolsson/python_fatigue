@@ -61,14 +61,13 @@ def get_node_data_from_set(odb, node_set_name):
     return node_dict
 
 if __name__ == '__main__':
-    dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
     mechanical_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb')
     pickle_handle = open('/scratch/users/erik/python_fatigue/planetary_gear/rootSetLabels.pkl', 'r')
     root_set_data = []
     for _ in range(4):
         root_set_data.append(pickle.load(pickle_handle))
     pickle_handle.close()
-    create_fatigue_sets(dante_odb, root_set_data, name='root')
+
     create_fatigue_sets(mechanical_odb, root_set_data, name='root')
 
     pickle_dir = '/scratch/users/erik/python_fatigue/planetary_gear/pickles/tooth_root_data'
@@ -79,6 +78,8 @@ if __name__ == '__main__':
     for eset in ['Volume']:
         nodal_dict = get_node_data_from_set(dante_odb, 'root' + eset + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
+            dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
+            create_fatigue_sets(dante_odb, root_set_data, name='root')
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
             residual_stress = get_odb_data(dante_odb, 'S', 'root' + eset + 'Elements', step_name, 0, transform=True)
             hardness = get_odb_data(dante_odb, 'HV', 'root' + eset + 'Elements', step_name, 0)
@@ -87,6 +88,7 @@ if __name__ == '__main__':
             pickle_handle = open(pickle_name, 'w')
             pickle.dump(data_dict, pickle_handle)
             pickle_handle.close()
+            dante_odb.close()
 
         # Maximum load corresponds to Pamp = 32 kN
         min_load, node_coords = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'minLoad', 0,
@@ -100,5 +102,5 @@ if __name__ == '__main__':
         nodal_pickle = open(pickle_dir + '/' + eset.lower() + '_data/nodal_positions.pkl', 'w')
         pickle.dump(node_coords, nodal_pickle)
         nodal_pickle.close()
-    dante_odb.close()
+
     mechanical_odb.close()
