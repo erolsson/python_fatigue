@@ -6,6 +6,8 @@ from visualization import *
 import xyPlot
 from abaqusConstants import *
 
+from abaqus.odb_post_processing_functions import create_path
+
 odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
 pickle_handle = open('../pickles/tooth_paths.pkl', 'rb')
@@ -18,11 +20,28 @@ pickle_handle.close()
 case_depths = [0.5]
 for case_depth in case_depths:
     odb = odbAccess.openOdb(odb_path + 'tooth_slice_' + str(case_depth).replace('.', '_') + '.odb')
+    session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
+                     height=230.809509277344)
+    session.viewports['Viewport: 1'].makeCurrent()
+    session.viewports['Viewport: 1'].maximize()
+    o7 = session.odbs[session.odbs.keys()[0]]
+    session.viewports['Viewport: 1'].setValues(displayedObject=o7)
+
+    step_index = odb.steps.keys().index(odb.steps.keys()[-1])
+    session.viewports['Viewport: 1'].odbDisplay.setFrame(step=stepI, frame=0)
+    session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
+                                                                   outputPosition=ELEMENT_NODAL)
+    for path_data in [(flank_data, 'flank_path'), (root_data, 'root_path')]
+        data_path = create_path(path_data[0], path_data[1])
+        xy = xyPlot.XYDataFromPath(name='Carbon profile', path=data_path,
+                                   labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                                   includeIntersections=False)
+
     odb.close()
 
 """
 def writeDataAlongPath(path, n,step, dataToWrite):
-    session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078, 
+    session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                      height=230.809509277344)
     session.viewports['Viewport: 1'].makeCurrent()
     session.viewports['Viewport: 1'].maximize()

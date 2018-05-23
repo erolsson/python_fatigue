@@ -61,18 +61,13 @@ def get_node_data_from_set(odb, node_set_name):
     return node_dict
 
 
-def create_paths(flank_points, root_points):
-    def create_path(name, points):
-        path_ponts = []
-        for point in points:
-            path_ponts.append((point[0], point[1], point[2]))
+def create_path(points, name):
+    path_points = []
+    for point in points:
+        path_points.append((point[0], point[1], point[2]))
 
-        path = session.Path(name=name, type=POINT_LIST, expression=path_ponts)
-        return path
-
-    flank_path = create_path('flank_path', flank_points)
-    root_path = create_path('rootPath', root_points)
-    return flank_path, root_path
+    data_path = session.Path(name=name, type=POINT_LIST, expression=path_points)
+    return data_path
 
 if __name__ == '__main__':
     mechanical_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb')
