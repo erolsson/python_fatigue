@@ -2,7 +2,7 @@ import sys
 import os
 curr_path = os.getcwd()
 sys.path.append(curr_path[:-len(r'/planetary_gear/carbon')])
-sys.path.append(sys.path[-1]+'r/abaqus')
+sys.path.append(sys.path[-1]+r'/abaqus')
 print sys.path
 print "Current path:", curr_path
 print "Main path:", curr_path[:-len(r'/planetary_gear/carbon')]
