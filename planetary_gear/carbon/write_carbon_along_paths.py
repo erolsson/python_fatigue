@@ -8,7 +8,7 @@ from abaqusConstants import *
 
 odb_path = r'C:/Users/erolsson/Post-doc/CarbonDiffusion/'
 
-pickle_handle = open('hardnessPaths.pkl', 'rb')
+pickle_handle = open('../pickles/tooth_paths.pkl', 'rb')
 flank_data = pickle.load(pickle_handle)
 n_flank = pickle.load(pickle_handle)
 root_data = pickle.load(pickle_handle)
