@@ -2,7 +2,7 @@ import numpy as np
 import pickle 
 
 import odbAccess
-import xyPlot
+from visualization import xyPlot
 from abaqusConstants import *
 
 odb_path = r'C:/Users/erolsson/Post-doc/CarbonDiffusion/'
