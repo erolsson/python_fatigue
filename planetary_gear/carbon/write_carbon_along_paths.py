@@ -1,7 +1,7 @@
 import numpy as np
 import pickle 
 
-from odbAccess import
+import odbAccess
 import xyPlot
 from abaqusConstants import *
 
