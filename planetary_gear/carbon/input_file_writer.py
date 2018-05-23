@@ -10,8 +10,8 @@ def write_input_file(sim_data):
         lines.append('*TEMPERATURE, AMPLITUDE=TEMP_AMPLITUDE')
         lines.append('\tAll_Nodes')
         lines.append('*BOUNDARY')
-        lines.append('\tEXPOSED_NODES, 1, 1, ' + str(carbon/100))
-        lines.append('*MONITOR, NODE=monitor_node, DOF=1, FREQ=1')
+        lines.append('\tEXPOSED_NODES, 11, 11, ' + str(carbon/100))
+        lines.append('*MONITOR, NODE=monitor_node, DOF=11, FREQ=1')
         lines.append('*Output, field, frequency=1')
         lines.append('*Node Output')
         lines.append('\tNNC, NT')
@@ -27,13 +27,13 @@ def write_input_file(sim_data):
                   '*Preprint, echo=NO, model=NO, history=NO, contact=NO',
                   '*Part, name = tooth_slice',
                   '\t*INCLUDE, INPUT = slice_geo.inc',
+                  '\t*Solid Section, elset=All_ELEMS, material=U92506',
+                  '\t\t1.',
+                  '\t\t*Hourglass Stiffness',
+                  '\t\t\t225.0, 0.0, 0.0',
                   '*end part',
                   '*assembly, name=assembly',
                   '\t*instance, name=tooth, part=tooth_slice',
-                  '\t*Solid Section, elset=All_Elements, material=U92506',
-                  '\t \t1.',
-                  '\t *Hourglass Stiffness',
-                  '\t \t 225.0, 0.0, 0.0',
                   '\t *end instance',
                   '\t *INCLUDE, INPUT=planetGear_Sets.inc',
                   '*end assembly',
