@@ -67,7 +67,13 @@ for element in model_elements:
     file_lines.append(line[: -1] + '\n')
 file_lines.append('**EOF')
 
-# Write the include file
+# Write the geometric include file
 with open('slice_geo.inc', 'w') as include_file:
     for line in file_lines:
         include_file.write(line)
+
+
+
+
+
+
