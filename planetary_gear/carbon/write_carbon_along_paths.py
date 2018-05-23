@@ -31,7 +31,7 @@ for case_depth in case_depths:
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=stepI, frame=0)
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
                                                                    outputPosition=ELEMENT_NODAL)
-    for path_data in [(flank_data, 'flank_path'), (root_data, 'root_path')]
+    for path_data in [(flank_data, 'flank_path'), (root_data, 'root_path')]:
         data_path = create_path(path_data[0], path_data[1])
         xy = xyPlot.XYDataFromPath(name='Carbon profile', path=data_path,
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
