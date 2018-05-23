@@ -10,6 +10,7 @@ import pickle
 import odbAccess
 from visualization import *
 import xyPlot
+
 from abaqusConstants import *
 
 from abaqus.odb_post_processing_functions import create_path
