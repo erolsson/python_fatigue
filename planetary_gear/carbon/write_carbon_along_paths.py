@@ -6,7 +6,7 @@ from visualization import *
 import xyPlot
 from abaqusConstants import *
 
-odb_path = r'C:/Users/erolsson/Post-doc/CarbonDiffusion/'
+odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
 pickle_handle = open('../pickles/tooth_paths.pkl', 'rb')
 flank_data = pickle.load(pickle_handle)
@@ -17,7 +17,7 @@ pickle_handle.close()
 
 case_depths = [0.5]
 for case_depth in case_depths:
-    odb = odbAccess.openOdb(odb_path + 'tooth_slice_CD_' + str(case_depth).replace('.', '_') + '.odb')
+    odb = odbAccess.openOdb(odb_path + 'tooth_slice_' + str(case_depth).replace('.', '_') + '.odb')
     odb.close()
 
 """
