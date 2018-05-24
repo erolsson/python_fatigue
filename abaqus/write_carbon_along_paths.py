@@ -26,6 +26,7 @@ n_root = pickle.load(pickle_handle)
 pickle_handle.close()
 
 case_depths = [0.5]
+print n_root
 carbon_root = np.zeros((n_root, len(case_depths)+1))
 carbon_flank = np.zeros((n_root, len(case_depths)+1))
 
