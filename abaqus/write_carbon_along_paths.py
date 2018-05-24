@@ -13,8 +13,8 @@ def create_path(points, name):
     for point in points:
         path_points.append((point[0], point[1], point[2]))
 
-    data_path = session.Path(name=name, type=POINT_LIST, expression=path_points)
-    return data_path
+    path = session.Path(name=name, type=POINT_LIST, expression=path_points)
+    return path
 
 odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
@@ -26,7 +26,10 @@ n_root = pickle.load(pickle_handle)
 pickle_handle.close()
 
 case_depths = [0.5]
-for case_depth in case_depths:
+carbon_root = np.zeros((n_root, len(case_depths)+1))
+carbon_flank = np.zeros((n_root, len(case_depths)+1))
+
+for cd_idx, case_depth in enumerate(case_depths):
     odb = odbAccess.openOdb(odb_path + 'tooth_slice_' + str(case_depth).replace('.', '_') + '.odb')
     session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                      height=230.809509277344)
@@ -39,12 +42,19 @@ for case_depth in case_depths:
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=0)
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
                                                                    outputPosition=ELEMENT_NODAL)
-    for path_data in [(flank_data, 'flank_path'), (root_data, 'root_path')]:
-        data_path = create_path(path_data[0], path_data[1])
+    for path_data, name, data_array in zip([flank_data, root_data], ['flank_path', 'root_path'],
+                                           [carbon_root, carbon_flank]):
+        data_path = create_path(path_data, name)
         xy = xyPlot.XYDataFromPath(name='Carbon profile', path=data_path,
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                    includeIntersections=False)
 
+        for i, xy_point in enumerate(xy):
+            if cd_idx == 0:
+                data_array[i, 0] = xy_point[0]
+            data_array[i, cd_idx+1] = xy_point[1]
+    print carbon_flank
+    print carbon_root
     odb.close()
 
 """
