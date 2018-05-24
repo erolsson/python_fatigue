@@ -1,11 +1,3 @@
-import sys
-import os
-curr_path = os.getcwd()
-sys.path.append(curr_path[:-len(r'/planetary_gear/carbon')])
-print sys.path
-print "Current path:", curr_path
-print "Main path:", curr_path[:-len(r'/planetary_gear/carbon')]
-
 import numpy as np
 import pickle 
 
