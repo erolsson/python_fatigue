@@ -2,6 +2,8 @@ import odbAccess
 from abaqusConstants import *
 
 from visualization import *
+import odbAccess
+import session
 
 import os
 import pickle
