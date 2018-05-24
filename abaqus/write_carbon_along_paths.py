@@ -11,7 +11,7 @@ from odb_post_processing_functions import create_path
 
 odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
-pickle_handle = open('../pickles/tooth_paths.pkl', 'rb')
+pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
 flank_data = pickle.load(pickle_handle)
 n_flank = pickle.load(pickle_handle)
 root_data = pickle.load(pickle_handle)
