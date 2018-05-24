@@ -1,6 +1,8 @@
 import odbAccess
 from abaqusConstants import *
 
+from visualization import *
+
 import os
 import pickle
 import numpy as np
