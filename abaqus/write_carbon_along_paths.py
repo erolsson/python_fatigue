@@ -54,7 +54,7 @@ for cd_idx, case_depth in enumerate(case_depths):
                 data_array[i, 0] = xy_point[0]
             data_array[i, cd_idx+1] = xy_point[1]
 
-        if cd_idx == len(case_depth) - 1:
+        if cd_idx == len(case_depths) - 1:
             pickle_handle = open('../planetary_gear/pickles/carbon_' + name + '_sim.pkl', 'w')
             pickle.dump(data_array, pickle_handle)
             pickle_handle.close()
