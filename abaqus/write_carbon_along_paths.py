@@ -40,7 +40,8 @@ for cd_idx, case_depth in enumerate(case_depths):
 
     step_index = odb.steps.keys().index(odb.steps.keys()[-1])
     print "step:", odb.steps.keys()[-1]
-    session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=0)
+    last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
+    session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
                                                                    outputPosition=ELEMENT_NODAL)
     for path_data, name, data_dict in zip([flank_data, root_data], ['flank', 'root'],
