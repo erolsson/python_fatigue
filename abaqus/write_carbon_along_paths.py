@@ -53,8 +53,12 @@ for cd_idx, case_depth in enumerate(case_depths):
             if cd_idx == 0:
                 data_array[i, 0] = xy_point[0]
             data_array[i, cd_idx+1] = xy_point[1]
-    print carbon_flank
-    print carbon_root
+
+        if cd_idx == len(case_depth) - 1:
+            pickle_handle = open('../planetary_gear/pickles/carbon_' + name[:-5] + '_sim.pkl', 'w')
+            pickle.dump(data_array, pickle_handle)
+            pickle_handle.close()
+
     odb.close()
 
 """
