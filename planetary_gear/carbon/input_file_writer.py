@@ -72,7 +72,8 @@ def write_input_file(sim_data):
 
 if __name__ == '__main__':
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon'])
-    simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
+    simulations = [Simulation(CD=0.2, times=[105.], temperatures=(840.,), carbon=(0.8,)),
+                   Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
