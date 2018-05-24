@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     for fig_idx, path_name in enumerate(['root', 'flank']):
         plt.figure(fig_idx)
-        sim_pickle = open('../pickles/carbon_' + path_name + '_sim.pkl')
+        sim_pickle = open('../pickles/carbon_' + path_name + '_sim.pkl', 'rb')
         sim_data = pickle.load(sim_pickle)
         sim_pickle.close()
 
