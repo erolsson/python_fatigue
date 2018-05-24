@@ -56,7 +56,7 @@ for cd_idx, case_depth in enumerate(case_depths):
 
         if cd_idx == len(case_depths) - 1:
             pickle_handle = open('../planetary_gear/pickles/carbon_' + name + '_sim.pkl', 'w')
-            pickle.dump(data_array, pickle_handle)
+            pickle.dump(data_dict, pickle_handle)
             pickle_handle.close()
 
     odb.close()
