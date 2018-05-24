@@ -31,11 +31,33 @@ if __name__ == '__main__':
     plot_symbols = {0.2: 'rs', 0.5: 'bo', 0.8: 'gd', 1.1: 'kx', 1.4: 'cp'}
 
     for fig_idx, path_name in enumerate(['root', 'flank']):
-        plt.figure(fig_idx)
+        fig = plt.figure(fig_idx)
         sim_pickle = open('../pickles/carbon_' + path_name + '_sim.pkl', 'rb')
         sim_data = pickle.load(sim_pickle)
         sim_pickle.close()
 
         for sim_cd in sim_data.keys():
-            print sim_cd
+            plt.plot(sim_data[sim_cd][:, 0], sim_data[sim_cd][:, 1]*100, '--' + plot_symbols[sim_cd][0], lw=2)
+
+            if path_name == 'flank':
+                plt.plot(exp_results[sim_cd][:, 0], exp_results[sim_cd][:, 1], '-' + plot_symbols[sim_cd], lw=2, ms=12)
+
+            plt.plot([-2, -1], [-1, -1], '-' + plot_symbols[sim_cd], lw=2, label='CHD = ' + str(sim_cd) + ' mm', ms=12)
+        plt.plot([-2, -1], [-1, -1], '-w', lw=2, label=' ')
+
+        plt.plot([-2, -1], [-1, -1], '-', lw=2, label='Experiment')
+        plt.plot([-2, -1], [-1, -1], '--', lw=2, label='Simulation')
+        plt.xlim(0, 2)
+        plt.ylim(0.2, 1)
+        fig.set_size_inches(12, 6, forward=True)
+        ax = plt.subplot(111)
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, 0.55, box.height])
+        plt.xlabel('Distance from surface [mm]')
+        plt.ylabel('Carbon content [\%]')
+        plt.grid(True)
+        legend = ax.legend(loc='upper left', numpoints=1, bbox_to_anchor=(1, 1.035))
+        plt.gca().add_artist(legend)
+
+    plt.show()
 
