@@ -42,9 +42,9 @@ for cd_idx, case_depth in enumerate(case_depths):
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=0)
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
                                                                    outputPosition=ELEMENT_NODAL)
-    for path_data, name, data_array in zip([flank_data, root_data], ['flank_path', 'root_path'],
+    for path_data, name, data_array in zip([flank_data, root_data], ['flank', 'root'],
                                            [carbon_root, carbon_flank]):
-        data_path = create_path(path_data, name)
+        data_path = create_path(path_data, name + '_path')
         xy = xyPlot.XYDataFromPath(name='Carbon profile', path=data_path,
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                    includeIntersections=False)
@@ -55,7 +55,7 @@ for cd_idx, case_depth in enumerate(case_depths):
             data_array[i, cd_idx+1] = xy_point[1]
 
         if cd_idx == len(case_depth) - 1:
-            pickle_handle = open('../planetary_gear/pickles/carbon_' + name[:-5] + '_sim.pkl', 'w')
+            pickle_handle = open('../planetary_gear/pickles/carbon_' + name + '_sim.pkl', 'w')
             pickle.dump(data_array, pickle_handle)
             pickle_handle.close()
 
