@@ -1,7 +1,7 @@
 import odbAccess
 from abaqusConstants import *
 
-from visualization
+import visualization
 import odbAccess
 
 import os
