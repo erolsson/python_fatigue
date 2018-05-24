@@ -25,7 +25,7 @@ root_data = pickle.load(pickle_handle)
 normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
 pickle_handle.close()
 
-case_depths = [0.5]
+case_depths = [0.5, 0.8, 1.1, 1.4]
 carbon_root = {}
 carbon_flank = {}
 
