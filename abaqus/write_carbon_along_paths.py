@@ -7,7 +7,14 @@ import xyPlot
 
 from abaqusConstants import *
 
-from odb_post_processing_functions import create_path
+
+def create_path(points, name):
+    path_points = []
+    for point in points:
+        path_points.append((point[0], point[1], point[2]))
+
+    data_path = session.Path(name=name, type=POINT_LIST, expression=path_points)
+    return data_path
 
 odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
