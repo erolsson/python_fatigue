@@ -7,7 +7,7 @@ import xyPlot
 
 from abaqusConstants import *
 
-from abaqus.odb_post_processing_functions import create_path
+from odb_post_processing_functions import create_path
 
 odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
