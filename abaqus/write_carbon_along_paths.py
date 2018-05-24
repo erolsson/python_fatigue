@@ -20,15 +20,14 @@ odb_path = r'C:/Users/erolsson/Post-doc/carbonDiffusion/'
 
 pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
 flank_data = pickle.load(pickle_handle)
-n_flank = pickle.load(pickle_handle)
+normal_flank = pickle.load(pickle_handle)  # Direction vector of the flank path
 root_data = pickle.load(pickle_handle)
-n_root = pickle.load(pickle_handle)
+normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
 pickle_handle.close()
 
 case_depths = [0.5]
-print n_root
-carbon_root = np.zeros((n_root, len(case_depths)+1))
-carbon_flank = np.zeros((n_root, len(case_depths)+1))
+carbon_root = np.zeros((root_data.shape[0], len(case_depths)+1))
+carbon_flank = np.zeros((flank_data.shape[0], len(case_depths)+1))
 
 for cd_idx, case_depth in enumerate(case_depths):
     odb = odbAccess.openOdb(odb_path + 'tooth_slice_' + str(case_depth).replace('.', '_') + '.odb')
