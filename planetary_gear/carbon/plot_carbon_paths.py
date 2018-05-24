@@ -45,8 +45,8 @@ if __name__ == '__main__':
             plt.plot([-2, -1], [-1, -1], '-' + plot_symbols[sim_cd], lw=2, label='CHD = ' + str(sim_cd) + ' mm', ms=12)
         plt.plot([-2, -1], [-1, -1], '-w', lw=2, label=' ')
 
-        plt.plot([-2, -1], [-1, -1], '-', lw=2, label='Experiment')
-        plt.plot([-2, -1], [-1, -1], '--', lw=2, label='Simulation')
+        plt.plot([-2, -1], [-1, -1], '-k', lw=2, label='Experiment')
+        plt.plot([-2, -1], [-1, -1], '--k', lw=2, label='Simulation')
         plt.xlim(0, 2)
         plt.ylim(0.2, 1)
         fig.set_size_inches(12, 6, forward=True)
