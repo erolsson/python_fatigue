@@ -57,8 +57,6 @@ def get_node_data_from_set(odb, node_set_name):
     node_dict = {}
     for node in node_set.nodes:
         node_dict[node.label] = node.coordinates
-        if node.label == '158441':
-            print "found"
 
     return node_dict
 
