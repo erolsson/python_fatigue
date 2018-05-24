@@ -39,6 +39,7 @@ for cd_idx, case_depth in enumerate(case_depths):
     session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 
     step_index = odb.steps.keys().index(odb.steps.keys()[-1])
+    print "step:", odb.steps.keys()[-1]
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=0)
     session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='CONC',
                                                                    outputPosition=ELEMENT_NODAL)
