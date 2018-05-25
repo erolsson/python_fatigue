@@ -135,8 +135,8 @@ def create_quarter_model():
     element_data = []
     for element in model_elements:
         line = '\t'
-        for item in element:
-            line += str(item) + ', '
+        for label in element:
+            line += str(label) + ', '
         element_data.append(line[:-2])
     return nodal_data, element_data
 
@@ -163,9 +163,9 @@ def write_model_files(sim_data, nodal_data, element_data):
             inc_file.write('**EOF')
 
     def write_input_files():
-        def write_carburization_step(name, t1, t2, carbon):
-            carbon_lines.append('*STEP,NAME=' + name + ', INC=10000')
-            carbon_lines.append('\t' + name + ' - Total time: ' + str(t1) + ' - ' +
+        def write_carburization_step(step_name, t1, t2, carbon):
+            carbon_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
+            carbon_lines.append('\t' + step_name + ' - Total time: ' + str(t1) + ' - ' +
                                 str(t2) + 's, Carbon: ' + str(carbon) + '%')
             carbon_lines.append('*MASS DIFFUSION, DCMAX=0.001')
             carbon_lines.append('\t0.2,  ' + str(t2 - t1) + ', 1e-05,  10000')
@@ -183,11 +183,11 @@ def write_model_files(sim_data, nodal_data, element_data):
             carbon_lines.append('\tCONC')
             carbon_lines.append('*End Step')
 
-            thermal_lines.append('*STEP,NAME=' + name + ', INC=10000')
+            thermal_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
             thermal_lines.append('*HEAT TRANSFER, DELTMX=10.0, END=PERIOD')
             thermal_lines.append('\t0.01,  ' + str(t2 - t1) + ', 1e-05,  10000')
             thermal_lines.append('*CONTROLS, PARAMETERS = LINE SEARCH')
-            thermal_lines.append('\6,')
+            thermal_lines.append('\t6,')
             thermal_lines.append('*CONTROLS, PARAMETERS = TIME INCREMENTATION')
             thermal_lines.append('\t20, 30')
             thermal_lines.append('*CONTROLS, FIELD = TEMPERATURE, PARAMETERS = FIELD')
@@ -223,7 +223,6 @@ def write_model_files(sim_data, nodal_data, element_data):
                                         '_quarter_geo.inc')
                     file_lines.append(line)
             return file_lines
-        # Reading the generic carbon data
 
         carbon_lines = write_generic_data('Carbon')
         thermal_lines = write_generic_data('Thermal')
@@ -246,10 +245,20 @@ def write_model_files(sim_data, nodal_data, element_data):
             step_nr += 1
             total_time += t * 60
 
-        for lines, name in [(carbon_lines, 'Carbon'),(thermal_lines, 'Thermal'),(mechanical_lines, 'Mechaical')]:
+        # Add remaining data to the thermal and mechanical file
+        for lines, name in [(thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
+            with open('../end_' + name + '_file.txt') as end_file:
+                end_lines = end_file.readlines()
+                for line in end_lines:
+                    line = line.replace('/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/', '')
+                    line = line.replace('0_5_v6', str(sim_data.CD).replace('.', '_') + '_quarter')
+                    line = line.replace('\n', '')
+                    lines.append(line)
+
+        for lines, name in [(carbon_lines, 'Carbon'), (thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
             with open('Toolbox_' + name + '_' + str(sim_data.CD).replace('.', '_') + '_quarter.inp', 'w') as inp_file:
-                for line in lines:
-                    inp_file.write(line + '\n')
+                for line_to_write in lines:
+                    inp_file.write(line_to_write + '\n')
                 inp_file.write('**EOF')
 
     start_dir = os.getcwd()
@@ -277,4 +286,3 @@ if __name__ == '__main__':
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
     for sim in simulations:
         write_model_files(sim, quarter_nodes, quarter_elements)
-
