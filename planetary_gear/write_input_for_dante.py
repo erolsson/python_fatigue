@@ -4,18 +4,6 @@ from collections import namedtuple
 import numpy as np
 
 
-def write_input_file_thermal(sim_data):
-    def write_carburization_step(lines, name, t1, t2, carbon):
-        pass
-    pass
-
-
-def write_input_file_mechanical(sim_data):
-    def write_carburization_step(lines, name, t1, t2, carbon):
-        pass
-    pass
-
-
 def create_quarter_model():
     nodes = []
     elements = []
@@ -174,57 +162,95 @@ def write_model_files(sim_data, nodal_data, element_data):
                 inc_file.write(line + '\n')
             inc_file.write('**EOF')
 
-    def write_input_file_carbon():
-        def write_carburization_step(lines, name, t1, t2, carbon):
-            lines.append('*STEP,NAME=' + name + ', INC=10000')
-            lines.append(
-                '\t' + name + ' - Total time: ' + str(t1) + ' - ' + str(t2) + 's, Carbon: ' + str(carbon) + '%')
-            lines.append('*MASS DIFFUSION, DCMAX=0.001')
-            lines.append('\t0.2,  ' + str(t2 - t1) + ', 1e-05,  10000')
-            lines.append('*TEMPERATURE, AMPLITUDE=TEMP_AMPLITUDE')
-            lines.append('\tAll_Nodes')
-            lines.append('*BOUNDARY')
-            lines.append('\tEXPOSED_NODES, 11, 11, ' + str(carbon / 100))
-            lines.append('*MONITOR, NODE=monitor_node, DOF=11, FREQ=1')
-            lines.append('*Output, field, frequency=1')
-            lines.append('*Node Output')
-            lines.append('\tNNC, NT')
-            lines.append('*Element Output, directions=YES')
-            lines.append('\tCONC')
-            lines.append('*Element Output, directions=YES,  POSITION=NODES')
-            lines.append('\tCONC')
-            lines.append('*End Step')
+    def write_input_files():
+        def write_carburization_step(name, t1, t2, carbon):
+            carbon_lines.append('*STEP,NAME=' + name + ', INC=10000')
+            carbon_lines.append('\t' + name + ' - Total time: ' + str(t1) + ' - ' +
+                                str(t2) + 's, Carbon: ' + str(carbon) + '%')
+            carbon_lines.append('*MASS DIFFUSION, DCMAX=0.001')
+            carbon_lines.append('\t0.2,  ' + str(t2 - t1) + ', 1e-05,  10000')
+            carbon_lines.append('*TEMPERATURE, AMPLITUDE=TEMP_AMPLITUDE')
+            carbon_lines.append('\tAll_Nodes')
+            carbon_lines.append('*BOUNDARY')
+            carbon_lines.append('\tEXPOSED_NODES, 11, 11, ' + str(carbon / 100))
+            carbon_lines.append('*MONITOR, NODE=monitor_node, DOF=11, FREQ=1')
+            carbon_lines.append('*Output, field, frequency=1')
+            carbon_lines.append('*Node Output')
+            carbon_lines.append('\tNNC, NT')
+            carbon_lines.append('*Element Output, directions=YES')
+            carbon_lines.append('\tCONC')
+            carbon_lines.append('*Element Output, directions=YES,  POSITION=NODES')
+            carbon_lines.append('\tCONC')
+            carbon_lines.append('*End Step')
 
+            thermal_lines.append('*STEP,NAME=' + name + ', INC=10000')
+            thermal_lines.append('*HEAT TRANSFER, DELTMX=10.0, END=PERIOD')
+            thermal_lines.append('\t0.01,  ' + str(t2 - t1) + ', 1e-05,  10000')
+            thermal_lines.append('*CONTROLS, PARAMETERS = LINE SEARCH')
+            thermal_lines.append('\6,')
+            thermal_lines.append('*CONTROLS, PARAMETERS = TIME INCREMENTATION')
+            thermal_lines.append('\t20, 30')
+            thermal_lines.append('*CONTROLS, FIELD = TEMPERATURE, PARAMETERS = FIELD')
+            thermal_lines.append('\t0.05, 0.05')
+            thermal_lines.append('*SFILM, OP = NEW, AMPLITUDE=TEMP_AMPLITUDE')
+            thermal_lines.append('\tEXPOSED_SURFACE, F, 1.000000, FURNACE')
+            thermal_lines.append('*MONITOR, NODE = MONITOR_NODE, DOF=11, FREQ=1')
+            thermal_lines.append('*RESTART, WRITE, FREQ=1000')
+            thermal_lines.append('**')
+            thermal_lines.append('*OUTPUT, FIELD, FREQ=200')
+            thermal_lines.append('*ELEMENT OUTPUT')
+            thermal_lines.append('\tSDV1, SDV21, SDV34, SDV47, SDV60, SDV73, SDV86, HFL')
+            thermal_lines.append('*OUTPUT, FIELD, FREQ=10')
+            thermal_lines.append('*NODE OUTPUT')
+            thermal_lines.append('\tNT')
+            thermal_lines.append('**')
+            thermal_lines.append('*EL FILE, FREQUENCY=0')
+            thermal_lines.append('*NODE FILE, FREQUENCY=1')
+            thermal_lines.append('\tNT')
+            thermal_lines.append('*EL PRINT, FREQ=0')
+            thermal_lines.append('*NODE PRINT, FREQ=0')
+            thermal_lines.append('**')
+            thermal_lines.append('**')
+            thermal_lines.append('*END STEP')
+
+        def write_generic_data(simulation_type):
+            file_lines = []
+            with open('../generic_' + simulation_type + '_file.txt') as generic_file:
+                for line in generic_file:
+                    line = line.replace('\n', '')
+                    line = line.replace('ENTER_GEOM_INC_HERE',
+                                        'Toolbox_' + simulation_type + '_' + str(sim_data.CD).replace('.', '_') +
+                                        '_quarter_geo.inc')
+                    file_lines.append(line)
+            return file_lines
         # Reading the generic carbon data
-        file_lines = []
-        with open('../generic_carbon_file.txt') as generic_file:
-            for line in generic_file:
-                line = line.replace('\n', '')
-                line = line.replace('ENTER_GEOM_INC_HERE',
-                                    'Toolbox_Carbon_' + str(sim_data.CD).replace('.', '_') + '_quarter_geo.inc')
-                line = line.replace('DC_1_4', 'DC_' + str(sim_data.CD).replace('.', '_'))
-                file_lines.append(line)
 
-        total_time = 5400.
-        for t, temp in zip(sim_data.times, sim_data.temperatures):
-            file_lines.append('\t ' + str(total_time + 60.) + ', \t ' + str(temp))
-            total_time += t * 60
-            file_lines.append('\t ' + str(total_time) + ', \t ' + str(temp))
-        file_lines.append('**')
+        carbon_lines = write_generic_data('Carbon')
+        thermal_lines = write_generic_data('Thermal')
+        mechanical_lines = write_generic_data('Mechanical')
 
-        write_carburization_step(file_lines, 'Heating', 0, 5400, 0.5)
+        for line_set in [carbon_lines, thermal_lines]:
+            total_time = 5400.
+            line_set.append('*AMPLITUDE, NAME=TEMP_AMPLITUDE, TIME=TOTAL TIME, VALUE=ABSOLUTE')
+            for t, temp in zip(sim_data.times, sim_data.temperatures):
+                line_set.append('\t ' + str(total_time + 60.) + ', \t ' + str(temp))
+                total_time += t * 60
+                line_set.append('\t ' + str(total_time) + ', \t ' + str(temp))
+            line_set.append('**')
+
+        write_carburization_step('Heating', 0, 5400, 0.5)
         total_time = 5400.
         step_nr = 1
         for t, carb in zip(sim_data.times, sim_data.carbon):
-            write_carburization_step(file_lines, 'Carburization - ' + str(step_nr), total_time, total_time + t * 60,
-                                     carb)
+            write_carburization_step('Carburization - ' + str(step_nr), total_time, total_time + t * 60, carb)
             step_nr += 1
             total_time += t * 60
 
-        with open('Toolbox_Carbon_' + str(sim_data.CD).replace('.', '_') + '_quarter.inp', 'w') as carbon_file:
-            for line in file_lines:
-                carbon_file.write(line + '\n')
-            carbon_file.write('**EOF')
+        for lines, name in [(carbon_lines, 'Carbon'),(thermal_lines, 'Thermal'),(mechanical_lines, 'Mechaical')]:
+            with open('Toolbox_' + name + '_' + str(sim_data.CD).replace('.', '_') + '_quarter.inp', 'w') as inp_file:
+                for line in lines:
+                    inp_file.write(line + '\n')
+                inp_file.write('**EOF')
 
     start_dir = os.getcwd()
     sim_directory = 'input_files/dante_quarter/VBC_fatigue_' + str(sim_data.CD).replace('.', '_')
@@ -234,7 +260,9 @@ def write_model_files(sim_data, nodal_data, element_data):
     # Entering the directory where files should be written
     os.chdir(sim_directory)
     write_geom_include_file('Carbon')
-    write_input_file_carbon()
+    write_geom_include_file('Thermal')
+    write_geom_include_file('Mechanical')
+    write_input_files()
 
     # Going back to main directory
     os.chdir(start_dir)
