@@ -284,6 +284,7 @@ def write_input_files(sim_data):
                 line = line.replace('\n', '')
                 lines.append(line)
 
+    # Write the input files
     for lines, name in [(carbon_lines, 'Carbon'), (thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
         with open('input_files/dante_quarter/VBC_fatigue_' + str(sim_data.CD).replace('.', '_') + '/Toolbox_' +
                   name + '_' + str(sim_data.CD).replace('.', '_') + '_quarter.inp', 'w') as inp_file:

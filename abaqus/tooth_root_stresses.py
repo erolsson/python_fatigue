@@ -16,3 +16,11 @@ def create_path(points, path_name):
     path = session.Path(name=path_name, type=POINT_LIST, expression=path_points)
     return path
 
+pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
+pickle.load(pickle_handle)
+pickle.load(pickle_handle)  # Direction vector of the flank path
+root_data = pickle.load(pickle_handle)
+normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
+pickle_handle.close()
+
+print root_data
