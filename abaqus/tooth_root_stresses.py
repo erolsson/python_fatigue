@@ -80,6 +80,7 @@ if __name__ == '__main__':
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                    includeIntersections=False)
 
+        print len(xy)
         for pos_idx, val in enumerate(xy):
             hardness[pos_idx, case_idx+1] = val[1]
         odb.close()
