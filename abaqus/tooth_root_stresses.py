@@ -117,9 +117,11 @@ if __name__ == '__main__':
 
     root_path = create_path(path_data, 'longitudinal_path')
     stress_tensors = get_stress_tensors(root_path)
-    print np.dot(normal_root, stress_tensors)
+    print normal_root
+    print stress_tensors[1:5, :, :]
+    print np.dot(normal_root, stress_tensors)[1:5]
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
-    print mechanical_stresses
+    print mechanical_stresses[1:5]
 
     odb.close()
 
