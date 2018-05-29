@@ -46,6 +46,8 @@ if __name__ == '__main__':
     normal_root = pickle.load(pickle_handle)   # Direction vector perpendicular the root path
     pickle_handle.close()
 
+    normal_root[0] *= -1
+
     # Move the path a small distance in the direction of the root direction
     x0 = root_data[0, 0]
     y0 = root_data[0, 1]
