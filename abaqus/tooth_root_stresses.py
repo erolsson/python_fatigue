@@ -33,7 +33,7 @@ if __name__ == '__main__':
     x0 -= 0.05*np.sqrt(3)/2
     y0 -= 0.05/2
 
-    z = np.linspace(0, 18.95, 100)
+    z = np.linspace(1e-3, 18.95, 100)
 
     path_data = np.zeros((100, 3))
     path_data[:, 0] = x0
