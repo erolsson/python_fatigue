@@ -30,8 +30,8 @@ if __name__ == '__main__':
     x0 = root_data[0, 0]
     y0 = root_data[0, 1]
 
-    x0 -= 0.1*np.sqrt(3)/2
-    y0 -= 0.1/2
+    x0 -= 0.05*np.sqrt(3)/2
+    y0 -= 0.05/2
 
     z = np.linspace(0, 18.95, 100)
 
@@ -67,14 +67,11 @@ if __name__ == '__main__':
                                        labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                        includeIntersections=False)
 
-            for pos_idx, val in xy:
-                print pos_idx, val
+            for pos_idx, val in enumerate(xy):
                 stress_data[pos_idx, idx1, idx2] = val
         stress_data[:, 1, 0] = stress_data[:, 0, 1]
         stress_data[:, 2, 0] = stress_data[:, 0, 2]
         stress_data[:, 2, 1] = stress_data[:, 1, 2]
-
-        print stress_data
 
         normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
         print normal_stress
