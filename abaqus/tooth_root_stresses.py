@@ -29,7 +29,7 @@ def get_stress_tensors():
                                    includeIntersections=False)
 
         for idx, (_, stress_comp) in enumerate(xy):
-            stress_data[pos_idx, idx1, idx2] = stress_comp
+            stress_data[idx, idx1, idx2] = stress_comp
     stress_data[:, 1, 0] = stress_data[:, 0, 1]
     stress_data[:, 2, 0] = stress_data[:, 0, 2]
     stress_data[:, 2, 1] = stress_data[:, 1, 2]
