@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # Reading residual stresses
     for case_depth, odb in zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220']):
-        odb = odbAccess.openOdb(odb_path + 'danteResults' + name + '.odb')
+        odb = odbAccess.openOdb(odb_path + 'danteResults' + odb + '.odb')
 
         session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                          height=230.809509277344)
