@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     z = np.linspace(0, 18.95, 100)
 
-    path_data = np.zeros(100, 3)
+    path_data = np.zeros((100, 3))
     path_data[:, 0] = x0
     path_data[:, 1] = y0
     path_data[:, 2] = Z
