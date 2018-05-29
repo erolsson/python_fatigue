@@ -34,7 +34,7 @@ if __name__ == '__main__':
     path_data = np.zeros((100, 3))
     path_data[:, 0] = x0
     path_data[:, 1] = y0
-    path_data[:, 2] = Z
+    path_data[:, 2] = z
 
     # Reading residual stresses
     for case_depth, odb in zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220']):
