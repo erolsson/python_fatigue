@@ -24,6 +24,8 @@ if __name__ == '__main__':
     pickle.load(pickle_handle)  # Direction vector of the flank path
     root_data = pickle.load(pickle_handle)
     normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
+    print normal_root
+
     pickle_handle.close()
 
     # Move the path a small distance in the direction of the root direction
