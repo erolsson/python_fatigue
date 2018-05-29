@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     root_path = create_path(path_data, 'longitudinal_path')
     stress_tensors = get_stress_tensors(root_path)
-    print stress_tensors
+    print np.dot(normal_root, stress_tensors)
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
     print mechanical_stresses
 
