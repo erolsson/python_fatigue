@@ -119,6 +119,8 @@ if __name__ == '__main__':
     stress_tensors = get_stress_tensors(root_path)
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
 
+    odb.close()
+
     mechanical_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/mechanical_stresses.pkl', 'w')
     pickle.dump(mechanical_stresses, mechanical_stress_pickle)
     mechanical_stress_pickle.close()
