@@ -24,8 +24,6 @@ if __name__ == '__main__':
     pickle.load(pickle_handle)  # Direction vector of the flank path
     root_data = pickle.load(pickle_handle)
     normal_root = pickle.load(pickle_handle)   # Direction vector perpendicular the root path
-    print normal_root
-
     pickle_handle.close()
 
     # Move the path a small distance in the direction of the root direction
@@ -61,7 +59,7 @@ if __name__ == '__main__':
 
         stress_data = np.zeros((100, 3, 3))
         comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
-        for i, comp in enumerate(comps):
+        for (idx1, idx2), comp in zip([(0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2)], comps):
             session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='S',
                                                                            outputPosition=ELEMENT_NODAL,
                                                                            refinement=[COMPONENT, comp])
@@ -69,6 +67,13 @@ if __name__ == '__main__':
                                        labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                        includeIntersections=False)
 
-            print len(xy)
+            for pos_idx, val in xy:
+                stress_data[pos_idx, idx1, idx2] = val
+        stress_data[:, 1, 0] = stress_data[:, 0, 1]
+        stress_data[:, 2, 0] = stress_data[:, 0, 2]
+        stress_data[:, 2, 1] = stress_data[:, 1, 2]
+
+        normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
+        print normal_stress
         odb.close()
 
