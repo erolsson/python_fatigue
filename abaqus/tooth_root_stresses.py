@@ -81,7 +81,6 @@ if __name__ == '__main__':
                                    includeIntersections=False)
 
         for pos_idx, val in enumerate(xy):
-            print val[0], val[1]
             hardness[pos_idx, case_idx+1] = val[1]
         odb.close()
         stress_data[:, 1, 0] = stress_data[:, 0, 1]
