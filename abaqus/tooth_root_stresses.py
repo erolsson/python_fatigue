@@ -68,6 +68,7 @@ if __name__ == '__main__':
                                        includeIntersections=False)
 
             for pos_idx, val in xy:
+                print pos_idx, val
                 stress_data[pos_idx, idx1, idx2] = val
         stress_data[:, 1, 0] = stress_data[:, 0, 1]
         stress_data[:, 2, 0] = stress_data[:, 0, 2]
@@ -77,5 +78,5 @@ if __name__ == '__main__':
 
         normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
         print normal_stress
-        # odb.close()
+        odb.close()
 
