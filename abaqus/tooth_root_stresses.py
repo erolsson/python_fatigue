@@ -37,7 +37,7 @@ if __name__ == '__main__':
     path_data[:, 2] = z
 
     # Reading residual stresses
-    for case_depth, odb in zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220']):
+    for case_idx, (case_depth, odb) in enumerate(zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220'])):
         odb = odbAccess.openOdb(odb_path + 'danteTooth' + odb + '.odb')
 
         session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
@@ -47,7 +47,22 @@ if __name__ == '__main__':
         o7 = session.odbs[session.odbs.keys()[0]]
         session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 
+        step_index = odb.steps.keys().index('danteResults_DC' + str(case_depth).replace('.', '_'))
+        last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
+        session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
+
         create_path(path_data, 'longitudinal_path')
 
+        stress_data = np.zeros((100, 3, 3))
+        comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
+        for i, comp in enumerate(comps):
+            session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='S',
+                                                                           outputPosition=ELEMENT_NODAL,
+                                                                           refinement=[COMPONENT, comp])
+            xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
+                                       labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                                       includeIntersections=False)
+
+            print xy
         odb.close()
     print root_data
