@@ -17,7 +17,7 @@ def create_path(points, path_name):
     return path
 
 
-def get_stress_tensors():
+def get_stress_tensors(path):
     stress_data = np.zeros((100, 3, 3))
     comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
     for (idx1, idx2), comp in zip([(0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2)], comps):
@@ -79,12 +79,12 @@ if __name__ == '__main__':
         last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
-        path = create_path(path_data, 'longitudinal_path')
-        stress_tensors = get_stress_tensors()
+        root_path = create_path(path_data, 'longitudinal_path')
+        stress_tensors = get_stress_tensors(root_path)
 
         session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='HV',
                                                                        outputPosition=ELEMENT_NODAL)                                                                       
-        xy = xyPlot.XYDataFromPath(name='hardness profile', path=path,
+        xy = xyPlot.XYDataFromPath(name='hardness profile', path=root_path,
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                    includeIntersections=False)
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     # Mechanical loading
     mechanical_stresses = np.zeros((100, 2))
     mechanical_stresses[:, 0] = z
-    odb = odbAccess.openOdb('mechanicalLoadsTooth.odb')
+    odb = odbAccess.openOdb(odb_path + 'mechanicalLoadsTooth.odb')
     o7 = session.odbs[session.odbs.keys()[0]]
     session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 
@@ -115,8 +115,8 @@ if __name__ == '__main__':
     last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
-    path = create_path(path_data, 'longitudinal_path')
-    stress_tensors = get_stress_tensors()
+    root_path = create_path(path_data, 'longitudinal_path')
+    stress_tensors = get_stress_tensors(root_path)
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
 
     mechanical_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/mechanical_stresses.pkl', 'w')
