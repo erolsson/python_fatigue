@@ -42,7 +42,9 @@ if __name__ == '__main__':
 
     # Reading residual stresses
     residual_stresses = np.zeros((100, 5))
+    hardness = np.zeros((100, 5))
     residual_stresses[:, 0] = z
+    hardness[:, 0] = z
     for case_idx, (case_depth, odb) in enumerate(zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220'])):
         odb = odbAccess.openOdb(odb_path + 'danteTooth' + odb + '.odb')
 
@@ -71,6 +73,15 @@ if __name__ == '__main__':
 
             for pos_idx, val in enumerate(xy):
                 stress_data[pos_idx, idx1, idx2] = val[1]
+        
+        session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='HV',
+                                                                       outputPosition=ELEMENT_NODAL)                                                                       
+        xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
+                                   labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                                   includeIntersections=False)
+
+        for pos_idx, val in enumerate(xy):
+            hardness[pos_idx, case_idx+1] = val[1]
         odb.close()
         stress_data[:, 1, 0] = stress_data[:, 0, 1]
         stress_data[:, 2, 0] = stress_data[:, 0, 2]
@@ -83,3 +94,7 @@ if __name__ == '__main__':
     residual_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/residual_stresses.pkl', 'w')
     pickle.dump(residual_stresses, residual_stress_pickle)
     residual_stress_pickle.close()
+
+    hardness_pickle = open('../planetary_gear/pickles/tooth_root_stresses/hardness.pkl', 'w')
+    pickle.dump(hardness, hardness_pickle)
+    hardness_pickle.close()
