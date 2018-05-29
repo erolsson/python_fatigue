@@ -19,6 +19,10 @@ hardness_pickle = open('pickles/tooth_root_stresses/hardness.pkl')
 hardness_data = pickle.load(hardness_pickle)
 hardness_pickle.close()
 
+mechanical_stress_pickle = open('pickles/tooth_root_stresses/mechanical_stresses.pkl')
+mechanical_stress_data = pickle.load(mechanical_stress_pickle)
+mechanical_stress_pickle.close()
+
 
 z = residual_stress_data[:, 0]
 
@@ -28,6 +32,9 @@ for case_idx, case_depth in enumerate([0.5, 0.8, 1.1, 1.4]):
     plt.plot(z, s, lw=2, label='CDH = ' + str(case_depth) + ' mm')
     plt.figure(1)
     plt.plot(z, hardness_data[:, case_idx+1], lw=2, label='CDH = ' + str(case_depth) + ' mm')
+
+plt.figure(2)
+plt.plot(z, mechanical_stress_data[:, 1], lw=2)
 
 
 plt.figure(0)
@@ -43,4 +50,11 @@ plt.xlabel('Distance along tooth [mm]')
 plt.ylabel('Vickers Hardness')
 plt.grid(True)
 plt.legend(loc='best')
+
+plt.figure(2)
+plt.xlim(0, z[-1])
+plt.xlabel('Distance along tooth [mm]')
+plt.ylabel('Mechanical stress [MPa]')
+plt.grid(True)
+
 plt.show()
