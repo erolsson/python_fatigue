@@ -71,6 +71,7 @@ if __name__ == '__main__':
 
             for pos_idx, val in enumerate(xy):
                 stress_data[pos_idx, idx1, idx2] = val[1]
+        odb.close()
         stress_data[:, 1, 0] = stress_data[:, 0, 1]
         stress_data[:, 2, 0] = stress_data[:, 0, 2]
         stress_data[:, 2, 1] = stress_data[:, 1, 2]
