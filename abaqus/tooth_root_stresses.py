@@ -26,8 +26,12 @@ if __name__ == '__main__':
     normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
     pickle_handle.close()
 
+    # Move the path a small distance in the direction of the root direction
     x0 = root_data[0, 0]
     y0 = root_data[0, 1]
+
+    x0 -= 0.001*normal_root[0]
+    y0 -= 0.001*normal_root[1]
 
     z = np.linspace(0, 18.95, 100)
 
