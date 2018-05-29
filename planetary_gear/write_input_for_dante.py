@@ -7,7 +7,7 @@ import numpy as np
 def create_quarter_model():
     nodes = []
     elements = []
-    with open('input_files/full_gear/planetGear.inc') as full_model_file:
+    with open('input_files/gear_models/planet_gear/dense_mesh.inc') as full_model_file:
         lines = full_model_file.readlines()
         reading_nodes = False
         reading_elements = False
@@ -55,6 +55,22 @@ def create_quarter_model():
             element_id_set.add(int(element[0]))
             model_elements.append([int(e) for e in element])
 
+
+
+    nodal_data = []
+    for i, n in enumerate(nodal_id):
+        nodal_data.append('\t' + str(n) + ', ' + str(nodal_positions[i, 0]) + ', ' + str(nodal_positions[i, 1]) +
+                          ', ' + str(nodal_positions[i, 2]))
+    element_data = []
+    for element in model_elements:
+        line = '\t'
+        for label in element:
+            line += str(label) + ', '
+        element_data.append(line[:-2])
+    return nodal_data, element_data
+
+
+def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     exposed_surface = []
     exposed_nodes = []
     read_exposed_nodes = False
@@ -62,10 +78,10 @@ def create_quarter_model():
 
     z0_nodes = nodal_id[nodal_positions[:, 2] < 1e-5]
     x0_nodes = nodal_id[nodal_positions[:, 0] < 1e-5]
-    q = nodal_positions[:, 0]/nodal_positions[:, 1]
-    x1_nodes = nodal_id[q > 0.999*np.max(q)]
+    q = nodal_positions[:, 0] / nodal_positions[:, 1]
+    x1_nodes = nodal_id[q > 0.999 * np.max(q)]
 
-    with open('input_files/full_gear/planetGear_Sets.inc') as set_file:
+    with open('input_files/gear_models/planet_gear/dense_mesh_sets.inc') as set_file:
         lines = set_file.readlines()
         for line in lines:
             if line.startswith('*Nset, nset=Exposed_Nodes'):
@@ -128,20 +144,9 @@ def create_quarter_model():
             set_file.write(line + '\n')
         set_file.write('**EOF')
 
-    nodal_data = []
-    for i, n in enumerate(nodal_id):
-        nodal_data.append('\t' + str(n) + ', ' + str(nodal_positions[i, 0]) + ', ' + str(nodal_positions[i, 1]) +
-                          ', ' + str(nodal_positions[i, 2]))
-    element_data = []
-    for element in model_elements:
-        line = '\t'
-        for label in element:
-            line += str(label) + ', '
-        element_data.append(line[:-2])
-    return nodal_data, element_data
 
 
-def write_geom_include_file(nodal_data, element_data, simulation_type):
+def write_geom_include_file(nodal_data, element_data, filename, simulation_type='Mechanical'):
     element_type = 'DC3D8'
     if simulation_type == 'Mechanical':
         element_type = 'C3D8'
@@ -155,7 +160,7 @@ def write_geom_include_file(nodal_data, element_data, simulation_type):
     for element in element_data:
         file_lines.append(element)
 
-    with open('input_files/dante_quarter/Toolbox_' + simulation_type + '_' + 'quarter_geo.inc', 'w') as inc_file:
+    with open(filename, 'w') as inc_file:
         for line in file_lines:
             inc_file.write(line + '\n')
         inc_file.write('**EOF')
@@ -302,9 +307,12 @@ if __name__ == '__main__':
 
     quarter_nodes, quarter_elements = create_quarter_model()
 
-    write_geom_include_file(quarter_nodes, quarter_elements, 'Carbon')
-    write_geom_include_file(quarter_nodes, quarter_elements, 'Thermal')
-    write_geom_include_file(quarter_nodes, quarter_elements, 'Mechanical')
+    write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
+                            filename='input_files/dante_quarter/Toolbox_Carbon_quarter_geo.inc')
+    write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Thermal',
+                            filename='input_files/dante_quarter/Toolbox_Thermal_quarter_geo.inc')
+    write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Mechanical',
+                            filename='input_files/dante_quarter/Toolbox_Mechanical_quarter_geo.inc')
 
     for sim in simulations:
         if not os.path.isdir(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_')):
