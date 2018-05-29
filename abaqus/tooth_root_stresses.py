@@ -30,8 +30,8 @@ if __name__ == '__main__':
     x0 = root_data[0, 0]
     y0 = root_data[0, 1]
 
-    x0 -= 0.01*normal_root[0]
-    y0 -= 0.01*normal_root[1]
+    x0 += 0.01*normal_root[0]
+    y0 += 0.01*normal_root[1]
 
     z = np.linspace(0, 18.95, 100)
 
