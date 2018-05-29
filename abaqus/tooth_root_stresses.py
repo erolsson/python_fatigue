@@ -51,7 +51,7 @@ if __name__ == '__main__':
         last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
-        create_path(path_data, 'longitudinal_path')
+        path = create_path(path_data, 'longitudinal_path')
 
         stress_data = np.zeros((100, 3, 3))
         comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
