@@ -73,6 +73,8 @@ if __name__ == '__main__':
         stress_data[:, 2, 0] = stress_data[:, 0, 2]
         stress_data[:, 2, 1] = stress_data[:, 1, 2]
 
+        print stress_data
+
         normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
         print normal_stress
         odb.close()
