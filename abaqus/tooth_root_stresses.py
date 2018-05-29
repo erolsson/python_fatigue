@@ -41,6 +41,8 @@ if __name__ == '__main__':
     path_data[:, 2] = z
 
     # Reading residual stresses
+    residual_stresses = np.zeros((100, 5))
+    residual_stresses[:, 0] = z
     for case_idx, (case_depth, odb) in enumerate(zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220'])):
         odb = odbAccess.openOdb(odb_path + 'danteTooth' + odb + '.odb')
 
@@ -74,6 +76,12 @@ if __name__ == '__main__':
         stress_data[:, 2, 1] = stress_data[:, 1, 2]
 
         normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
-        print normal_stress
-        odb.close()
+        residual_stresses[:, case_idx+1] = normal_stress
+
+    # Dump stresses to pickle
+    residual_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/residual_stresses.pkl', 'w')
+    pickle.dump(residual_stresses, residual_stress_pickle)
+    residual_stress_pickle.close()
+
+
 
