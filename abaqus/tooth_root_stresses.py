@@ -32,8 +32,8 @@ if __name__ == '__main__':
     x0 = root_data[0, 0]
     y0 = root_data[0, 1]
 
-    x0 -= 0.001*np.sqrt(3)/2
-    y0 -= 0.001/2
+    x0 -= 0.01*np.sqrt(3)/2
+    y0 -= 0.01/2
 
     z = np.linspace(0, 18.95, 100)
 
