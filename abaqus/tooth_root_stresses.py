@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import numpy as np
 import pickle
 
@@ -126,3 +128,26 @@ if __name__ == '__main__':
     mechanical_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/mechanical_stresses.pkl', 'w')
     pickle.dump(mechanical_stresses, mechanical_stress_pickle)
     mechanical_stress_pickle.close()
+
+    odb = odbAccess.openOdb(odb_path + 'findleyDataSets20170608.odb')
+    o7 = session.odbs[session.odbs.keys()[0]]
+    session.viewports['Viewport: 1'].setValues(displayedObject=o7)
+    root_path = create_path(path_data, 'longitudinal_path')
+    findley_data = OrderedDict()
+    for case_idx, case_depth in enumerate([0.5, 0.8, 1.1, 1.4]):
+        findley_data[case_depth] = OrderedDict()
+        for load_idx, load in enumerate(np.arange(29., 40., 1.)):
+            findley_data[case_depth][load] = np.zeros(100)
+            step_index = odb.steps.keys().index('Pamp=' + str(load).replace('.', '_') + 'kN_DC=' +
+                                                str(case_depth).replace('.', '_'))
+            last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
+            session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
+
+            session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='SF',
+                                                                           outputPosition=ELEMENT_NODAL)
+            xy = xyPlot.XYDataFromPath(name='stress profile', path=root_path,
+                                       labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                                       includeIntersections=False)
+            for pos_idx, (_, val) in enumerate(xy):
+                findley_data[case_depth][load][pos_idx] = val
+    odb.close()

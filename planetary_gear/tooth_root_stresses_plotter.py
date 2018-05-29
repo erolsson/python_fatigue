@@ -55,6 +55,7 @@ plt.figure(2)
 plt.xlim(0, z[-1])
 plt.xlabel('Distance along tooth [mm]')
 plt.ylabel('Mechanical stress [MPa]')
+plt.text(3, 660, '$P_{amp}$ = 32 kN, $R=0.1$', fontsize=24)
 plt.grid(True)
 
 plt.show()
