@@ -66,5 +66,5 @@ if __name__ == '__main__':
                                        includeIntersections=False)
 
             print xy
-        odb.close()
+        # odb.close()
     print root_data
