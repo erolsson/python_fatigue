@@ -16,19 +16,31 @@ def create_path(points, path_name):
     path = session.Path(name=path_name, type=POINT_LIST, expression=path_points)
     return path
 
-pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
-pickle.load(pickle_handle)
-pickle.load(pickle_handle)  # Direction vector of the flank path
-root_data = pickle.load(pickle_handle)
-normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
-pickle_handle.close()
+if __name__ == '__main__':
+    odb_path = '/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/'
 
-x0 = root_data[0, 0]
-y0 = root_data[0, 1]
+    pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
+    pickle.load(pickle_handle)
+    pickle.load(pickle_handle)  # Direction vector of the flank path
+    root_data = pickle.load(pickle_handle)
+    normal_root = pickle.load(pickle_handle)   # Direction vector of the root path
+    pickle_handle.close()
 
-z = np.linspace(0, 18.95, 100)
+    x0 = root_data[0, 0]
+    y0 = root_data[0, 1]
 
-# Reading residual stresses
-for case_depth, odb in zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220']):
+    z = np.linspace(0, 18.95, 100)
 
-print root_data
+    # Reading residual stresses
+    for case_depth, odb in zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220']):
+        odb = odbAccess.openOdb(odb_path + 'danteResults' + name + '.odb')
+
+        session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
+                         height=230.809509277344)
+        session.viewports['Viewport: 1'].makeCurrent()
+        session.viewports['Viewport: 1'].maximize()
+        o7 = session.odbs[session.odbs.keys()[0]]
+        session.viewports['Viewport: 1'].setValues(displayedObject=o7)
+
+        odb.close()
+    print root_data
