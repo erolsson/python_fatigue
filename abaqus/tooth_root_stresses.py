@@ -151,3 +151,7 @@ if __name__ == '__main__':
             for pos_idx, (_, val) in enumerate(xy):
                 findley_data[case_depth][load][pos_idx] = val
     odb.close()
+
+    findley_pickle = open('../planetary_gear/pickles/tooth_root_stresses/findley_stresses.pkl', 'w')
+    pickle.dump(findley_data, findley_pickle)
+    findley_pickle.close()
