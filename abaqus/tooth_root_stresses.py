@@ -83,6 +83,3 @@ if __name__ == '__main__':
     residual_stress_pickle = open('../planetary_gear/pickles/tooth_root_stresses/residual_stresses.pkl', 'w')
     pickle.dump(residual_stresses, residual_stress_pickle)
     residual_stress_pickle.close()
-
-
-
