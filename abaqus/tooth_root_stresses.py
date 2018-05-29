@@ -40,8 +40,6 @@ if __name__ == '__main__':
     path_data[:, 1] = y0
     path_data[:, 2] = z
 
-    print path_data
-
     # Reading residual stresses
     for case_idx, (case_depth, odb) in enumerate(zip([0.5, 0.8, 1.1, 1.4], ['', '', '20170220', '20170220'])):
         odb = odbAccess.openOdb(odb_path + 'danteTooth' + odb + '.odb')
@@ -69,6 +67,6 @@ if __name__ == '__main__':
                                        labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                        includeIntersections=False)
 
-            print xy
-        # odb.close()
-    print root_data
+            print len(xy)
+        odb.close()
+
