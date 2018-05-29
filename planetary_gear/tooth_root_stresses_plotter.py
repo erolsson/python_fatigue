@@ -10,21 +10,37 @@ plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
-# Plot residual stresses
-plt.figure(0)
+
 residual_stress_pickle = open('pickles/tooth_root_stresses/residual_stresses.pkl')
 residual_stress_data = pickle.load(residual_stress_pickle)
 residual_stress_pickle.close()
+
+hardness_pickle = open('pickles/tooth_root_stresses/hardness.pkl')
+hardness_data = pickle.load(hardness_pickle)
+hardness_pickle.close()
+
 
 z = residual_stress_data[:, 0]
 
 for case_idx, case_depth in enumerate([0.5, 0.8, 1.1, 1.4]):
     s = -residual_stress_data[:, case_idx + 1] - 150
+    plt.figure(0)
     plt.plot(z, s, lw=2, label='CDH = ' + str(case_depth) + ' mm')
+    plt.figure(1)
+    plt.plot(z, hardness_data[:, case_idx+1], lw=2, label='CDH = ' + str(case_depth) + ' mm')
 
+
+plt.figure(0)
 plt.xlim(0, z[-1])
 plt.xlabel('Distance along tooth [mm]')
 plt.ylabel('Residual stress [MPa]')
+plt.grid(True)
+plt.legend(loc='best')
+
+plt.figure(1)
+plt.xlim(0, z[-1])
+plt.xlabel('Distance along tooth [mm]')
+plt.ylabel('Vickers Hardness')
 plt.grid(True)
 plt.legend(loc='best')
 plt.show()
