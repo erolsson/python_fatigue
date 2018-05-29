@@ -77,5 +77,5 @@ if __name__ == '__main__':
 
         normal_stress = np.dot(np.dot(normal_root, stress_data), normal_root)
         print normal_stress
-        odb.close()
+        # odb.close()
 
