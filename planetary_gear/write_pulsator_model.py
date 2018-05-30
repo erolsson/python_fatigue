@@ -52,8 +52,10 @@ if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/planet_gear/'
     simulation_dir = 'input_files/pulsator_model/'
 
+    number_of_teeth = 10
+
     teeth = []
-    for i in range(10):
+    for i in range(number_of_teeth):
         teeth.append(PlanetaryGearTooth(instance_name='tooth' + str(i),
                                         rotation=18*i - 90. + 9,  # 9 degrees is a 1/2 tooth
                                         part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
@@ -81,6 +83,12 @@ if __name__ == '__main__':
 
     for tooth in teeth:
         file_lines += tooth.write_input()
+
+    # Writing the tie constraints at the mid lines of the teeth
+    for i in range(number_of_teeth):
+        file_lines.append('\t*Tie, name=tie_mid_tooth' + str(i))
+        file_lines.append('\t\t' + teeth[i].instance_name +
+                          '_0_x0_surface, ' + teeth[i].instance_name + '_0_x1_surface')
 
     file_lines.append('*End Assembly')
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
