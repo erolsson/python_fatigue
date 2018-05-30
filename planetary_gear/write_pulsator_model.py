@@ -43,6 +43,7 @@ class PlanetaryGearTooth:
         lines = []
         for part_idx, part_name in enumerate(self.part_names):
             lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
+                      '\t\t0.0, 0.0, 0.0',
                       '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0,' + str(self.rotation),
                       '\t*End Instance']
         return lines
