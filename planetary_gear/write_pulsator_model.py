@@ -32,10 +32,35 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
     write_geom_include_file(quarter_nodes, quarter_elements,
                             filename=include_file_names[1])
 
+
+class PlanetaryGearTooth:
+    def __init__(self, instance_name, rotation, part_names):
+        self.instance_name = instance_name
+        self.rotation = rotation
+        self.part_names = part_names
+
+    def write_input(self):
+        lines = []
+        for part_idx, part_name in enumerate(self.part_names):
+            lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
+                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0',
+                      '\t\t' + str(self.rotation),
+                      '\t*End Instance']
+        return lines
+
 if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/planet_gear/'
     simulation_dir = 'input_files/pulsator_model/'
 
+    teeth = []
+    for i in range(10):
+        teeth.append(PlanetaryGearTooth(instance_name='tooth' + str(i),
+                                        rotation=18*i-90,
+                                        part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
+
+    # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
+    teeth[1].instance_name = 'eval_tooth'
+    teeth[1].part_names = ['dense_tooth_pos', 'dense_tooth_neg']
     for mesh in ['coarse', 'dense']:
         write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh.inc',
                                       include_file_names=[simulation_dir + mesh + '_geom_xpos.inc',
@@ -53,6 +78,9 @@ if __name__ == '__main__':
 
     file_lines.append('**')
     file_lines.append('*Assembly')
+
+    for tooth in teeth:
+        tooth.write_input()
 
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
         for line in file_lines:
