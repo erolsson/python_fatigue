@@ -88,7 +88,7 @@ if __name__ == '__main__':
     for i in range(number_of_teeth):
         file_lines.append('\t*Tie, name=tie_mid_tooth' + str(i))
         file_lines.append('\t\t' + teeth[i].instance_name +
-                          '_0_x0_surface, ' + teeth[i].instance_name + '_0_x1_surface')
+                          '_0.x0_surface, ' + teeth[i].instance_name + '_0.x1_surface')
 
     file_lines.append('*End Assembly')
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
