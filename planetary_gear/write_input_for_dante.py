@@ -90,6 +90,14 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                     if int(element) in element_id_set:
                         exposed_surface.append(int(element))
 
+    x0_elements = []
+    x1_elements = []
+    for node_list, element_list in zip([x0_nodes, x1_nodes],[x0_elements, x1_elements]):
+        for e in element_data:
+            for node_label in e[1:]:
+                if node_label in node_list:
+                    element_list.append(e[0])
+
     node_sets = {'Monitor_Node': [73710, ],
                  'All_Nodes': sorted(list(nodal_id_set)),
                  'Exposed_Nodes': exposed_nodes,
@@ -99,7 +107,9 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
 
     element_sets = {'All_elements': sorted(list(element_id_set)),
                     'GEARELEMS': sorted(list(element_id_set)),
-                    'Exposed_surface': exposed_surface}
+                    'Exposed_surface': exposed_surface,
+                    'x0_elements': sorted(x0_elements),
+                    'x1_elements': sorted(x1_elements)}
 
     file_lines = ['** Include file for sets in a quarter model of a planetary gear for dante sim']
 
@@ -124,6 +134,12 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
 
     file_lines.append('*Surface, type = ELEMENT, name=Exposed_Surface, TRIM=YES')
     file_lines.append('\tExposed_Surface')
+
+    file_lines.append('*Surface, type = ELEMENT, name=x0_Surface, TRIM=YES')
+    file_lines.append('\tx0_elements')
+
+    file_lines.append('*Surface, type = ELEMENT, name=x1_Surface, TRIM=YES')
+    file_lines.append('\tx1_elements')
 
     with open(filename, 'w') as set_file:
         for line in file_lines:
