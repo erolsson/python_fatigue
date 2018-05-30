@@ -46,7 +46,6 @@ def create_quarter_model(full_model_filename):
                 include = False
         if include:
             element_data.append([int(e) for e in element])
-
     return nodal_data, np.array(element_data, dtype=int)
 
 
@@ -137,16 +136,14 @@ def write_geom_include_file(nodal_data, element_data, filename, simulation_type=
     if simulation_type == 'Mechanical':
         element_type = 'C3D8'
 
-    file_lines = ['*Heading',
-                  '\tInclude file of a quarter of a planetary gear tooth',
-                  '*NODE']
+    file_lines = ['*NODE']
     for node in nodal_data:
-        file_lines.append(str(int(node[0])) + ', ' + str(node[1]) + ', ' + str(node[2]) + ', ' + str(node[3]))
+        file_lines.append('\t' + str(int(node[0])) + ', ' + str(node[1]) + ', ' + str(node[2]) + ', ' + str(node[3]))
     file_lines.append('*ELEMENT, TYPE=' + element_type)
     for element in element_data:
         element_string = [str(e) for e in element]
         element_string = ', '.join(element_string)
-        file_lines.append(element_string[:-1])
+        file_lines.append('\t' + element_string)
 
     with open(filename, 'w') as inc_file:
         for line in file_lines:
