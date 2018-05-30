@@ -4,10 +4,10 @@ from collections import namedtuple
 import numpy as np
 
 
-def create_quarter_model():
+def create_quarter_model(full_model_filename):
     nodes = []
     elements = []
-    with open('input_files/gear_models/planet_gear/dense_mesh.inc') as full_model_file:
+    with open(full_model_filename) as full_model_file:
         lines = full_model_file.readlines()
         reading_nodes = False
         reading_elements = False
@@ -27,47 +27,27 @@ def create_quarter_model():
             elif reading_elements:
                 elements.append(line.split(","))
 
-    nodal_id = np.zeros(len(nodes), dtype=int)
-    nodal_positions = np.zeros((len(nodes), 3))
-
+    nodal_data = np.zeros((len(nodes), 4))
+    element_data = []
     for i, node in enumerate(nodes):
-        nodal_id[i] = node[0]
-        nodal_positions[i, :] = node[1:]
+        nodal_data[i, :] = node
 
     # Only using nodes on positive z and positive z
-    nodal_id = nodal_id[nodal_positions[:, 0] >= 0]
-    nodal_positions = nodal_positions[nodal_positions[:, 0] >= 0, :]
+    nodal_data = nodal_data[nodal_data[:, 1] >= 0, :]
+    nodal_data = nodal_data[nodal_data[:, 3] >= 0, :]
 
-    nodal_id = nodal_id[nodal_positions[:, 2] >= 0]
-    nodal_positions = nodal_positions[nodal_positions[:, 2] >= 0, :]
-
-    nodal_id_set = set(nodal_id)
-    element_id_set = set()
+    nodal_id_set = set(nodal_data[:, 0])
     # Find the elements corresponding to the model nodes
 
-    model_elements = []
     for element in elements:
         include = True
         for node in element[1:]:
             if int(node) not in nodal_id_set:
                 include = False
         if include:
-            element_id_set.add(int(element[0]))
-            model_elements.append([int(e) for e in element])
+            element_data.append([int(e) for e in element])
 
-
-
-    nodal_data = []
-    for i, n in enumerate(nodal_id):
-        nodal_data.append('\t' + str(n) + ', ' + str(nodal_positions[i, 0]) + ', ' + str(nodal_positions[i, 1]) +
-                          ', ' + str(nodal_positions[i, 2]))
-    element_data = []
-    for element in model_elements:
-        line = '\t'
-        for label in element:
-            line += str(label) + ', '
-        element_data.append(line[:-2])
-    return nodal_data, element_data
+    return nodal_data, np.array(element_data, dtype=int)
 
 
 def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
@@ -76,12 +56,19 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     read_exposed_nodes = False
     read_exposed_surface = False
 
+    nodal_id = np.array(nodal_data[:, 0], dtype=int)
+    nodal_id_set = set(nodal_id)
+    nodal_positions = nodal_data[:, 1:]
+
+    element_id = element_data[:, 0]
+    element_id_set = set(element_id)
+
     z0_nodes = nodal_id[nodal_positions[:, 2] < 1e-5]
     x0_nodes = nodal_id[nodal_positions[:, 0] < 1e-5]
     q = nodal_positions[:, 0] / nodal_positions[:, 1]
     x1_nodes = nodal_id[q > 0.999 * np.max(q)]
 
-    with open('input_files/gear_models/planet_gear/dense_mesh_sets.inc') as set_file:
+    with open(full_model_sets_file) as set_file:
         lines = set_file.readlines()
         for line in lines:
             if line.startswith('*Nset, nset=Exposed_Nodes'):
@@ -139,11 +126,10 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     file_lines.append('*Surface, type = ELEMENT, name=Exposed_Surface, TRIM=YES')
     file_lines.append('\tExposed_Surface')
 
-    with open('input_files/dante_quarter/planetGear_sets.inc', 'w') as set_file:
+    with open(filename, 'w') as set_file:
         for line in file_lines:
             set_file.write(line + '\n')
         set_file.write('**EOF')
-
 
 
 def write_geom_include_file(nodal_data, element_data, filename, simulation_type='Mechanical'):
@@ -155,10 +141,12 @@ def write_geom_include_file(nodal_data, element_data, filename, simulation_type=
                   '\tInclude file of a quarter of a planetary gear tooth',
                   '*NODE']
     for node in nodal_data:
-        file_lines.append(node)
+        file_lines.append(str(int(node[0])) + ', ' + str(node[1]) + ', ' + str(node[2]) + ', ' + str(node[3]))
     file_lines.append('*ELEMENT, TYPE=' + element_type)
     for element in element_data:
-        file_lines.append(element)
+        element_string = [str(e) for e in element]
+        element_string = ', '.join(element_string)
+        file_lines.append(element_string[:-1])
 
     with open(filename, 'w') as inc_file:
         for line in file_lines:
@@ -305,7 +293,12 @@ if __name__ == '__main__':
                    Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
 
-    quarter_nodes, quarter_elements = create_quarter_model()
+    quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/dense_mesh.inc')
+
+    write_sets_file(filename='input_files/dante_quarter/planetGear_sets.inc',
+                    full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_sets.inc',
+                    nodal_data=quarter_nodes,
+                    element_data=quarter_elements)
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename='input_files/dante_quarter/Toolbox_Carbon_quarter_geo.inc')
