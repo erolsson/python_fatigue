@@ -43,8 +43,7 @@ class PlanetaryGearTooth:
         lines = []
         for part_idx, part_name in enumerate(self.part_names):
             lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
-                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0',
-                      '\t\t' + str(self.rotation),
+                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0,' + str(self.rotation),
                       '\t*End Instance']
         return lines
 
@@ -77,11 +76,12 @@ if __name__ == '__main__':
                              set_file=mesh + '_geom_sets.inc')
 
     file_lines.append('**')
-    file_lines.append('*Assembly')
+    file_lines.append('*Assembly, name=pulsator_model')
 
     for tooth in teeth:
-        tooth.write_input()
+        file_lines += tooth.write_input()
 
+    file_lines.append('*End Assembly')
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
