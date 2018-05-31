@@ -63,7 +63,7 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
     for e in jaw_element_data:
         for n_label in e[1:]:
             if n_label in y_min_set:
-                y_min_elements.append(n_label)
+                y_min_elements.append(e[0])
     element_sets = {'jaw_elements': jaw_element_data[:, 0],
                     'y_min_elements': y_min_elements}
     set_lines = write_sets(node_sets, element_sets)
