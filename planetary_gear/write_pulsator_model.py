@@ -53,20 +53,28 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
 
 def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
     y = np.unique(jaw_node_data[:, 2])
+    x_min = np.unique(jaw_node_data[:, 1])
     y_min, y_max = y[0], y[-1]
     node_sets = {'y_min_nodes': jaw_node_data[jaw_node_data[:, 2] == y_min, 0],
                  'y_max_nodes': jaw_node_data[jaw_node_data[:, 2] == y_max, 0],
                  'z0_nodes': jaw_node_data[jaw_node_data[:, 3] == 0.0, 0]}
 
     y_min_elements = []
+    x_min_elements = []
     y_min_set = set(jaw_node_data[jaw_node_data[:, 2] == y_min, 0])
+    x_min_set = set(jaw_node_data[jaw_node_data[:, 1] == x_min, 0])
     for e in jaw_element_data:
         for n_label in e[1:]:
             if n_label in y_min_set:
                 y_min_elements.append(e[0])
+            if n_label in x_min_set:
+                x_min_elements.append(e[0])
     element_sets = {'jaw_elements': jaw_element_data[:, 0],
+                    'x_min_elements': x_min_elements,
                     'y_min_elements': y_min_elements}
     set_lines = write_sets(node_sets, element_sets)
+    set_lines.append('*Surface, name=x_min_surf, trim=yes')
+    set_lines.append('\tx_min_elements')
     set_lines.append('*Surface, name=y_min_surf, trim=yes')
     set_lines.append('\ty_min_elements')
     with open(set_file_name, 'w') as set_file:
@@ -172,6 +180,13 @@ if __name__ == '__main__':
                           '_1.x1_surface, ' + teeth[i].instance_name + '_0.x1_surface')
 
     file_lines.append('*End Assembly')
+
+    # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
+    file_lines.append('*Surface interaction, name=frictionless_contact')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
+    file_lines.append('\tPulsator_jaw.ymin_surface, eval_tooth_1.exposed_surface')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
+    file_lines.append('\tPulsator_jaw.xmin_surface, tooth2_0.exposed_surface')
 
     file_lines += write_load_step('dummy')
 
