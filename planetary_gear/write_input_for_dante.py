@@ -70,7 +70,7 @@ def write_sets(node_sets, element_sets):
         for item in data_to_write:
             data_line += str(int(item)) + ', '
             counter += 1
-            if counter == 16 or item is data_to_write[-1]:
+            if counter == 16 or item == data_to_write[-1]:
                 file_lines.append(data_line[:-2])
                 counter = 0
                 data_line = ''
