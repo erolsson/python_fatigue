@@ -68,7 +68,7 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
                     'x_min_elements': x_min_elements}
     set_lines = write_sets(node_sets, element_sets)
     set_lines.append('*Surface, name=contact_surf, trim=yes')
-    set_lines.append('\tyx_min_elements')
+    set_lines.append('\tx_min_elements')
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
             set_file.write(set_line + '\n')
