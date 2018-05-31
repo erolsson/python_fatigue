@@ -145,7 +145,7 @@ if __name__ == '__main__':
     for tooth in teeth:
         file_lines += tooth.write_input()
 
-    file_lines.append('\t*Instance, name=pulsator_jaw, part=pulsator_jaw')
+    file_lines.append('\t*Instance, name=pulsator_jaw, part=pulsator_jaw_part')
     file_lines.append('\t*End Instance')
 
     # Writing the tie constraints at the mid lines of the teeth
