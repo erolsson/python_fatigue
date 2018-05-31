@@ -118,7 +118,7 @@ if __name__ == '__main__':
     jaw_nodes[:, 3] += z0
     jaw_nodes = jaw_nodes[jaw_nodes[:, 3] >= 0., :]
     jaw_elements = get_elements_from_nodes(jaw_nodes[:, 0], jaw_elements)
-    write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom_inc')
+    write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom.inc')
     write_jaw_set_file(jaw_nodes, jaw_elements, simulation_dir + 'pulsator_jaw_sets.inc')
 
     file_lines = ['*Heading',
