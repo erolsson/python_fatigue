@@ -3,11 +3,24 @@ from write_input_for_dante import write_geom_include_file
 from write_input_for_dante import write_sets_file
 
 
-def write_tooth_part(lines, name, inc_file, set_file):
-    lines.append('*PART, NAME=' + name)
-    lines.append('\t*Include, Input=' + inc_file)
-    lines.append('\t*Include, Input=' + set_file)
-    lines.append('*End Part')
+def write_tooth_part(name, inc_file, set_file):
+    lines = ['*PART, NAME=' + name,
+             '\t*Include, Input=' + inc_file,
+             '\t*Include, Input=' + set_file,
+             '\t*Solid Section, elset=GEARELEMS, material=SS2506',
+             '\t\t1.0',
+             '*End Part']
+    return lines
+
+
+def write_load_step(step_name):
+    lines = ['*step, name=' + step_name + ', nlgeom=Yes',
+             '\t*Static',
+             '\t\t0.01, 1., 1e-5, 1.',
+             '\t*Output, field',
+             '\t\tS, U',
+             '*End step']
+    return lines
 
 
 def write_include_files_for_tooth(full_model_file_name, include_file_names, full_set_file_name, set_include_file_name):
@@ -44,7 +57,7 @@ class PlanetaryGearTooth:
         for part_idx, part_name in enumerate(self.part_names):
             lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
                       '\t\t0.0, 0.0, 0.0',
-                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0,' + str(self.rotation),
+                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0, ' + str(self.rotation),
                       '\t*End Instance']
         return lines
 
@@ -74,11 +87,14 @@ if __name__ == '__main__':
                   '\tModel of a pulsator test of a planetary gear']
     for mesh in ['coarse', 'dense']:
         for sign in ['pos', 'neg']:
-            write_tooth_part(file_lines, name=mesh + '_tooth_' + sign,
-                             inc_file=mesh + '_geom_x' + sign + '.inc',
-                             set_file=mesh + '_geom_sets.inc')
+            file_lines += write_tooth_part(name=mesh + '_tooth_' + sign,
+                                           inc_file=mesh + '_geom_x' + sign + '.inc',
+                                           set_file=mesh + '_geom_sets.inc')
 
     file_lines.append('**')
+    file_lines.append('*Material, name=SS2506')
+    file_lines.append('\t*Elastic')
+    file_lines.append('\t\t200E3, 0.3')
     file_lines.append('*Assembly, name=pulsator_model')
 
     for tooth in teeth:
@@ -90,7 +106,16 @@ if __name__ == '__main__':
         file_lines.append('\t\t' + teeth[i].instance_name +
                           '_0.x0_surface, ' + teeth[i].instance_name + '_1.x0_surface')
 
+    # Writing tie constraints between the teeth
+    for i in range(1, number_of_teeth):
+        file_lines.append('\t*Tie, name=tie_mid_tooth' + str(i))
+        file_lines.append('\t\t' + teeth[i-1].instance_name +
+                          '_1.x1_surface, ' + teeth[i].instance_name + '_0.x1_surface')
+
     file_lines.append('*End Assembly')
+
+    file_lines += write_load_step('dummy')
+
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
