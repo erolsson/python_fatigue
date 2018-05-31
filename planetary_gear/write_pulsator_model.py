@@ -52,7 +52,7 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
 
 
 def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
-    x = np.unique(jaw_node_data[:, 2])
+    x = np.unique(jaw_node_data[:, 1])
     x_min, x_max = x[0], x[-1]
     node_sets = {'x_min_nodes': jaw_node_data[jaw_node_data[:, 1] == x_min, 0],
                  'x_max_nodes': jaw_node_data[jaw_node_data[:, 1] == x_max, 0],
