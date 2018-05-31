@@ -3,8 +3,7 @@ from collections import namedtuple
 
 import numpy as np
 
-
-def create_quarter_model(full_model_filename):
+def read_nodes_and_elements(full_model_filename):
     nodes = []
     elements = []
     with open(full_model_filename) as full_model_file:
@@ -28,9 +27,15 @@ def create_quarter_model(full_model_filename):
                 elements.append(line.split(","))
 
     nodal_data = np.zeros((len(nodes), 4))
-    element_data = []
+
     for i, node in enumerate(nodes):
         nodal_data[i, :] = node
+    elements = np.array(elements, dtype=int)
+    return nodal_data, elements
+
+
+def create_quarter_model(full_model_file):
+    nodal_data, elements = read_nodes_and_elements(full_model_file)
 
     # Only using nodes on positive z and positive z
     nodal_data = nodal_data[nodal_data[:, 1] >= 0, :]
@@ -38,7 +43,7 @@ def create_quarter_model(full_model_filename):
 
     nodal_id_set = set(nodal_data[:, 0])
     # Find the elements corresponding to the model nodes
-
+    element_data = []
     for element in elements:
         include = True
         for node in element[1:]:
