@@ -122,10 +122,11 @@ if __name__ == '__main__':
     temp = jaw_nodes[:, 1].copy()
     jaw_nodes[:, 1] = jaw_nodes[:, 2]
     jaw_nodes[:, 2] = temp
+    jaw_nodes[:, 2] *= -1
 
-    temp = jaw_elements[:, 1:5].copy()
-    jaw_elements[:, 1:5] = jaw_elements[:, 5:]
-    jaw_elements[:, 5:] = temp
+    # temp = jaw_elements[:, 1:5].copy()
+    # jaw_elements[:, 1:5] = jaw_elements[:, 5:]
+    # jaw_elements[:, 5:] = temp
 
     jaw_elements = get_elements_from_nodes(jaw_nodes[:, 0], jaw_elements)
     write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom.inc')
