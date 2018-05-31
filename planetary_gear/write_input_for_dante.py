@@ -3,6 +3,7 @@ from collections import namedtuple
 
 import numpy as np
 
+
 def read_nodes_and_elements(full_model_filename):
     nodes = []
     elements = []
@@ -34,6 +35,20 @@ def read_nodes_and_elements(full_model_filename):
     return nodal_data, elements
 
 
+def get_elements_from_nodes(node_labels, all_elements):
+    nodal_id_set = set(node_labels)
+    # Find the elements corresponding to the model nodes
+    element_data = []
+    for element in all_elements:
+        include = True
+        for node in element[1:]:
+            if int(node) not in nodal_id_set:
+                include = False
+        if include:
+            element_data.append([int(e) for e in element])
+    return np.array(element_data, dtype=int)
+
+
 def create_quarter_model(full_model_file):
     nodal_data, elements = read_nodes_and_elements(full_model_file)
 
@@ -41,17 +56,33 @@ def create_quarter_model(full_model_file):
     nodal_data = nodal_data[nodal_data[:, 1] >= 0, :]
     nodal_data = nodal_data[nodal_data[:, 3] >= 0, :]
 
-    nodal_id_set = set(nodal_data[:, 0])
-    # Find the elements corresponding to the model nodes
-    element_data = []
-    for element in elements:
-        include = True
-        for node in element[1:]:
-            if int(node) not in nodal_id_set:
-                include = False
-        if include:
-            element_data.append([int(e) for e in element])
-    return nodal_data, np.array(element_data, dtype=int)
+    quarter_model_elements = get_elements_from_nodes(nodal_data[:, 0], elements)
+
+    return nodal_data, quarter_model_elements
+
+
+def write_sets(node_sets, element_sets):
+    file_lines = ['** Include file for sets in a quarter model of a planetary gear for dante sim']
+
+    def write_set_rows(data_to_write):
+        data_line = ''
+        counter = 0
+        for item in data_to_write:
+            data_line += str(int(item)) + ', '
+            counter += 1
+            if counter == 16 or item is data_to_write[-1]:
+                file_lines.append(data_line[:-2])
+                counter = 0
+                data_line = ''
+
+    for key, data in element_sets.iteritems():
+        file_lines.append('*Elset, elset=' + key)
+        write_set_rows(data)
+
+    for key, data in node_sets.iteritems():
+        file_lines.append('*Nset, nset=' + key)
+        write_set_rows(data)
+    return file_lines
 
 
 def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
@@ -97,7 +128,7 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
 
     x0_elements = []
     x1_elements = []
-    for node_list, element_list in zip([x0_nodes, x1_nodes],[x0_elements, x1_elements]):
+    for node_list, element_list in zip([x0_nodes, x1_nodes], [x0_elements, x1_elements]):
         for e in element_data:
             for node_label in e[1:]:
                 if node_label in node_list:
@@ -116,26 +147,7 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                     'x0_elements': sorted(x0_elements),
                     'x1_elements': sorted(x1_elements)}
 
-    file_lines = ['** Include file for sets in a quarter model of a planetary gear for dante sim']
-
-    def write_set_rows(data_to_write):
-        data_line = ''
-        counter = 0
-        for item in data_to_write:
-            data_line += str(item) + ', '
-            counter += 1
-            if counter == 16 or item is data_to_write[-1]:
-                file_lines.append(data_line[:-2])
-                counter = 0
-                data_line = ''
-
-    for key, data in element_sets.iteritems():
-        file_lines.append('*Elset, elset=' + key)
-        write_set_rows(data)
-
-    for key, data in node_sets.iteritems():
-        file_lines.append('*Nset, nset=' + key)
-        write_set_rows(data)
+    file_lines = write_sets(node_sets, element_sets)
 
     file_lines.append('*Surface, type = ELEMENT, name=Exposed_Surface, TRIM=YES')
     file_lines.append('\tExposed_Surface')

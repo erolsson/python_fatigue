@@ -1,6 +1,11 @@
+import numpy as np
+
+from write_input_for_dante import read_nodes_and_elements
+from write_input_for_dante import get_elements_from_nodes
 from write_input_for_dante import create_quarter_model
 from write_input_for_dante import write_geom_include_file
 from write_input_for_dante import write_sets_file
+from write_input_for_dante import write_sets
 
 
 def write_tooth_part(name, inc_file, set_file):
@@ -46,6 +51,29 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
                             filename=include_file_names[1])
 
 
+def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
+    y = np.unique(jaw_node_data[:, 2])
+    y_min, y_max = y[0], y[-1]
+    node_sets = {'y_min_nodes': jaw_node_data[jaw_node_data[:, 2] == y_min, 0],
+                 'y_max_nodes': jaw_node_data[jaw_node_data[:, 2] == y_max, 0],
+                 'z0_nodes': jaw_node_data[jaw_node_data[:, 3] == 0.0, 0]}
+
+    y_min_elements = []
+    y_min_set = set(jaw_node_data[jaw_node_data[:, 2] == y_max, 0])
+    for e in jaw_element_data:
+        for n_label in e[1:]:
+            if n_label in y_min_set:
+                y_min_elements.append(n_label)
+    element_sets = {'jaw_elements': jaw_element_data[:, 0],
+                    'y_min_elements': y_min_elements}
+    set_lines = write_sets(node_sets, element_sets)
+    set_lines.append('*Surface, name=y_min_surf, trim=yes')
+    set_lines.append('\ty_min_elements')
+    with open(set_file_name, 'w') as set_file:
+        for set_line in set_lines:
+            set_file.write(set_line + '\n')
+    
+
 class PlanetaryGearTooth:
     def __init__(self, instance_name, rotation, part_names):
         self.instance_name = instance_name
@@ -83,6 +111,16 @@ if __name__ == '__main__':
                                       full_set_file_name=gear_model_dir + mesh + '_mesh_sets.inc',
                                       set_include_file_name=simulation_dir + mesh + '_geom_sets.inc')
 
+    # Reading the pulsator jaw file
+    jaw_nodes, jaw_elements = read_nodes_and_elements(gear_model_dir + '/pulsator_jaw.inp')
+    # Adjusting so that the middle layer is at z=0
+    z0 = np.min(np.abs(np.unique(jaw_nodes[:, 3])))
+    jaw_nodes[:, 3] += z0
+    jaw_nodes = jaw_nodes[jaw_nodes[:, 3] >= 0., :]
+    jaw_elements = get_elements_from_nodes(jaw_nodes[:, 0], jaw_elements)
+    write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom_inc')
+    write_jaw_set_file(jaw_nodes, jaw_elements, simulation_dir + 'pulsator_jaw_sets.inc')
+
     file_lines = ['*Heading',
                   '\tModel of a pulsator test of a planetary gear']
     for mesh in ['coarse', 'dense']:
@@ -90,6 +128,13 @@ if __name__ == '__main__':
             file_lines += write_tooth_part(name=mesh + '_tooth_' + sign,
                                            inc_file=mesh + '_geom_x' + sign + '.inc',
                                            set_file=mesh + '_geom_sets.inc')
+
+    file_lines.append('*Part, name=pulsator_jaw_part')
+    file_lines.append('\t*Include, input=' + simulation_dir + 'pulsator_jaw_geom_inc')
+    file_lines.append('\t*Include, input=' + simulation_dir + 'pulsator_jaw_sets.inc')
+    file_lines.append('\t*Solid Section, elset=GEARELEMS, material=SS2506')
+    file_lines.append('\t\t1.0')
+    file_lines.append('*End Part')
 
     file_lines.append('**')
     file_lines.append('*Material, name=SS2506')
@@ -100,6 +145,9 @@ if __name__ == '__main__':
     for tooth in teeth:
         file_lines += tooth.write_input()
 
+    file_lines.append('\t*Instance, name=pulsator_jaw, part=pulsator_jaw')
+    file_lines.append('\t*End Instance')
+
     # Writing the tie constraints at the mid lines of the teeth
     for i in range(number_of_teeth):
         file_lines.append('\t*Tie, name=tie_mid_tooth' + str(i))
@@ -108,7 +156,7 @@ if __name__ == '__main__':
 
     # Writing tie constraints between the teeth
     for i in range(1, number_of_teeth):
-        file_lines.append('\t*Tie, name=tie_mid_tooth' + str(i))
+        file_lines.append('\t*Tie, name=tie_inter_teeth_' + str(i-1) + '_' + str(i))
         file_lines.append('\t\t' + teeth[i-1].instance_name +
                           '_1.x1_surface, ' + teeth[i].instance_name + '_0.x1_surface')
 
