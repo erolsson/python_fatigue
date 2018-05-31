@@ -132,7 +132,7 @@ if __name__ == '__main__':
     file_lines.append('*Part, name=pulsator_jaw_part')
     file_lines.append('\t*Include, input=pulsator_jaw_geom.inc')
     file_lines.append('\t*Include, input=pulsator_jaw_sets.inc')
-    file_lines.append('\t*Solid Section, elset=GEARELEMS, material=SS2506')
+    file_lines.append('\t*Solid Section, elset=jaw_elements, material=SS2506')
     file_lines.append('\t\t1.0')
     file_lines.append('*End Part')
 
