@@ -52,23 +52,23 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
 
 
 def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
-    x = np.unique(jaw_node_data[:, 1])
-    x_min, x_max = x[0], x[-1]
-    node_sets = {'x_min_nodes': jaw_node_data[jaw_node_data[:, 1] == x_min, 0],
-                 'x_max_nodes': jaw_node_data[jaw_node_data[:, 1] == x_max, 0],
+    y = np.unique(jaw_node_data[:, 2])
+    y_min, y_max = y[0], y[-1]
+    node_sets = {'y_min_nodes': jaw_node_data[jaw_node_data[:, 2] == y_min, 0],
+                 'y_max_nodes': jaw_node_data[jaw_node_data[:, 2] == y_max, 0],
                  'z0_nodes': jaw_node_data[jaw_node_data[:, 3] == 0.0, 0]}
 
-    x_min_elements = []
-    x_min_set = set(jaw_node_data[jaw_node_data[:, 2] == x_min, 0])
+    y_min_elements = []
+    y_min_set = set(jaw_node_data[jaw_node_data[:, 2] == y_min, 0])
     for e in jaw_element_data:
         for n_label in e[1:]:
-            if n_label in x_min_set:
-                x_min_elements.append(n_label)
+            if n_label in y_min_set:
+                y_min_elements.append(n_label)
     element_sets = {'jaw_elements': jaw_element_data[:, 0],
-                    'x_min_elements': x_min_elements}
+                    'y_min_elements': y_min_elements}
     set_lines = write_sets(node_sets, element_sets)
-    set_lines.append('*Surface, name=contact_surf, trim=yes')
-    set_lines.append('\tx_min_elements')
+    set_lines.append('*Surface, name=y_min_surf, trim=yes')
+    set_lines.append('\ty_min_elements')
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
             set_file.write(set_line + '\n')
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     teeth = []
     for i in range(number_of_teeth):
         teeth.append(PlanetaryGearTooth(instance_name='tooth' + str(i),
-                                        rotation=18*i + 9,  # 9 degrees is a 1/2 tooth
+                                        rotation=18*i - 90. + 9,  # 9 degrees is a 1/2 tooth
                                         part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
@@ -117,6 +117,16 @@ if __name__ == '__main__':
     z0 = np.min(np.abs(np.unique(jaw_nodes[:, 3])))
     jaw_nodes[:, 3] += z0
     jaw_nodes = jaw_nodes[jaw_nodes[:, 3] >= 0., :]
+
+    # Swap x and y
+    temp = jaw_nodes[:, 1].copy()
+    jaw_nodes[:, 1] = jaw_nodes[:, 2]
+    jaw_nodes[:, 2] = temp
+
+    temp = jaw_elements[:, 1:5].copy()
+    jaw_elements[:, 1:5] = jaw_elements[:, 5:]
+    jaw_elements[:, 5:] = temp
+
     jaw_elements = get_elements_from_nodes(jaw_nodes[:, 0], jaw_elements)
     write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom.inc')
     write_jaw_set_file(jaw_nodes, jaw_elements, simulation_dir + 'pulsator_jaw_sets.inc')
