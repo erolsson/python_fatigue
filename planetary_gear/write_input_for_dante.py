@@ -1,4 +1,5 @@
 import os
+import re
 from collections import namedtuple
 
 import numpy as np
@@ -13,10 +14,10 @@ def read_nodes_and_elements(full_model_filename):
         reading_elements = False
 
         for line in lines:
-            if 'Node' in line.split()[0]:
+            if bool(re.search('node', line.split()[0], re.IGNORECASE)):
                 reading_nodes = True
                 reading_elements = False
-            elif 'Element' in line.split()[0]:
+            elif bool(re.search('element', line.split()[0], re.IGNORECASE)):
                 reading_elements = True
                 reading_nodes = False
             elif '*' in line.split()[0]:
@@ -26,7 +27,6 @@ def read_nodes_and_elements(full_model_filename):
                 nodes.append(line.split(","))
             elif reading_elements:
                 elements.append(line.split(","))
-
     nodal_data = np.zeros((len(nodes), 4))
 
     for i, node in enumerate(nodes):
@@ -51,7 +51,6 @@ def get_elements_from_nodes(node_labels, all_elements):
 
 def create_quarter_model(full_model_file):
     nodal_data, elements = read_nodes_and_elements(full_model_file)
-
     # Only using nodes on positive z and positive z
     nodal_data = nodal_data[nodal_data[:, 1] >= 0, :]
     nodal_data = nodal_data[nodal_data[:, 3] >= 0, :]
@@ -94,7 +93,6 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     nodal_id = np.array(nodal_data[:, 0], dtype=int)
     nodal_id_set = set(nodal_id)
     nodal_positions = nodal_data[:, 1:]
-
     element_id = element_data[:, 0]
     element_id_set = set(element_id)
 

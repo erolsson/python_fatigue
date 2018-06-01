@@ -44,12 +44,12 @@ plt.plot(z, mechanical_stress_data[:, 1], lw=2)
 
 for case_idx, (case_depth, data_set) in enumerate(findley_stress_data.iteritems()):
     plt.figure(case_idx + 3)
-    for findley_stress in data_set.itervalues():
-        plt.plot(z, findley_stress, c[case_idx], lw=2)
+    for load, findley_stress in data_set.iteritems():
+        plt.plot(z, findley_stress/mechanical_stress_data[:, 1]*load/32., c[case_idx], lw=2)
     plt.text(1, 420, 'CHD = ' + str(case_depth) + ' mm', fontsize=24)
 
     plt.xlim(0, z[-1])
-    plt.ylim(350, 900)
+    # plt.ylim(350, 900)
     plt.xlabel('Distance along tooth [mm]')
     plt.ylabel('Findley stress [MPa]')
     plt.annotate('', xy=(16, 830), xycoords='data', xytext=(11, 480), textcoords='data',
