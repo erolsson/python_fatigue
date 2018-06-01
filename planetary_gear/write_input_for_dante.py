@@ -132,7 +132,7 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                 if node_label in node_list:
                     element_list.append(e[0])
 
-    node_sets = {'Monitor_Node': [73710, ],
+        node_sets = {'Monitor_Node': [73710, ],
                  'All_Nodes': sorted(list(nodal_id_set)),
                  'Exposed_Nodes': exposed_nodes,
                  'z0_nodes': z0_nodes,
@@ -142,11 +142,10 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     element_sets = {'All_elements': sorted(list(element_id_set)),
                     'GEARELEMS': sorted(list(element_id_set)),
                     'Exposed_surface': exposed_surface,
-                    'x0_elements': sorted(x0_elements),
-                    'x1_elements': sorted(x1_elements)}
+                    'x0_elements': np.unique(x0_elements),
+                    'x1_elements': np.unique(x1_elements)}
 
     file_lines = write_sets(node_sets, element_sets)
-
     file_lines.append('*Surface, type = ELEMENT, name=Exposed_Surface, TRIM=YES')
     file_lines.append('\tExposed_Surface')
 
