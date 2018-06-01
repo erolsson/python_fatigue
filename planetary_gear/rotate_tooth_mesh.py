@@ -10,7 +10,7 @@ nodes, elements = read_nodes_and_elements('input_files/gear_models/planet_gear/m
 
 point = nodes[nodes[:, 0] == center_node, 1:3][0]
 
-q = -np.arctan(point[0]/point[1]) + pi/2
+q = -np.arctan(point[0]/point[1]) + pi
 rot = np.array([[np.cos(q), -np.sin(q), 0],
                 [np.sin(q), np.cos(q), 0],
                 [0, 0, 1]])
