@@ -99,7 +99,6 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
     z0_nodes = nodal_id[nodal_positions[:, 2] < 1e-5]
     x0_nodes = nodal_id[nodal_positions[:, 0] < 1e-5]
     q = nodal_positions[:, 0] / nodal_positions[:, 1]
-    print np.min(q)
     x1_nodes = nodal_id[q > 0.999 * np.max(q)]
 
     with open(full_model_sets_file) as set_file:
