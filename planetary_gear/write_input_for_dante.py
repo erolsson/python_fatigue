@@ -52,8 +52,8 @@ def get_elements_from_nodes(node_labels, all_elements):
 def create_quarter_model(full_model_file):
     nodal_data, elements = read_nodes_and_elements(full_model_file)
     # Only using nodes on positive z and positive z
-    nodal_data = nodal_data[nodal_data[:, 1] >= 0, :]
-    nodal_data = nodal_data[nodal_data[:, 3] >= 0, :]
+    nodal_data = nodal_data[nodal_data[:, 1] >= -1e-5, :]
+    nodal_data = nodal_data[nodal_data[:, 3] >= -1e-5, :]
 
     quarter_model_elements = get_elements_from_nodes(nodal_data[:, 0], elements)
 
