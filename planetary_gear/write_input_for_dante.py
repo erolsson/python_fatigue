@@ -133,11 +133,11 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                     element_list.append(e[0])
 
         node_sets = {'Monitor_Node': [73710, ],
-                 'All_Nodes': sorted(list(nodal_id_set)),
-                 'Exposed_Nodes': exposed_nodes,
-                 'z0_nodes': z0_nodes,
-                 'x0_nodes': x0_nodes,
-                 'x1_nodes': x1_nodes}
+                     'All_Nodes': sorted(list(nodal_id_set)),
+                     'Exposed_Nodes': exposed_nodes,
+                     'z0_nodes': z0_nodes,
+                     'x0_nodes': x0_nodes,
+                     'x1_nodes': x1_nodes}
 
     element_sets = {'All_elements': sorted(list(element_id_set)),
                     'GEARELEMS': sorted(list(element_id_set)),
