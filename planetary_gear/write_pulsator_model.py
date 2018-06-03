@@ -182,12 +182,13 @@ if __name__ == '__main__':
     file_lines.append('*End Assembly')
 
     # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
+    """
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
     file_lines.append('\tPulsator_jaw.ymin_surface, eval_tooth_1.exposed_surface')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
     file_lines.append('\tPulsator_jaw.xmin_surface, tooth2_0.exposed_surface')
-
+    """
     file_lines += write_load_step('dummy')
 
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
