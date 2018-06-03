@@ -111,6 +111,7 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                 read_exposed_nodes = False
                 read_exposed_surface = True
             elif line.startswith('*'):
+                print line
                 read_exposed_nodes = False
                 read_exposed_surface = False
             elif read_exposed_nodes:

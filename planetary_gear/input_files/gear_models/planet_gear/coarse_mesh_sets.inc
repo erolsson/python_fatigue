@@ -1,7 +1,7 @@
 **
 ** Sets generated for planetary gear for Heat treatment simulations
 **
-*Elset, elset=Exposed_surface, instance=PART-1-1
+*Elset, elset=Exposed_Surface, instance=PART-1-1
     1,    2,    3,    4,    5,    7,    9,   10,   11,   12,   17,   18,   19,   20,   22,   24
    25,   26,   27,   28,   30,   32,   33,   34,   35,   36,   38,   40,   41,   42,   43,   44
    46,   48,   49,   50,   51,   52,   54,   56,   57,   58,   59,   60,   62,   64,   65,   66
