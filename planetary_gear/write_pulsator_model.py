@@ -199,6 +199,8 @@ if __name__ == '__main__':
     # Adding a kinematic coupling for the pulsator jaw
     file_lines.append('\t*Node, nset=jaw_ref_node')
     file_lines.append('\t\t999999, ' + str(np.min(jaw_nodes[:, 1])) + ',' + str(np.max(jaw_nodes[:, 2])) + ', 0.0')
+    file_lines.append('\t*Nset, nset=pinned, instance=' + teeth[0].instance_name + '_0')
+    file_lines.append('\t\t1241')
     file_lines.append('\t*Coupling, Constraint name=jaw_load_coupling, '
                       'ref node=jaw_ref_node, surface=Pulsator_jaw.y_max_surface')
     file_lines.append('\t\t*Kinematic')
@@ -219,7 +221,10 @@ if __name__ == '__main__':
         file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
 
     file_lines.append('*Boundary')
-    file_lines.append('\tpulsator_jaw.z0_nodes, 3, 3')
+    file_lines.append('\tpinned, 3, 3')
+
+    file_lines.append('*Boundary')
+    file_lines.append('\t' + teeth[0].instance_name + '_0.1241, 1, 1')
 
     file_lines.append('*Boundary')
     file_lines.append('\t' + teeth[0].instance_name + '_0.x1_nodes, 2, 2')
@@ -231,7 +236,7 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    file_lines += write_load_step('Initiate_contact')
+    file_lines += write_load_step('Initiate_contact', force=1.)
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
         file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_min',
