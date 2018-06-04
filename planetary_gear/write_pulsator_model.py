@@ -197,9 +197,9 @@ if __name__ == '__main__':
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
-    file_lines.append('\tPulsator_jaw.ymin_surface, eval_tooth_1.exposed_surface')
+    file_lines.append('\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
-    file_lines.append('\tPulsator_jaw.xmin_surface, tooth2_0.exposed_surface')
+    file_lines.append('\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
 
     file_lines += write_load_step('dummy')
 
