@@ -18,13 +18,16 @@ def write_tooth_part(name, inc_file, set_file):
     return lines
 
 
-def write_load_step(step_name):
+def write_load_step(step_name, force=None):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t0.01, 1., 1e-5, 1.',
-             '\t*Output, field',
-             '\t\tS, U',
-             '*End step']
+             '\t\t0.01, 1., 1e-5, 1.']
+    if force:
+        lines.append('\t*CLoad')
+        lines.append('\t\tjaw_ref_node, 2, ' + str(-force/2))
+    lines.append('\t*Output, field')
+    lines.append('\t\tS, U')
+    lines.append('*End step')
     return lines
 
 
@@ -111,6 +114,9 @@ if __name__ == '__main__':
     simulation_dir = 'input_files/pulsator_model/'
 
     number_of_teeth = 10
+
+    load_amplitudes = [30., 35., 40.]
+    load_ratio = 0.1
 
     teeth = []
     for i in range(number_of_teeth):
@@ -217,7 +223,19 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\t' + teeth[-1].instance_name + '_1.x1_nodes, 2, 2')
 
-    file_lines += write_load_step('dummy')
+    file_lines.append('*Boundary')
+    file_lines.append('\tjaw_ref_node, 1, 1')
+    file_lines.append('*Boundary')
+    file_lines.append('\tjaw_ref_node, 3, 6')
+
+    file_lines += write_load_step('Initiate_contact')
+    for load_amp in load_amplitudes:
+        mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
+        write_load_step('Amplitude_Pamp=' + str(load_amp) + 'kN_min', force=mean_load-load_amp)
+
+    for load_amp in load_amplitudes:
+        mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
+        write_load_step('Amplitude_Pamp=' + str(load_amp) + 'kN_max', force=mean_load+load_amp)
 
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
         for line in file_lines:
