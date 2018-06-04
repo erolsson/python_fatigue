@@ -23,7 +23,7 @@ def write_load_step(step_name, force=None, initial_inc=0.01):
              '\t*Static',
              '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.',
              '\t*Cload',
-             '\t\tjaw_ref_node, 2, 1.0']
+             '\t\tjaw_ref_node, 2, -0.5']
 
     if force:
         lines.append('\t*CLoad')
