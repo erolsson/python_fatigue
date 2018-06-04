@@ -190,7 +190,7 @@ if __name__ == '__main__':
     # Adding a kinematic coupling for the pulsator jaw
     file_lines.append('\t*Node, nset=jaw_ref_node')
     file_lines.append('\t\t999999, ' + str(np.min(jaw_nodes[:, 1])) + ',' + str(np.max(jaw_nodes[:, 2])) + ', 0.0')
-    file_lines.append('\t*Coupling, Contraint name=jaw_load_coupling, '
+    file_lines.append('\t*Coupling, Constraint name=jaw_load_coupling, '
                       'ref node=jaw_ref_node, surface=Pulsator_jaw.y_min_surface')
     file_lines.append('\t\t*Kinematic')
     file_lines.append('*End Assembly')
