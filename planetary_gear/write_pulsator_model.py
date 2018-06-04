@@ -221,10 +221,10 @@ if __name__ == '__main__':
         file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
 
     file_lines.append('*Boundary')
-    file_lines.append('\tpinned, 3, 3')
+    file_lines.append('\tpulsator_jaw.z0_nodes, 3, 3')
 
     file_lines.append('*Boundary')
-    file_lines.append('\t' + teeth[0].instance_name + '_0.1241, 1, 1')
+    file_lines.append('\tpinned, 1, 1')
 
     file_lines.append('*Boundary')
     file_lines.append('\t' + teeth[0].instance_name + '_0.x1_nodes, 2, 2')
