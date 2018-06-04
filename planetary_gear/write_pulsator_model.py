@@ -144,10 +144,6 @@ if __name__ == '__main__':
     jaw_nodes[:, 2] = temp
     jaw_nodes[:, 2] *= -1
 
-    # temp = jaw_elements[:, 1:5].copy()
-    # jaw_elements[:, 1:5] = jaw_elements[:, 5:]
-    # jaw_elements[:, 5:] = temp
-
     jaw_elements = get_elements_from_nodes(jaw_nodes[:, 0], jaw_elements)
     write_geom_include_file(jaw_nodes, jaw_elements, filename=simulation_dir + 'pulsator_jaw_geom.inc')
     write_jaw_set_file(jaw_nodes, jaw_elements, simulation_dir + 'pulsator_jaw_sets.inc')
@@ -191,6 +187,12 @@ if __name__ == '__main__':
         file_lines.append('\t\t' + teeth[i-1].instance_name +
                           '_1.x1_surface, ' + teeth[i].instance_name + '_0.x1_surface')
 
+    # Adding a kinematic coupling for the pulsator jaw
+    file_lines.append('\t*Node, nset=jaw_ref_node')
+    file_lines.append('\t\t999999, ' + str(np.min(jaw_nodes[:, 1])) + ',' + str(np.max(jaw_nodes[:, 2])) + ', 0.0')
+    file_lines.append('\t*Coupling, Contraint name=jaw_load_coupling, '
+                      'ref node=jaw_ref_node, surface=Pulsator_jaw.y_min_surface')
+    file_lines.append('\t\t*Kinematic')
     file_lines.append('*End Assembly')
 
     # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
