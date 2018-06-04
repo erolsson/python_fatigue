@@ -21,7 +21,9 @@ def write_tooth_part(name, inc_file, set_file):
 def write_load_step(step_name, force=None, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.']
+             '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.',
+             '\t*CLoad',
+             '\t\tjaw_ref_node, 2, 0.5']
 
     if force:
         lines.append('\t*CLoad')
