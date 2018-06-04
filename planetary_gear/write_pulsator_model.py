@@ -243,7 +243,6 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(4, '\tContact Interference, shrink')
     initiate_contact_lines.insert(5, '\t\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
 
-    print initiate_contact_lines
     file_lines += initiate_contact_lines
 
     for load_amp in load_amplitudes:
