@@ -231,12 +231,12 @@ if __name__ == '__main__':
     file_lines += write_load_step('Initiate_contact')
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
-        file_lines += write_load_step('Pamp=' + str(load_amp).replace('.', '_') + 'kN_min',
+        file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_min',
                                       force=(mean_load-load_amp)*1000)
 
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
-        file_lines += write_load_step('Pamp=' + str(load_amp).replace('.', '_') + 'kN_max',
+        file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_max',
                                       force=(mean_load+load_amp)*1000)
 
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
