@@ -21,9 +21,7 @@ def write_tooth_part(name, inc_file, set_file):
 def write_load_step(step_name, force=None, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.',
-             '\t*Cload',
-             '\t\tjaw_ref_node, 2, -0.5']
+             '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.']
 
     if force:
         lines.append('\t*CLoad')
@@ -212,9 +210,9 @@ if __name__ == '__main__':
     # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
-    file_lines.append('*Contact pair, interaction=frictionless_contact')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
     file_lines.append('\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
-    file_lines.append('*Contact pair, interaction=frictionless_contact')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
     file_lines.append('\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
 
     for tooth in teeth:
@@ -237,7 +235,7 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    initiate_contact_lines = write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
+    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4)
     initiate_contact_lines.insert(3, '\tContact Interference, shrink')
     initiate_contact_lines.insert(4, '\t\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
     initiate_contact_lines.insert(5, '\tContact Interference, shrink')
