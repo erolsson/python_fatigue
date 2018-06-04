@@ -53,7 +53,7 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
 
 def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
     y = np.unique(jaw_node_data[:, 2])
-    x_min = np.unique(jaw_node_data[:, 1])
+    x_min = np.unique(jaw_node_data[:, 1])[0]
     y_min, y_max = y[0], y[-1]
     node_sets = {'x_min_nodes': jaw_node_data[jaw_node_data[:, 1] == x_min, 0],
                  'y_min_nodes': jaw_node_data[jaw_node_data[:, 2] == y_min, 0],
@@ -75,10 +75,10 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
                 if n_label in node_label_set:
                     element_list.append(e[0])
 
-    element_sets = {'jaw_elements': jaw_element_data[:, 0],
-                    'x_min_elements': x_min_elements,
-                    'y_min_elements': y_min_elements,
-                    'y_max_elements': y_max_elements}
+    element_sets = {'jaw_elements': np.unique(jaw_element_data[:, 0]),
+                    'x_min_elements': np.unique(x_min_elements),
+                    'y_min_elements': np.unique(y_min_elements),
+                    'y_max_elements': np.unique(y_max_elements)}
     set_lines = write_sets(node_sets, element_sets)
     set_lines.append('*Surface, name=x_min_surf, trim=yes')
     set_lines.append('\tx_min_elements')
