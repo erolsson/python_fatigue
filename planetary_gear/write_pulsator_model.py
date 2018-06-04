@@ -18,10 +18,10 @@ def write_tooth_part(name, inc_file, set_file):
     return lines
 
 
-def write_load_step(step_name, force=None):
+def write_load_step(step_name, force=None, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t0.01, 1., 1e-5, 1.',
+             '\t\t' + str(initial_inc) + ', 1., 1e-5, 1.',
              '\t*Cload',
              '\t\tjaw_ref_node, 2, 1.0']
 
@@ -237,9 +237,10 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    file_lines += write_load_step('Initiate_contact', force=1.)
+    file_lines += write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
+        print mean_load
         file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_min',
                                       force=(mean_load-load_amp)*1000)
 
