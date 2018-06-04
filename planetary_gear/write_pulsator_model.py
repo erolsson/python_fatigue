@@ -240,7 +240,6 @@ if __name__ == '__main__':
     file_lines += write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
-        print mean_load
         file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_min',
                                       force=(mean_load-load_amp)*1000)
 
