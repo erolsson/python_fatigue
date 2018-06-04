@@ -237,7 +237,15 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    file_lines += write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
+    initiate_contact_lines = write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
+    initiate_contact_lines.insert(-1, '\tContact Interference, shrink')
+    initiate_contact_lines.insert(-1, '\t\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
+    initiate_contact_lines.insert(-1, '\tContact Interference, shrink')
+    initiate_contact_lines.insert(-1, '\t\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
+
+    print initiate_contact_lines
+    file_lines += initiate_contact_lines
+
     for load_amp in load_amplitudes:
         mean_load = (1 + load_ratio)/(1-load_ratio)*load_amp
         file_lines += write_load_step('Pamp_' + str(load_amp).replace('.', '_') + 'kN_min',
