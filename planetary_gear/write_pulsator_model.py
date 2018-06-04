@@ -26,7 +26,10 @@ def write_load_step(step_name, force=None):
         lines.append('\t*CLoad')
         lines.append('\t\tjaw_ref_node, 2, ' + str(-force/2))
     lines.append('\t*Output, field')
-    lines.append('\t\tS, U')
+    lines.append('\t\t*Element Output')
+    lines.append('\t\t\tS')
+    lines.append('\t\t*Node Output')
+    lines.append('\t\t\tU')
     lines.append('*End step')
     return lines
 
