@@ -120,7 +120,9 @@ if __name__ == '__main__':
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     teeth[1].instance_name = 'eval_tooth'
+    teeth[0].part_names = ['coarse_tooth_pos', 'dense_tooth_neg']
     teeth[1].part_names = ['dense_tooth_pos', 'dense_tooth_neg']
+    teeth[2].part_names = ['dense_tooth_pos', 'coarse_tooth_neg']
 
     for mesh in ['coarse', 'dense']:
         write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh.inc',
@@ -192,13 +194,13 @@ if __name__ == '__main__':
     file_lines.append('*End Assembly')
 
     # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
-    """
+
     file_lines.append('*Surface interaction, name=frictionless_contact')
-    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
     file_lines.append('\tPulsator_jaw.ymin_surface, eval_tooth_1.exposed_surface')
-    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface_to_surface')
+    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
     file_lines.append('\tPulsator_jaw.xmin_surface, tooth2_0.exposed_surface')
-    """
+
     file_lines += write_load_step('dummy')
 
     with open('input_files/pulsator_model/pulsator_simulation.inp', 'w') as input_file:
