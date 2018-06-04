@@ -238,10 +238,10 @@ if __name__ == '__main__':
     file_lines.append('\tjaw_ref_node, 3, 6')
 
     initiate_contact_lines = write_load_step('Initiate_contact', force=1., initial_inc=1e-4)
-    initiate_contact_lines.insert(2, '\tContact Interference, shrink')
-    initiate_contact_lines.insert(3, '\t\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
-    initiate_contact_lines.insert(4, '\tContact Interference, shrink')
-    initiate_contact_lines.insert(5, '\t\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
+    initiate_contact_lines.insert(3, '\tContact Interference, shrink')
+    initiate_contact_lines.insert(4, '\t\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
+    initiate_contact_lines.insert(5, '\tContact Interference, shrink')
+    initiate_contact_lines.insert(6, '\t\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
 
     file_lines += initiate_contact_lines
 
