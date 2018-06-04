@@ -84,7 +84,7 @@ def write_sets(node_sets, element_sets):
     return file_lines
 
 
-def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
+def write_sets_file(filename, full_model_sets_file, nodal_data, element_data, monitor_node=None):
     exposed_surface = []
     exposed_nodes = []
     read_exposed_nodes = False
@@ -132,12 +132,14 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data):
                 if node_label in node_list:
                     element_list.append(e[0])
 
-        node_sets = {'Monitor_Node': [73710, ],
-                     'All_Nodes': sorted(list(nodal_id_set)),
-                     'Exposed_Nodes': exposed_nodes,
-                     'z0_nodes': z0_nodes,
-                     'x0_nodes': x0_nodes,
-                     'x1_nodes': x1_nodes}
+    node_sets = {'All_Nodes': sorted(list(nodal_id_set)),
+                 'Exposed_Nodes': exposed_nodes,
+                 'z0_nodes': z0_nodes,
+                 'x0_nodes': x0_nodes,
+                 'x1_nodes': x1_nodes}
+
+    if monitor_node:
+        node_sets['Monitor_Node'] = [monitor_node, ]
 
     element_sets = {'All_elements': sorted(list(element_id_set)),
                     'GEARELEMS': sorted(list(element_id_set)),
@@ -325,7 +327,8 @@ if __name__ == '__main__':
     write_sets_file(filename='input_files/dante_quarter/planetGear_sets.inc',
                     full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_sets.inc',
                     nodal_data=quarter_nodes,
-                    element_data=quarter_elements)
+                    element_data=quarter_elements,
+                    monitor_node=73710)
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename='input_files/dante_quarter/Toolbox_Carbon_quarter_geo.inc')

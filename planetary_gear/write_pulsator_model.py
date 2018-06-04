@@ -70,13 +70,13 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
             if n_label in x_min_set:
                 x_min_elements.append(e[0])
     element_sets = {'jaw_elements': jaw_element_data[:, 0],
-                    'x_min_elements': x_min_elements,
-                    'y_min_elements': y_min_elements}
+                    'y_min_elements': x_min_elements,
+                    'y_max_elements': y_min_elements}
     set_lines = write_sets(node_sets, element_sets)
-    set_lines.append('*Surface, name=x_min_surf, trim=yes')
-    set_lines.append('\tx_min_elements')
     set_lines.append('*Surface, name=y_min_surf, trim=yes')
     set_lines.append('\ty_min_elements')
+    set_lines.append('*Surface, name=y_,ax_surf, trim=yes')
+    set_lines.append('\ty_max_elements')
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
             set_file.write(set_line + '\n')
@@ -112,6 +112,7 @@ if __name__ == '__main__':
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     teeth[1].instance_name = 'eval_tooth'
     teeth[1].part_names = ['dense_tooth_pos', 'dense_tooth_neg']
+
     for mesh in ['coarse', 'dense']:
         write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh.inc',
                                       include_file_names=[simulation_dir + mesh + '_geom_xpos.inc',
