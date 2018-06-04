@@ -191,7 +191,7 @@ if __name__ == '__main__':
     file_lines.append('\t*Node, nset=jaw_ref_node')
     file_lines.append('\t\t999999, ' + str(np.min(jaw_nodes[:, 1])) + ',' + str(np.max(jaw_nodes[:, 2])) + ', 0.0')
     file_lines.append('\t*Coupling, Constraint name=jaw_load_coupling, '
-                      'ref node=jaw_ref_node, surface=Pulsator_jaw.y_min_surface')
+                      'ref node=jaw_ref_node, surface=Pulsator_jaw.y_max_surface')
     file_lines.append('\t\t*Kinematic')
     file_lines.append('*End Assembly')
 
@@ -202,6 +202,20 @@ if __name__ == '__main__':
     file_lines.append('\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
     file_lines.append('\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
+
+    for tooth in teeth:
+        file_lines.append('*Boundary')
+        file_lines.append('\t' + tooth.instance_name + '_0.z0_nodes, 3, 3')
+        file_lines.append('*Boundary')
+        file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
+
+    file_lines.append('*Boundary')
+    file_lines.append('\tpulsator_jaw.z0_nodes, 3, 3')
+
+    file_lines.append('*Boundary')
+    file_lines.append('\t' + teeth[0].instance_name + '_0.x1_nodes, 2, 2')
+    file_lines.append('*Boundary')
+    file_lines.append('\t' + teeth[-1].instance_name + '_1.x1_nodes, 2, 2')
 
     file_lines += write_load_step('dummy')
 
