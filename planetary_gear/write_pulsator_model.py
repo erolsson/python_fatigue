@@ -235,8 +235,6 @@ if __name__ == '__main__':
     file_lines.append('\t' + teeth[-1].instance_name + '_1.x1_nodes, 2, 2')
 
     file_lines.append('*Boundary')
-    file_lines.append('\tjaw_ref_node, 1, 1')
-    file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
     file_lines += write_load_step('Initiate_contact', force=1.)
