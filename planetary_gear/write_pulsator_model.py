@@ -80,11 +80,11 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
                     'y_min_elements': np.unique(y_min_elements),
                     'y_max_elements': np.unique(y_max_elements)}
     set_lines = write_sets(node_sets, element_sets)
-    set_lines.append('*Surface, name=x_min_surf, trim=yes')
+    set_lines.append('*Surface, name=x_min_surface, trim=yes')
     set_lines.append('\tx_min_elements')
-    set_lines.append('*Surface, name=y_min_surf, trim=yes')
+    set_lines.append('*Surface, name=y_min_surface, trim=yes')
     set_lines.append('\ty_min_elements')
-    set_lines.append('*Surface, name=y_max_surf, trim=yes')
+    set_lines.append('*Surface, name=y_max_surface, trim=yes')
     set_lines.append('\ty_max_elements')
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
