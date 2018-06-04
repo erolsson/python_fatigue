@@ -213,9 +213,9 @@ if __name__ == '__main__':
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
-    file_lines.append('\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
+    file_lines.append('\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
-    file_lines.append('\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
+    file_lines.append('\ttooth2_0.exposed_surface, Pulsator_jaw.x_min_surface')
 
     for tooth in teeth:
         file_lines.append('*Boundary')
@@ -239,9 +239,9 @@ if __name__ == '__main__':
 
     initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4)
     initiate_contact_lines.insert(3, '\t*Contact Interference, shrink')
-    initiate_contact_lines.insert(4, '\t\tPulsator_jaw.y_min_surface, eval_tooth_1.exposed_surface')
+    initiate_contact_lines.insert(4, '\t\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
     initiate_contact_lines.insert(5, '\t*Contact Interference, shrink')
-    initiate_contact_lines.insert(6, '\t\tPulsator_jaw.x_min_surface, tooth2_0.exposed_surface')
+    initiate_contact_lines.insert(6, '\t\ttooth2_0.exposed_surface, Pulsator_jaw.x_min_surface')
 
     file_lines += initiate_contact_lines
 
