@@ -21,7 +21,7 @@ def write_tooth_part(name, inc_file, set_file):
 def write_load_step(step_name, force=None, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t' + str(initial_inc) + ', 1., 1e-9, 1.',
+             '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.',
              '\t*CLoad',
              '\t\tjaw_ref_node, 1, -0.5']
 
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4)
+    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-9)
     initiate_contact_lines.insert(3, '\t*Contact Interference, shrink')
     initiate_contact_lines.insert(4, '\t\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
     initiate_contact_lines.insert(5, '\t*Contact Interference, shrink')
