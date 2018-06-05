@@ -19,7 +19,7 @@ def write_tooth_part(name, inc_file, set_file):
 
 
 def write_load_step(step_name, force=None, initial_inc=0.01):
-    lines = ['*step, name=' + step_name + ', nlgeom=Yes',
+    lines = ['*step, name=' + step_name + ', nlgeom=Yes, convert SDI=No',
              '\t*Static',
              '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.',
              '\t*CLoad',
