@@ -100,7 +100,7 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
             set_file.write(set_line + '\n')
     
 
-class PlanetaryGearTooth:
+class GearTooth:
     def __init__(self, instance_name, rotation, part_names):
         self.instance_name = instance_name
         self.rotation = rotation
@@ -126,9 +126,9 @@ if __name__ == '__main__':
 
     teeth = []
     for i in range(number_of_teeth):
-        teeth.append(PlanetaryGearTooth(instance_name='tooth' + str(i),
-                                        rotation=18*i - 90. + 9,  # 9 degrees is a 1/2 tooth
-                                        part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
+        teeth.append(GearTooth(instance_name='tooth' + str(i),
+                               rotation=18*i - 90. + 9,  # 9 degrees is a 1/2 tooth
+                               part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     teeth[1].instance_name = 'eval_tooth'
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-9)
+    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4)
     initiate_contact_lines.insert(3, '\t*Controls, reset')
     initiate_contact_lines.insert(4, '\t*Controls, parameters=line search')
     initiate_contact_lines.insert(5, '\t\t5, , , , ')
