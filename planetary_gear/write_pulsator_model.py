@@ -237,7 +237,7 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tjaw_ref_node, 3, 6')
 
-    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4)
+    initiate_contact_lines = write_load_step('Initiate_contact', initial_inc=1e-4, force=1.)
     initiate_contact_lines.insert(3, '\t*Controls, reset')
     initiate_contact_lines.insert(4, '\t*Controls, parameters=line search')
     initiate_contact_lines.insert(5, '\t\t5, , , , ')
