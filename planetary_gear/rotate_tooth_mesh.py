@@ -19,4 +19,4 @@ for n in nodes:
     n[1:] = np.dot(n[1:], rot)
 
 nodes[np.abs(nodes[:, 1]) < 1e-9, 1] = 0.
-write_geom_include_file(nodes, elements, 'input_files/gear_models/planet_gear/coarse_mesh.inc')
+write_geom_include_file(nodes, elements, 'input_files/gear_models/planet_gear/coarse_mesh_planet.inc')

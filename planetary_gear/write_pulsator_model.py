@@ -137,10 +137,10 @@ if __name__ == '__main__':
     teeth[2].part_names = ['dense_tooth_pos', 'coarse_tooth_neg']
 
     for mesh in ['coarse', 'dense']:
-        write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh.inc',
+        write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh_planet.inc',
                                       include_file_names=[simulation_dir + mesh + '_geom_xpos.inc',
                                                           simulation_dir + mesh + '_geom_xneg.inc'],
-                                      full_set_file_name=gear_model_dir + mesh + '_mesh_sets.inc',
+                                      full_set_file_name=gear_model_dir + mesh + '_mesh_planet_sets.inc',
                                       set_include_file_name=simulation_dir + mesh + '_geom_sets.inc')
 
     # Reading the pulsator jaw file
