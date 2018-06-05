@@ -212,9 +212,9 @@ if __name__ == '__main__':
     # Creating the contact between the pulsator jaw and the eval tooth in the vertical direction
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
-    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
+    file_lines.append('*Contact pair, interaction=frictionless_contact')
     file_lines.append('\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
-    file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
+    file_lines.append('*Contact pair, interaction=frictionless_contact')
     file_lines.append('\ttooth2_0.exposed_surface, Pulsator_jaw.x_min_surface')
 
     for tooth in teeth:
