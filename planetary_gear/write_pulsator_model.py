@@ -98,7 +98,6 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
             set_file.write(set_line + '\n')
-        return lines
 
 
 class GearTooth:
