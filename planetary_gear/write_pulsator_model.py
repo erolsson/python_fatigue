@@ -21,7 +21,9 @@ def write_tooth_part(name, inc_file, set_file):
 def write_load_step(step_name, force=None, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
-             '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.']
+             '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.',
+             '\t*CLoad',
+             '\t\tjaw_ref_node, 1, -0.5']
 
     if force:
         lines.append('\t*CLoad')
@@ -96,7 +98,8 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
     with open(set_file_name, 'w') as set_file:
         for set_line in set_lines:
             set_file.write(set_line + '\n')
-    
+        return lines
+
 
 class GearTooth:
     def __init__(self, instance_name, rotation, part_names):
@@ -239,10 +242,11 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(3, '\t*Controls, reset')
     initiate_contact_lines.insert(4, '\t*Controls, parameters=line search')
     initiate_contact_lines.insert(5, '\t\t5, , , , ')
-    initiate_contact_lines.insert(6, '\t*Contact Interference, shrink')
-    initiate_contact_lines.insert(7, '\t\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
-    initiate_contact_lines.insert(8, '\t*Contact Interference, shrink')
-    initiate_contact_lines.insert(9, '\t\ttooth2_0.exposed_surface, Pulsator_jaw.x_min_surface')
+    initiate_contact_lines.insert(6, '\t*Contact Controls, Stabilize')
+    initiate_contact_lines.insert(7, '\t*Contact Interference, shrink')
+    initiate_contact_lines.insert(8, '\t\teval_tooth_1.exposed_surface, Pulsator_jaw.y_min_surface')
+    initiate_contact_lines.insert(9, '\t*Contact Interference, shrink')
+    initiate_contact_lines.insert(10, '\t\ttooth2_0.exposed_surface, Pulsator_jaw.x_min_surface')
 
     file_lines += initiate_contact_lines
 
