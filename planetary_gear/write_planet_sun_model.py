@@ -76,16 +76,34 @@ if __name__ == '__main__':
     # Combining surfaces to master contact and slave surfaces
     # Sun gear master due to coarser mesh
     for name, gear in gears.iteritems():
+        for i in range(gear.teeth_to_model):
+            file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
+            file_lines.append('\t\t' + gear.teeth_array[i].instance_name +
+                              '_0.x0_surface, ' + gear.teeth_array[i].instance_name + '_1.x0_surface')
+
+        # Writing tie constraints between the teeth
+        for i in range(1, gear.teeth_to_model):
+            file_lines.append('\t*Tie, name=tie_' + name + '_inter_teeth_' + str(i - 1) + '_' + str(i))
+            file_lines.append('\t\t' + gear.teeth_array[i - 1].instance_name +
+                              '_1.x1_surface, ' + gear.teeth_array[i].instance_name + '_0.x1_surface')
+
         exposed_surface_names = [tooth.instance_name + '_' + str(i) + '.Exposed_Surface'
                                  for tooth in gear.teeth_array for i in [0, 1]]
 
         file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
         for surface_name in exposed_surface_names:
             file_lines.append('\t\t' + surface_name)
-        # Fixing surfaces for applying boundary conditions
-        file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
-        file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
-        file_lines.append('\t\t' + gear.teeth_array[-1].instance_name + '_1.x1_Surface')
+
+    # Fixing surfaces for applying boundary conditions
+    file_lines.append('\t*Surface, name=bc_Surface_planet, combine=union')
+    file_lines.append('\t\t' + gears['planet'].teeth_array[0].instance_name + '_1.x1_Surface')
+    file_lines.append('\t\t' + gears['planet'].teeth_array[-1].instance_name + '_0.x1_Surface')
+
+    file_lines.append('\t*Surface, name=bc_Surface_sun, combine=union')
+    file_lines.append('\t\t' + gears['sun'].teeth_array[0].instance_name + '_0.x1_Surface')
+    file_lines.append('\t\t' + gears['sun'].teeth_array[-1].instance_name + '_1.x1_Surface')
+
+
 
     file_lines.append('*End Assembly')
     file_lines += write_load_step('Dummy')
