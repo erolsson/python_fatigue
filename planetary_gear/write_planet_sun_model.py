@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     file_lines.append('*Boundary')
     file_lines.append('\tplanet_ref_node, 1, 5')
-
+d
     file_lines.append('*Amplitude, name=sun_rotation')
     file_lines.append('\t0.0, 0.0')
     file_lines.append('\t1.0, 0.0')
