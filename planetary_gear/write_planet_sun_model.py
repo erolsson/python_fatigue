@@ -30,13 +30,13 @@ if __name__ == '__main__':
 
     Gear = namedtuple('Gear', ['number_of_teeth', 'teeth_to_model', 'teeth_array', 'position', 'rotation'])
     gears = {'planet': Gear(number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
-                            rotation=188),
+                            rotation=188 - 5*360/20),
              'sun': Gear(number_of_teeth=24, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.), rotation=0)}
 
-    for (name, gear), direction in zip(gears.iteritems(), [-1, 1]):
+    for name, gear in gears.iteritems():
         for i in range(gear.teeth_to_model):
             gear.teeth_array.append(GearTooth(instance_name=name + '_tooth' + str(i),
-                                              rotation=(i+0.5)*360/gear.number_of_teeth*direction + gear.rotation,
+                                              rotation=(i+0.5)*360/gear.number_of_teeth + gear.rotation,
                                               part_names=[name + '_coarse_tooth_pos',
                                                           name + '_coarse_tooth_neg'],
                                               position=gear.position))
@@ -94,19 +94,14 @@ if __name__ == '__main__':
         for surface_name in exposed_surface_names:
             file_lines.append('\t\t' + surface_name)
 
-    # Fixing surfaces for applying boundary conditions
-    file_lines.append('\t*Surface, name=bc_Surface_planet, combine=union')
-    file_lines.append('\t\t' + gears['planet'].teeth_array[0].instance_name + '_1.x1_Surface')
-    file_lines.append('\t\t' + gears['planet'].teeth_array[-1].instance_name + '_0.x1_Surface')
-
-    file_lines.append('\t*Surface, name=bc_Surface_sun, combine=union')
-    file_lines.append('\t\t' + gears['sun'].teeth_array[0].instance_name + '_0.x1_Surface')
-    file_lines.append('\t\t' + gears['sun'].teeth_array[-1].instance_name + '_1.x1_Surface')
-
-
+        file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
+        file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
+        file_lines.append('\t\t' + gear.teeth_array[-1].instance_name + '_1.x1_Surface')
 
     file_lines.append('*End Assembly')
+
     file_lines += write_load_step('Dummy')
+
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
