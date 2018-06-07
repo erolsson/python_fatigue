@@ -16,7 +16,7 @@ def write_load_step(step_name, planet_torque=None, initial_inc=0.01):
         lines.append('\t*Cload')
         lines.append('\t\tplanet_ref_node, 6, ' + str(-planet_torque*1000))
     lines.append('\t*Boundary, amplitude=sun_rotation')
-    lines.append('\t\tsun_ref_node, 6, ' + str(1./24.*2.*pi))
+    lines.append('\t\tsun_ref_node, 6, 6,' + str(1./24.*2.*pi))
     lines.append('\t*Output, field')
     lines.append('\t\t*Element Output')
     lines.append('\t\t\tS')
