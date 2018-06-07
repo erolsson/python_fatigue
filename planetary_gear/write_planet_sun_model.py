@@ -140,7 +140,14 @@ if __name__ == '__main__':
     file_lines.append('\t5.0, 1.0')
     file_lines.append('\t6.0, 1.0')
 
-    file_lines += write_load_step('Initiate_contact')
+    initiate_contact_lines = write_load_step('Initiate_contact')
+    initiate_contact_lines.insert(3, '\t*Controls, reset')
+    initiate_contact_lines.insert(4, '\t*Controls, parameters=line search')
+    initiate_contact_lines.insert(5, '\t\t5, , , , ')
+    initiate_contact_lines.insert(6, '\t*Contact Controls, Stabilize')
+    initiate_contact_lines.insert(7, '\t*Contact Interference, shrink')
+    initiate_contact_lines.insert(8, '\t\tcontact_Surface_planet, contact_Surface_sun')
+    file_lines += initiate_contact_lines
     file_lines += write_load_step('Apply_load', planet_torque=torque)
     for i in range(4):
         file_lines += write_load_step('loading_tooth_' + str(i+1), planet_torque=torque)
