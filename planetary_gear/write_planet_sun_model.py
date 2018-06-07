@@ -14,7 +14,7 @@ if __name__ == '__main__':
     Gear = namedtuple('Gear', ['name', 'number_of_teeth', 'teeth_to_model', 'teeth_array', 'position', 'rotation'])
 
     gears = [Gear(name='planet', number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
-                  rotation=180),
+                  rotation=185),
              Gear(name='sun', number_of_teeth=24, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.), rotation=0)]
 
     for gear, direction in zip(gears, [-1, 1]):
@@ -27,9 +27,9 @@ if __name__ == '__main__':
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     gears[0].teeth_array[2].instance_name = 'eval_tooth'
-    gears[0].teeth_array[2].part_names = ['planet_coarse_tooth_pos', 'planet_dense_tooth_neg']
-    gears[0].teeth_array[1].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
-    gears[0].teeth_array[3].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
+    gears[0].teeth_array[1].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
+    gears[0].teeth_array[2].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
+    gears[0].teeth_array[3].part_names = ['planet_coarse_tooth_pos', 'planet_dense_tooth_neg']
 
     for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         mesh_dir = gear_model_dir + gear + '_gear/'
