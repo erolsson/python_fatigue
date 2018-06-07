@@ -94,7 +94,7 @@ if __name__ == '__main__':
             file_lines.append('\t\t' + gear.teeth_array[i - 1].instance_name +
                               '_1.x1_surface, ' + gear.teeth_array[i].instance_name + '_0.x1_surface')
 
-            file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
+        file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
         for tooth_idx in range(gear.teeth_to_model):
             file_lines.append('\t\tcontact_Surface_' + name + '_tooth_' + str(tooth_idx))
 
