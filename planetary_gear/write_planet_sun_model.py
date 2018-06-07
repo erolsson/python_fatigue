@@ -123,6 +123,14 @@ if __name__ == '__main__':
     file_lines.append('*Boundary')
     file_lines.append('\tplanet_ref_node, 1, 5')
 
+    # Adding the z-symmetry BC
+    for gear in gears.itervalues():
+        for tooth in gear.teeth_array:
+            file_lines.append('*Boundary')
+            file_lines.append('\t' + tooth.instance_name + '_0.z0_nodes, 3, 3')
+            file_lines.append('*Boundary')
+            file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
+
     file_lines.append('*Amplitude, name=sun_rotation')
     file_lines.append('\t0.0, 0.0')
     file_lines.append('\t1.0, 0.0')
