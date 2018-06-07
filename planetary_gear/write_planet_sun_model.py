@@ -99,7 +99,7 @@ if __name__ == '__main__':
         file_lines.append('\t\t' + gear.teeth_array[-1].instance_name + '_1.x1_Surface')
 
         # Adding coupling nodes
-        file_lines.append('\t*Node, nset=j' + name + '_ref_node')
+        file_lines.append('\t*Node, nset=' + name + '_ref_node')
         file_lines.append('\t\t' + str(900000+gear_idx) + ', ' + str(gear.position[0]) + ', ' + str(gear.position[1]) +
                           ', ' + str(gear.position[2]))
         file_lines.append('\t*Coupling, Constraint name=' + name + '_load_coupling, ' +
