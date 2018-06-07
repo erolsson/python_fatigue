@@ -80,10 +80,13 @@ if __name__ == '__main__':
     # Combining surfaces to master contact and slave surfaces
     # Sun gear master due to coarser mesh
     for gear_idx, (name, gear) in enumerate(gears.iteritems()):
-        for i in range(gear.teeth_to_model):
+        for i, tooth in enumerate(gear.teeth_array):
             file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
-            file_lines.append('\t\t' + gear.teeth_array[i].instance_name +
-                              '_0.x0_surface, ' + gear.teeth_array[i].instance_name + '_1.x0_surface')
+            file_lines.append('\t\t' + tooth.instance_name + '_0.x0_surface, ' + tooth.instance_name + '_1.x0_surface')
+
+            file_lines.append('\t*Surface, name=contact_Surface_' + name + '_tooth_' + str(i) + ', combine=union')
+            file_lines.append('\t\t' + tooth.instance_name + '_0.Exposed_surface, ' +
+                              tooth.instance_name + '_1.Exposed_surface')
 
         # Writing tie constraints between the teeth
         for i in range(1, gear.teeth_to_model):
@@ -91,12 +94,9 @@ if __name__ == '__main__':
             file_lines.append('\t\t' + gear.teeth_array[i - 1].instance_name +
                               '_1.x1_surface, ' + gear.teeth_array[i].instance_name + '_0.x1_surface')
 
-        exposed_surface_names = [tooth.instance_name + '_' + str(i) + '.Exposed_Surface'
-                                 for tooth in gear.teeth_array for i in [0, 1]]
-
-        file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
-        for surface_name in exposed_surface_names:
-            file_lines.append('\t\t' + surface_name)
+            file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
+        for tooth_idx in range(gear.teeth_to_model):
+            file_lines.append('\t\tcontact_Surface_' + name + '_tooth_' + str(tooth_idx))
 
         file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
         file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
@@ -113,8 +113,8 @@ if __name__ == '__main__':
     file_lines.append('*End Assembly')
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
-    #file_lines.append('*Contact pair, interaction=frictionless_contact')
-    #file_lines.append('\tcontact_Surface_planet, contact_Surface_sun')
+    file_lines.append('*Contact pair, interaction=frictionless_contact')
+    file_lines.append('\tcontact_Surface_planet, contact_Surface_sun')
 
     # Lock everything except rotation around z-axis
     file_lines.append('*Boundary')
