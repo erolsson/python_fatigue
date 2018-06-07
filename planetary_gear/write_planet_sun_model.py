@@ -1,4 +1,5 @@
 from collections import namedtuple
+from math import pi
 
 from write_pulsator_model import GearTooth
 from write_pulsator_model import write_include_files_for_tooth
@@ -12,12 +13,15 @@ def write_load_step(step_name, planet_torque=None, initial_inc=0.01):
              '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.']
 
     if planet_torque:
-        pass
+        lines.append('\t*Cload')
+        lines.append('\t\tplanet_ref_node, 6, ' + str(-planet_torque*1000))
+    lines.append('\t*Boundary, amplitude=sun_rotation')
+    lines.append('\t\tsun_ref_node, 6, ' + str(1./24.*2.*pi))
     lines.append('\t*Output, field')
     lines.append('\t\t*Element Output')
     lines.append('\t\t\tS')
     lines.append('\t\t*Node Output')
-    lines.append('\t\t\tU')
+    lines.append('\t\t\tCF, RF, U')
     lines.append('*End step')
     return lines
 
@@ -108,7 +112,30 @@ if __name__ == '__main__':
 
     file_lines.append('*End Assembly')
 
-    file_lines += write_load_step('Dummy')
+    file_lines.append('*Surface interaction, name=frictionless_contact')
+    file_lines.append('*Contact pair, interaction=frictionless_contact')
+    file_lines.append('\tcontact_Surface_planet, contact_Surface_sun')
+
+    # Lock everything except rotation around z-axis
+    file_lines.append('*Boundary')
+    file_lines.append('\tsun_ref_node, 1, 5')
+
+    file_lines.append('*Boundary')
+    file_lines.append('\tplanet_ref_node, 1, 5')
+
+    file_lines.append('*Amplitude, name=sun_rotation')
+    file_lines.append('\t0.0, 0.0')
+    file_lines.append('\t1.0, 0.0')
+    file_lines.append('\t2.0, 0.0')
+    file_lines.append('\t3.0, 1.0')
+    file_lines.append('\t4.0, 2.0')
+    file_lines.append('\t5.0, 3.0')
+    file_lines.append('\t6.0, 4.0')
+
+    file_lines += write_load_step('Initiate_contact')
+    file_lines += write_load_step('Apply_load', planet_torque=torque)
+    for i in range(4):
+        file_lines += write_load_step('loading_tooth_' + str(i+1), planet_torque=torque)
 
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
