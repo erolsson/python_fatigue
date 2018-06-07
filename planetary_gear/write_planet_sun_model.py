@@ -113,8 +113,8 @@ if __name__ == '__main__':
     file_lines.append('*End Assembly')
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
-    file_lines.append('*Contact pair, interaction=frictionless_contact')
-    file_lines.append('\tcontact_Surface_planet, contact_Surface_sun')
+    #file_lines.append('*Contact pair, interaction=frictionless_contact')
+    #file_lines.append('\tcontact_Surface_planet, contact_Surface_sun')
 
     # Lock everything except rotation around z-axis
     file_lines.append('*Boundary')
