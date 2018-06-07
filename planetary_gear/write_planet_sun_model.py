@@ -84,19 +84,21 @@ if __name__ == '__main__':
             file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
             file_lines.append('\t\t' + tooth.instance_name + '_0.x0_surface, ' + tooth.instance_name + '_1.x0_surface')
 
-            file_lines.append('\t*Surface, name=contact_Surface_' + name + '_tooth_' + str(i) + ', combine=union')
-            file_lines.append('\t\t' + tooth.instance_name + '_0.Exposed_surface, ' +
-                              tooth.instance_name + '_1.Exposed_surface')
-
         # Writing tie constraints between the teeth
         for i in range(1, gear.teeth_to_model):
             file_lines.append('\t*Tie, name=tie_' + name + '_inter_teeth_' + str(i - 1) + '_' + str(i))
             file_lines.append('\t\t' + gear.teeth_array[i - 1].instance_name +
                               '_1.x1_surface, ' + gear.teeth_array[i].instance_name + '_0.x1_surface')
 
-        file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
-        for tooth_idx in range(gear.teeth_to_model):
-            file_lines.append('\t\tcontact_Surface_' + name + '_tooth_' + str(tooth_idx))
+        exposed_elements = [tooth.instance_name + '_' + str(i) + '.Exposed_Surface'
+                            for tooth in gear.teeth_array for i in (0, 1)]
+
+        file_lines.append('\t*Elset, elset=exposed_elements_' + name)
+        for eset in exposed_elements:
+            file_lines.append('\t\t' + eset)
+
+        file_lines.append('\t*Surface, name=contact_Surface_' + name + ', trim=yes')
+        file_lines.append('\t\texposed_elements_' + name)
 
         file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
         file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
