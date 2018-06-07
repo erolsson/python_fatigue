@@ -15,8 +15,8 @@ def write_load_step(step_name, planet_torque=None, initial_inc=0.01):
     if planet_torque:
         lines.append('\t*Cload')
         lines.append('\t\tplanet_ref_node, 6, ' + str(-planet_torque*1000))
-    lines.append('\t*Boundary, amplitude=sun_rotation')
-    lines.append('\t\tsun_ref_node, 6, 6,' + str(1./24.*2.*pi))
+    lines.append('\t*Boundary, type=velocity, amplitude=sun_rotation')
+    lines.append('\t\tsun_ref_node, 6, 6,' + str(-1./24.*2.*pi))
     lines.append('\t*Output, field')
     lines.append('\t\t*Element Output')
     lines.append('\t\t\tS')
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     file_lines.append('*Material, name=SS2506')
     file_lines.append('\t*Elastic')
     file_lines.append('\t\t200E3, 0.3')
-    file_lines.append('*Assembly, name=pulsator_model')
+    file_lines.append('*Assembly, name=planet_sun_model')
 
     for gear in gears.itervalues():
         for tooth in gear.teeth_array:
@@ -128,9 +128,9 @@ if __name__ == '__main__':
     file_lines.append('\t1.0, 0.0')
     file_lines.append('\t2.0, 0.0')
     file_lines.append('\t3.0, 1.0')
-    file_lines.append('\t4.0, 2.0')
-    file_lines.append('\t5.0, 3.0')
-    file_lines.append('\t6.0, 4.0')
+    file_lines.append('\t4.0, 1.0')
+    file_lines.append('\t5.0, 1.0')
+    file_lines.append('\t6.0, 1.0')
 
     file_lines += write_load_step('Initiate_contact')
     file_lines += write_load_step('Apply_load', planet_torque=torque)
