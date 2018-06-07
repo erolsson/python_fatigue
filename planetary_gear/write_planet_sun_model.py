@@ -9,6 +9,8 @@ if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/'
     simulation_dir = 'input_files/planet_sun/'
 
+    torque = 1500.
+
     Gear = namedtuple('Gear', ['name', 'number_of_teeth', 'teeth_to_model', 'teeth_array'])
 
     gears = [Gear(name='planet', number_of_teeth=20, teeth_to_model=5, teeth_array=[]),
@@ -23,9 +25,9 @@ if __name__ == '__main__':
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     gears[0].teeth_array[2].instance_name = 'eval_tooth'
-    gears[0].teeth_array[2].part_names = ['coarse_tooth_pos', 'dense_tooth_neg']
-    gears[0].teeth_array[1].part_names = ['dense_tooth_pos', 'dense_tooth_neg']
-    gears[0].teeth_array[3].part_names = ['dense_tooth_pos', 'coarse_tooth_neg']
+    gears[0].teeth_array[2].part_names = ['planet_coarse_tooth_pos', 'planet_dense_tooth_neg']
+    gears[0].teeth_array[1].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
+    gears[0].teeth_array[3].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
 
     for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         mesh_dir = gear_model_dir + gear + '_gear/'
@@ -36,8 +38,22 @@ if __name__ == '__main__':
                                       set_include_file_name=simulation_dir + gear + '_' + mesh + '_geom_sets.inc')
     file_lines = ['*Heading',
                   '\tModel of a pulsator test of a planetary gear']
-    for mesh in ['coarse', 'dense']:
+    for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         for sign in ['pos', 'neg']:
-            file_lines += write_tooth_part(name=mesh + '_tooth_' + sign,
-                                           inc_file=mesh + '_geom_x' + sign + '.inc',
-                                           set_file=mesh + '_geom_sets.inc')
+            file_lines += write_tooth_part(name=gear + '_' + mesh + '_tooth_' + sign,
+                                           inc_file=gear + '_' + mesh + '_geom_x' + sign + '.inc',
+                                           set_file=gear + '_' + mesh + '_geom_sets.inc')
+
+    file_lines.append('**')
+    file_lines.append('*Material, name=SS2506')
+    file_lines.append('\t*Elastic')
+    file_lines.append('\t\t200E3, 0.3')
+    file_lines.append('*Assembly, name=pulsator_model')
+
+    for gear in gears:
+        for tooth in gear.teeth_array:
+            file_lines += tooth.write_input()
+
+    with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
+        for line in file_lines:
+            input_file.write(line + '\n')

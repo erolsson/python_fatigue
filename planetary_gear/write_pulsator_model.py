@@ -9,7 +9,7 @@ from write_input_for_dante import write_sets
 
 
 def write_tooth_part(name, inc_file, set_file):
-    lines = ['*PART, NAME=' + name,
+    lines = ['*Part, name=' + name,
              '\t*Include, Input=' + inc_file,
              '\t*Include, Input=' + set_file,
              '\t*Solid Section, elset=GEARELEMS, material=SS2506',
