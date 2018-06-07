@@ -131,7 +131,7 @@ if __name__ == '__main__':
             file_lines.append('*Boundary')
             file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
 
-    file_lines.append('*Amplitude, name=sun_rotation')
+    file_lines.append('*Amplitude, name=sun_rotation, time=total time')
     file_lines.append('\t0.0, 0.0')
     file_lines.append('\t1.0, 0.0')
     file_lines.append('\t2.0, 0.0')
