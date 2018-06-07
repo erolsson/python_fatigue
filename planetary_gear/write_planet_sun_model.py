@@ -11,17 +11,19 @@ if __name__ == '__main__':
 
     torque = 1500.
 
-    Gear = namedtuple('Gear', ['name', 'number_of_teeth', 'teeth_to_model', 'teeth_array'])
+    Gear = namedtuple('Gear', ['name', 'number_of_teeth', 'teeth_to_model', 'teeth_array', 'position', 'rotation'])
 
-    gears = [Gear(name='planet', number_of_teeth=20, teeth_to_model=5, teeth_array=[]),
-             Gear(name='sun', number_of_teeth=24, teeth_to_model=5, teeth_array=[])]
+    gears = [Gear(name='planet', number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
+                  rotation=180),
+             Gear(name='sun', number_of_teeth=24, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.), rotation=0)]
 
-    for gear in gears:
+    for gear, direction in zip(gears, [-1, 1]):
         for i in range(gear.teeth_to_model):
             gear.teeth_array.append(GearTooth(instance_name=gear.name + '_tooth' + str(i),
-                                              rotation=(i+0.5)*360/gear.number_of_teeth,
+                                              rotation=(i+0.5)*360/gear.number_of_teeth*direction + gear.rotation,
                                               part_names=[gear.name + '_coarse_tooth_pos',
-                                                          gear.name + '_coarse_tooth_neg']))
+                                                          gear.name + '_coarse_tooth_neg'],
+                                              position=gear.position))
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     gears[0].teeth_array[2].instance_name = 'eval_tooth'

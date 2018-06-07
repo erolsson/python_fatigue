@@ -101,17 +101,20 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
 
 
 class GearTooth:
-    def __init__(self, instance_name, rotation, part_names):
+    def __init__(self, instance_name, rotation, part_names, position=(0., 0., 0.)):
         self.instance_name = instance_name
         self.rotation = rotation
         self.part_names = part_names
+        self.pos = position
 
     def write_input(self):
         lines = []
         for part_idx, part_name in enumerate(self.part_names):
             lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
-                      '\t\t0.0, 0.0, 0.0',
-                      '\t\t0.0, 0.0, 0.0, 0.0, 0.0, 1.0, ' + str(self.rotation),
+                      '\t\t' + str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2]),
+                      '\t\t' + str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2]) + ', ' +
+                      str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2] + 1.0) + ', ' +
+                      str(self.rotation),
                       '\t*End Instance']
         return lines
 
