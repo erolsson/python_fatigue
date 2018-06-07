@@ -44,9 +44,9 @@ if __name__ == '__main__':
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name
     planet = gears['planet']
     planet.teeth_array[2].instance_name = 'eval_tooth'
-    planet.teeth_array[1].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
+    planet.teeth_array[1].part_names = ['planet_coarse_tooth_pos', 'planet_dense_tooth_neg']
     planet.teeth_array[2].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
-    planet.teeth_array[3].part_names = ['planet_coarse_tooth_pos', 'planet_dense_tooth_neg']
+    planet.teeth_array[3].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
 
     for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         mesh_dir = gear_model_dir + gear + '_gear/'
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     # Combining surfaces to master contact and slave surfaces
     # Sun gear master due to coarser mesh
-    for name, gear in gears.iteritems():
+    for gear_idx, (name, gear) in enumerate(gears.iteritems()):
         for i in range(gear.teeth_to_model):
             file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
             file_lines.append('\t\t' + gear.teeth_array[i].instance_name +
@@ -97,6 +97,14 @@ if __name__ == '__main__':
         file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
         file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
         file_lines.append('\t\t' + gear.teeth_array[-1].instance_name + '_1.x1_Surface')
+
+        # Adding coupling nodes
+        file_lines.append('\t*Node, nset=j' + name + '_ref_node')
+        file_lines.append('\t\t' + str(900000+gear_idx) + ', ' + str(gear.position[0]) + ', ' + str(gear.position[1]) +
+                          ', ' + str(gear.position[2]))
+        file_lines.append('\t*Coupling, Constraint name=' + name + '_load_coupling, ' +
+                          'ref node=' + name + '_ref_node, surface=bc_Surface_' + name)
+        file_lines.append('\t\t*Kinematic')
 
     file_lines.append('*End Assembly')
 
