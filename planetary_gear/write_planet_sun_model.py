@@ -1,3 +1,5 @@
+import sys
+
 from collections import namedtuple
 from math import pi
 
@@ -7,16 +9,16 @@ from write_pulsator_model import write_include_files_for_tooth
 from write_pulsator_model import write_tooth_part
 
 
-def write_load_step(step_name, planet_torque=None, initial_inc=0.01):
+def write_load_step(step_name, sun_torque=None, planet_velocity=0.0, initial_inc=0.01):
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
              '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.']
 
-    if planet_torque:
+    if sun_torque:
         lines.append('\t*Cload')
-        lines.append('\t\tplanet_ref_node, 6, ' + str(-planet_torque*1000))
-    lines.append('\t*Boundary, type=velocity, amplitude=sun_rotation')
-    lines.append('\t\tsun_ref_node, 6, 6,' + str(-1./24.*2.*pi))
+        lines.append('\t\tsun_ref_node, 6, ' + str(sun_torque*1000))
+    lines.append('\t*Boundary, type=velocity')
+    lines.append('\t\planet_ref_node, 6, 6,' + str(planet_velocity))
     lines.append('\t*Output, field')
     lines.append('\t\t*Element Output')
     lines.append('\t\t\tS')
@@ -30,7 +32,7 @@ if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/'
     simulation_dir = 'input_files/planet_sun/'
 
-    torque = 1500.
+    torque = float(sys.argv[1])
 
     Gear = namedtuple('Gear', ['number_of_teeth', 'teeth_to_model', 'teeth_array', 'position', 'rotation'])
     gears = {'planet': Gear(number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
@@ -136,9 +138,9 @@ if __name__ == '__main__':
     file_lines.append('\t1.0, 0.0')
     file_lines.append('\t2.0, 0.0')
     file_lines.append('\t3.0, 1.0')
-    file_lines.append('\t4.0, 1.0')
-    file_lines.append('\t5.0, 1.0')
-    file_lines.append('\t6.0, 1.0')
+    file_lines.append('\t4.0, 2.0')
+    file_lines.append('\t5.0, 3.0')
+    file_lines.append('\t6.0, 4.0')
 
     initiate_contact_lines = write_load_step('Initiate_contact')
     initiate_contact_lines.insert(3, '\t*Controls, reset')
@@ -148,9 +150,9 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(7, '\t*Contact Interference, shrink')
     initiate_contact_lines.insert(8, '\t\tcontact_Surface_planet, contact_Surface_sun')
     file_lines += initiate_contact_lines
-    file_lines += write_load_step('Apply_load', planet_torque=torque)
+    file_lines += write_load_step('Apply_load', sun_torque=torque)
     for i in range(4):
-        file_lines += write_load_step('loading_tooth_' + str(i+1), planet_torque=torque)
+        file_lines += write_load_step('loading_tooth_' + str(i+1), sun_torque=torque, planet_velocity=1./20*2*pi)
 
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
