@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                       full_set_file_name=mesh_dir + mesh + '_mesh_' + gear + '_sets.inc',
                                       set_include_file_name=simulation_dir + gear + '_' + mesh + '_geom_sets.inc')
     file_lines = ['*Heading',
-                  '\tModel of a meshing between a sun gear and a planetary gear']
+                  '\tModel of a meshing between a ring gear and a planetary gear']
     for gear, mesh in zip(['ring', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         for sign in ['pos', 'neg']:
             file_lines += write_tooth_part(name=gear + '_' + mesh + '_tooth_' + sign,
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     file_lines.append('\t*Elastic')
     file_lines.append('\t\t200E3, 0.3')
 
-    file_lines += write_gear_assembly(gears, assembly_name='planet_sun_assembly')
+    file_lines += write_gear_assembly(gears, assembly_name='planet_ring_assembly')
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     # Lock everything except rotation around z-axis
     file_lines.append('*Boundary')
-    file_lines.append('\tsun_ref_node, 1, 5')
+    file_lines.append('\tring_ref_node, 1, 5')
 
     file_lines.append('*Boundary')
     file_lines.append('\tplanet_ref_node, 1, 5')
@@ -75,15 +75,6 @@ if __name__ == '__main__':
             file_lines.append('\t' + tooth.instance_name + '_0.z0_nodes, 3, 3')
             file_lines.append('*Boundary')
             file_lines.append('\t' + tooth.instance_name + '_1.z0_nodes, 3, 3')
-
-    file_lines.append('*Amplitude, name=sun_rotation, time=total time')
-    file_lines.append('\t0.0, 0.0')
-    file_lines.append('\t1.0, 0.0')
-    file_lines.append('\t2.0, 0.0')
-    file_lines.append('\t3.0, 1.0')
-    file_lines.append('\t4.0, 2.0')
-    file_lines.append('\t5.0, 3.0')
-    file_lines.append('\t6.0, 4.0')
 
     initiate_contact_lines = write_load_step('Initiate_contact')
     initiate_contact_lines.insert(3, '\t*Controls, reset')
