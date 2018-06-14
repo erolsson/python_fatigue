@@ -1,21 +1,13 @@
 import numpy as np
 
-from write_input_for_dante import read_nodes_and_elements
-from write_input_for_dante import get_elements_from_nodes
-from write_input_for_dante import create_quarter_model
-from write_input_for_dante import write_geom_include_file
-from write_input_for_dante import write_sets_file
-from write_input_for_dante import write_sets
+from input_file_reader.input_file_functions import read_nodes_and_elements
+from input_file_reader.input_file_functions import write_sets
+from input_file_reader.input_file_functions import write_geom_include_file
+from input_file_reader.input_file_functions import get_elements_from_nodes
 
-
-def write_tooth_part(name, inc_file, set_file):
-    lines = ['*Part, name=' + name,
-             '\t*Include, Input=' + inc_file,
-             '\t*Include, Input=' + set_file,
-             '\t*Solid Section, elset=GEARELEMS, material=SS2506',
-             '\t\t1.0',
-             '*End Part']
-    return lines
+from gear_input_file_functions import write_tooth_part
+from gear_input_file_functions import write_include_files_for_tooth
+from gear_input_file_functions import GearTooth
 
 
 def write_load_step(step_name, force=None, initial_inc=0.01):
@@ -35,29 +27,6 @@ def write_load_step(step_name, force=None, initial_inc=0.01):
     lines.append('\t\t\tU')
     lines.append('*End step')
     return lines
-
-
-def write_include_files_for_tooth(full_model_file_name, include_file_names, full_set_file_name, set_include_file_name):
-    # Generating a quarter tooth for the right part
-    quarter_nodes, quarter_elements = create_quarter_model(full_model_file_name)
-    write_geom_include_file(quarter_nodes, quarter_elements,
-                            filename=include_file_names[0])
-
-    write_sets_file(filename=set_include_file_name,
-                    full_model_sets_file=full_set_file_name,
-                    nodal_data=quarter_nodes,
-                    element_data=quarter_elements)
-
-    # Generating a quarter tooth for the left part
-    quarter_nodes[:, 1] *= -1
-
-    # Swapping the nodes in the z-direction to get correct ordering of the nodes
-    temp_connectivity = quarter_elements[:, 5:].copy()
-    quarter_elements[:, 5:] = quarter_elements[:, 1:5]
-    quarter_elements[:, 1:5] = temp_connectivity
-
-    write_geom_include_file(quarter_nodes, quarter_elements,
-                            filename=include_file_names[1])
 
 
 def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
@@ -99,24 +68,6 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
         for set_line in set_lines:
             set_file.write(set_line + '\n')
 
-
-class GearTooth:
-    def __init__(self, instance_name, rotation, part_names, position=(0., 0., 0.)):
-        self.instance_name = instance_name
-        self.rotation = rotation
-        self.part_names = part_names
-        self.pos = position
-
-    def write_input(self):
-        lines = []
-        for part_idx, part_name in enumerate(self.part_names):
-            lines += ['\t*Instance, name=' + self.instance_name + '_' + str(part_idx) + ', part=' + part_name,
-                      '\t\t' + str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2]),
-                      '\t\t' + str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2]) + ', ' +
-                      str(self.pos[0]) + ', ' + str(self.pos[1]) + ', ' + str(self.pos[2] + 1.0) + ', ' +
-                      str(self.rotation),
-                      '\t*End Instance']
-        return lines
 
 if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/planet_gear/'

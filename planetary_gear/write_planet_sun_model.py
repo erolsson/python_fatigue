@@ -3,30 +3,11 @@ import sys
 from collections import namedtuple
 from math import pi
 
-from write_pulsator_model import GearTooth
-from write_pulsator_model import write_include_files_for_tooth
-
-from write_pulsator_model import write_tooth_part
-
-
-def write_load_step(step_name, sun_torque=None, planet_velocity=0.0, initial_inc=0.01):
-    lines = ['*step, name=' + step_name + ', nlgeom=Yes',
-             '\t*Static',
-             '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.']
-
-    if sun_torque:
-        lines.append('\t*Cload')
-        lines.append('\t\tsun_ref_node, 6, ' + str(-sun_torque*1000))
-    lines.append('\t*Boundary, type=velocity')
-    lines.append('\t\tplanet_ref_node, 6, 6,' + str(planet_velocity))
-    lines.append('\t*Output, field')
-    lines.append('\t\t*Element Output')
-    lines.append('\t\t\tS')
-    lines.append('\t\t*Node Output')
-    lines.append('\t\t\tCF, RF, U')
-    lines.append('*End step')
-    return lines
-
+from gear_input_file_functions import GearTooth
+from gear_input_file_functions import write_include_files_for_tooth
+from gear_input_file_functions import write_tooth_part
+from gear_input_file_functions import write_load_step
+from gear_input_file_functions import write_gear_assembly
 
 if __name__ == '__main__':
     gear_model_dir = 'input_files/gear_models/'
@@ -73,46 +54,8 @@ if __name__ == '__main__':
     file_lines.append('*Material, name=SS2506')
     file_lines.append('\t*Elastic')
     file_lines.append('\t\t200E3, 0.3')
-    file_lines.append('*Assembly, name=planet_sun_model')
 
-    for gear in gears.itervalues():
-        for tooth in gear.teeth_array:
-            file_lines += tooth.write_input()
-
-    # Combining surfaces to master contact and slave surfaces
-    # Sun gear master due to coarser mesh
-    for gear_idx, (name, gear) in enumerate(gears.iteritems()):
-        for i in range(gear.teeth_to_model):
-            file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
-            file_lines.append('\t\t' + gear.teeth_array[i].instance_name +
-                              '_0.x0_surface, ' + gear.teeth_array[i].instance_name + '_1.x0_surface')
-
-        # Writing tie constraints between the teeth
-        for i in range(1, gear.teeth_to_model):
-            file_lines.append('\t*Tie, name=tie_' + name + '_inter_teeth_' + str(i - 1) + '_' + str(i))
-            file_lines.append('\t\t' + gear.teeth_array[i - 1].instance_name +
-                              '_1.x1_surface, ' + gear.teeth_array[i].instance_name + '_0.x1_surface')
-
-        exposed_surface_names = [tooth.instance_name + '_' + str(i) + '.Exposed_Surface'
-                                 for tooth in gear.teeth_array for i in [0, 1]]
-
-        file_lines.append('\t*Surface, name=contact_Surface_' + name + ', combine=union')
-        for surface_name in exposed_surface_names:
-            file_lines.append('\t\t' + surface_name)
-
-        file_lines.append('\t*Surface, name=bc_Surface_' + name + ', combine=union')
-        file_lines.append('\t\t' + gear.teeth_array[0].instance_name + '_0.x1_Surface')
-        file_lines.append('\t\t' + gear.teeth_array[-1].instance_name + '_1.x1_Surface')
-
-        # Adding coupling nodes
-        file_lines.append('\t*Node, nset=' + name + '_ref_node')
-        file_lines.append('\t\t' + str(900000+gear_idx) + ', ' + str(gear.position[0]) + ', ' + str(gear.position[1]) +
-                          ', ' + str(gear.position[2]))
-        file_lines.append('\t*Coupling, Constraint name=' + name + '_load_coupling, ' +
-                          'ref node=' + name + '_ref_node, surface=bc_Surface_' + name)
-        file_lines.append('\t\t*Kinematic')
-
-    file_lines.append('*End Assembly')
+    file_lines += write_gear_assembly(gears, assembly_name='planet_sun_assembly')
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
@@ -150,9 +93,9 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(7, '\t*Contact Interference, shrink')
     initiate_contact_lines.insert(8, '\t\tcontact_Surface_planet, contact_Surface_sun')
     file_lines += initiate_contact_lines
-    file_lines += write_load_step('Apply_load', sun_torque=torque)
+    file_lines += write_load_step('Apply_load', applied_torque=torque)
     for i in range(4):
-        file_lines += write_load_step('loading_tooth_' + str(i+1), sun_torque=torque, planet_velocity=1./20*2*pi)
+        file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=torque, planet_velocity=1./20*2*pi)
 
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
