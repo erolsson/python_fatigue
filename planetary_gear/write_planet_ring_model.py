@@ -1,10 +1,10 @@
+from __future__ import absolute_import
 import sys
-print sys.path
 from collections import namedtuple
 from math import pi
 
 from gear_input_file_functions import GearTooth
-from gear_input_file_functions import  write_include_files_for_tooth
+from gear_input_file_functions import write_include_files_for_tooth
 from gear_input_file_functions import write_tooth_part
 from gear_input_file_functions import write_gear_assembly
 from gear_input_file_functions import write_load_step
