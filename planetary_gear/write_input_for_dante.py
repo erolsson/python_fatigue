@@ -328,7 +328,7 @@ if __name__ == '__main__':
                     full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
-                    monitor_node=73710)
+                    monitor_node=60674)
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename='input_files/dante_quarter/Toolbox_Carbon_quarter_geo.inc')
