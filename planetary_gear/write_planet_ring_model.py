@@ -1,5 +1,5 @@
 import sys
-
+print sys.path
 from collections import namedtuple
 from math import pi
 
