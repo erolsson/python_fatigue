@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                       full_set_file_name=mesh_dir + mesh + '_mesh_' + gear + '_sets.inc',
                                       set_include_file_name=simulation_dir + gear + '_' + mesh + '_geom_sets.inc')
     file_lines = ['*Heading',
-                  '\tModel of a pulsator test of a planetary gear']
+                  '\tModel of a meshing between a sun gear and a planetary gear']
     for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
         for sign in ['pos', 'neg']:
             file_lines += write_tooth_part(name=gear + '_' + mesh + '_tooth_' + sign,
