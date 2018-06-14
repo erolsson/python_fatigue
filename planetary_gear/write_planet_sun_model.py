@@ -84,9 +84,10 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(7, '\t*Contact Interference, shrink')
     initiate_contact_lines.insert(8, '\t\tcontact_Surface_planet, contact_Surface_sun')
     file_lines += initiate_contact_lines
-    file_lines += write_load_step('Apply_load', applied_torque=torque)
+    file_lines += write_load_step('Apply_load', applied_torque=torque, torque_gear_name='ring')
     for i in range(4):
-        file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=torque, planet_velocity=1./20*2*pi)
+        file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=torque, planet_velocity=1./20*2*pi,
+                                      torque_gear_name='ring')
 
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
