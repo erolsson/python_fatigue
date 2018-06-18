@@ -20,7 +20,7 @@ if __name__ == '__main__':
                             rotation=8 - 360./22*5),
              'ring': Gear(number_of_teeth=66, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.),
                           rotation=-260./66*5)}
-    # unc
+
     for name, gear in gears.iteritems():
         for i in range(gear.teeth_to_model):
             gear.teeth_array.append(GearTooth(instance_name=name + '_tooth' + str(i),
