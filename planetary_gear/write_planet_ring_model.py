@@ -85,11 +85,13 @@ if __name__ == '__main__':
     initiate_contact_lines.insert(8, '\t\tcontact_Surface_planet, contact_Surface_ring')
     file_lines += initiate_contact_lines
     torque_ratio = float(gears['ring'].number_of_teeth) / gears['planet'].number_of_teeth
-    file_lines += write_load_step('Apply_load', applied_torque=torque*torque_ratio)
+    file_lines += write_load_step('Apply_load', applied_torque=torque*torque_ratio,
+                                      torque_gear_name='ring')
 
     for i in range(4):
         file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=torque*torque_ratio,
-                                      planet_velocity=1./20*2*pi)
+                                      planet_velocity=1./20*2*pi,
+                                      torque_gear_name='ring')
 
     with open(simulation_dir + 'planet_ring_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
