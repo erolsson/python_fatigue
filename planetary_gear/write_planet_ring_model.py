@@ -19,7 +19,7 @@ if __name__ == '__main__':
     gears = {'planet': Gear(number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
                             rotation=8 - 360./22*5),
              'ring': Gear(number_of_teeth=66, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.),
-                          rotation=-260./66*5)}
+                          rotation=-360./66*5)}
 
     for name, gear in gears.iteritems():
         for i in range(gear.teeth_to_model):
