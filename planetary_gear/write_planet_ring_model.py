@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     Gear = namedtuple('Gear', ['number_of_teeth', 'teeth_to_model', 'teeth_array', 'position', 'rotation'])
     gears = {'planet': Gear(number_of_teeth=20, teeth_to_model=5, teeth_array=[], position=(0., 83.5, 0.),
-                            rotation=-360./22*5),
+                            rotation=-360./22*5-8),
              'ring': Gear(number_of_teeth=66, teeth_to_model=5, teeth_array=[], position=(0., 0., 0.),
                           rotation=-360./66*5)}
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     file_lines += initiate_contact_lines
     torque_ratio = float(gears['ring'].number_of_teeth) / gears['planet'].number_of_teeth
     file_lines += write_load_step('Apply_load', applied_torque=torque*torque_ratio,
-                                      torque_gear_name='ring')
+                                  torque_gear_name='ring')
 
     for i in range(4):
         file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=torque*torque_ratio,
