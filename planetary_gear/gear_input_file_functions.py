@@ -65,7 +65,7 @@ def write_load_step(step_name, torque_gear_name='sun', applied_torque=None, plan
 
     if applied_torque:
         lines.append('\t*Cload')
-        lines.append('\t\t' + torque_gear_name + '_ref_node, 6, ' + str(-applied_torque*1000))
+        lines.append('\t\t' + torque_gear_name + '_ref_node, 6, ' + str(applied_torque*1000))
     lines.append('\t*Boundary, type=velocity')
     lines.append('\t\tplanet_ref_node, 6, 6,' + str(planet_velocity))
     lines.append('\t*Output, field')
