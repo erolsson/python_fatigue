@@ -86,7 +86,7 @@ if __name__ == '__main__':
     hardness_pickle = open('../planetary_gear/pickles/tooth_root_stresses/hardness.pkl', 'w')
     pickle.dump(hardness, hardness_pickle)
     hardness_pickle.close()
-
+    #Comment
     # Mechanical loading
     mechanical_stresses = np.zeros((100, 2))
     mechanical_stresses[:, 0] = z
