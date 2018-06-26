@@ -1,3 +1,14 @@
+from collections import OrderedDict
+
+import numpy as np
+import pickle
+
+from visualization import *
+import xyPlot
+
+from abaqusConstants import *
+
+
 def create_path(points, path_name):
     path_points = []
     for point in points:
