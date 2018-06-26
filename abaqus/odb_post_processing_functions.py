@@ -19,7 +19,9 @@ def create_fatigue_sets(odb, set_data, name='fatigue'):
         odb.rootAssembly.instances['PART-1-1'].NodeSetFromNodeLabels(name=name + 'SurfaceNodes', nodeLabels=set_data[2])
     if name + 'SurfaceElements' not in odb.rootAssembly.instances['PART-1-1'].elementSets:
         odb.rootAssembly.instances['PART-1-1'].ElementSetFromElementLabels(name=name + 'SurfaceElements',
+
                                                                            elementLabels=set_data[3])
+# ToDo: Rewrite get odb data
 
 
 def get_odb_data(odb, variable, element_set_name, step, frame=0, transform=False, node_numbers=None):
