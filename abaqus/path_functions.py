@@ -9,7 +9,7 @@ import xyPlot
 from abaqusConstants import *
 
 
-def create_path(points, path_name):
+def create_path(points, path_name, session):
     path_points = []
     for point in points:
         path_points.append((point[0], point[1], point[2]))
@@ -18,7 +18,7 @@ def create_path(points, path_name):
     return path
 
 
-def get_stress_tensors_from_path(path):
+def get_stress_tensors_from_path(path, session):
     stress_data = np.zeros((100, 3, 3))
     comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
     for (idx1, idx2), comp in zip([(0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2)], comps):

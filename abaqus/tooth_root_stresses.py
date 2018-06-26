@@ -58,8 +58,8 @@ if __name__ == '__main__':
         last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
-        root_path = create_path(path_data, 'longitudinal_path')
-        stress_tensors = get_stress_tensors_from_path(root_path)
+        root_path = create_path(path_data, 'longitudinal_path', session)
+        stress_tensors = get_stress_tensors_from_path(root_path, session)
 
         session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='HV',
                                                                        outputPosition=ELEMENT_NODAL)                                                                       
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
     root_path = create_path(path_data, 'longitudinal_path')
-    stress_tensors = get_stress_tensors(root_path)
+    stress_tensors = get_stress_tensors_from_path(root_path, session)
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
 
     odb.close()
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     odb = odbAccess.openOdb(odb_path + 'findleyDataSets20170608.odb')
     o7 = session.odbs[session.odbs.keys()[0]]
     session.viewports['Viewport: 1'].setValues(displayedObject=o7)
-    root_path = create_path(path_data, 'longitudinal_path')
+    root_path = create_path(path_data, 'longitudinal_path', session)
     findley_data = OrderedDict()
     for case_idx, case_depth in enumerate([0.5, 0.8, 1.1, 1.4]):
         findley_data[case_depth] = OrderedDict()
