@@ -88,7 +88,7 @@ if __name__ == '__main__':
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
     for eset in ['Volume']:
-        nodal_dict = get_node_data_from_set(dante_odb, 'root' + eset + 'Nodes')
+        nodal_dict = get_node_data_from_set(mechanical_odb, 'root' + eset + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
             dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
             create_fatigue_sets(dante_odb, root_set_data, name='root')
