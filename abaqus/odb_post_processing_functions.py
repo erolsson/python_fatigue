@@ -8,6 +8,9 @@ import os
 import pickle
 import numpy as np
 
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import cylindrical_system_z
+
 
 def create_fatigue_sets(odb, set_data, name='fatigue'):
     if name + 'VolumeNodes' not in odb.rootAssembly.instances['PART-1-1'].nodeSets:

@@ -1,27 +1,23 @@
+from collections import namedtuple
+
 from odbAccess import *
 import numpy as np
 from abaqusConstants import *
 
 
-class CoordinateSystem:
-    def __init__(self, name, origin, point1, point2, system_type=CYLINDRICAL):
-        self.name = name
-
-        self.origin = origin
-        self.point1 = point1
-        self.point2 = point2
-
-        self.system_type = system_type
+CoordinateSystem = namedtuple('CoordinateSystem', ['name', 'origin', 'point1', 'point2', 'system_type'])
+cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.), point1=(0., 1., 0.),
+                                        point2=(1., 0., 0.), system_type=CYLINDRICAL)
 
 
 def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
-                        coordinate_system=None):
+                        coordinate_system=None, position=ELEMENT_NODAL, position_numbers=None):
     odb = odbAcess.openOdb(odb_file_name, readOnly=True)
     if instance_name is None:
         instance_name = odb.rootAssembly.instances.keys()[0]
     element_set = odb.rootAssembly.instances[instance_name].elementSets[element_set_name]
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
-    field = field.getSubset(position=ELEMENT_NODAL)
+    field = field.getSubset(position=position)
 
     if coordinate_system is not None:
         if coordinate_system.name not in odb.rootAssembly.datumCsyses:
@@ -40,11 +36,20 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
     n2 = 1 if type(field[0].data) is float else len(field[0].data)
 
     data = np.zeros((n1, n2))
+    node_labels = []
+    element_labels = []
     for i, data_point in enumerate(field):
         data[i, :] = data_point.data
-
+        if position in [NODAL, ELEMENT_NODAL]:
+            node_labels.append(data_point.nodeLabel)
+        elif position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
+            element_labels.append(data_point.elementLabel)
     odb.close()
-    return data
+
+    if position_numbers:
+        return data, node_labels, element_labels
+    else:
+        return data
 
 
 def write_field_to_odb(field_data, field_id, odb_file_name, element_set_name, step_name, instance_name=None,
