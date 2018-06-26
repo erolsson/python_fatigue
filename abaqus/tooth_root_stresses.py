@@ -94,7 +94,7 @@ if __name__ == '__main__':
     last_frame = len(odb.steps[odb.steps.keys()[-1]].frames)
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=last_frame)
 
-    root_path = create_path(path_data, 'longitudinal_path')
+    root_path = create_path(path_data, 'longitudinal_path', session)
     stress_tensors = get_stress_tensors_from_path(root_path, session)
     mechanical_stresses[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
 
