@@ -22,7 +22,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
     if coordinate_system is not None:
         if coordinate_system.name not in odb.rootAssembly.datumCsyses:
             transform_system = odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
-                                                                       coordSysType=coordinate_system.type,
+                                                                       coordSysType=coordinate_system.system_type,
                                                                        origin=coordinate_system.origin,
                                                                        point1=coordinate_system.point1,
                                                                        point2=coordinate_system.point2)
