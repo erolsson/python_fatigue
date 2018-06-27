@@ -2,6 +2,7 @@ from collections import namedtuple
 
 import odbAccess
 import numpy as np
+from materials.gear_materials import SteelData
 from abaqusConstants import *
 
 
