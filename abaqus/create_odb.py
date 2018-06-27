@@ -1,4 +1,4 @@
-import odbAccess
+from odbAccess import *
 from abaqusConstants import *
 
 import os
