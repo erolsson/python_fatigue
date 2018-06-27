@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import odbAccess
 import numpy as np
-from materials.gear_materials import SteelData
+
 from abaqusConstants import *
 
 
@@ -46,7 +46,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         elif position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
             element_labels.append(data_point.elementLabel)
     odb.close()
-    print SteelData
+
     if position_numbers:
         return data, node_labels, element_labels
     else:

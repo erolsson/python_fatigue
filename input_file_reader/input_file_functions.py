@@ -3,10 +3,10 @@ import re
 import numpy as np
 
 
-def read_nodes_and_elements(full_model_filename):
+def read_nodes_and_elements(model_filename):
     nodes = []
     elements = []
-    with open(full_model_filename) as full_model_file:
+    with open(model_filename) as full_model_file:
         lines = full_model_file.readlines()
         reading_nodes = False
         reading_elements = False
