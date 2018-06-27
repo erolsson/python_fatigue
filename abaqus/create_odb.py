@@ -18,5 +18,5 @@ if __name__ == '__main__':
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
     nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
     model_data = 0
-    create_odb(odb_file_name='/scratch/users/erik/scania_gear_analysis/odb_files/stress.odb',
+    create_odb(odb_file_name=r'/scratch/users/erik/scania_gear_analysis/odb_files/stress.odb',
                model_data=model_data)
