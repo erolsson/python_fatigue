@@ -8,7 +8,7 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 
 def create_odb(odb_file_name, model_data):
     print os.path.basename(odb_file_name), os.path.dirname(odb_file_name)
-    odb = Odb(name=os.path.basename(odb_file_name), path=os.path.dirname(odb_file_name))
+    odb = Odb(name=os.path.basename(odb_file_name), path=odb_file_name)
 
     odb.update()
     odb.save()
