@@ -98,7 +98,7 @@ if __name__ == '__main__':
             create_fatigue_sets(dante_odb, root_set_data, name='root')
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
             residual_stress = read_field_from_odb(field_id='S', odb_file_name=dante_odb_name,
-                                                  element_set_name='root' + eset + 'Elements',
+                                                  element_set_name='root' + element_set + 'Elements',
                                                   step_name=step_name, frame_number=0,
                                                   coordinate_system=cylindrical_system_z)
 
