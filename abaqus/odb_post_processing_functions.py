@@ -77,6 +77,7 @@ def create_path(points, name):
 
 if __name__ == '__main__':
     mechanical_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb')
+    dante_odb_name = '/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb'
     pickle_handle = open('/scratch/users/erik/python_fatigue/planetary_gear/rootSetLabels.pkl', 'r')
     root_set_data = []
     for _ in range(4):
@@ -90,14 +91,19 @@ if __name__ == '__main__':
         os.makedirs(pickle_dir)
         os.mkdir(pickle_dir + '/volume_data')
         os.mkdir(pickle_dir + '/surface_data')
-    for eset in ['Volume']:
-        nodal_dict = get_node_data_from_set(mechanical_odb, 'root' + eset + 'Nodes')
+    for element_set in ['Volume']:
+        nodal_dict = get_node_data_from_set(mechanical_odb, 'root' + element_set + 'Nodes')
         for case_depth in [0.5, 0.8, 1.1, 1.4]:
             dante_odb = odbAccess.openOdb('/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb')
             create_fatigue_sets(dante_odb, root_set_data, name='root')
             step_name = 'danteResults_DC' + str(case_depth).replace('.', '_')
-            residual_stress = get_odb_data(dante_odb, 'S', 'root' + eset + 'Elements', step_name, 0, transform=True)
-            hardness = get_odb_data(dante_odb, 'HV', 'root' + eset + 'Elements', step_name, 0)
+            residual_stress = read_field_from_odb(field_id='S', odb_file_name=dante_odb_name,
+                                                  element_set_name='root' + eset + 'Elements',
+                                                  step_name=step_name, frame_number=0,
+                                                  coordinate_system=cylindrical_system_z)
+
+            # residual_stress = get_odb_data(dante_odb, 'S', 'root' + eset + 'Elements', step_name, 0, transform=True)
+            hardness = get_odb_data(dante_odb, 'HV', 'root' + element_set + 'Elements', step_name, 0)
             data_dict = {'S': residual_stress, 'HV': hardness}
             pickle_name = pickle_dir + '/' + eset.lower() + '_data/danteCD' + str(case_depth).replace('.', '_') + '.pkl'
             pickle_handle = open(pickle_name, 'w')
@@ -106,15 +112,15 @@ if __name__ == '__main__':
             dante_odb.close()
 
         # Maximum load corresponds to Pamp = 32 kN
-        min_load, node_coords = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'minLoad', 0,
+        min_load, node_coords = get_odb_data(mechanical_odb, 'S', 'root' + element_set + 'Elements', 'minLoad', 0,
                                              node_numbers=nodal_dict)
-        max_load = get_odb_data(mechanical_odb, 'S', 'root' + eset + 'Elements', 'maxLoad', 0)
+        max_load = get_odb_data(mechanical_odb, 'S', 'root' + element_set + 'Elements', 'maxLoad', 0)
         mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
-        mechanical_pickle = open(pickle_dir + '/' + eset.lower() + '_data/mechanical_loads.pkl', 'w')
+        mechanical_pickle = open(pickle_dir + '/' + element_set.lower() + '_data/mechanical_loads.pkl', 'w')
         pickle.dump(mechanical_dict, mechanical_pickle)
         mechanical_pickle.close()
 
-        nodal_pickle = open(pickle_dir + '/' + eset.lower() + '_data/nodal_positions.pkl', 'w')
+        nodal_pickle = open(pickle_dir + '/' + element_set.lower() + '_data/nodal_positions.pkl', 'w')
         pickle.dump(node_coords, nodal_pickle)
         nodal_pickle.close()
 
