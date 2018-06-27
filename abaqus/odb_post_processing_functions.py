@@ -82,7 +82,6 @@ if __name__ == '__main__':
             pickle_handle = open(pickle_name, 'w')
             pickle.dump(data_dict, pickle_handle)
             pickle_handle.close()
-            dante_odb.close()
 
         # Maximum load corresponds to Pamp = 32 kN
         min_load, node_labels, _ = read_field_from_odb('S', odb_file_name=mechanical_odb_name,
