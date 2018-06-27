@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from odbAccess import *
+import odbAccess
 import numpy as np
 from abaqusConstants import *
 
@@ -12,7 +12,7 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 
 def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
                         coordinate_system=None, position=ELEMENT_NODAL, position_numbers=None):
-    odb = odbAcess.openOdb(odb_file_name, readOnly=True)
+    odb = odbAccess.openOdb(odb_file_name, readOnly=True)
     if instance_name is None:
         instance_name = odb.rootAssembly.instances.keys()[0]
     element_set = odb.rootAssembly.instances[instance_name].elementSets[element_set_name]
