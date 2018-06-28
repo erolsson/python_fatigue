@@ -33,6 +33,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
         frame_counter = len(write_odb.steps['mechanical_stresses'].frames)
     else:
         frame_counter = 0
+    write_odb.close()
 
     for frame in frames:
         stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
