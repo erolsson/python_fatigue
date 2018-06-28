@@ -63,14 +63,18 @@ def write_field_to_odb(field_data, field_id, odb_file_name, element_set_name, st
         step = odb.steps[step_name]
 
     if instance_name is None:
+        if element_set_name:
+            elements = odb.rootAssembly.elementSets[element_set_name].elements
+        else:
+            elements = odb.rootAssembly.elements
         instance = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
     else:
         instance = odb.rootAssembly.instances[instance_name]
+        if element_set_name:
+            elements = odb.rootAssembly.instances[instance_name].elementSets[element_set_name].elements
+        else:
+            elements = odb.rootAssembly.instances[instance_name].elements
 
-    if element_set_name in odb.rootAssembly.elementSets.keys():
-        elements = odb.rootAssembly.elementSets[element_set_name].elements
-    else:
-        elements = odb.rootAssembly.instances[instance_name].elementSets[element_set_name].elements
     element_numbers = []
     for e in elements:
         element_numbers.append(e.label)
