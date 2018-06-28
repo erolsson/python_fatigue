@@ -29,8 +29,13 @@ if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
     nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
-    print nodes_pos, elements_pos
-    model_data = 0
-    instances = [OdbInstance(name='right_part', nodes=nodes_pos, elements=elements_pos)]
+
+    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
+                      'input_files/planet_sun/planet_dense_geom_xneg.inc'
+    nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
+
+    instances = [OdbInstance(name='right_part', nodes=nodes_pos, elements=elements_pos),
+                 OdbInstance(name='left_part', nodes=nodes_neg, elements=elements_neg)]
+
     create_odb(odb_file_name=r'/scratch/users/erik/scania_gear_analysis/odb_files/stress.odb',
                instance_data=instances)
