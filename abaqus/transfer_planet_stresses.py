@@ -42,7 +42,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
 
         stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
                                           instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter
+        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter,
                            instance_name='tooth_right')
         frame_counter += 1
 
