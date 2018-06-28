@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from odbAccess import *
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
@@ -5,14 +7,28 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import CoordinateSystem
+
 
 def transfer_gear_stresses(from_odb_name, to_odb_name):
+    Frame = namedtuple('Frame', ['step', 'number'])
+    planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), point1=(0.0, 1.0, 0.0),
+                                     point2=(1.0, 0.0, 0.0))
     # inspect odb to find steps in frames
     simulation_odb = openOdb(from_odb_name, readOnly=True)
-    print simulation_odb.steps.keys()
-    step_names = [name for name in simulation_odb.steps.keys() if 'Loading_tooth' in name]
-    print step_names
+    step_names = [name for name in simulation_odb.steps.keys() if 'loading_tooth' in name]
+    step_names = sorted(step_names)
+    frames = []
+
+    for step_name in step_names:
+        for frame_number in range(len(simulation_odb.steps[step_name].frames)):
+            frames.append(Frame(step=step_name, number=frame_number))
     simulation_odb.close()
+
+    for frame in frames:
+        read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number, instance_name='EVAL_TOOTH_0',
+                            coordinate_system=planet_system)
 
 if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
