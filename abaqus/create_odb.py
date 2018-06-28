@@ -15,8 +15,10 @@ def create_odb(odb_file_name, instance_data):
     odb = Odb(name=os.path.basename(odb_file_name), path=odb_file_name)
 
     for instance in instance_data:
-
+        nodal_data = [(int(n[0]), n[1], n[2], n[3]) for n in instance.nodes]
         part = odb.Part(name=instance.name, embeddedSpace=THREE_D, type=DEFORMABLE_BODY)  # Todo Implement 2D models
+        part.addNodes(nodeData=nodal_data)
+        part.addElements(elementData=instance.elements.tolist(), type='C3D8')
         odb.rootAssembly.Instance(name=instance.name, object=part)
 
     odb.update()
