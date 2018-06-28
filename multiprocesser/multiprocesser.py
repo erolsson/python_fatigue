@@ -50,7 +50,7 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
                 job_args.append([function, arguments, kwarguments])
                 
     except:
-        print " ERROR: multiProcessor - The recieved arguments could not be interpreted"
+        print " ERROR: multiProcessor - The received arguments could not be interpreted"
         print "        The data must be on the following form:"
         print "        [  ( functionReference, arguments, key word arguments as dictionary )\n\t , " \
               "( myFun,[x,y,z], {'a':2 ,'b':3} ) \n\t ,  (myFun2, None, None),   ]\n"        
@@ -98,7 +98,6 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
                 else:
                     results.append(False)
                     continue
-
             except:
                 print "\n\n The following problem was encountered:"
                 print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
