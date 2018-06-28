@@ -55,7 +55,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
 
 def write_field_to_odb(field_data, field_id, odb_file_name, element_set_name, step_name, instance_name=None,
                        step_description='', frame_value=None, field_description='', invariants=None):
-    odb = odbAcess.openOdb(odb_file_name, readOnly=False)
+    odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 
     if step_name not in odb.steps:
         step = odb.Step(name=step_name,  description=step_description, domain=TIME, timePeriod=1)
