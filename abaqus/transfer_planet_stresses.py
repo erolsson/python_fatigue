@@ -33,6 +33,10 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
                                           instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
         write_field_to_odb(stress_data, 'S', to_odb_name, frame.step, instance_name='tooth_left')
 
+        stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
+                                          instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
+        write_field_to_odb(stress_data, 'S', to_odb_name, frame.step, instance_name='tooth_right')
+
 
 if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
