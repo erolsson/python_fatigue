@@ -53,7 +53,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         return data
 
 
-def write_field_to_odb(field_data, field_id, odb_file_name, element_set_name, step_name, instance_name=None,
+def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, element_set_name=None,
                        step_description='', frame_value=None, field_description='', invariants=None):
     odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 

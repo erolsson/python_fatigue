@@ -31,7 +31,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     for frame in frames:
         stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
                                           instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, 'GEARELEMS', frame.step, instance_name='tooth_left')
+        write_field_to_odb(stress_data, 'S', to_odb_name, frame.step, instance_name='tooth_left')
 
 
 if __name__ == '__main__':
