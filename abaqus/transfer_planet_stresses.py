@@ -8,7 +8,7 @@ from create_odb import OdbInstance
 
 def transfer_gear_stresses(from_odb_name, to_odb_name):
     # inspect odb to find steps in frames
-    simulation_odb = openOdb(from_odb_name, readOny=True)
+    simulation_odb = openOdb(from_odb_name, readOnly=True)
     step_names = [name for name in simulation_odb.steps.keys() if 'Loading_tooth' in name]
     print step_names
     simulation_odb.close()
