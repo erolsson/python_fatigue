@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 from odbAccess import *
+from abaqusConstants import *
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
@@ -14,7 +15,7 @@ from odb_io_functions import CoordinateSystem
 def transfer_gear_stresses(from_odb_name, to_odb_name):
     Frame = namedtuple('Frame', ['step', 'number'])
     planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), point1=(0.0, 1.0, 0.0),
-                                     point2=(1.0, 0.0, 0.0))
+                                     point2=(1.0, 0.0, 0.0), system_type=CYLINDRICAL)
     # inspect odb to find steps in frames
     simulation_odb = openOdb(from_odb_name, readOnly=True)
     step_names = [name for name in simulation_odb.steps.keys() if 'loading_tooth' in name]
