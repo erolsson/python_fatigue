@@ -90,7 +90,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
             frame_value = step.frames[len(step.frames)-1].frameValue + 1.0
         else:
             frame_value = 0.
-    if frame_number is None or frame_number or frame_number not in step.frames:
+    if frame_number is None or frame_number not in step.frames:
         frame = step.Frame(incrementNumber=len(step.frames)+1, frameValue=frame_value, description='stress components')
     else:
         frame = step.frames[frame_number]
