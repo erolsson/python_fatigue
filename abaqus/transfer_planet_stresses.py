@@ -59,3 +59,7 @@ if __name__ == '__main__':
     simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                           'input_files/planet_sun/planet_sun_400_Nm.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
+
+    simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
+                          'input_files/planet_sun/planet_ring_400_Nm.odb'
+    transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
