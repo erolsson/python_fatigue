@@ -61,8 +61,7 @@ if __name__ == '__main__':
 
     tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses.odb'
 
-    create_odb(odb_file_name=tooth_odb_file_name,
-               instance_data=instances)
+    create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
 
     # Importing stress history from the planet-sun simulations
     simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
