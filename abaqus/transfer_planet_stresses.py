@@ -1,4 +1,4 @@
-from OdbAccess import *
+from odbAccess import *
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
