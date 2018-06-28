@@ -128,4 +128,3 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
         print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
         print sys.exc_info()[1]  # - Exit type:', sys.exc_info()[0]
         raise
-cvbcvb
