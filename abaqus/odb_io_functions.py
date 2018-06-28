@@ -54,7 +54,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
 
 
 def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, element_set_name=None,
-                       step_description='', frame_value=None, field_description='', invariants=None):
+                       step_description='', frame_number=None, frame_value=None, field_description='', invariants=None):
     odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 
     if step_name not in odb.steps:
@@ -90,7 +90,10 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
             frame_value = step.frames[len(step.frames)-1].frameValue + 1.0
         else:
             frame_value = 0.
-    frame = step.Frame(incrementNumber=len(step.frames)+1, frameValue=frame_value, description='stress components')
+    if frame_number is None or frame_number or frame_number not in step.frames:
+        frame = step.Frame(incrementNumber=len(step.frames)+1, frameValue=frame_value, description='stress components')
+    else:
+        frame = step.frames[frame_number]
 
     if invariants is None:
         invariants = []

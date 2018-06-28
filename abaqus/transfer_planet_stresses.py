@@ -28,15 +28,23 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
             frames.append(Frame(step=step_name, number=frame_number))
     simulation_odb.close()
 
+    write_odb = openOdb(to_odb_name, readOnly=True)
+    if 'mechanical_stresses' in write_odb.steps:
+        frame_counter = len(write_odb.steps['mechanical_stresses'].frames)
+    else:
+        frame_counter = 0
+
     for frame in frames:
         stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
                                           instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, frame.step, instance_name='tooth_left')
+        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter,
+                           instance_name='tooth_left')
 
         stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
                                           instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, frame.step, instance_name='tooth_right')
-
+        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter
+                           instance_name='tooth_right')
+        frame_counter += 1
 
 if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
