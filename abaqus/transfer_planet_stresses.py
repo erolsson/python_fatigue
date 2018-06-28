@@ -9,6 +9,7 @@ from create_odb import create_odb
 from create_odb import OdbInstance
 
 from odb_io_functions import read_field_from_odb
+from odb_io_functions import write_field_to_odb
 from odb_io_functions import CoordinateSystem
 
 
@@ -28,8 +29,10 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     simulation_odb.close()
 
     for frame in frames:
-        read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number, instance_name='EVAL_TOOTH_0',
-                            coordinate_system=planet_system)
+        stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
+                                          instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
+        write_field_to_odb(stress_data, 'S', to_odb_name, 'GEARELEMS', frame.step, instance_name='tooth_left')
+
 
 if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
@@ -40,8 +43,8 @@ if __name__ == '__main__':
                       'input_files/planet_sun/planet_dense_geom_xneg.inc'
     nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
 
-    instances = [OdbInstance(name='right_part', nodes=nodes_pos, elements=elements_pos),
-                 OdbInstance(name='left_part', nodes=nodes_neg, elements=elements_neg)]
+    instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
+                 OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
     tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses.odb'
 
@@ -51,4 +54,4 @@ if __name__ == '__main__':
     # Importing stress history from the planet-sun simulations
     simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                           'input_files/planet_sun/planet_sun_400_Nm.odb'
-    transfer_gear_stresses(simulation_odb_name, '')
+    transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
