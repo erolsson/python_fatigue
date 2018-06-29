@@ -5,11 +5,13 @@ from odb_io_functions import write_field_to_odb
 from odb_io_functions import CoordinateSystem
 
 print sys.argv
-from_odb_name = sys.argv[1]
-to_odb_name = sys.argv[2]
-from_step = sys.argv[3]
-from_frame = int(sys.argv[4])
-to_frame = int(sys.argv[5])
+
+# There are a lot of argument to abaqus just use the five last ones
+from_odb_name = sys.argv[-5]
+to_odb_name = sys.argv[-4]
+from_step = sys.argv[-3]
+from_frame = int(sys.argv[-2])
+to_frame = int(sys.argv[-1])
 
 planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), point1=(0.0, 1.0, 0.0),
                                  point2=(1.0, 0.0, 0.0), system_type=CYLINDRICAL)
