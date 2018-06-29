@@ -33,8 +33,6 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     write_odb.close()
 
     for frame in frames:
-        print 'abaqus viewer noGUI=_copy_planet_stress.py -- ' + from_odb_name + ' ' + to_odb_name + ' ' \
-                        + frame.step + ' ' + str(frame.number) + ' ' + str(frame_counter)
         process = Popen('abaqus viewer noGUI=_copy_planet_stress.py -- ' + from_odb_name + ' ' + to_odb_name + ' '
                         + frame.step + ' ' + str(frame.number) + ' ' + str(frame_counter), cwd=os.getcwd(), shell=True)
         process.wait()
@@ -62,5 +60,5 @@ if __name__ == '__main__':
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
 
     simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                          'input_files/planet_sun/planet_ring_400_Nm.odb'
+                          'input_files/planet_ring/planet_ring_400_Nm.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)

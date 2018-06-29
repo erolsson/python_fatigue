@@ -6,7 +6,6 @@ from odb_io_functions import read_field_from_odb
 from odb_io_functions import write_field_to_odb
 from odb_io_functions import CoordinateSystem
 
-print sys.argv
 
 # There are a lot of argument to abaqus just use the five last ones
 from_odb_name = sys.argv[-5]
