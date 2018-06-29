@@ -1,4 +1,5 @@
 from collections import namedtuple
+from subprocess import Popen
 
 from odbAccess import *
 from abaqusConstants import *
@@ -31,7 +32,8 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     write_odb.close()
 
     for frame in frames:
-
+        process = Popen(['abaqus viewer noGUI=_copy_planet_stress.py ' + from_odb_name + ' ' + to_odb_name +
+                         frame.step + ' ' + frame.number + ' ' + frame_counter])
         frame_counter += 1
 
 if __name__ == '__main__':
