@@ -1,3 +1,5 @@
+from abaqusConstants import *
+
 import sys
 
 from odb_io_functions import read_field_from_odb
