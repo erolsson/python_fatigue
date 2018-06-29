@@ -4,7 +4,7 @@ from odb_io_functions import read_field_from_odb
 from odb_io_functions import write_field_to_odb
 from odb_io_functions import CoordinateSystem
 
-
+print sys.argv
 from_odb_name = sys.argv[1]
 to_odb_name = sys.argv[2]
 from_step = sys.argv[3]
