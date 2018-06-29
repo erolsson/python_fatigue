@@ -8,15 +8,10 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
-from odb_io_functions import read_field_from_odb
-from odb_io_functions import write_field_to_odb
-from odb_io_functions import CoordinateSystem
-
 
 def transfer_gear_stresses(from_odb_name, to_odb_name):
     Frame = namedtuple('Frame', ['step', 'number'])
-    planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), point1=(0.0, 1.0, 0.0),
-                                     point2=(1.0, 0.0, 0.0), system_type=CYLINDRICAL)
+
     # inspect odb to find steps in frames
     simulation_odb = openOdb(from_odb_name, readOnly=True)
     step_names = [name for name in simulation_odb.steps.keys() if 'loading_tooth' in name]
@@ -36,15 +31,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     write_odb.close()
 
     for frame in frames:
-        stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
-                                          instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter,
-                           instance_name='tooth_left')
 
-        stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', frame.step, frame.number,
-                                          instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
-        write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=frame_counter,
-                           instance_name='tooth_right')
         frame_counter += 1
 
 if __name__ == '__main__':
