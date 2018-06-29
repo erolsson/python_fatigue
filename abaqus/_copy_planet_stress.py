@@ -1,4 +1,5 @@
 from abaqusConstants import CYLINDRICAL
+from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import sys
 
@@ -20,9 +21,9 @@ planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), po
 stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
                                   instance_name='EVAL_TOOTH_0', coordinate_system=planet_system)
 write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=to_frame,
-                   instance_name='tooth_left')
+                   instance_name='tooth_left', invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
 stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
                                   instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
 write_field_to_odb(stress_data, 'S', to_odb_name, 'mechanical_stresses', frame_number=to_frame,
-                   instance_name='tooth_right')
+                   instance_name='tooth_right', invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
