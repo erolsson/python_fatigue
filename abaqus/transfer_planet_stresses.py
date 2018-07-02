@@ -21,7 +21,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     frames = []
 
     for step_name in step_names:
-        t0 = simulation_odb.steps[step_name].total_time
+        t0 = simulation_odb.steps[step_name].totalTime
         frames_in_step = simulation_odb.steps[step_name].frames
         for frame_number in range(len(frames_in_step)):
             frames.append(Frame(step=step_name, number=frame_number, time=t0 + frames_in_step[frame_number].frameValue))
