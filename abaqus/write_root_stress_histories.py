@@ -51,7 +51,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
     stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name + \
                          '_tooth_' + str(torque) + '_Nm.pkl'
 
-    with open(stress_pickle_name) as stress_pickle:
+    with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
 
 odb.close()
