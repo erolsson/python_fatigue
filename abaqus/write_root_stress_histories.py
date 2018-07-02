@@ -48,7 +48,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
         stress_data[frame_idx, 0] = frames[frame_idx].frameValue
 
     stress_pickle = open('/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name +
-                         '_tooth_400_Nm')
+                         '_tooth_400_Nm.pkl', 'w+')
     pickle.dump(stress_data, stress_pickle)
     stress_pickle.close()
 odb.close()
