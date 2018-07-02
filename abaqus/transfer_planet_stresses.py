@@ -12,7 +12,7 @@ from create_odb import OdbInstance
 
 
 def transfer_gear_stresses(from_odb_name, to_odb_name):
-    Frame = namedtuple('Frame', ['step', 'number'])
+    Frame = namedtuple('Frame', ['step', 'number', 'time'])
 
     # inspect odb to find steps in frames
     simulation_odb = openOdb(from_odb_name, readOnly=True)
@@ -21,8 +21,10 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     frames = []
 
     for step_name in step_names:
-        for frame_number in range(len(simulation_odb.steps[step_name].frames)):
-            frames.append(Frame(step=step_name, number=frame_number))
+        t0 = simulation_odb.steps[step_name].total_time
+        frames_in_step = simulation_odb.steps[step_name].frames
+        for frame_number in range(len(frames_in_step)):
+            frames.append(Frame(step=step_name, number=frame_number, time=t0 + frames_in_step[frame_number].frameValue))
     simulation_odb.close()
 
     write_odb = openOdb(to_odb_name, readOnly=True)
@@ -34,7 +36,8 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
 
     for frame in frames:
         process = Popen('abaqus viewer noGUI=_copy_planet_stress.py -- ' + from_odb_name + ' ' + to_odb_name + ' '
-                        + frame.step + ' ' + str(frame.number) + ' ' + str(frame_counter), cwd=os.getcwd(), shell=True)
+                        + frame.step + ' ' + str(frame.number) + ' ' + str(frame_counter) + ' ' + str(frame.time),
+                        cwd=os.getcwd(), shell=True)
         process.wait()
         frame_counter += 1
 

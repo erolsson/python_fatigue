@@ -12,14 +12,14 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 
 
 def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
-                        coordinate_system=None, position=ELEMENT_NODAL, position_numbers=None):
+                        coordinate_system=None, position=ELEMENT_NODAL, position_numbers=False, frame_value=False):
     odb = odbAccess.openOdb(odb_file_name, readOnly=True)
     if instance_name is None:
         instance_name = odb.rootAssembly.instances.keys()[0]
     element_set = odb.rootAssembly.instances[instance_name].elementSets[element_set_name]
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
     field = field.getSubset(position=position)
-
+    frame_value = odb.steps[step_name].frames[frame_number].frameValue
     if coordinate_system is not None:
         if coordinate_system.name not in odb.rootAssembly.datumCsyses:
             transform_system = odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
@@ -46,11 +46,14 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         elif position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
             element_labels.append(data_point.elementLabel)
     odb.close()
-
-    if position_numbers:
+    if not position_numbers and not frame_value:
+        return data
+    elif not position_numbers:
+        return data, frame_value
+    elif not frame_value:
         return data, node_labels, element_labels
     else:
-        return data
+        return data, frame_value, node_labels, element_labels
 
 
 def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, element_set_name=None,
