@@ -18,8 +18,7 @@ with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_hand
     normal_root = pickle.load(path_pickle_handle)   # Direction vector perpendicular the root path
 
 
-path_data_pos = np.zeros((100, 3))
-path_data_pos[:, 0:3] = root_data
+path_data_pos = np.copy(root_data)
 path_data_neg = np.copy(path_data_pos)
 
 path_data_neg[:, 0] *= -1
