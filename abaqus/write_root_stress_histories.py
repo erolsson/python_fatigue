@@ -38,7 +38,7 @@ step_index = odb.steps.keys().index('mechanical_stresses')
 frames = odb.steps['mechanical_stresses'].frames
 number_of_frames = len(frames)
 for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 'neg'],
-                                        [normal_root_pos, normal_root_neg]):
+                                             [normal_root_pos, normal_root_neg]):
     root_path = create_path(root_path_data, 'root_path_' + name, session)
     stress_data = np.zeros((number_of_frames, 2))
     for frame_idx in range(number_of_frames):
