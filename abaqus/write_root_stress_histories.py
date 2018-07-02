@@ -37,8 +37,6 @@ session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 step_index = odb.steps.keys().index('mechanical_stresses')
 frames = odb.steps['mechanical_stresses'].frames
 number_of_frames = len(frames)
-session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='HV',
-                                                               outputPosition=ELEMENT_NODAL)
 for root_path, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 'neg'],
                                         [normal_root_pos, normal_root_neg]):
     path = create_path(root_data, 'root_path_' + name, session)
