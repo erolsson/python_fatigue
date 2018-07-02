@@ -44,7 +44,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
     for frame_idx in range(number_of_frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_idx)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
+        stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
         stress_data[frame_idx, 0] = frames[frame_idx].frameValue
 
     stress_pickle = open('/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name +
