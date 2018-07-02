@@ -12,7 +12,8 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 
 
 def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
-                        coordinate_system=None, position=ELEMENT_NODAL, position_numbers=False, frame_value=False):
+                        coordinate_system=None, position=ELEMENT_NODAL, get_position_numbers=False,
+                        get_frame_value=False):
     odb = odbAccess.openOdb(odb_file_name, readOnly=True)
     if instance_name is None:
         instance_name = odb.rootAssembly.instances.keys()[0]
@@ -46,11 +47,11 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         elif position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
             element_labels.append(data_point.elementLabel)
     odb.close()
-    if not position_numbers and not frame_value:
+    if not get_position_numbers and not get_frame_value:
         return data
-    elif not position_numbers:
+    elif not get_position_numbers:
         return data, frame_value
-    elif not frame_value:
+    elif not get_frame_value:
         return data, node_labels, element_labels
     else:
         return data, frame_value, node_labels, element_labels

@@ -87,12 +87,11 @@ if __name__ == '__main__':
         min_load, node_labels, _ = read_field_from_odb('S', odb_file_name=mechanical_odb_name,
                                                        element_set_name=element_set_name,
                                                        step_name='minLoad', frame_number=0,
-                                                       position_numbers=True)
+                                                       get_position_numbers=True)
 
         max_load = read_field_from_odb('S', odb_file_name=mechanical_odb_name,
                                        element_set_name=element_set_name,
-                                       step_name='maxLoad', frame_number=0,
-                                       position_numbers=True)
+                                       step_name='maxLoad', frame_number=0)
 
         mechanical_dict = {'min': min_load, 'max': max_load, 'force': 32.}
         mechanical_pickle = open(pickle_dir + '/' + element_set.lower() + '_data/mechanical_loads.pkl', 'w')
