@@ -41,7 +41,7 @@ for root_path, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 
                                         [normal_root_pos, normal_root_neg]):
     path = create_path(root_data, 'root_path_' + name, session)
     stress_data = np.zeros((number_of_frames, 2))
-    for frame_idx in range(frames):
+    for frame_idx in range(number_of_frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frames)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
         stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
