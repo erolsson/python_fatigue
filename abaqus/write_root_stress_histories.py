@@ -7,21 +7,22 @@ import numpy as np
 from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
-tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses_400_Nm.odb'
+torque = 400
+tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses_' + str(torque) + \
+                      '_Nm.odb'
 
-path_pickle_handle = open('../planetary_gear/pickles/tooth_paths.pkl', 'rb')
-pickle.load(path_pickle_handle)                 # Flank path data
-pickle.load(path_pickle_handle)                 # Direction vector of the flank path
-root_data = pickle.load(path_pickle_handle)     # Root path data
-normal_root = pickle.load(path_pickle_handle)   # Direction vector perpendicular the root path
-path_pickle_handle.close()
+with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_handle:
+    pickle.load(path_pickle_handle)                 # Flank path data
+    pickle.load(path_pickle_handle)                 # Direction vector of the flank path
+    root_data = pickle.load(path_pickle_handle)     # Root path data
+    normal_root = pickle.load(path_pickle_handle)   # Direction vector perpendicular the root path
+
 
 path_data_pos = np.zeros((100, 3))
-path_data_pos[:, 1] = root_data[:, 1]
+path_data_pos[:, 0:2] = root_data
 path_data_neg = np.copy(path_data_pos)
 
-path_data_pos[:, 0] = root_data[:, 0]
-path_data_neg[:, 0] = -root_data[:, 0]
+path_data_neg[:, 0] *= -1
 
 normal_root_pos = normal_root
 normal_root_neg = np.copy(normal_root_pos)
@@ -45,10 +46,13 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_idx)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
         stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
+        print stress_tensors[0], normal_root, stress_data[frame_idx, 1], frame_idx
         stress_data[frame_idx, 0] = frames[frame_idx].frameValue
 
-    stress_pickle = open('/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name +
-                         '_tooth_400_Nm.pkl', 'w+')
-    pickle.dump(stress_data, stress_pickle)
-    stress_pickle.close()
+    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name + \
+                         '_tooth_' + str(torque) + '_Nm.pkl'
+
+    with open(stress_pickle_name) as stress_pickle:
+        pickle.dump(stress_data, stress_pickle)
+
 odb.close()
