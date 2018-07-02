@@ -47,6 +47,7 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         elif position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
             element_labels.append(data_point.elementLabel)
     odb.close()
+
     if not get_position_numbers and not get_frame_value:
         return data
     elif not get_position_numbers:

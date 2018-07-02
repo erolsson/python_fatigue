@@ -17,7 +17,7 @@ for i, name in enumerate(['pos', 'neg']):
         stress_data = pickle.load(stress_pickle)
     stress_data[:, 0] -= stress_data[0, 0]
     idx = np.argwhere(stress_data[:, 0] == 0)[1][0]
-    print idx
+    print stress_data
     plt.plot(stress_data[idx:, 0], stress_data[idx:, 1], lw=2)
     plt.plot(stress_data[:idx, 0], stress_data[:idx, 1], lw=2)
 
