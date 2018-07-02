@@ -15,12 +15,11 @@ with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_hand
     pickle.load(path_pickle_handle)                 # Flank path data
     pickle.load(path_pickle_handle)                 # Direction vector of the flank path
     root_data = pickle.load(path_pickle_handle)     # Root path data
-    print root_data
     normal_root = pickle.load(path_pickle_handle)   # Direction vector perpendicular the root path
 
 
 path_data_pos = np.zeros((100, 3))
-path_data_pos[:, 0:2] = root_data
+path_data_pos[:, 0:3] = root_data
 path_data_neg = np.copy(path_data_pos)
 
 path_data_neg[:, 0] *= -1
