@@ -41,6 +41,10 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
                                              [normal_root_pos, normal_root_neg]):
     root_path = create_path(root_path_data, 'root_path_' + name, session)
     stress_data = np.zeros((number_of_frames, 2))
+    x, y = root_path_data[0, 0:2]
+    angle = np.pi/2 - np.arctan(x/y)
+    print angle
+    dfsf
     for frame_idx in range(number_of_frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_idx)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
