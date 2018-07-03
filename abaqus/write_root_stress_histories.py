@@ -43,7 +43,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
     stress_data = np.zeros((number_of_frames, 2))
     x, y = root_path_data[0, 0:2]
     angle = np.pi/2 - np.arctan(x/y)
-    print angle
+    print angle*180/pi
     dfsf
     for frame_idx in range(number_of_frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_idx)
