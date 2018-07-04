@@ -13,7 +13,7 @@ new_step = odb.Step(name='dante_data', description='', domain=TIME, timePeriod=1
 start_frame = new_step.Frame(incrementNumber=0, frameValue=0, description='')
 end_frame = new_step.Frame(incrementNumber=1, frameValue=1., description='')
 new_field = -2.07934384e+04*field*field + 2.98225944e+02*field-1.60574051e-01
-end_frame.FieldOutput(name='NT11', field=0*field)
+start_frame.FieldOutput(name='NT11', field=0*field)
 end_frame.FieldOutput(name='NT11', field=new_field)
 
 odb.save()
