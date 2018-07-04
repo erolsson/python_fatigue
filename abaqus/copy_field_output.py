@@ -7,7 +7,7 @@ odb = odbAccess.openOdb('/scratch/users/erik/scania_gear_analysis/odb_files/dant
                         'Toolbox_Carbon_1_4_quarter.odb', readOnly=False)
 
 step = odb.steps['Carburization-3']
-frame = step.frames([len(step.frames) - 1])
+frame = step.frames[len(step.frames) - 1]
 field = frame.fieldOutputs['CONC']
 new_step = odb.Step(name='dante_data', description='', domain=TIME, timePeriod=1)
 new_frame = step.Frame(incrementNumber=0, frameValue=0, description='')
