@@ -3,11 +3,16 @@ import numpy as np
 
 from abaqusConstants import *
 
-odb = odbAccess.openOdb('/scratch/users/erik/scania_gear_analysis/odb_files/dante_interpolation/danteTooth20170220.odb',
-                        readOnly=False)
+odb = odbAccess.openOdb('/scratch/users/erik/scania_gear_analysis/odb_files/dante_interpolation/'
+                        'Toolbox_Carbon_1_4_quarter.odb', readOnly=False)
 
-frame = odb.steps['danteResults_DC1_4'].frames[0]
-field = frame.fieldOutputs['Q_MARTENSITE']
-frame.FieldOutput(name='NT', field=field)
+step = odb.steps['Carburization-3']
+frame = step.frames([len(step.frames) - 1])
+field = frame.fieldOutputs['CONC']
+new_step = odb.Step(name='dante_data', description='', domain=TIME, timePeriod=1)
+new_frame = step.Frame(incrementNumber=0, frameValue=0, description='')
+new_field = -2.07934384e+04*field*field + 2.98225944e+02*field-1.60574051e-01
+new_frame.FieldOutput(name='NT', field=new_field)
+
 odb.save()
 odb.close()
