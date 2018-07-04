@@ -60,7 +60,8 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
 
 
 def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, element_set_name=None,
-                       step_description='', frame_number=None, frame_value=None, field_description='', invariants=None):
+                       step_description='', frame_number=None, frame_value=None, field_description='', invariants=None,
+                       position=ELEMENT_NODAL):
     odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 
     if step_name not in odb.steps:
@@ -109,7 +110,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
     else:
         field = frame.FieldOutput(name=field_id, description=field_description, type=field_type,
                                   validInvariants=invariants)
-    field.addData(position=ELEMENT_NODAL, instance=instance, labels=element_numbers, data=field_data_to_frame)
+    field.addData(position=position, instance=instance, labels=element_numbers, data=field_data_to_frame)
     odb.update()
     odb.save()
     odb.close()
