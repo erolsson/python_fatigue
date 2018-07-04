@@ -9,5 +9,5 @@ odb = odbAccess.openOdb('/scratch/users/erik/scania_gear_analysis/odb_files/dant
 frame = odb.steps['danteResults_DC1_4'].frames[0]
 field = frame.fieldOutputs['Q_MARTENSITE']
 field = field.getSubset(position=NODAL)
-print field.values[0]
+print len(field)
 frame.FieldOutput(name='NT', type=SCALAR)
