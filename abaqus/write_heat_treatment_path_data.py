@@ -40,4 +40,4 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
 if __name__ == '__main__':
     odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/fake_heat_treatment/residual_stresses_1_4.odb'
     pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl'
-    write_root_pickle(odb_name, step_name='Equilibrium', result_pickle_name=pickle_name)
+    write_root_pickle(odb_name, step_name='Equilibrium', result_pickle_name=pickle_name, frame_number=11)
