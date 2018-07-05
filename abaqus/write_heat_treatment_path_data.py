@@ -33,9 +33,8 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
     root_path = create_path(root_data, 'longitudinal_path', session)
     stress_tensors = get_stress_tensors_from_path(root_path, session)
     normal_stress = np.dot(np.dot(normal_root, stress_tensors), normal_root)
-    print root_data - root_data[0, :]
-    print np.sum(root_data - root_data[0, :], 1)
-    distance = np.sqrt(np.sum(root_data - root_data[0, :], 1))
+
+    distance = np.sqrt(np.sum((root_data - root_data[0, :])**2, 1))
     print normal_stress, distance
     odb.close()
 
