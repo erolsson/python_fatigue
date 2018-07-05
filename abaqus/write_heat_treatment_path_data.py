@@ -32,13 +32,21 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
     root_data[:, 2] += 1e-2
     root_path = create_path(root_data, 'longitudinal_path', session)
     stress_tensors = get_stress_tensors_from_path(root_path, session)
-    normal_stress = np.dot(np.dot(normal_root, stress_tensors), normal_root)
-
-    distance = np.sqrt(np.sum((root_data - root_data[0, :])**2, 1))
-    print normal_stress, distance
     odb.close()
+
+    data = np.zeros((100, 2))
+    data[:, 0] = np.sqrt(np.sum((root_data - root_data[0, :])**2, 1))
+    data[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
+
+    with open(result_pickle_name, 'wb') as result_pickle_handle:
+        pickle.dump(data, result_pickle_handle)
+
 
 if __name__ == '__main__':
     odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/fake_heat_treatment/residual_stresses_1_4.odb'
     pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl'
     write_root_pickle(odb_name, step_name='Equilibrium', result_pickle_name=pickle_name, frame_number=11)
+
+    odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/old_heat_treatment/danteTooth20170220.odb'
+    pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/old_heat_treatment/residual_stresses_1_4.pkl'
+    write_root_pickle(odb_name, step_name='danteResults_DC1_4', result_pickle_name=pickle_name, frame_number=0)
