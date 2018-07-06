@@ -13,14 +13,14 @@ from odb_io_functions import cylindrical_system_z
 
 def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, results_step_name):
     f = read_field_from_odb(field_id='CONC', odb_file_name=carbon_odb_name, element_set_name='GEARELEMS',
-                            step_name='Carburization_3', frame_number=-1)
+                            step_name='Carburization-3', frame_number=-1)
 
     hardness = -1.95704040e+09*f**3 + 1.79113930e+07*f**2 + 5.50685403e+04*f + 2.27359677e+02
     write_field_to_odb(field_data=hardness, field_id='HV', odb_file_name=results_odb_name, step_name=results_step_name,
                        frame_number=0)
 
     stress = read_field_from_odb(field_id='stress', odb_file_name=carbon_odb_name, element_set_name='GEARELEMS',
-                                 frame_number=-1, coordinate_system=cylindrical_system_z)
+                                 step_name='Equilibrium', frame_number=-1, coordinate_system=cylindrical_system_z)
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=results_odb_name, step_name=results_step_name,
                        frame_number=0)
 
