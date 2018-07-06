@@ -6,8 +6,6 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
-from planetary_gear.carbon.heat_treatment_correlation import carbon_to_hardness
-
 
 def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, results_step_name):
     carbon_odb = openOdb(carbon_odb_name, readOnly=True)
@@ -15,7 +13,7 @@ def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, result
     frame = step.frames[len(step.frames) - 1]
     field = frame.fieldOutputs['NNC11']
 
-    hardness = carbon_to_hardness(field)
+    hardness = -1.95704040e+09*field**3 + 1.79113930e+07*field**2 + 5.50685403e+04*field + 2.27359677e+02
     results_odb = openOdb(results_odb_name, readOnly=False)
     new_step = results_odb.Step(name=results_step_name, description='', domain=TIME, timePeriod=1)
     new_frame = new_step.Frame(incrementNumber=0, frameValue=0, description='')
