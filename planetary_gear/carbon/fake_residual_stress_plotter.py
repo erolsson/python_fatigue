@@ -16,13 +16,9 @@ def plot_data(pickle_name, line_style):
     plt.plot(data[:, 0], data[:, 1], line_style, lw=2)
     return data
 
-fake_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl')
-old_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/old_heat_treatment/residual_stresses_1_4.pkl')
-
-fake_data = plot_data(fake_pickle_name, '--b')
-old_data = plot_data(old_pickle_name, 'b')
-factor = old_data[0, 1]/fake_data[0, 1]
-print factor*1e-3
-plt.plot(fake_data[:, 0], fake_data[:, 1]*factor, 'k', lw=3)
+for cd, c in zip(['0_5', '0_8', '1_1', '1_4'], ['r', 'b', 'g', 'k']):
+    pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/')
+    plot_data(pickle_directory + 'fake_heat_treatment/residual_stresses_' + cd + '.pkl', '--' + c)
+    plot_data(pickle_directory + 'old_heat_treatment/residual_stresses_' + cd + '.pkl', '-' + c)
 
 plt.show()
