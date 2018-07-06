@@ -11,9 +11,9 @@ def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, result
     carbon_odb = openOdb(carbon_odb_name, readOnly=True)
     step = carbon_odb.steps['Carburization-3']
     frame = step.frames[len(step.frames) - 1]
-    field = frame.fieldOutputs['NNC11']
+    f = frame.fieldOutputs['NNC11']
 
-    hardness = 1.79113930e+07*field**2 + 5.50685403e+04*field + 2.27359677e+02
+    hardness = -1.95704040e+09*f*f*f + 1.79113930e+07*f*f + 5.50685403e+04*f + 2.27359677e+02
     results_odb = openOdb(results_odb_name, readOnly=False)
     new_step = results_odb.Step(name=results_step_name, description='', domain=TIME, timePeriod=1)
     new_frame = new_step.Frame(incrementNumber=0, frameValue=0, description='')
