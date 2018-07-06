@@ -4,7 +4,7 @@ from abaqusConstants import *
 
 
 for cd in ['0_5', '0_8', '1_1']:
-    odb = odbAccess.openOdb('/scratch/users/erik/scania_gear_analysis/odb_files/dante_interpolation/'
+    odb = odbAccess.openOdb('/scratch/users/erik/python_fatigue/planetary_gear/input_files/resolve_residual_stresses/'
                             'Toolbox_Carbon_' + cd + '_quarter.odb', readOnly=False)
 
     step = odb.steps['Carburization-3']
