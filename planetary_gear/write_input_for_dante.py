@@ -148,7 +148,7 @@ if __name__ == '__main__':
 
     quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/dense_mesh_planet.inc')
 
-    write_sets_file(filename='input_files/dante_quarter/planetGear_sets.inc',
+    write_sets_file(filename='input_files/dante_quarter/planetGear_Sets.inc',
                     full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,

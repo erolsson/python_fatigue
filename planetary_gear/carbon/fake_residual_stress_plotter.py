@@ -19,6 +19,10 @@ def plot_data(pickle_name, line_style):
 fake_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl')
 old_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/old_heat_treatment/residual_stresses_1_4.pkl')
 
-plot_data(fake_pickle_name, '--b')
-plot_data(old_pickle_name, 'b')
+fake_data = plot_data(fake_pickle_name, '--b')
+old_data = plot_data(old_pickle_name, 'b')
+factor = old_data[0, 1]/fake_data[0, 1]
+print factor*1e-3
+plt.plot(fake_data[:, 0], fake_data[:, 1]*factor, 'k', lw=3)
+
 plt.show()
