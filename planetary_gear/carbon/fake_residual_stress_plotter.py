@@ -1,6 +1,5 @@
+import os
 import pickle
-
-import numpy as np
 
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
@@ -17,8 +16,8 @@ def plot_data(pickle_name, line_style):
     plt.plot(data[:, 0], data[:, 1], line_style, lw=2)
     return data
 
-fake_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl'
-old_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/old_heat_treatment/residual_stresses_1_4.pkl'
+fake_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/fake_heat_treatment/residual_stresses_1_4.pkl')
+old_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/old_heat_treatment/residual_stresses_1_4.pkl')
 
 plot_data(fake_pickle_name, '--b')
 plot_data(old_pickle_name, 'b')
