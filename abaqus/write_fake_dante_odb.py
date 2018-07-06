@@ -19,7 +19,7 @@ def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, result
     write_field_to_odb(field_data=hardness, field_id='HV', odb_file_name=results_odb_name, step_name=results_step_name,
                        frame_number=0)
 
-    stress = read_field_from_odb(field_id='stress', odb_file_name=carbon_odb_name, element_set_name='GEARELEMS',
+    stress = read_field_from_odb(field_id='S', odb_file_name=stress_odb_name, element_set_name='GEARELEMS',
                                  step_name='Equilibrium', frame_number=-1, coordinate_system=cylindrical_system_z)
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=results_odb_name, step_name=results_step_name,
                        frame_number=0)
