@@ -27,7 +27,7 @@ def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, result
 
 if __name__ == '__main__':
     carbon_odb_path = '/scratch/users/erik/python_fatigue/planetary_gear/input_files/resolve_residual_stresses/'
-    dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/'
+    dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/fake_heat_treatment/'
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
