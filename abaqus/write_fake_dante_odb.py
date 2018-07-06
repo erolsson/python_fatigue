@@ -6,29 +6,24 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import write_field_to_odb
+from odb_io_functions import cylindrical_system_z
+
 
 def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, results_step_name):
-    carbon_odb = openOdb(carbon_odb_name, readOnly=True)
-    step = carbon_odb.steps['Carburization-3']
-    frame = step.frames[len(step.frames) - 1]
-    f = frame.fieldOutputs['CONC']
+    f = read_field_from_odb(field_id='CONC', odb_file_name=carbon_odb_name, element_set_name='GEARELEMS',
+                            step_name='Carburization_3', frame_number=-1)
 
-    hardness = -1.95704040e+09*f*f*f + 1.79113930e+07*f*f + 5.50685403e+04*f + 2.27359677e+02
-    results_odb = openOdb(results_odb_name, readOnly=False)
-    new_step = results_odb.Step(name=results_step_name, description='', domain=TIME, timePeriod=1)
-    new_frame = new_step.Frame(incrementNumber=0, frameValue=0, description='')
+    hardness = -1.95704040e+09*f**3 + 1.79113930e+07*f**2 + 5.50685403e+04*f + 2.27359677e+02
+    write_field_to_odb(field_data=hardness, field_id='HV', odb_file_name=results_odb_name, step_name=results_step_name,
+                       frame_number=0)
 
-    new_frame.FieldOutput(name='HV', field=hardness)
-    carbon_odb.close()
+    stress = read_field_from_odb(field_id='stress', odb_file_name=carbon_odb_name, element_set_name='GEARELEMS',
+                                 frame_number=-1, coordinate_system=cylindrical_system_z)
+    write_field_to_odb(field_data=stress, field_id='S', odb_file_name=results_odb_name, step_name=results_step_name,
+                       frame_number=0)
 
-    stress_odb = openOdb(stress_odb_name, readOnly=True)
-    step = carbon_odb.steps['Equilibrium']
-    frame = step.frames[len(step.frames) - 1]
-    field = frame.fieldOutputs['S']
-    new_frame.FieldOutput(name='S', field=field)
-    stress_odb.close()
-
-    results_odb.close()
 
 if __name__ == '__main__':
     carbon_odb_path = '/scratch/users/erik/python_fatigue/planetary_gear/input_files/resolve_residual_stresses/'

@@ -18,6 +18,8 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
     if instance_name is None:
         instance_name = odb.rootAssembly.instances.keys()[0]
     element_set = odb.rootAssembly.instances[instance_name].elementSets[element_set_name]
+    if frame_number == -1:
+        frame_number = len(odb.steps[step_name].frames) - 1
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
     field = field.getSubset(position=position)
     frame_value = odb.steps[step_name].frames[frame_number].frameValue
