@@ -36,8 +36,8 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
 
     for frame in frames:
         process = Popen('abaqus viewer noGUI=_copy_planet_stress.py -- ' + from_odb_name + ' ' + to_odb_name + ' '
-                        + frame.step + ' ' + str(frame.number) + ' ' + str(frame_counter) + ' ' + str(frame.time),
-                        cwd=os.getcwd(), shell=True)
+                        + frame.step + ' ' + str(frame.number) + ' ' + 'mechanical_stresses' + ' ' +
+                        str(frame_counter) + ' ' + str(frame.time), cwd=os.getcwd(), shell=True)
         process.wait()
         frame_counter += 1
 
