@@ -116,3 +116,12 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
     odb.update()
     odb.save()
     odb.close()
+
+
+def flip_node_order(data, axis):      # ToDo implement flip around x and y axis as well
+    if axis == 'z':
+        for i in range(data.shape[0]/8):
+            temp_data = np.copy(data[8*i:8*i+8])
+            data[8*i:8*i+4] = temp_data[8*i+4:]
+            data[8*i+4:8*i+8] = temp_data[:8*i+4:]
+    return data
