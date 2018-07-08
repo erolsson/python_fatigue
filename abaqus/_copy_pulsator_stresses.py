@@ -6,7 +6,7 @@ import sys
 from odb_io_functions import read_field_from_odb
 from odb_io_functions import write_field_to_odb
 from odb_io_functions import CoordinateSystem
-
+from odb_io_functions import flip_node_order
 
 # There are a lot of argument to abaqus just use the five last ones
 from_odb_name = sys.argv[-7]
@@ -24,7 +24,7 @@ stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, fr
                                   instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
 
 # Fixing the ordering of nodes and Gauss points as moving from negative tooth to positive
-
+flip_node_order(stress_data, axis='z')
 
 write_field_to_odb(stress_data, 'S', to_odb_name, to_step, frame_number=to_frame,
                    frame_value=to_frame_value, instance_name='tooth_right',
