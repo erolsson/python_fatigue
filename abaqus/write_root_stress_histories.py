@@ -11,7 +11,7 @@ from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
 Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_value'])
-
+print len(sys.argv)
 odb_name = sys.argv[-2]
 pickle_name = sys.argv[-1]
 
