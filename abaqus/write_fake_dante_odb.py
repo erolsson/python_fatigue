@@ -1,5 +1,5 @@
 from odbAccess import *
-from abaqusConstants import *
+from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
@@ -22,7 +22,8 @@ def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, result
     stress = read_field_from_odb(field_id='S', odb_file_name=stress_odb_name, element_set_name='GEARELEMS',
                                  step_name='Equilibrium', frame_number=-1, coordinate_system=cylindrical_system_z)
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=results_odb_name, step_name=results_step_name,
-                       instance_name='tooth_right', frame_number=0)
+                       instance_name='tooth_right', frame_number=0,
+                       invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
 
 if __name__ == '__main__':
