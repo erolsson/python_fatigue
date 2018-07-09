@@ -40,8 +40,10 @@ session.viewports['Viewport: 1'].maximize()
 o7 = session.odbs[session.odbs.keys()[0]]
 session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 step_index = odb.steps.keys().index('mechanical_stresses')
-frames = odb.steps['mechanical_stresses'].frames
-number_of_frames = len(frames)
+number_of_frames = 0
+for step_name in odb.steps.keys():
+    frames = odb.steps[step_name].frames
+    number_of_frames += len(frames)
 for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 'neg'],
                                              [normal_root_pos, normal_root_neg]):
     root_path = create_path(root_path_data, 'root_path_' + name, session)
