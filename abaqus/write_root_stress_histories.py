@@ -1,15 +1,20 @@
 from visualization import *
 from abaqusConstants import *
 
+import sys
+
 import pickle
 import numpy as np
 
 from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
+
+odb_name = sys.argv[-2]
+pickle_name = sys.argv[-1]
+
 torque = 400
-tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses_' + str(torque) + \
-                      '_Nm.odb'
+tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name
 
 with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_handle:
     pickle.load(path_pickle_handle)                 # Flank path data
@@ -54,8 +59,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
         stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
         stress_data[frame_idx, 0] = frames[frame_idx].frameValue
 
-    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/stresses_' + name + \
-                         '_tooth_' + str(torque) + '_Nm.pkl'
+    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name
 
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
