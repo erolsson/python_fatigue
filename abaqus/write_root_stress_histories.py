@@ -41,7 +41,6 @@ session.viewports['Viewport: 1'].makeCurrent()
 session.viewports['Viewport: 1'].maximize()
 o7 = session.odbs[session.odbs.keys()[0]]
 session.viewports['Viewport: 1'].setValues(displayedObject=o7)
-step_index = odb.steps.keys().index('mechanical_stresses')
 number_of_frames = 0
 frames = []
 for step_name in odb.steps.keys():
