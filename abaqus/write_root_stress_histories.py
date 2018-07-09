@@ -2,6 +2,7 @@ from visualization import *
 from abaqusConstants import *
 
 import sys
+from collections import namedtuple
 
 import pickle
 import numpy as np
@@ -9,6 +10,7 @@ import numpy as np
 from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
+Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_value'])
 
 odb_name = sys.argv[-2]
 pickle_name = sys.argv[-1]
@@ -41,8 +43,11 @@ o7 = session.odbs[session.odbs.keys()[0]]
 session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 step_index = odb.steps.keys().index('mechanical_stresses')
 number_of_frames = 0
+frames = []
 for step_name in odb.steps.keys():
-    frames = odb.steps[step_name].frames
+    for i in range(len(odb.steps[step_name].frames)):
+        frames.append(Frame(step_name=step_name, step_idx=odb.steps.keys().index(step_name),
+                            frame_number=i, frame_value=odb.steps[step_name].frames[i].frameValue))
     number_of_frames += len(frames)
 for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 'neg'],
                                              [normal_root_pos, normal_root_neg]):
@@ -55,11 +60,11 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
                   [0,             0,              1]])
     normal_root = np.dot(R, normal_root)
 
-    for frame_idx in range(number_of_frames):
-        session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_idx)
+    for i, frame in enumerate(frames):
+        session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        stress_data[frame_idx, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
-        stress_data[frame_idx, 0] = frames[frame_idx].frameValue
+        stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
+        stress_data[i, 0] = frame.frame_value
 
     stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name
 
