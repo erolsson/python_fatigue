@@ -54,6 +54,7 @@ for root in roots:
     root_path = create_path(root.data, 'root_path_' + root.name, session)
     stress_data = np.zeros((len(frames), 2))
     x, y = root.data[0, 0:2]
+    print x, y
     angle = np.pi/2 - np.arctan(x/y)
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
