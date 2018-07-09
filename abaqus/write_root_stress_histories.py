@@ -59,7 +59,7 @@ for root in roots:
     stress_data = np.zeros((len(frames), 2))
     x, y = root.data[0, 0:2]
     angle = np.pi/2 - np.arctan(x/y)
-    print angle*180/pi
+    print angle*180/np.pi, root.normal
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
