@@ -54,17 +54,15 @@ for root in roots:
     root_path = create_path(root.data, 'root_path_' + root.name, session)
     stress_data = np.zeros((len(frames), 2))
     x, y = root.data[0, 0:2]
-    print x, y
     angle = np.pi/2 - np.arctan(x/y)
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
     normal_root = np.dot(R, root.normal)
-    print normal_root
     for i, frame in enumerate(frames):
+        print frame.step_idx, frame.frame_number
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        print stress_tensors[0]
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[-1]), normal_root)
         stress_data[i, 0] = frame.frame_value
 
