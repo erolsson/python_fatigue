@@ -45,17 +45,14 @@ session.viewports['Viewport: 1'].makeCurrent()
 session.viewports['Viewport: 1'].maximize()
 o7 = session.odbs[session.odbs.keys()[0]]
 session.viewports['Viewport: 1'].setValues(displayedObject=o7)
-number_of_frames = 0
 frames = []
 for step_name in odb.steps.keys():
     for i in range(len(odb.steps[step_name].frames)):
         frames.append(Frame(step_name=step_name, step_idx=odb.steps.keys().index(step_name),
                             frame_number=i, frame_value=odb.steps[step_name].frames[i].frameValue))
-    number_of_frames += len(frames)
-print len(frames)
 for root in roots:
     root_path = create_path(root.data, 'root_path_' + root.name, session)
-    stress_data = np.zeros((number_of_frames, 2))
+    stress_data = np.zeros((len(frames), 2))
     x, y = root.data[0, 0:2]
     angle = np.pi/2 - np.arctan(x/y)
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
