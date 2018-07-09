@@ -11,12 +11,12 @@ from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
 Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_value'])
-print len(sys.argv)
-odb_name = sys.argv[-2]
-pickle_name = sys.argv[-1]
+Root = namedtuple('Root', ['name', 'data', 'normal'])
+odb_name = sys.argv[10]
+pickle_name = sys.argv[11]
+number_of_roots = sys.argv[12]
 
-torque = 400
-tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name
+tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name + '.odb'
 
 with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_handle:
     pickle.load(path_pickle_handle)                 # Flank path data
@@ -34,6 +34,10 @@ normal_root_pos = normal_root
 normal_root_neg = np.copy(normal_root_pos)
 normal_root_neg[0] *= -1
 
+roots = [Root(name='pos', data=path_data_pos, normal=normal_root_pos)]
+if number_of_roots == 2:
+    roots.append(Root(name='neg', data=path_data_neg, normal=normal_root_neg))
+
 odb = openOdb(tooth_odb_file_name, readOnly=True)
 session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                  height=230.809509277344)
@@ -48,11 +52,10 @@ for step_name in odb.steps.keys():
         frames.append(Frame(step_name=step_name, step_idx=odb.steps.keys().index(step_name),
                             frame_number=i, frame_value=odb.steps[step_name].frames[i].frameValue))
     number_of_frames += len(frames)
-for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['pos', 'neg'],
-                                             [normal_root_pos, normal_root_neg]):
-    root_path = create_path(root_path_data, 'root_path_' + name, session)
+for root in roots:
+    root_path = create_path(root.data, 'root_path_' + root.name, session)
     stress_data = np.zeros((number_of_frames, 2))
-    x, y = root_path_data[0, 0:2]
+    x, y = root.data[0, 0:2]
     angle = np.pi/2 - np.arctan(x/y)
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
@@ -65,8 +68,7 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
         stress_data[i, 0] = frame.frame_value
 
-    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name
-
+    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name + '_' + root.name + '.pkl'
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
 
