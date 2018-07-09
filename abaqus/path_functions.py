@@ -27,8 +27,8 @@ def get_stress_tensors_from_path(path, session):
                                    includeIntersections=False)
         for idx, (_, stress_comp) in enumerate(xy):
             if idx == 0:
-                print stress_comp
             stress_data[idx, idx1, idx2] = stress_comp
+        gfdgfdg
     stress_data[:, 1, 0] = stress_data[:, 0, 1]
     stress_data[:, 2, 0] = stress_data[:, 0, 2]
     stress_data[:, 2, 1] = stress_data[:, 1, 2]
