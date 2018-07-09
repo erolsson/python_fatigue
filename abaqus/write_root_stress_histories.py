@@ -73,5 +73,5 @@ for root in roots:
     stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name + '_' + root.name + '.pkl'
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
-
+    dsfsdfsd
 odb.close()
