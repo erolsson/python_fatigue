@@ -12,9 +12,13 @@ from path_functions import get_stress_tensors_from_path
 
 Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_value'])
 Root = namedtuple('Root', ['name', 'data', 'normal'])
-odb_name = sys.argv[10]
-pickle_name = sys.argv[11]
-number_of_roots = int(sys.argv[12])
+# odb_name = sys.argv[10]
+# pickle_name = sys.argv[11]
+# number_of_roots = int(sys.argv[12])
+
+odb_name = 'pulsator/pulsator_stresses'
+pickle_name = 'pulsator/tooth_root_stresses'
+number_of_roots = 1
 
 tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name + '.odb'
 
