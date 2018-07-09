@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
@@ -12,7 +14,8 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 for i, name in enumerate(['pos', 'neg']):
     plt.figure(i)
-    stress_pickle_name = 'pickles/tooth_root_stresses/stresses_' + name + '_tooth_400_Nm.pkl'
+    stress_pickle_name = os.path.expanduser('~/scania_gear_analysis/pickles/planet_gear/tooth_root_stresses_400_Nm_' +
+                                            name + '.pkl')
     with open(stress_pickle_name) as stress_pickle:
         stress_data = pickle.load(stress_pickle)
     stress_data[:, 0] -= stress_data[0, 0]

@@ -14,7 +14,7 @@ Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_val
 Root = namedtuple('Root', ['name', 'data', 'normal'])
 odb_name = sys.argv[10]
 pickle_name = sys.argv[11]
-number_of_roots = sys.argv[12]
+number_of_roots = int(sys.argv[12])
 
 tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name + '.odb'
 
