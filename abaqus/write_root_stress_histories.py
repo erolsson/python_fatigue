@@ -59,21 +59,18 @@ for root in roots:
     stress_data = np.zeros((len(frames), 2))
     x, y = root.data[0, 0:2]
     angle = np.pi/2 - np.arctan(x/y)
+    print angle
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
     normal_root = np.dot(R, root.normal)
     for i, frame in enumerate(frames):
-        print frame.step_idx, frame.frame_number
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        print stress_tensors[0][0, 0], stress_tensors[0][1, 1], stress_tensors[0][0, 1]
-        print normal_root
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
         stress_data[i, 0] = frame.frame_value
 
     stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name + '_' + root.name + '.pkl'
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
-    dsfsdfsd
 odb.close()
