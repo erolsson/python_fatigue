@@ -13,7 +13,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
     frames = []
     loads = [30., 35., 40.]
     for load in loads:
-        step_name = 'P_amp_' + str(load).replace('.', '_') + 'kN'
+        step_name = 'Pamp_' + str(load).replace('.', '_') + 'kN'
         frames.append(Frame(step=step_name + '_min', number=-1, time=0))
         frames.append(Frame(step=step_name + '_max', number=-1, time=1))
 
