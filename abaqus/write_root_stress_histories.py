@@ -64,6 +64,7 @@ for root in roots:
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
     normal_root = np.dot(R, root.normal)
+    print normal_root
     for i, frame in enumerate(frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
