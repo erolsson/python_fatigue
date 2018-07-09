@@ -52,6 +52,7 @@ for step_name in odb.steps.keys():
         frames.append(Frame(step_name=step_name, step_idx=odb.steps.keys().index(step_name),
                             frame_number=i, frame_value=odb.steps[step_name].frames[i].frameValue))
     number_of_frames += len(frames)
+print number_of_frames
 for root in roots:
     root_path = create_path(root.data, 'root_path_' + root.name, session)
     stress_data = np.zeros((number_of_frames, 2))
