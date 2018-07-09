@@ -30,10 +30,10 @@ if __name__ == '__main__':
 
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos)]
 
-    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator_stresses.odb'
+    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator/pulsator_stresses.odb'
 
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
 
     # Importing stress history from the planet-sun simulations
-    simulation_odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator_simulation.odb'
+    simulation_odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator/pulsator_simulation.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
