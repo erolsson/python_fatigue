@@ -58,9 +58,8 @@ for root_path_data, name, normal_root in zip([path_data_pos, path_data_neg], ['p
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
     normal_root = np.dot(R, normal_root)
-
+    print frames
     for i, frame in enumerate(frames):
-        print frame
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
