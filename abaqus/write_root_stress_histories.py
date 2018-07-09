@@ -58,7 +58,7 @@ for root in roots:
     R = np.array([[np.cos(angle), -np.sin(angle), 0],
                   [np.sin(angle), np.cos(angle),  0],
                   [0,             0,              1]])
-    normal_root = np.dot(R, normal_root)
+    normal_root = np.dot(R, root.normal)
     print normal_root
     for i, frame in enumerate(frames):
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
