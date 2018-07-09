@@ -68,6 +68,7 @@ for root in roots:
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=frame.step_idx, frame=frame.frame_number)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
         print stress_tensors[0][0, 0]
+        print normal_root
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[-1]), normal_root)
         stress_data[i, 0] = frame.frame_value
 
