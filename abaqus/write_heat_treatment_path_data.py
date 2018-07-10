@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 import odbAccess
 from visualization import *
 import xyPlot
@@ -12,11 +14,15 @@ from path_functions import get_stress_tensors_from_path
 
 
 def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number=None):
+    Path = namedtuple('Path', ['name', 'data', 'normal'])
+
     with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as pickle_handle:
-        pickle.load(pickle_handle)
-        pickle.load(pickle_handle)  # Direction vector of the flank path
+        flank_data = pickle.load(pickle_handle)
+        normal_flank = pickle.load(pickle_handle)  # Direction vector of the flank path
         root_data = pickle.load(pickle_handle)
         normal_root = pickle.load(pickle_handle)  # Direction vector perpendicular the root path
+    paths = [Path(name='flank', data=flank_data, normal=normal_flank),
+             Path(name='root', data=root_data, normal=normal_root)]
 
     odb = odbAccess.openOdb(data_odb_name)
 
@@ -27,21 +33,22 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
     o7 = session.odbs[session.odbs.keys()[0]]
     session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 
-    step_index = odb.steps.keys().index(step_name)
-    if frame_number is None:
-        frame_number = len(odb.steps[step_name].frames)
-    session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-    root_data[:, 2] += 1e-2
-    root_path = create_path(root_data, 'longitudinal_path', session)
-    stress_tensors = get_stress_tensors_from_path(root_path, session)
-    odb.close()
+    for path in paths:
+        step_index = odb.steps.keys().index(step_name)
+        if frame_number is None:
+            frame_number = len(odb.steps[step_name].frames)
+        session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
 
-    data = np.zeros((100, 2))
-    data[:, 0] = np.sqrt(np.sum((root_data - root_data[0, :])**2, 1))
-    data[:, 1] = np.dot(np.dot(normal_root, stress_tensors), normal_root)
+        root_path = create_path(path.data, 'longitudinal_path', session)
+        stress_tensors = get_stress_tensors_from_path(root_path, session)
+        odb.close()
 
-    with open(result_pickle_name, 'wb') as result_pickle_handle:
-        pickle.dump(data, result_pickle_handle)
+        data = np.zeros((100, 2))
+        data[:, 0] = np.sqrt(np.sum((path.data - path.data[0, :])**2, 1))
+        data[:, 1] = np.dot(np.dot(path.normal, stress_tensors), path.normal)
+
+        with open(result_pickle_name[:-4] + '_' + path.name + '.pkl', 'wb') as result_pickle_handle:
+            pickle.dump(data, result_pickle_handle)
 
 
 if __name__ == '__main__':
