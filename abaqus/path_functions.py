@@ -25,7 +25,7 @@ def get_stress_tensors_from_path(path, session):
         xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
                                    labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                    includeIntersections=False)
-        print xy
+
         for idx, (_, stress_comp) in enumerate(xy):
             stress_data[idx, idx1, idx2] = stress_comp
     stress_data[:, 1, 0] = stress_data[:, 0, 1]
