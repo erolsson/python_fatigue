@@ -2,7 +2,7 @@ import numpy as np
 
 import pickle
 
-case_depths = [0.8]
+case_depths = [1.1]
 color = ['r', 'b', 'g', 'k']
 
 
@@ -35,6 +35,10 @@ if __name__ == '__main__':
 
         x = np.linspace(0.002, 0.01, 1000)
         plt.plot(x, carbon_to_martensite(x))
+
+        plt.figure(4)
+        plt.plot(flank_data[:, 0], flank_data[:, 4], c, lw=2)
+        plt.plot(root_data[:, 0], root_data[:, 4], '--' + c, lw=2)
 
         plt.figure(1)
         plt.plot(flank_data[:, 1], flank_data[:, 2], c, lw=2)
