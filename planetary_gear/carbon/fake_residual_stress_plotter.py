@@ -15,11 +15,14 @@ def plot_data(pickle_name, line_style):
         data = pickle.load(data_pickle)
     plt.plot(data[:, 0], data[:, 1], line_style, lw=2)
     return data
-
-for cd, c in zip(['0_5', '0_8', '1_1', '1_4'], ['r', 'b', 'g', 'k']):
-    pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/')
-    fake_data = plot_data(pickle_directory + 'fake_heat_treatment/residual_stresses_' + cd + '.pkl', '--' + c)
-    old_data = plot_data(pickle_directory + 'old_heat_treatment/residual_stresses_' + cd + '.pkl', '-' + c)
-    expansion = old_data[0, 1]/fake_data[0, 1]*0.00524804885293
-    print expansion
+for name in ['root', 'flank']:
+    plt.figure()
+    for cd, c in zip(['0_5', '0_8', '1_1', '1_4'], ['r', 'b', 'g', 'k']):
+        pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/')
+        fake_data = plot_data(pickle_directory + 'fake_heat_treatment/residual_stresses_' + cd + '_' + name + '.pkl',
+                              '--' + c)
+        old_data = plot_data(pickle_directory + 'old_heat_treatment/residual_stresses_' + cd + '_' + name +
+                             '.pkl', '-' + c)
+        expansion = old_data[0, 1]/fake_data[0, 1]
+        print expansion
 plt.show()
