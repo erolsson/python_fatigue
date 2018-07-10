@@ -41,7 +41,6 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
 
         root_path = create_path(path.data, 'longitudinal_path', session)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        odb.close()
 
         data = np.zeros((100, 2))
         data[:, 0] = np.sqrt(np.sum((path.data - path.data[0, :])**2, 1))
@@ -49,7 +48,7 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
 
         with open(result_pickle_name[:-4] + '_' + path.name + '.pkl', 'wb') as result_pickle_handle:
             pickle.dump(data, result_pickle_handle)
-
+    odb.close()
 
 if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
