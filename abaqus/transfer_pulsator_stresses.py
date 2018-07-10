@@ -33,7 +33,7 @@ if __name__ == '__main__':
     tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator/pulsator_stresses.odb'
 
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
-    #co
+
     # Importing stress history from the planet-sun simulations
     simulation_odb_name = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator/pulsator_simulation.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
