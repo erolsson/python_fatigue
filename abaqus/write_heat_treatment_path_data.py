@@ -38,7 +38,7 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
         if frame_number is None:
             frame_number = len(odb.steps[step_name].frames)
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-
+        path.data[:, 0:2] -= 1e-4
         root_path = create_path(path.data, 'longitudinal_path', session)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
 
