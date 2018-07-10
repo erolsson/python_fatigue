@@ -12,13 +12,12 @@ from path_functions import get_stress_tensors_from_path
 
 Frame = namedtuple('Frame', ['step_name', 'step_idx', 'frame_number', 'frame_value'])
 Root = namedtuple('Root', ['name', 'data', 'normal'])
-# odb_name = sys.argv[10]
-# pickle_name = sys.argv[11]
-# number_of_roots = int(sys.argv[12])
-
-odb_name = 'pulsator/pulsator_stresses'
-pickle_name = 'pulsator/tooth_root_stresses'
-number_of_roots = 1
+odb_name = sys.argv[10]
+pickle_name = sys.argv[11]
+root1 = sys.argv[12]
+root2 = None
+if len(sys.argv) > 13:
+    root2 = sys.argv[13]
 
 tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name + '.odb'
 
@@ -37,10 +36,12 @@ path_data_neg[:, 0] *= -1
 normal_root_pos = normal_root
 normal_root_neg = np.copy(normal_root_pos)
 normal_root_neg[0] *= -1
+root_data_dict = {'pos': Root(name='pos', data=path_data_pos, normal=normal_root_pos),
+                  'neg': Root(name='neg', data=path_data_neg, normal=normal_root_neg)}
 
-roots = [Root(name='pos', data=path_data_pos, normal=normal_root_pos)]
-if number_of_roots == 2:
-    roots.append(Root(name='neg', data=path_data_neg, normal=normal_root_neg))
+roots = [root_data_dict[root1]]
+if root2:
+    roots.append(root_data_dict[root2])
 
 odb = openOdb(tooth_odb_file_name, readOnly=True)
 session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
