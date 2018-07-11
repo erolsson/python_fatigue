@@ -15,6 +15,8 @@ def plot_data(pickle_name, line_style):
         data = pickle.load(data_pickle)
     plt.plot(data[:, 0], data[:, 1], line_style, lw=2)
     return data
+
+
 for name in ['root', 'flank']:
     plt.figure()
     for cd, c in zip(['0_5', '0_8', '1_1', '1_4'], ['r', 'b', 'g', 'k']):
