@@ -44,8 +44,12 @@ if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
     nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
+    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
+                      'input_files/planet_sun/planet_dense_geom_xneg.inc'
+    nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
+
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
-                 OdbInstance(name='tooth_left', nodes=nodes_pos, elements=elements_pos)]
+                 OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
     tooth_odb_file_name = dante_odb_path + 'dante_results_fake.odb'
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
