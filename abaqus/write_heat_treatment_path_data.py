@@ -42,7 +42,7 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
         path.data[:, 0:2] -= 1e-4
         root_path = create_path(path.data, 'longitudinal_path', session)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
-        hardness = get_scalar_field_from_path(path, session, 'HV')
+        hardness = get_scalar_field_from_path(root_path, session, 'HV')
 
         data = np.zeros((100, 3))
         data[:, 0] = np.sqrt(np.sum((path.data - path.data[0, :])**2, 1))
