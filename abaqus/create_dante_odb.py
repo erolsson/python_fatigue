@@ -48,5 +48,5 @@ if __name__ == '__main__':
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
         create_dante_step(odb_name=odb_file_name,
-                          pickle_directory=pickle_directory + 'case_depth_' + str(cd).replace('.', '.'),
+                          pickle_directory=pickle_directory + 'case_depth_' + str(cd).replace('.', '_'),
                           results_step_name='dante_results_' + str(cd).replace('.', '_'))
