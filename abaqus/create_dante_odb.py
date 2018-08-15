@@ -44,5 +44,5 @@ if __name__ == '__main__':
     create_odb(odb_file_name=dante_odb_path + 'dante_results.odb', instance_data=instances)
     pickle_file = pickle_directory + 'case_depth_0_5/Toolbox_Mechanical_0_5_quarter_S.pkl'
     with open(pickle_file, 'r') as pickle_handle:
-        data = pickle.load(pickle_file)
+        data = pickle.load(pickle_handle)
         print data
