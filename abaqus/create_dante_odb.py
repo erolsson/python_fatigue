@@ -14,8 +14,12 @@ from odb_io_functions import flip_node_order
 
 
 def create_dante_step(odb_name, pickle_directory, results_step_name):
-    files = os.listdir(pickle_directory)
-    print files
+    pickle_files = os.listdir(pickle_directory)
+    data_dict = {}
+    for pickle_file in pickle_files:
+        prefix = pickle_file[len('Toolbox_Mechanical_0_5_quarter_'):]
+        prefix = prefix[:-4]
+        print prefix
     """
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=odb_name, step_name=results_step_name,
                        instance_name='tooth_right', frame_number=0,
