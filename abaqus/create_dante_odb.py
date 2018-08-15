@@ -9,8 +9,9 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 from odb_io_functions import write_field_to_odb
-from odb_io_functions import cylindrical_system_z
 from odb_io_functions import flip_node_order
+
+from materials.hardess_convertion_functions import HRC2HV
 
 
 def create_dante_step(odb_name, pickle_directory, results_step_name):
@@ -28,10 +29,29 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
     scalar_fields.remove('S')
 
     for scalar_field in scalar_fields:
-        write_field_to_odb(field_data=data_dict[scalar_field], field_id=scalar_field, odb_file_name=odb_name,
+        field = data_dict[scalar_field]
+        write_field_to_odb(field_data=field, field_id=scalar_field, odb_file_name=odb_name,
                            step_name=results_step_name, instance_name='tooth_right', frame_number=0)
-        write_field_to_odb(field_data=data_dict[scalar_field], field_id=scalar_field, odb_file_name=odb_name,
+        field = flip_node_order(field, axis='z')
+        write_field_to_odb(field_data=field, field_id=scalar_field, odb_file_name=odb_name,
                            step_name=results_step_name, instance_name='tooth_left', frame_number=0)
+
+    stress = data_dict['S']
+    write_field_to_odb(field_data=stress, field_id='S', odb_file_name=odb_name, step_name=results_step_name,
+                       instance_name='tooth_right', frame_number=0,
+                       invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
+    stress = flip_node_order(stress, axis='z')
+    stress[:, 3] *= -1
+    write_field_to_odb(field_data=data_dict['S'], field_id='S', odb_file_name=odb_name, step_name=results_step_name,
+                       instance_name='tooth_left', frame_number=0,
+                       invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
+
+    hv = HRC2HV(data_dict['SDV_HARDNESS'])
+    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=odb_name, step_name=results_step_name,
+                       instance_name='tooth_right', frame_number=0)
+    hv = flip_node_order(hv, axis='z')
+    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=odb_name, step_name=results_step_name,
+                       instance_name='tooth_left', frame_number=0)
 
 
 if __name__ == '__main__':
