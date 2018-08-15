@@ -45,4 +45,4 @@ if __name__ == '__main__':
     pickle_file = pickle_directory + 'case_depth_0_5/Toolbox_Mechanical_0_5_quarter_S.pkl'
     with open(pickle_file, 'r') as pickle_handle:
         data = pickle.load(pickle_file)
-    print data
+        print data
