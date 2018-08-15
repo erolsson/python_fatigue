@@ -138,28 +138,30 @@ def write_input_files(sim_data):
                 inp_file.write(line_to_write + '\n')
             inp_file.write('**EOF')
 
+
 if __name__ == '__main__':
-    sim_directory = 'input_files/dante_quarter/'
+    sim_directory = 'input_files/dante_quarter_x3/'
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon'])
     simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
 
-    quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/dense_mesh_planet.inc')
+    quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/dense_'
+                                                           'mesh_x3_planet.inc')
 
-    write_sets_file(filename='input_files/dante_quarter/planetGear_sets.inc',
-                    full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_planet_sets.inc',
+    write_sets_file(filename=sim_directory + '/planetGear_sets.inc',
+                    full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_x3_planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
                     monitor_node=60674)
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
-                            filename='input_files/dante_quarter/Toolbox_Carbon_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Carbon_quarter_geo.inc')
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Thermal',
-                            filename='input_files/dante_quarter/Toolbox_Thermal_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Thermal_quarter_geo.inc')
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Mechanical',
-                            filename='input_files/dante_quarter/Toolbox_Mechanical_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Mechanical_quarter_geo.inc')
 
     for sim in simulations:
         if not os.path.isdir(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_')):
