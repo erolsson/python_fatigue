@@ -32,3 +32,16 @@ def get_stress_tensors_from_path(path, session):
     stress_data[:, 2, 0] = stress_data[:, 0, 2]
     stress_data[:, 2, 1] = stress_data[:, 1, 2]
     return stress_data
+
+
+def get_scalar_field_from_path(path, session, variable):
+    data = np.zeros(100)
+    session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel=variable,
+                                                                   outputPosition=ELEMENT_NODAL,
+                                                                   refinement=[COMPONENT, comp])
+    xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
+                               labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                               includeIntersections=False)
+    for idx, (_, value) in enumerate(xy):
+        data[idx] = value
+    return data
