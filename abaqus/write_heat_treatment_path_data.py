@@ -50,6 +50,7 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
             pickle.dump(data, result_pickle_handle)
     odb.close()
 
+
 if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
         main_path = '/scratch/users/erik/scania_gear_analysis'

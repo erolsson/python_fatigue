@@ -44,6 +44,7 @@ def create_path(points, name):
     data_path = session.Path(name=name, type=POINT_LIST, expression=path_points)
     return data_path
 
+
 if __name__ == '__main__':
     mechanical_odb_name = '/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/mechanicalLoadsTooth.odb'
     dante_odb_name = '/scratch/users/erik/Abaqus/Gear/planetaryGear/odb/danteTooth20170220.odb'
