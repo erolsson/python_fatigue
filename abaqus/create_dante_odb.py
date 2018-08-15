@@ -19,7 +19,7 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
     for pickle_file in pickle_files:
         prefix = pickle_file[len('Toolbox_Mechanical_0_5_quarter_'):]
         prefix = prefix[:-4]
-        with open(pickle_directory + pickle_file, 'r') as pickle_handle:
+        with open(pickle_directory + '/' + pickle_file, 'r') as pickle_handle:
             pickle.load(pickle_handle)
             pickle.load(pickle_handle)
             data_dict[prefix] = pickle.load(pickle_handle)
