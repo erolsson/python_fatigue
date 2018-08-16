@@ -6,6 +6,7 @@ from input_file_reader.input_file_functions import write_geom_include_file
 from gear_input_file_functions import create_quarter_model
 from gear_input_file_functions import write_sets_file
 
+from carbon.diffusitivity import write_diffusion_file
 
 def write_input_files(sim_data, simulation_directory):
     def write_carburization_step(step_name, t1, t2, carbon):
@@ -170,3 +171,4 @@ if __name__ == '__main__':
         if not os.path.isdir(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_')):
             os.makedirs(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_'))
         write_input_files(sim, simulation_directory=sim_directory)
+        write_diffusion_file(sim_directory + 'diffusivity_2506.inc')
