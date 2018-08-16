@@ -7,7 +7,7 @@ from gear_input_file_functions import create_quarter_model
 from gear_input_file_functions import write_sets_file
 
 
-def write_input_files(sim_data):
+def write_input_files(sim_data, simulation_directory):
     def write_carburization_step(step_name, t1, t2, carbon):
         carbon_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
         carbon_lines.append('\t' + step_name + ' - Total time: ' + str(t1) + ' - ' +
@@ -91,7 +91,7 @@ def write_input_files(sim_data):
 
     def write_generic_data(simulation_type):
         file_lines = []
-        with open('input_files/dante_quarter/generic_' + simulation_type + '_file.txt') as generic_file:
+        with open(simulation_directory + 'generic_' + simulation_type + '_file.txt') as generic_file:
             for generic_line in generic_file:
                 generic_line = generic_line.replace('\n', '')
                 file_lines.append(generic_line)
@@ -122,7 +122,7 @@ def write_input_files(sim_data):
 
     # Add remaining data to the thermal and mechanical file
     for lines, name in [(thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
-        with open('input_files/dante_quarter/end_' + name + '_file.txt') as end_file:
+        with open(simulation_directory + 'end_' + name + '_file.txt') as end_file:
             end_lines = end_file.readlines()
             for line in end_lines:
                 line = line.replace('/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/', '')
@@ -132,7 +132,7 @@ def write_input_files(sim_data):
 
     # Write the input files
     for lines, name in [(carbon_lines, 'Carbon'), (thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
-        with open('input_files/dante_quarter/VBC_fatigue_' + str(sim_data.CD).replace('.', '_') + '/Toolbox_' +
+        with open(simulation_directory + 'VBC_fatigue_' + str(sim_data.CD).replace('.', '_') + '/Toolbox_' +
                   name + '_' + str(sim_data.CD).replace('.', '_') + '_quarter.inp', 'w') as inp_file:
             for line_to_write in lines:
                 inp_file.write(line_to_write + '\n')
@@ -140,7 +140,10 @@ def write_input_files(sim_data):
 
 
 if __name__ == '__main__':
-    sim_directory = 'input_files/dante_quarter_x3/'
+    mesh = '_x3'
+    sim_directory = 'input_files/dante_quarter' + mesh + '/'
+
+    monitor_node = {'': 60674, '_x2': 143035, '_x3': 276030}
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon'])
     simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
                    Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
@@ -148,13 +151,13 @@ if __name__ == '__main__':
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
 
     quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/dense_'
-                                                           'mesh_x3_planet.inc')
+                                                           'mesh' + mesh + '_planet.inc')
 
     write_sets_file(filename=sim_directory + '/planetGear_sets.inc',
-                    full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh_x3_planet_sets.inc',
+                    full_model_sets_file='input_files/gear_models/planet_gear/dense_mesh' + mesh + '_planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
-                    monitor_node=60674)
+                    monitor_node=monitor_node[mesh])
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename=sim_directory + '/Toolbox_Carbon_quarter_geo.inc')
@@ -166,4 +169,4 @@ if __name__ == '__main__':
     for sim in simulations:
         if not os.path.isdir(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_')):
             os.makedirs(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_'))
-        write_input_files(sim)
+        write_input_files(sim, simulation_directory=sim_directory)
