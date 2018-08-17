@@ -120,7 +120,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
 
 def get_nodal_coordinates_from_node_set(odb_file_name, node_set_name, instance_name=None):
     odb = odbAccess.openOdb(odb_file_name, readOnly=True)
-    if instance:
+    if instance_name:
         node_set = odb.rootAssembly.instances[instance_name]
     else:
         node_set = odb.rootAssembly.nodeSets[node_set_name]
