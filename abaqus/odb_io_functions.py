@@ -145,6 +145,7 @@ def add_node_set(odb_file_name, node_set_name, labels, instance_name=None):
         base = odb.rootAssembly
     if node_set_name not in base.nodeSets:
         base.NodeSetFromNodeLabels(name=node_set_name, nodeLabels=labels)
+    odb.save()
     odb.close()
 
 
@@ -156,4 +157,5 @@ def add_element_set(odb_file_name, element_set_name, labels, instance_name=None)
         base = odb.rootAssembly
     if element_set_name not in base.elementSets:
         base.ElementSetFromElementLabels(name=element_set_name, elementLabels=labels)
+    odb.save()
     odb.close()
