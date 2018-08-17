@@ -1,8 +1,9 @@
 from odbAccess import *
-from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import os
 import pickle
+
+import numpy as np
 
 from odb_io_functions import get_nodal_coordinates_from_node_set
 from odb_io_functions import read_field_from_odb
@@ -26,6 +27,9 @@ if __name__ == '__main__':
     odb_file_name = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_' +
                                        mesh + '/dante_results.odb')
 
+    coordinate_pickle_file_name = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
+                                                     'mesh_' + mesh + '1x/geometry/nodal_positions.pkl'
+)
     node_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                          node_set_name + '.inc')
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
@@ -37,5 +41,11 @@ if __name__ == '__main__':
     _, node_labels, _ = read_field_from_odb('HV', odb_file_name, element_set_name, step_name='dante_results_0_5',
                                             frame_number=0, instance_name='tooth_right', get_position_numbers=True)
     nodal_dict = get_nodal_coordinates_from_node_set(odb_file_name, node_set_name, instance_name='tooth_right')
-    print nodal_dict
+
+    node_coordinates = np.zeros(len(node_labels), 3)
+    for i, node_label in enumerate(node_labels):
+        node_coordinates[i, :] = nodal_dict[node_label]
+
+    with open(coordinate_pickle_file_name, 'w') as pickle_handle:
+        pickle.dump(node_coordinates, pickle_handle)
 
