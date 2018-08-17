@@ -19,7 +19,7 @@ def get_list_from_set_file(filename):
     return [int(l) for l in label_list]
 
 
-if '__name__' == '__main__':
+if __name__ == '__main__':
     mesh = '1x'
     node_set_name = 'tooth_root_volume_nodes'
     element_set_name = 'tooth_root_volume_elements'
