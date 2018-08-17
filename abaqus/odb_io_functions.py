@@ -135,3 +135,25 @@ def flip_node_order(data, axis):      # ToDo implement flip around x and y axis 
             data[8*i:8*i+4] = temp_data[4:]
             data[8*i+4:8*i+8] = temp_data[:4]
     return data
+
+
+def add_node_set(odb_file_name, node_set_name, labels, instance_name=None):
+    odb = openOdb(odb_file_name, readOnly=False)
+    if instance_name:
+        base = odb.rootAssembly.instances[instance_name]
+    else:
+        base = odb.rootAssembly
+    if node_set_name not in base.nodeSets:
+        base.NodeSetFromNodeLabels(name=node_set_name, nodeLabels=labels)
+    odb.close()
+
+
+def add_element_set(odb_file_name, element_set_name, labels, instance_name=None):
+    odb = openOdb(odb_file_name, readOnly=False)
+    if instance_name:
+        base = odb.rootAssembly.instances[instance_name]
+    else:
+        base = odb.rootAssembly
+    if element_set_name not in base.elementSets:
+        base.ElementSetFromElementLabels(name=element_set_name, elementLabels=labels)
+    odb.close()

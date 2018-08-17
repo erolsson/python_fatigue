@@ -8,6 +8,7 @@ from gear_input_file_functions import write_sets_file
 
 from carbon.diffusitivity import write_diffusion_file
 
+
 def write_input_files(sim_data, simulation_directory):
     def write_carburization_step(step_name, t1, t2, carbon):
         carbon_lines.append('*STEP,NAME=' + step_name + ', INC=10000')

@@ -10,14 +10,7 @@ from materials.gear_materials import SteelData
 
 
 def write_pickle_for_case_depth(odb_file_name, pickle_file_name, fatigue_set_name, fatigue_set_data):
-    odb = openOdb(odb_file_name)
-    for instance_name in ['left', 'right']:
-        if fatigue_set_name not in odb.rootAssembly.elementSets:
-            instance = odb.rootAssembly.instances['tooth_' + instance_name]
-            instance.ElementSetFromElementLabels(name=fatigue_set_name,
-                                                 elementLabels=fatigue_set_data)
 
-    odb.close()
 
 
 if __name__ == '__main__':
