@@ -28,7 +28,7 @@ if __name__ == '__main__':
                                        mesh + '/dante_results.odb')
 
     coordinate_pickle_file_name = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
-                                                     'mesh_' + mesh + '1x/geometry/nodal_positions.pkl'
+                                                     'mesh_' + mesh + '/geometry/nodal_positions.pkl'
 )
     node_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                          node_set_name + '.inc')
