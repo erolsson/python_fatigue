@@ -22,4 +22,5 @@ class _SS2506Material:
     def weibull_m(steel_properties):
         return 11.0E6/steel_properties.HV**2
 
+
 SS2506 = _SS2506Material()

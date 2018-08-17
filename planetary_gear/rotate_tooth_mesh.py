@@ -6,7 +6,7 @@ from write_input_for_dante import write_geom_include_file
 
 center_node = 514709
 
-nodes, elements = read_nodes_and_elements('input_files/gear_models/planet_gear/dense_mesh_x3_planet.inc')
+nodes, elements = read_nodes_and_elements('input_files/gear_models/planet_gear/mesh_planet.inc')
 
 point = nodes[nodes[:, 0] == center_node, 1:3][0]
 print point
@@ -20,4 +20,4 @@ for n in nodes:
 
 nodes[np.abs(nodes[:, 1]) < 1e-9, 1] = 0.
 print nodes[:, 1]
-write_geom_include_file(nodes, elements, 'input_files/gear_models/planet_gear/dense_mesh_x3_planet.inc')
+write_geom_include_file(nodes, elements, 'input_files/gear_models/planet_gear/mesh_planet.inc')

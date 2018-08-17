@@ -48,6 +48,7 @@ def calculate_life(load, case_depth):
     pf = wl_evaluator.calculate_pf()
     return pf, lives
 
+
 case_depths = [0.5, 0.8, 1.1, 1.4]
 # case_depths = [1.4]
 pf_levels = np.array([0.25, 0.5, 0.75])

@@ -6,6 +6,8 @@ import pickle
 
 import numpy as np
 
+from materials.gear_materials import SteelData
+
 
 def write_pickle_for_case_depth(odb_file_name, pickle_file_name, fatigue_set_name, fatigue_set_data):
     odb = openOdb(odb_file_name)
@@ -13,7 +15,8 @@ def write_pickle_for_case_depth(odb_file_name, pickle_file_name, fatigue_set_nam
         if fatigue_set_name not in odb.rootAssembly.elementSets:
             instance = odb.rootAssembly.instances['tooth_' + instance_name]
             instance.ElementSetFromElementLabels(name=fatigue_set_name,
-                                                 element_labels=fatigue_set_data)
+                                                 elementLabels=fatigue_set_data)
+
     odb.close()
 
 
@@ -21,7 +24,7 @@ if __name__ == '__main__':
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/dante_results.odb'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/heat_treatment/mesh_1x/'
 
-    set_file_name  = '../planetary_gear/input_files/gear_models/planet_gear/tooth_root_set_volume_dense_mesh.inc'
+    # set_file_name  = '../planetary_gear/input_files/gear_models/planet_gear/mesh_1x/tooth_root_volume_elements.inc'
     fatigue_set_data = []
     with open(set_file_name) as set_file:
         for line in set_file.readlines():
