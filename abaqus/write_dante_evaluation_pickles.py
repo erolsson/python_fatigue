@@ -27,5 +27,6 @@ if __name__ == '__main__':
         for line in set_file.readlines():
             fatigue_set_data += line.split(',')
     fatigue_set_data = [int(e) for e in fatigue_set_data]
-    print fatigue_set_data
+
+    write_pickle_for_case_depth(dante_odb_filename, '', 'tooth_root_volume_elements', fatigue_set_data)
 
