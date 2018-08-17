@@ -21,7 +21,10 @@ if __name__ == '__main__':
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/dante_results.odb'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/heat_treatment/mesh_1x/'
 
-    set_file = '../planetary_gear/input_files/gear_models/planet_gear/tooth_root_set_volume_dense_mesh.inc'
-    fatigue_set_data = np.genfromtxt(set_file, delimiter=',').tolist()
+    set_file_name  = '../planetary_gear/input_files/gear_models/planet_gear/tooth_root_set_volume_dense_mesh.inc'
+    fatigue_set_data = []
+    with open(set_file_name) as set_file:
+        for line in set_file.readlines():
+            fatigue_set_data += line.split()
     print fatigue_set_data
 
