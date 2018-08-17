@@ -143,9 +143,9 @@ def add_node_set(odb_file_name, node_set_name, labels, instance_name=None):
         base = odb.rootAssembly.instances[instance_name]
     else:
         base = odb.rootAssembly
+    print base.nodeSets
     if node_set_name not in base.nodeSets:
         base.NodeSetFromNodeLabels(name=node_set_name, nodeLabels=labels)
-    print base
     odb.save()
     odb.close()
 
