@@ -36,6 +36,6 @@ if __name__ == '__main__':
 
     _, node_labels, _ = read_field_from_odb('HV', odb_file_name, element_set_name, step_name='dante_results_0_5',
                                             frame_number=0, instance_name='tooth_right', get_position_numbers=True)
-    nodal_dict = get_nodal_coordinates_from_node_set(odb_file_name, node_set_name, instance='tooth_right')
+    nodal_dict = get_nodal_coordinates_from_node_set(odb_file_name, node_set_name, instance_name='tooth_right')
     print nodal_dict
 
