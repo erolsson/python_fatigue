@@ -26,6 +26,14 @@ if __name__ == '__main__':
     odb_file_name = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_' +
                                        mesh + '/dante_results.odb')
 
-    node_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/'+
+    node_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                          node_set_name + '.inc')
-    add_node_set(odb_file_name, node_set_name, node_labels, 'tooth_left')
+    element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
+                                            element_set_name + '.inc')
+
+    add_node_set(odb_file_name, node_set_name, node_labels, 'tooth_right')
+    add_element_set(odb_file_name, element_set_name, node_labels, 'tooth_right')
+
+    _, node_labels, _ = read_field_from_odb('HV', odb_file_name, element_set_name, step_name='dante_results_0_5',
+                                            frame_number=0, instance_name='tooth_right', get_position_numbers=True)
+    nodal_dict = get_nodal_coordinates_from_node_set(odb_file_name, node_set_name)
