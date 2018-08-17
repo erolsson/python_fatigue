@@ -32,6 +32,7 @@ def get_node_data_from_set(odb_file_name, node_set_name):
     node_dict = {}
     for node in node_set.nodes:
         node_dict[node.label] = node.coordinates
+    odb.save()
     odb.close()
     return node_dict
 
