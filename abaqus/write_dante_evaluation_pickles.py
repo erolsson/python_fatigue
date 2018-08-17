@@ -26,5 +26,6 @@ if __name__ == '__main__':
     with open(set_file_name) as set_file:
         for line in set_file.readlines():
             fatigue_set_data += line.split()
+    fatigue_set_data = [int(e) for e in fatigue_set_data]
     print fatigue_set_data
 
