@@ -42,7 +42,7 @@ if __name__ == '__main__':
                                             frame_number=0, instance_name='tooth_right', get_position_numbers=True)
     nodal_dict = get_nodal_coordinates_from_node_set(odb_file_name, node_set_name, instance_name='tooth_right')
 
-    node_coordinates = np.zeros(len(node_labels, 3))
+    node_coordinates = np.zeros((len(node_labels), 3))
     for i, node_label in enumerate(node_labels):
         node_coordinates[i, :] = nodal_dict[node_label]
 
