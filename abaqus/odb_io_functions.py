@@ -138,7 +138,7 @@ def flip_node_order(data, axis):      # ToDo implement flip around x and y axis 
 
 
 def add_node_set(odb_file_name, node_set_name, labels, instance_name=None):
-    odb = openOdb(odb_file_name, readOnly=False)
+    odb = odbAccess.openOdb(odb_file_name, readOnly=False)
     if instance_name:
         base = odb.rootAssembly.instances[instance_name]
     else:
