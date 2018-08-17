@@ -8,8 +8,8 @@ import pickle
 def write_pickle_for_case_depth(odb_file_name, pickle_file_name, fatigue_set_name, fatigue_set_data):
     odb = openOdb(odb_file_name)
     if fatigue_set_name not in odb.rootAssembly.elementSets:
-        odb.rootAssembly.instances[]
-
+        odb.rootAssembly.instances['tooth_left'].ElementSetFromElementLabels(name=fatigue_set_name,
+                                                                             element_labels=fatigue_set_data.tolist())
     odb.close()
 
 
