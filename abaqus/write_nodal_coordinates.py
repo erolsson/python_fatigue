@@ -32,6 +32,7 @@ if __name__ == '__main__':
 
     node_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                          node_set_name + '.inc')
+    # Test
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
 
