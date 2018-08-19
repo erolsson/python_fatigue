@@ -48,4 +48,3 @@ if __name__ == '__main__':
 
     with open(coordinate_pickle_file_name, 'w') as pickle_handle:
         pickle.dump(node_coordinates, pickle_handle)
-
