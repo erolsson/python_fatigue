@@ -40,5 +40,4 @@ if __name__ == '__main__':
                                             element_set_name + '.inc')
 
     add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_right')
-    write_pickle_for_case_depth(dante_odb_filename, '', 'tooth_root_volume_elements')
-
+    write_pickle_for_case_depth(dante_odb_filename, 0.5, '', 'tooth_root_volume_elements')
