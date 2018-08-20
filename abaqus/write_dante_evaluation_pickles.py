@@ -1,9 +1,6 @@
 from odbAccess import *
-from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import pickle
-
-from materials.gear_materials import SteelData
 
 from odb_io_functions import add_element_set
 from odb_io_functions import read_field_from_odb
@@ -19,13 +16,12 @@ def write_pickle_for_case_depth(odb_file_name, case_depth, pickle_file_name, fat
     for var in field_vars:
         dante_dict[var] = read_field_from_odb(var, odb_file_name, fatigue_set_name, step_name, frame_number=0,
                                               instance_name='tooth_left')
-    steel_data = SteelData(**dante_dict)
     residual_stress = read_field_from_odb('S', odb_file_name, fatigue_set_name, step_name, frame_number=0,
                                           instance_name='tooth_left', coordinate_system=cylindrical_system_z)
 
-    data_dict = {'steel_data': steel_data, 'S': residual_stress}
+    dante_dict['S'] = residual_stress
     with open(pickle_file_name, 'w') as pickle_handle:
-        pickle.dump(data_dict, pickle_handle)
+        pickle.dump(dante_dict, pickle_handle)
 
 
 if __name__ == '__main__':
