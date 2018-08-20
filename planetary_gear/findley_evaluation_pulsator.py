@@ -4,6 +4,10 @@ import sys
 import pickle
 import numpy as np
 
+from materials.gear_materials import SS2506
+from materials.gear_materials import SteelData
+
+from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 
 mesh = '1x'
 cd = float(sys.argv[1])
@@ -14,6 +18,9 @@ dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/toot
 
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/pulsator_stresses/')
+
+findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                                 mesh + '/findley/pulsator/')
 
 with open(dante_pickle_directory + 'data_' + str(cd).replace('.', '_') + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
@@ -31,8 +38,18 @@ for load in loads:
 
     min_stresses = mechanical_data['min_load']
     max_stresses = mechanical_data['max_load']
-    min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*load
-    max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*load
-    print np.max(max_stress)
-    print np.max(min_stress)
+    min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
+    max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
 
+    stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
+    stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
+    steel_data = SteelData(HV=dante_data['HV'])
+
+    findley_k = SS2506.findley_k(steel_data)
+    findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
+                                    num_workers=8, chunk_size=300, search_grid=10)
+
+    findley_stress = findley_data[:, 2]
+    findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + 'Pamp=' + str(load).replace('.', '_')
+    with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
+        pickle.dump(findley_data, pickle_handle)
