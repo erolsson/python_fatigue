@@ -24,7 +24,7 @@ def write_pickle_for_case_depth(odb_file_name, case_depth, pickle_file_name, fat
                                               instance_name='tooth_left')
     steel_data = SteelData(**dante_dict)
     residual_stress = read_field_from_odb('S', odb_file_name, element_set_name, step_name, frame_number=0,
-                                          instance_name='tooth_left', coordinate_system=cylindrical_system_z)
+                                          instance_name='tooth_left')
     print np.max(residual_stress)
 
 
