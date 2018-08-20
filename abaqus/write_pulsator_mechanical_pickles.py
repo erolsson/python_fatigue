@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
         load = float(step_name[5:9].replace('_', '.'))
         stress_dict['min_load'][load] = min_load
-        stress_dict['max_load'][load] = min_load
+        stress_dict['max_load'][load] = max_load
 
     pickle_file_name = 'pulsator_stresses.pkl'
     with open(pickle_directory + pickle_file_name, 'w') as pickle_handle:
