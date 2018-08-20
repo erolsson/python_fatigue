@@ -1,11 +1,9 @@
 from odbAccess import *
 
-import numpy as np
 import pickle
 
 from odb_io_functions import add_element_set
 from odb_io_functions import read_field_from_odb
-from odb_io_functions import cylindrical_system_z
 
 from write_nodal_coordinates import get_list_from_set_file
 
@@ -14,7 +12,7 @@ if __name__ == '__main__':
     mesh = '1x'
     element_set_name = 'tooth_root_volume_elements'
     pulsator_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/pulsator/mesh_' + \
-                         mesh + '/pulsator_stresses.odb'
+                            mesh + '/pulsator_stresses.odb'
 
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
                        + mesh + '/pulsator/'
@@ -32,4 +30,7 @@ if __name__ == '__main__':
                                        instance_name='tooth_left')
         max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 1,
                                        instance_name='tooth_left')
-        print np.max(max_load), np.argmax(max_load)
+        stress_dict = {'min_load': min_load, 'max_load': max_load}
+        pickle_file_name = step_name + '.pkl'
+        with open(pickle_file_name, 'w') as pickle_handle:
+            pickle.dump(stress_dict, pickle_handle)
