@@ -15,7 +15,7 @@ if __name__ == '__main__':
                             mesh + '/pulsator_stresses.odb'
 
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
-                       + mesh + '/pulsator/'
+                       + mesh + '/pulsator_stresses/'
 
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
