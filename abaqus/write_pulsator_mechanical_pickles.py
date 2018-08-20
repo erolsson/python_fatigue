@@ -32,5 +32,5 @@ if __name__ == '__main__':
                                        instance_name='tooth_left')
         stress_dict = {'min_load': min_load, 'max_load': max_load}
         pickle_file_name = step_name + '.pkl'
-        with open(pickle_file_name, 'w') as pickle_handle:
+        with open(pickle_directory + pickle_file_name, 'w') as pickle_handle:
             pickle.dump(stress_dict, pickle_handle)
