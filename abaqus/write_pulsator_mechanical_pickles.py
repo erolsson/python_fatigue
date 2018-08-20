@@ -28,8 +28,8 @@ if __name__ == '__main__':
     step_names = pulsator_odb.steps.keys()
     pulsator_odb.close()
     for step_name in step_names:
-        min_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_names, 0,
+        min_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 0,
                                        instance_name='tooth_left')
-        max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_names, 1,
+        max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 1,
                                        instance_name='tooth_left')
         print np.max(max_load)
