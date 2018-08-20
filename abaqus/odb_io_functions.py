@@ -32,8 +32,9 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
                                                                        point2=coordinate_system.point2)
         else:
             transform_system = odb.rootAssembly.datumCsyses[coordinate_system.name]
-        deformation_field = odb.steps[step_name].frames[frame_number].fieldOutputs['U']
+
         if rotating_system:
+            deformation_field = odb.steps[step_name].frames[frame_number].fieldOutputs['U']
             field = field.getTransformedField(transform_system, deformationField=deformation_field)
         else:
             field = field.getTransformedField(transform_system)
