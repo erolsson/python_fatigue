@@ -22,9 +22,9 @@ if __name__ == '__main__':
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
 
-    add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_left')
+    add_element_set(pulsator_odb_filename, element_set_name, element_labels, 'tooth_left')
 
-    pulsator_odb = openOdb(dante_odb_filename)
+    pulsator_odb = openOdb(pulsator_odb_filename)
     step_names = pulsator_odb.steps.keys()
     pulsator_odb.close()
     for step_name in step_names:
