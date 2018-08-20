@@ -32,4 +32,4 @@ if __name__ == '__main__':
                                        instance_name='tooth_left')
         max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 1,
                                        instance_name='tooth_left')
-        print np.max(max_load)
+        print np.max(max_load), np.argmax(max_load)
