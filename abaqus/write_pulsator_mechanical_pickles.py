@@ -25,16 +25,17 @@ if __name__ == '__main__':
     pulsator_odb = openOdb(pulsator_odb_filename)
     step_names = pulsator_odb.steps.keys()
     pulsator_odb.close()
-    stress_dict = {}
+    stress_dict = {'min_load': {}, 'max_load': {}}
     for step_name in step_names:
         min_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 0,
                                        instance_name='tooth_left')
         max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 1,
                                        instance_name='tooth_left')
 
-        step_dict = {'min_load': min_load, 'max_load': max_load}
-        stress_dict[float(step_name[5:9].replace('_', '.'))] = step_dict
-        print float(step_name[5:9].replace('_', '.'))
+        load = float(step_name[5:9].replace('_', '.'))
+        stress_dict['min_load'][load] = min_load
+        stress_dict['max_load'][load] = min_load
+
     pickle_file_name = 'pulsator_stresses.pkl'
     with open(pickle_directory + pickle_file_name, 'w') as pickle_handle:
         pickle.dump(stress_dict, pickle_handle)
