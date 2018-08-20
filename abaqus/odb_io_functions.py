@@ -12,7 +12,7 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 
 
 def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
-                        coordinate_system=None, position=ELEMENT_NODAL, get_position_numbers=False,
+                        coordinate_system=None, rotating_system=False, position=ELEMENT_NODAL, get_position_numbers=False,
                         get_frame_value=False):
     odb = odbAccess.openOdb(odb_file_name, readOnly=True)
     if instance_name is None:
@@ -33,8 +33,10 @@ def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, fr
         else:
             transform_system = odb.rootAssembly.datumCsyses[coordinate_system.name]
         deformation_field = odb.steps[step_name].frames[frame_number].fieldOutputs['U']
-        field = field.getTransformedField(transform_system, deformationField=deformation_field)
-
+        if rotating_system:
+            field = field.getTransformedField(transform_system, deformationField=deformation_field)
+        else:
+            field = field.getTransformedField(transform_system)
     field = field.values
 
     n1 = len(field)
