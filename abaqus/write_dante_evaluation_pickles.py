@@ -37,6 +37,7 @@ if __name__ == '__main__':
 
     add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_right')
     add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_left')
+
     for cd in [0.5, 0.8, 1.1, 1.4]:
         pickle_name = pickle_directory + 'data_' + str(cd).replace('.', '_') + '.pkl'
         write_pickle_for_case_depth(dante_odb_filename, cd, pickle_name, 'tooth_root_volume_elements')

@@ -31,9 +31,9 @@ def calculate_life(load, cd):
                         '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)[:, 2]
-    print np.max(stress)
     n_vol = stress.shape[0]
-
+    if load == 30.:
+        print np.max(stress)
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
@@ -50,12 +50,11 @@ def calculate_life(load, cd):
     for it, pf in enumerate(pf_levels):
         lives[it] = wl_evaluator.calculate_life_time(pf=pf, haiback=haiback)
     pf = wl_evaluator.calculate_pf()
-    print pf
     return pf, lives
 
 
-# case_depths = [0.5, 0.8, 1.1, 1.4]
-case_depths = [1.4]
+case_depths = [0.5, 0.8, 1.1, 1.4]
+# case_depths = [1.4]
 pf_levels = np.array([0.25, 0.5, 0.75])
 sim_forces = np.arange(30., 41., 1.)
 mesh = '1x'
@@ -81,7 +80,7 @@ for i, case_depth in enumerate(case_depths):
     for force in sim_forces:
         job_list.append((calculate_life, [force, case_depth], {}))
 
-    wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=1)
+    wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
 
     simulated_pf = 0 * sim_forces
     for force_level in range(sim_forces.shape[0]):
