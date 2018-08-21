@@ -39,19 +39,17 @@ for load in loads:
     max_stresses = mechanical_data['max_load']
     min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
     max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
-    i_max0 = np.argmax(max_stresses[f1][:, 0])
-    i_max1 = np.argmax(max_stresses[f1][:, 1])
 
     stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
     stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
     steel_data = SteelData(HV=dante_data['HV'])
-    print dante_data['S'][i_max0, 3]
 
     findley_k = SS2506.findley_k(steel_data)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
-                                     num_workers=8, chunk_size=300, search_grid=10)
+                                    num_workers=8, chunk_size=300, search_grid=10)
 
     findley_stress = findley_data[:, 2]
+    print "Maximum Findley stress", np.max(findley_stress), 'MPa'
     findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
-        pickle.dump(findley_data, pickle_handle)
+        pickle.dump(findley_stress, pickle_handle)
