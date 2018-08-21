@@ -27,9 +27,11 @@ haiback = True
 
 
 def calculate_life(load, cd):
-    findley_file_name = 'findley/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN .pkl'
+    findley_file_name = 'findley/pulsator/findley_CD=' + str(cd).replace('.', '_') + \
+                        '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(data_directory + findley_file_name) as findley_pickle:
-        stress = pickle.load(findley_pickle)
+        stress = pickle.load(findley_pickle)[:, 2]
+    print np.max(stress)
     n_vol = stress.shape[0]
 
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
@@ -48,6 +50,7 @@ def calculate_life(load, cd):
     for it, pf in enumerate(pf_levels):
         lives[it] = wl_evaluator.calculate_life_time(pf=pf, haiback=haiback)
     pf = wl_evaluator.calculate_pf()
+    print pf
     return pf, lives
 
 
@@ -56,8 +59,8 @@ case_depths = [1.4]
 pf_levels = np.array([0.25, 0.5, 0.75])
 sim_forces = np.arange(30., 41., 1.)
 mesh = '1x'
-test_directory = os.path.expanduser('~/scania_gear_anaysis/experimental_data/pulsator_testing/')
-data_directory = os.path.expanduser('~/scania_gear_anaysis/pickles/tooth_root_fatigue_analysis/' + mesh + '/')
+test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/pulsator_testing/')
+data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
 
 for i, case_depth in enumerate(case_depths):
     # Plotting test results
@@ -78,7 +81,7 @@ for i, case_depth in enumerate(case_depths):
     for force in sim_forces:
         job_list.append((calculate_life, [force, case_depth], {}))
 
-    wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
+    wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=1)
 
     simulated_pf = 0 * sim_forces
     for force_level in range(sim_forces.shape[0]):
