@@ -38,12 +38,12 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
 
     stress = data_dict['S']
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=odb_name, step_name=results_step_name,
-                       instance_name='tooth_left', frame_number=0,
+                       instance_name='tooth_right', frame_number=0,
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
     stress = flip_node_order(stress, axis='z')
     stress[:, 3] *= -1
     write_field_to_odb(field_data=data_dict['S'], field_id='S', odb_file_name=odb_name, step_name=results_step_name,
-                       instance_name='tooth_right', frame_number=0,
+                       instance_name='tooth_left', frame_number=0,
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
     hv = HRC2HV(data_dict['SDV_HARDNESS'])
