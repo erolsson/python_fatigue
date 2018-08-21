@@ -21,9 +21,5 @@ planet_system = CoordinateSystem(name='planet_system', origin=(0.0, 0.0, 0.0), p
 stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
                                   instance_name='EVAL_TOOTH_1', coordinate_system=planet_system)
 
-# Fixing the ordering of nodes and Gauss points as moving from negative tooth to positive
-flip_node_order(stress_data, axis='z')
-
 write_field_to_odb(stress_data, 'S', to_odb_name, to_step, instance_name='tooth_left',
                    invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
-
