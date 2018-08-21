@@ -30,7 +30,7 @@ def calculate_life(load, cd):
     findley_file_name = 'findley/pulsator/findley_CD=' + str(cd).replace('.', '_') + \
                         '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(data_directory + findley_file_name) as findley_pickle:
-        stress = pickle.load(findley_pickle)[:, 2]
+        stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
     if load == 30.:
         print np.max(stress)

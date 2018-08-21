@@ -23,7 +23,7 @@ def calc_pf_for_simulation(cd, load, par):
     findley_file_name = 'findley/pulsator/findley_CD=' + str(cd).replace('.', '_') + \
                         '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(data_directory + findley_file_name) as findley_pickle:
-        stress = pickle.load(findley_pickle)[:, 2]
+        stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
 
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
