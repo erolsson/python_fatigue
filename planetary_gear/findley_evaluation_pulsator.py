@@ -44,7 +44,7 @@ for load in loads:
     stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
     stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
     steel_data = SteelData(HV=dante_data['HV'])
-    print np.max(stress_history[1, :, 0])
+    print np.max(stress_history[1, :, :], 0)
 
     findley_k = SS2506.findley_k(steel_data)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
