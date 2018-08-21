@@ -45,6 +45,7 @@ for load in loads:
     stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
     stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
     steel_data = SteelData(HV=dante_data['HV'])
+    print dante_data['S'][i_max0, 3]
 
     findley_k = SS2506.findley_k(steel_data)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
@@ -52,5 +53,5 @@ for load in loads:
 
     findley_stress = findley_data[:, 2]
     findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
-     with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
-         pickle.dump(findley_data, pickle_handle)
+    with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
+        pickle.dump(findley_data, pickle_handle)
