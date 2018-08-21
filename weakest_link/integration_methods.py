@@ -18,10 +18,10 @@ def gauss_integration_3d(function_values, xyz):
                       e.d(gp[1], gp[1], gp[0]), e.d(gp[1], gp[1], gp[1])])
 
     integral = np.zeros((n, 8))
+
     # Interpolating values to each gauss point
     for i in range(8):
         integral[:, i] = np.dot(function_values[:, :], n_vec[i, :])*det3(np.matmul(d_vec[i], xyz))
-
     return np.sum(np.sum(integral, 1))
 
 

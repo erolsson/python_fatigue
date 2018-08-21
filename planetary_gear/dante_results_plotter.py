@@ -36,7 +36,7 @@ for simulation in simulations:
         plt.plot(experimental_data[:, 0], experimental_data[:, 1], '-' + simulation.sym + simulation.color,
                  lw=2, ms=12, mec='k')
         figures.append(plt.figure(1 + 2*j))
-        plt.plot(dante_data['r'], dante_data['S'], '--' + simulation.color, lw=2)
+        plt.plot(dante_data['r'], dante_data['S']/2, '--' + simulation.color, lw=2)
 
 for figure in range(4):
     plt.figure(figure)
