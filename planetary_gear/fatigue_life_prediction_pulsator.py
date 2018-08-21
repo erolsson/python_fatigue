@@ -1,14 +1,19 @@
-import cPickle as pickle
-import numpy as np
+import os
+import pickle
 
+import numpy as np
 import matplotlib.pyplot as plt
 
-from materials.gear_materials import SS2506
 from multiprocesser.multiprocesser import multi_processer
-from planetary_gear.test_results import TestResults
-from testing.test_results_functions import plot_test_results
-from weakest_link.weakest_link_gear import FEM_data
+
+from materials.gear_materials import SS2506
 from materials.gear_materials import SteelData
+
+from planetary_gear.test_results import TestResults
+
+from testing.test_results_functions import plot_test_results
+
+from weakest_link.weakest_link_gear import FEM_data
 from weakest_link.weakest_link_gear import WeakestLinkEvaluatorGear
 
 plt.rc('text', usetex=True)
@@ -21,21 +26,18 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 haiback = True
 
 
-def calculate_life(load, case_depth):
-    findley_file_name = 'CD' + str(case_depth).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
-    findley_pickle = open('pickles/tooth_root_data/volume_data/findley_R=0_1/' + findley_file_name)
-    stress = pickle.load(findley_pickle)
-    findley_pickle.close()
+def calculate_life(load, cd):
+    findley_file_name = 'findley/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN .pkl'
+    with open(data_directory + findley_file_name) as findley_pickle:
+        stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
 
-    dante_pickle = open('pickles/tooth_root_data/volume_data/danteCD' + str(case_depth).replace('.', '_') + '.pkl')
-    dante_data = pickle.load(dante_pickle)
-    dante_pickle.close()
+    with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
+        dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
 
-    position_pickle = open('pickles/tooth_root_data/volume_data/nodal_positions.pkl')
-    position = pickle.load(position_pickle)
-    position_pickle.close()
+    with open(data_directory + 'geometry/nodal_positions.pkl') as position_pickle:
+        position = pickle.load(position_pickle)
 
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
                           steel_data=steel_data_volume,
@@ -49,18 +51,18 @@ def calculate_life(load, case_depth):
     return pf, lives
 
 
-case_depths = [0.5, 0.8, 1.1, 1.4]
-# case_depths = [1.4]
+# case_depths = [0.5, 0.8, 1.1, 1.4]
+case_depths = [1.4]
 pf_levels = np.array([0.25, 0.5, 0.75])
-test_directory = '/home/erolsson/postDoc/planetryGear/planetGearTests/'
 sim_forces = np.arange(30., 41., 1.)
-simulation_directory = '/home/erolsson/postDoc/planetryGear/dataSets20180220/'
+mesh = '1x'
+test_directory = os.path.expanduser('~/scania_gear_anaysis/experimental_data/pulsator_testing/')
+data_directory = os.path.expanduser('~/scania_gear_anaysis/pickles/tooth_root_fatigue_analysis/' + mesh + '/')
 
 for i, case_depth in enumerate(case_depths):
-
     # Plotting test results
-    name = test_directory + 'DC' + str(case_depth)
-    name = name.replace('.', '')
+    name = test_directory + 'case_depth_' + str(case_depth)
+    name = name.replace('.', '_')
     testData = TestResults(name + '.dat')
 
     data = testData.get_test_results()
@@ -68,13 +70,12 @@ for i, case_depth in enumerate(case_depths):
                       ylab='$P_{a}$ [kN]',
                       plot_fatigue_line=False,
                       title='Experiment')
+
     N = np.zeros((sim_forces.shape[0], len(pf_levels)))
 
     # Calculating life time at specific pf
     job_list = []
     for force in sim_forces:
-        sim_name = 'findleyResultsPamp=' + str(force).replace('.', '_') + 'kN_DC=' + str(case_depth).replace('.', '_')
-        pickle_file_name = simulation_directory + sim_name + '.pkl'
         job_list.append((calculate_life, [force, case_depth], {}))
 
     wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
@@ -97,12 +98,15 @@ for i, case_depth in enumerate(case_depths):
                                       data_to_plot))
         plt.plot(data_to_plot[0, :], data_to_plot[1, :], '--' + color, lw=2)
         data_to_write.append(data_to_plot)
+
     n = max(data_to_write, key=lambda x: x.shape[1]).shape[1]
     write_array = np.zeros((n, 6))
+
     for pf_level, data in enumerate(data_to_write):
         write_array[:, 2*pf_level] = data[0, 0]
         write_array[:, 2 * pf_level+1] = data[1, 0]
         write_array[n-data.shape[1]:, 2*pf_level:2*pf_level+2] = data.T
+
     load_cycles = np.log(np.array([write_array[-1, 0], write_array[-1, 2], write_array[-1, 4]]))
     long_life = (np.linspace(load_cycles[-1], np.log(1e7), 100))
     load_cycles = np.hstack((load_cycles, long_life))
