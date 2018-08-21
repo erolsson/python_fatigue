@@ -24,4 +24,4 @@ class SS2506MaterialTemplate:
 
 
 # SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
-SS2506 = SS2506MaterialTemplate(swa=206, swb=0.558, mb=11.06e6)
+SS2506 = SS2506MaterialTemplate(swa=238, swb=0.487, mb=11.06e6)
