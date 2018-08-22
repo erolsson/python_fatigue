@@ -28,7 +28,7 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
         for j, node_label in enumerate(sorted(nodal_data.keys())):
             data_array = nodal_data[node_label][field]
             data_dict[field][j] = sum(data_array)/len(data_array)
-        return data_dict
+    return data_dict
 
 
 if __name__ == '__main__':
@@ -52,7 +52,6 @@ if __name__ == '__main__':
         node_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
                                                          dante_step_name, 0, 'tooth_right')
         for field_id, data in node_data.iteritems():
-            print field_id
             write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL,
                                instance_name='tooth_right')
 
