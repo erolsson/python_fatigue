@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     create_odb(odb_file_name=expansion_odb_filename, instance_data=instances)
 
-    fields_to_process = ['SDV_Q_MARTENSITE']
+    fields_to_process = ['SDV_Q_MARTENSITE', 'SDV_CARBON', 'SDV_AUSTENITE', 'SDV_LBAINITE', 'SDV_UBAINITE']
     for cd in [0.5, 0.8, 1.1, 1.4]:
         dante_step_name = 'dante_results_' + str(cd).replace('.', '_')
         node_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
@@ -54,3 +54,24 @@ if __name__ == '__main__':
         for field_id, data in node_data.iteritems():
             write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL,
                                instance_name='tooth_right')
+
+        odb = odbAccess.openOdb(expansion_odb_filename)
+        if 'expansion' + str(cd).replace('.', '_') not in odb.steps.keys():
+            expansion_step = odb.Step(name='expansion' + str(cd).replace('.', '_'),
+                                      description='', domain=TIME, timePeriod=1)
+            expansion_step.Frame(incrementNumber=0, frameValue=0, description='')
+            expansion_step.Frame(incrementNumber=1, frameValue=1., description='')
+        else:
+            expansion_step = odb.steps['expansion' + str(cd).replace('.', '_')]
+
+        va = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_AUSTENITE']
+        c = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_CARBON']
+
+        expansion = ((1-va)*168*c+va*(-4.64+221*c))/100/3
+        start_frame = expansion_step.frames[0]
+        end_frame = expansion_step.frames[1]
+
+        start_frame.FieldOutput(name='NT11', field=0*expansion)
+        end_frame.FieldOutput(name='NT11', field=expansion)
+        odb.save()
+        odb.close()
