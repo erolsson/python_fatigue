@@ -53,7 +53,7 @@ if __name__ == '__main__':
                                                          dante_step_name, 0, 'tooth_right')
         for field_id, data in node_data.iteritems():
             write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL,
-                               instance_name='tooth_right')
+                               instance_name='tooth_right', frame_number=0)
 
         odb = odbAccess.openOdb(expansion_odb_filename)
         if 'expansion' + str(cd).replace('.', '_') not in odb.steps.keys():
