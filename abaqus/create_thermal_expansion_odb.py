@@ -56,7 +56,7 @@ if __name__ == '__main__':
     for cd in [0.5, 0.8, 1.1, 1.4]:
         dante_step_name = 'dante_results_' + str(cd).replace('.', '_')
         node_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
-                                                         dante_step_name, 0, 'tooth_right')
+                                                         dante_step_name, 0, 'PART-1-1')
         for field_id, data in node_data.iteritems():
             write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL,
                                instance_name='tooth_right', frame_number=0)
