@@ -1,5 +1,5 @@
 import odbAccess
-from abaqusConstants import NODAL
+from abaqusConstants import NODAL, TIME
 
 import numpy as np
 
