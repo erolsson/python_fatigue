@@ -26,6 +26,7 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
             nodal_data[node_label][field].append(field_value[0])
         data_dict[field] = np.zeros(len(nodal_data))
         for j, node_label in enumerate(sorted(data_dict.keys())):
+            print field
             data_array = nodal_data[node_label][field]
             data_dict[field][j] = sum(data_array/len(data_array))
         return data_dict
@@ -51,5 +52,5 @@ if __name__ == '__main__':
         dante_step_name = 'dante_results_' + str(cd).replace('.', '_')
         nodal_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
                                                           dante_step_name, 0, 'tooth_right')
-        for field, data in nodal_data.iteritems():
-            write_field_to_odb(data, field, expansion_odb_filename, dante_step_name, position=NODAL)
+        for field_id, data in nodal_data.iteritems():
+            write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL)
