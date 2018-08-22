@@ -38,7 +38,7 @@ def expansion(martensite, carbon, lower_bainite, upper_bainite, austenite):
     dv = 1.68*carb*martensite + 0.78*carb*lower_bainite + (-4.64+2.21*carb)*austenite
     # dv = (3.216+85.9*carbon + 343*carbon*carbon)*martensite
     #return ((-0.0464+0.026*carb)*austenite + 0.01967*carb*martensite)/3
-    # return dv/300
+    return dv/300
 
 
 if __name__ == '__main__':
