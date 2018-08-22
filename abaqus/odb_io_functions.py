@@ -11,13 +11,27 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
                                         point2=(1., 0., 0.), system_type=CYLINDRICAL)
 
 
-def read_field_from_odb(field_id, odb_file_name, element_set_name, step_name, frame_number, instance_name=None,
-                        coordinate_system=None, rotating_system=False, position=ELEMENT_NODAL, get_position_numbers=False,
-                        get_frame_value=False):
+def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, element_set_name=None, instance_name=None,
+                        coordinate_system=None, rotating_system=False, position=ELEMENT_NODAL,
+                        get_position_numbers=False, get_frame_value=False):
     odb = odbAccess.openOdb(odb_file_name, readOnly=True)
+
     if instance_name is None:
-        instance_name = odb.rootAssembly.instances.keys()[0]
-    element_set = odb.rootAssembly.instances[instance_name].elementSets[element_set_name]
+        element_base = odb.rootAssembly
+    else:
+        element_base = odb.rootAssembly.instances[instance_name]
+    if element_set_name is None:
+        if 'ALL_ELEMENTS' not in element_base.elementSets:
+            if instance_name is None:
+                instances = odb.rootAssembly.instances
+                elements = tuple([instances[i_name].elements for i_name in instances.keys()])
+            else:
+                elements = odb.rootAssembly.instances[instance_name].elements
+            element_base.ElementSet(name='ALL_ELEMENTS', elements=elements)
+        element_set = element_base.elementSets['ALL_ELEMENTS']
+    else:
+        element_set = element_base.elementSets[element_set_name]
+
     if frame_number == -1:
         frame_number = len(odb.steps[step_name].frames) - 1
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
