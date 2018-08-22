@@ -31,6 +31,11 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
     return data_dict
 
 
+def expansion(martensite, uppper_bainite, lower_bainite, carbon):
+    dv = (4.64 - 53*carbon)*martensite + (4.64 - 143*carbon)*lower_bainite + (4.64-221*carbon)*uppper_bainite
+    return dv/300
+
+
 if __name__ == '__main__':
     mesh = '1x'
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
@@ -64,14 +69,16 @@ if __name__ == '__main__':
         else:
             expansion_step = odb.steps['expansion' + str(cd).replace('.', '_')]
 
-        va = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_AUSTENITE']
+        m = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_MARTENSITE']
         c = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_CARBON']
+        u_bainite = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_UBAINITE']
+        l_bainite = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_LBAINITE']
 
-        expansion = ((1-va)*168*c+va*(-4.64+221*c))/100/3
+        expansion_strain = expansion(m, u_bainite, l_bainite, c)
         start_frame = expansion_step.frames[0]
         end_frame = expansion_step.frames[1]
 
-        start_frame.FieldOutput(name='NT11', field=0*expansion)
-        end_frame.FieldOutput(name='NT11', field=expansion)
+        start_frame.FieldOutput(name='NT11', field=0*expansion_strain)
+        end_frame.FieldOutput(name='NT11', field=expansion_strain)
         odb.save()
         odb.close()
