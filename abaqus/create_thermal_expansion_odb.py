@@ -52,6 +52,7 @@ if __name__ == '__main__':
         node_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
                                                          dante_step_name, 0, 'tooth_right')
         for field_id, data in node_data.iteritems():
+            print field_id
             write_field_to_odb(data, field_id, expansion_odb_filename, dante_step_name, position=NODAL,
                                instance_name='tooth_right')
 
