@@ -75,4 +75,3 @@ if __name__ == '__main__':
         end_frame.FieldOutput(name='NT11', field=expansion)
         odb.save()
         odb.close()
-z
