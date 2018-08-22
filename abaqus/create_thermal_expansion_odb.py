@@ -31,8 +31,8 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
     return data_dict
 
 
-def expansion(martensite, carbon, lower_bainite):
-    dv = 168*carbon*martensite + 78*carbon*lower_bainite
+def expansion(martensite, carbon, austenite, lower_bainite):
+    dv = 168*carbon*martensite # + 78*carbon*lower_bainite
     # dv = (3.216+85.9*carbon + 343*carbon*carbon)*martensite
     return dv/300
 
