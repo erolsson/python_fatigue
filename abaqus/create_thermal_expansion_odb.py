@@ -69,7 +69,7 @@ if __name__ == '__main__':
         else:
             expansion_step = odb.steps['expansion' + str(cd).replace('.', '_')]
 
-        m = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_MARTENSITE']
+        m = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_Q_MARTENSITE']
         c = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_CARBON']
         u_bainite = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_UBAINITE']
         l_bainite = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_LBAINITE']
