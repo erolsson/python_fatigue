@@ -26,7 +26,7 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
             nodal_data[node_label][field].append(field_value[0])
         data_dict[field] = np.zeros(len(nodal_data))
         for j, node_label in enumerate(sorted(data_dict.keys())):
-            data_array = nodal_data[field][node_label]
+            data_array = nodal_data[node_label][field]
             data_dict[field][j] = sum(data_array/len(data_array))
         return data_dict
 
