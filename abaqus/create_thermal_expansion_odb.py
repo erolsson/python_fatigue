@@ -25,6 +25,7 @@ if __name__ == '__main__':
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
                          mesh + '/dante_results.odb'
 
+    fields_to_process = ['SDV_Q_MARTENSITE']
     for cd in [0.5, 0.8, 1.1, 1.4]:
-        create_node_field_from_element_field('SDV_Q_MARTENSITE', dante_odb_filename, None,
+        create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
                                              'dante_results_' + str(cd).replace('.', '_'), 0, 'tooth_right')
