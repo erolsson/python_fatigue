@@ -78,7 +78,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
         return data, frame_value, node_labels, element_labels
 
 
-def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, element_set_name=None,
+def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_name=None, set_name=None,
                        step_description='', frame_number=None, frame_value=None, field_description='', invariants=None,
                        position=ELEMENT_NODAL):
     odb = odbAccess.openOdb(odb_file_name, readOnly=False)
@@ -89,21 +89,25 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
         step = odb.steps[step_name]
 
     if instance_name is None:
-        if element_set_name:
-            elements = odb.rootAssembly.elementSets[element_set_name].elements
-        else:
-            elements = odb.rootAssembly.elements
-        instance = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
+        instance = odb.rootAssembly
     else:
-        instance = odb.rootAssembly.instances[instance_name]
-        if element_set_name:
-            elements = odb.rootAssembly.instances[instance_name].elementSets[element_set_name].elements
-        else:
-            elements = odb.rootAssembly.instances[instance_name].elements
+        instance = odb.rootAssembly.instances['instance_name']
 
-    element_numbers = []
-    for e in elements:
-        element_numbers.append(e.label)
+    if position in INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE:
+        if set_name:
+            objects = instance.elementSets[set_name].elements
+        else:
+            objects = instance.elements
+    elif position == NODAL:
+        if set_name:
+            set_dict = instance.nodeSets[set_name].nodes
+        else:
+            obejcts = instance.nodes
+
+
+    object_numbers = []
+    for obj in objects:
+        object_numbers.append(obj.label)
 
     field_types = {1: SCALAR, 6: TENSOR_3D_FULL}
 
@@ -129,7 +133,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
     else:
         field = frame.FieldOutput(name=field_id, description=field_description, type=field_type,
                                   validInvariants=invariants)
-    field.addData(position=position, instance=instance, labels=element_numbers, data=field_data_to_frame)
+    field.addData(position=position, instance=instance, labels=object_numbers, data=field_data_to_frame)
     odb.update()
     odb.save()
     odb.close()
