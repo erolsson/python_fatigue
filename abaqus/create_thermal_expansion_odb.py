@@ -24,5 +24,5 @@ if __name__ == '__main__':
                          mesh + '/dante_results.odb'
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
-        create_node_field_from_element_field('SDV_Q_MARTENSITE', dante_odb_filename, 'ALL_ELEMENTS',
+        create_node_field_from_element_field('SDV_Q_MARTENSITE', dante_odb_filename, None,
                                              'dante_results_' + str(cd).replace('.', '_'), 0, 'tooth_right')
