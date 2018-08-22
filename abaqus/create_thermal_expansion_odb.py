@@ -14,7 +14,7 @@ def create_node_field_from_element_field(field, odb_file_name, element_set_name,
 
     nodal_data = {node_label: [] for node_label in node_labels}
     for field_value, node_label in zip(element_field, node_labels):
-        nodal_data[node_label] = field_value
+        nodal_data[node_label].append(field_value[0])
     print nodal_data.items()[0]
 
 
