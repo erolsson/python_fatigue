@@ -70,6 +70,7 @@ def write_input_file(sim_data):
             input_file.write(line + '\n')
         input_file.write('**EOF')
 
+
 if __name__ == '__main__':
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon'])
     simulations = [Simulation(CD=0.2, times=[105.], temperatures=(840.,), carbon=(0.8,)),

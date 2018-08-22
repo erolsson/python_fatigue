@@ -48,7 +48,7 @@ if __name__ == '__main__':
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
     nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
 
-    instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos)]
+    instances = [OdbInstance(name='PART-1-1', nodes=nodes_pos, elements=elements_pos)]
 
     create_odb(odb_file_name=expansion_odb_filename, instance_data=instances)
 
