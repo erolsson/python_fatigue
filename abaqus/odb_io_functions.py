@@ -3,7 +3,8 @@ from collections import namedtuple
 import odbAccess
 import numpy as np
 
-from abaqusConstants import *
+from abaqusConstants import INTEGRATION_POINT, ELEMENT_NODAL, NODAL, CYLINDRICAL, CENTROID, ELEMENT_FACE, TIME
+from abaqusConstants import SCALAR, TENSOR_3D_FULL
 
 
 CoordinateSystem = namedtuple('CoordinateSystem', ['name', 'origin', 'point1', 'point2', 'system_type'])
@@ -93,7 +94,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
     else:
         instance = odb.rootAssembly.instances['instance_name']
 
-    if position in INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE:
+    if position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
         if set_name:
             objects = instance.elementSets[set_name].elements
         else:
@@ -103,7 +104,6 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
             objects = instance.nodeSets[set_name].nodes
         else:
             objects = instance.nodes
-
 
     object_numbers = []
     for obj in objects:
