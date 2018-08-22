@@ -19,7 +19,7 @@ def create_node_field_from_element_field(field, odb_file_name, element_set_name,
 
 
 if __name__ == '__main__':
-    mesh = 'ix'
+    mesh = '1x'
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
                          mesh + '/dante_results.odb'
 
