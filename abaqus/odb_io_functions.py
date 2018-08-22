@@ -92,7 +92,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
     if instance_name is None:
         instance = odb.rootAssembly
     else:
-        instance = odb.rootAssembly.instances['instance_name']
+        instance = odb.rootAssembly.instances[instance_name]
 
     if position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
         if set_name:
