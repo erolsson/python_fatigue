@@ -73,6 +73,7 @@ if __name__ == '__main__':
         m = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_Q_MARTENSITE']
         c = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_CARBON']
         lb = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_LBAINITE']
+        au = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_AUSTENITE']
 
         expansion_strain = expansion(m, c, lb)
         start_frame = expansion_step.frames[0]
