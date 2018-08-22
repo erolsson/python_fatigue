@@ -100,9 +100,9 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
             objects = instance.elements
     elif position == NODAL:
         if set_name:
-            set_dict = instance.nodeSets[set_name].nodes
+            objects = instance.nodeSets[set_name].nodes
         else:
-            obejcts = instance.nodes
+            objects = instance.nodes
 
 
     object_numbers = []
