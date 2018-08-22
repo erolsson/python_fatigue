@@ -31,8 +31,9 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
     return data_dict
 
 
-def expansion(martensite, carbon, austenite, lower_bainite):
-    dv = 168*carbon*martensite + 78*carbon*lower_bainite + (-4.64+221*carbon)*austenite
+def expansion(martensite, carbon, lower_bainite, upper_bainite):
+    dv = 3.216 + 85.9*carbon + 0.343*10000*carbon*carbon + (4.64-143*carbon)*lower_bainite + (4.64-2.21)*upper_bainite
+    # dv = 168*carbon*martensite + 78*carbon*lower_bainite + (-4.64+221*carbon)*austenite
     # dv = (3.216+85.9*carbon + 343*carbon*carbon)*martensite
     return dv/300
 
@@ -73,9 +74,10 @@ if __name__ == '__main__':
         m = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_Q_MARTENSITE']
         c = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_CARBON']
         lb = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_LBAINITE']
+        ub = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_UBAINITE']
         au = odb.steps[dante_step_name].frames[0].fieldOutputs['SDV_AUSTENITE']
 
-        expansion_strain = expansion(m, c, au, lb)
+        expansion_strain = expansion(m, c, lb, ub)
         start_frame = expansion_step.frames[0]
         end_frame = expansion_step.frames[1]
 
