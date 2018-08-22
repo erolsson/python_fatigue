@@ -29,7 +29,7 @@ def create_node_field_from_element_field(fields, odb_file_name, element_set_name
             data_array = nodal_data[node_label][field]
             data_dict[field][j] = sum(data_array)/len(data_array)
         return data_dict
-
+asdsada
 
 if __name__ == '__main__':
     mesh = '1x'
