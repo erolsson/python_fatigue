@@ -58,8 +58,7 @@ if __name__ == '__main__':
     create_odb(odb_file_name=expansion_odb_filename, instance_data=instances)
 
     fields_to_process = ['SDV_Q_MARTENSITE', 'SDV_CARBON', 'SDV_AUSTENITE', 'SDV_LBAINITE', 'SDV_UBAINITE']
-    # for cd in [0.5, 0.8, 1.1, 1.4]:
-    for cd in [0.5]:
+    for cd in [0.5, 0.8, 1.1, 1.4]:
         dante_step_name = 'dante_results_' + str(cd).replace('.', '_')
         node_data = create_node_field_from_element_field(fields_to_process, dante_odb_filename, None,
                                                          dante_step_name, 0, 'tooth_right')
