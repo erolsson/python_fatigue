@@ -8,8 +8,8 @@ from abaqusConstants import SCALAR, TENSOR_3D_FULL
 
 
 CoordinateSystem = namedtuple('CoordinateSystem', ['name', 'origin', 'point1', 'point2', 'system_type'])
-cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.), point1=(0., 1., 0.),
-                                        point2=(1., 0., 0.), system_type=CYLINDRICAL)
+cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.), point1=(0., 0., 0.),
+                                        point2=(0., 1., 0.), system_type=CYLINDRICAL)
 
 
 def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, element_set_name=None, instance_name=None,

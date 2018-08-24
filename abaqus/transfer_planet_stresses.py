@@ -41,7 +41,11 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
         process.wait()
         frame_counter += 1
 
+
 if __name__ == '__main__':
+    odb_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/planet_gear/')
+    torque = 1000
+
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
     nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
@@ -53,15 +57,14 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses_400_Nm.odb'
+    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear_stresses_' + str(torque) + \
+                          '_Nm.odb'
 
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
 
     # Importing stress history from the planet-sun simulations
-    simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                          'input_files/planet_sun/planet_sun_400_Nm.odb'
+    simulation_odb_name = odb_directory + 'planet_sun_' + str(torque) + '_Nm.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
 
-    simulation_odb_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                          'input_files/planet_ring/planet_ring_400_Nm.odb'
+    simulation_odb_name = odb_directory + 'planet_ring_' + str(torque) + '_Nm.odb'
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
