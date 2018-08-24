@@ -20,14 +20,14 @@ to_frame_value = float(sys.argv[-1])
 planet_system = CoordinateSystem(name='planet_system', origin=(0., 83.5, 0.), point1=(1.0, 83.5, 0.0),
                                  point2=(0.0, 84.5, 0.0), system_type=CYLINDRICAL)
 
-stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
+stress_data = read_field_from_odb('S', from_odb_name, from_step, from_frame, element_set_name='GEARELEMS',
                                   instance_name='EVAL_TOOTH_0', coordinate_system=planet_system,
                                   rotating_system=True)
 write_field_to_odb(stress_data, 'S', to_odb_name, to_step, frame_number=to_frame,
                    frame_value=to_frame_value, instance_name='tooth_right',
                    invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
-stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
+stress_data = read_field_from_odb('S', from_odb_name, from_step, from_frame, element_set_name='GEARELEMS',
                                   instance_name='EVAL_TOOTH_1', coordinate_system=planet_system,
                                   rotating_system=True)
 write_field_to_odb(stress_data, 'S', to_odb_name, to_step, frame_number=to_frame,
