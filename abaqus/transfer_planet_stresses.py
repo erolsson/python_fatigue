@@ -1,4 +1,5 @@
 import os
+import sys
 from collections import namedtuple
 from subprocess import Popen
 
@@ -44,7 +45,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
 
 if __name__ == '__main__':
     odb_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/planet_gear/')
-    torque = 1200
+    torque = int(sys.argv[1])
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
