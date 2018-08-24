@@ -31,6 +31,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
             element_base.ElementSet(name='ALL_ELEMENTS', elements=elements)
         element_set = element_base.elementSets['ALL_ELEMENTS']
     else:
+        print element_set_name
         element_set = element_base.elementSets[element_set_name]
 
     if frame_number == -1:
