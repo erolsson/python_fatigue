@@ -19,7 +19,7 @@ root2 = None
 if len(sys.argv) > 13:
     root2 = sys.argv[13]
 
-tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/' + odb_name + '.odb'
+tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/' + odb_name + '.odb'
 
 with open('../planetary_gear/pickles/tooth_paths.pkl', 'rb') as path_pickle_handle:
     pickle.load(path_pickle_handle)                 # Flank path data
@@ -72,7 +72,8 @@ for root in roots:
         stress_data[i, 1] = np.dot(np.dot(normal_root, stress_tensors[0]), normal_root)
         stress_data[i, 0] = frame.frame_value
 
-    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/' + pickle_name + '_' + root.name + '.pkl'
+    stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/' + \
+    pickle_name + '_' + root.name + '.pkl'
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
 odb.close()
