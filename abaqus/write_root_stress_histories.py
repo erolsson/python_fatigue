@@ -73,7 +73,7 @@ for root in roots:
         stress_data[i, 0] = frame.frame_value
 
     stress_pickle_name = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/' + \
-    pickle_name + '_' + root.name + '.pkl'
+        pickle_name + '_' + root.name + '.pkl'
     with open(stress_pickle_name, 'w+') as stress_pickle:
         pickle.dump(stress_data, stress_pickle)
 odb.close()
