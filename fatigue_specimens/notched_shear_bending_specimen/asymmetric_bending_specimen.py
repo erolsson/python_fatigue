@@ -10,7 +10,9 @@ try:
     import step
     import mesh
     import interaction
-    from abaqusConstants import *
+    from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
+    from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
+    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
@@ -145,7 +147,7 @@ class AsymmetricBendingSpecimen:
         def partition_using_points(points):
             faces = self.fatigue_part.faces
             edges = self.fatigue_part.edges
-            face = faces.findAt(((points[0][0] + points[1][0])/2, (points[0][1] + points[1][1])/2, 0))
+            face_to_partition = faces.findAt(((points[0][0] + points[1][0])/2, (points[0][1] + points[1][1])/2, 0))
             up_edge = edges.findAt(coordinates=(self.L/2, self.h/2 - 0.00001, 0))
             partition_sketch = self.modelDB.ConstrainedSketch(name='partition1',
                                                               sheetSize=101.27, gridSpacing=2.53)
@@ -156,12 +158,13 @@ class AsymmetricBendingSpecimen:
                 edge_pts.append(((points[i][0]+points[i+1][0])/2, (points[i][1]+points[i+1][1])/2, 0.))
 
             self.fatigue_part.PartitionFaceBySketch(sketchUpEdge=up_edge,
-                                                    faces=face, sketch=partition_sketch)
+                                                    faces=face_to_partition, sketch=partition_sketch)
             edges = self.fatigue_part.edges
             sweep_path = edges.findAt((self.L/2, 0, self.t/4))
-            cell = self.fatigue_part.cells.findAt((edge_pts[0][0], edge_pts[0][1], self.t/4))
-            partition_edges = tuple([edges.findAt((p[0], p[1], 0)) for p in edge_pts])
-            self.fatigue_part.PartitionCellBySweepEdge(sweepPath=sweep_path, cells=cell, edges=partition_edges)
+            cell_to_partition = self.fatigue_part.cells.findAt((edge_pts[0][0], edge_pts[0][1], self.t/4))
+            partition_edges = tuple([edges.findAt((ep[0], ep[1], 0)) for ep in edge_pts])
+            self.fatigue_part.PartitionCellBySweepEdge(sweepPath=sweep_path, cells=cell_to_partition,
+                                                       edges=partition_edges)
 
         def get_edge_from_points(point1, point2, z_val):
             return self.fatigue_part.edges.findAt(((point1[0] + point2[0])/2, (point1[1] + point2[1])/2, z_val))
