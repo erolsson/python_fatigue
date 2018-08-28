@@ -66,7 +66,6 @@ def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
 
     specimen = AsymmetricBendingSpecimen(**specimen_geometry)
     b1 = ceil(-specimen.outer_line_points[1][0])
-    print b1
     specimen.mesh('Mechanical')
     specimen_part = specimen.fatigue_part
 
@@ -215,7 +214,6 @@ def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
                   model=model_db,
                   numCpus=7,
                   numDomains=7)
-    asdsad
 
     job.submit()
     job.waitForCompletion()
