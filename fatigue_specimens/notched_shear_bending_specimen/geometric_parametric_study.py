@@ -9,6 +9,6 @@ simulation_name = ''
 # noinspection PyProtectedMember
 for key, value in speciimen._asdict().iteritems():
     simulation_name += key + '=' + str(value) + '_'
-simulation_name = simulation_name[:, -1]
+simulation_name = simulation_name[:-1]
 print simulation_name
 # perform_mechanical_analysis(SpecimenGeometry, b1=8, b2=45, delta=.2, run_directory=)
