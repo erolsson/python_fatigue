@@ -69,7 +69,6 @@ class AsymmetricBendingSpecimen:
             p3 = (r+self.delta, self.h/2 - offset)
             y = self. h/2 - offset - p2[1]
             p4 = (-y*tan(self.q)+self.delta - r*cos(self.q), self.h/2 - offset)
-            print p4
             sketch.Line(p2, p4)
             sketch.Line(p1, p3)
 

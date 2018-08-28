@@ -1,7 +1,7 @@
 import os
 
 from collections import namedtuple
-from math import pi, sin, cos
+from math import pi, sin, cos, ceil
 
 try:
     import mesh
@@ -57,13 +57,16 @@ def create_roller(specimen, roller_data):
     specimen.assembly.Set(name='ref_pt_' + name, referencePoints=(ref_pt,))
 
 
-def perform_mechanical_analysis(specimen_geometry, b1, b2, delta, run_directory):
+def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
     Mdb()
 
     roller_radius = 10.
     overlap = 0.
+    b2 = 48
 
     specimen = AsymmetricBendingSpecimen(**specimen_geometry)
+    b1 = ceil(-specimen.outer_line_points[1])
+    print b1
     specimen.mesh('Mechanical')
     specimen_part = specimen.fatigue_part
 
