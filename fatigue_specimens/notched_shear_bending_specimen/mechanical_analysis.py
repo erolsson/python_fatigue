@@ -212,6 +212,7 @@ def perform_mechanical_analysis(specimen_geometry, b1, b2, delta, run_directory)
                   model=model_db,
                   numCpus=7,
                   numDomains=7)
+    asdsad
 
     job.submit()
     job.waitForCompletion()
