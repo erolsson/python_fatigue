@@ -23,7 +23,7 @@ from asymmetric_bending_specimen import AsymmetricBendingSpecimen
 
 
 Roller = namedtuple('Roller', ['name', 'radius', 'x_coord', 'y_coord'])
-Specimen = namedtuple('Specimen', ['L', 'R', 'q', 't', 'h', 'h1', 'CD', 'delta', 'name'])
+SpecimenGeometry = namedtuple('SpecimenGeometry', ['L', 'R', 'q', 't', 'h', 'h1', 'CD', 'delta', 'name'])
 
 
 def create_roller(specimen, roller_data):
@@ -57,16 +57,13 @@ def create_roller(specimen, roller_data):
     specimen.assembly.Set(name='ref_pt_' + name, referencePoints=(ref_pt,))
 
 
-def perform_mechanical_analysis():
+def perform_mechanical_analysis(specimen_geometry, b1, b2, delta, run_directory):
     Mdb()
 
-    run_directory = '../MechanicalFEM/'
-    b1 = 8.0
-    b2 = 48.
     roller_radius = 10.
     overlap = 0.
 
-    specimen = AsymmetricBendingSpecimen()
+    specimen = AsymmetricBendingSpecimen(**specimen_geometry)
     specimen.mesh('Mechanical')
     specimen_part = specimen.fatigue_part
 
@@ -171,7 +168,7 @@ def perform_mechanical_analysis():
                             u1=0.0, u3=0.0, ur1=0.0, ur2=0.0)
 
     model_db.DisplacementBC(name='upper_load', createStepName='load', region=control_region_upper,
-                            u2=-3e-1)
+                            u2=--delta)
 
     # modelDB.ConcentratedForce(name='upper_load', createStepName='load', region=control_region_upper, cf2=-load)
     # Contact between the rollers and the exposed surface
