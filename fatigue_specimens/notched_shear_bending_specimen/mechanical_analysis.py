@@ -170,7 +170,7 @@ def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
                             u1=0.0, u3=0.0, ur1=0.0, ur2=0.0)
 
     model_db.DisplacementBC(name='upper_load', createStepName='load', region=control_region_upper,
-                            u2=--delta)
+                            u2=-delta)
 
     # modelDB.ConcentratedForce(name='upper_load', createStepName='load', region=control_region_upper, cf2=-load)
     # Contact between the rollers and the exposed surface
