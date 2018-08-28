@@ -205,6 +205,8 @@ def perform_mechanical_analysis(specimen_geometry, b1, b2, delta, run_directory)
                                         sliding=FINITE,
                                         interactionProperty='cProp',
                                         enforcement=NODE_TO_SURFACE)
+    if not os.path.isdir(run_directory):
+        os.makedirs(run_directory)
     os.chdir(run_directory)
     job = mdb.Job(name='mechanical_analysis',
                   model=model_db,
