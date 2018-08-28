@@ -15,4 +15,4 @@ for key, value in specimen._asdict().iteritems():
 simulation_name = simulation_name[:-1]
 
 # noinspection PyProtectedMember
-perform_mechanical_analysis(specimen._asdict(), b1=8, b2=45, delta=.2, run_directory=simulation_name)
+perform_mechanical_analysis(specimen._asdict(), delta=.2, run_directory=simulation_name)
