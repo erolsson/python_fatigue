@@ -213,7 +213,7 @@ def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
     job = mdb.Job(name='mechanical_analysis',
                   model=model_db,
                   numCpus=7,
-                  numDomains=7)
+                  numDomains=8)
 
     job.submit()
     job.waitForCompletion()

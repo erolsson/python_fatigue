@@ -11,7 +11,7 @@ def run_simulation(geometry):
     # noinspection PyProtectedMember
     for key, value in geometry._asdict().iteritems():
         if key != 'name':
-            simulation_name += key + '=' + str(value) + '_'
+            simulation_name += key + '=' + str(value).replace('.', '_') + '_'
     simulation_name = simulation_name[:-1]
 
     # noinspection PyProtectedMember
