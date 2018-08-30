@@ -16,6 +16,7 @@ if __name__ == '__main__':
     gear_odb_directory = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + '/'
 
     obb_files = glob.glob(gear_odb_directory + 'planet_gear_stresses_*.odb')
+    print obb_files
     simulated_loads = [float(os.path.basename(file_name).replace('planet_gear_stresses_', '.').replace('_Nm.odb', '.'))
                        for file_name in obb_files]
 
