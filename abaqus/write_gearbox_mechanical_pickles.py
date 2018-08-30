@@ -20,7 +20,6 @@ if __name__ == '__main__':
 
     simulated_loads = [float(os.path.basename(file_name).replace('planet_gear_stresses_', '').replace('_Nm.odb', ''))
                        for file_name in obb_files]
-    print odb_files
     print simulated_loads
 
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
@@ -29,11 +28,9 @@ if __name__ == '__main__':
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
 
-    # for odb_file in odb_files:
-    #     add_element_set(odb_file, element_set_name, element_labels, 'tooth_left')
-    #     add_element_set(odb_file, element_set_name, element_labels, 'tooth_right')
+    for odb_file in odb_files:
+        add_element_set(odb_file, element_set_name, element_labels, 'tooth_left')
+        add_element_set(odb_file, element_set_name, element_labels, 'tooth_right')
 
-    # pulsator_odb = openOdb(pulsator_odb_filename)
-    # step_names = pulsator_odb.steps.keys()
-    # pulsator_odb.close()
-    # stress_dict = {'min_load': {}, 'max_load': {}}
+    stress_dict = {'tooth_left': {'min_load': {}, 'max_load': {}},
+                   'tooth_right': {'min_load': {}, 'max_load': {}}}
