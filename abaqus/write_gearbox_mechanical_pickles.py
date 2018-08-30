@@ -15,11 +15,10 @@ if __name__ == '__main__':
     element_set_name = 'tooth_root_volume_elements'
     gear_odb_directory = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + '/'
 
-    obb_files = glob.glob(gear_odb_directory + 'planet_gear_stresses_*.odb')
-    print obb_files
+    odb_files = glob.glob(gear_odb_directory + 'planet_gear_stresses_*.odb')
 
     simulated_loads = [float(os.path.basename(file_name).replace('planet_gear_stresses_', '').replace('_Nm.odb', ''))
-                       for file_name in obb_files]
+                       for file_name in odb_files]
     print simulated_loads
 
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
