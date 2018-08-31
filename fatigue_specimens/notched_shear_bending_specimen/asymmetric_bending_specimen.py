@@ -10,9 +10,7 @@ try:
     import step
     import mesh
     import interaction
-    from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
-    from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
-    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT
+    from abaqusConstants import *
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
@@ -21,8 +19,7 @@ except ImportError:
 
 
 class AsymmetricBendingSpecimen:
-    def __init__(self, L=100, R=3.5, q=30, t=6, h=24, h1=12, CD=2, delta=-2,
-                 name='BendingSpecimenPart'):
+    def __init__(self, L=100, R=4.5, q=0, t=6, h=24, h1=8, CD=2, delta=0, name='BendingSpecimenPart'):
         """        
         :param L: Length of the specimen
         :param R: Radius of the main notch
@@ -147,7 +144,7 @@ class AsymmetricBendingSpecimen:
         def partition_using_points(points):
             faces = self.fatigue_part.faces
             edges = self.fatigue_part.edges
-            face_to_partition = faces.findAt(((points[0][0] + points[1][0])/2, (points[0][1] + points[1][1])/2, 0))
+            face = faces.findAt(((points[0][0] + points[1][0])/2, (points[0][1] + points[1][1])/2, 0))
             up_edge = edges.findAt(coordinates=(self.L/2, self.h/2 - 0.00001, 0))
             partition_sketch = self.modelDB.ConstrainedSketch(name='partition1',
                                                               sheetSize=101.27, gridSpacing=2.53)
@@ -158,13 +155,12 @@ class AsymmetricBendingSpecimen:
                 edge_pts.append(((points[i][0]+points[i+1][0])/2, (points[i][1]+points[i+1][1])/2, 0.))
 
             self.fatigue_part.PartitionFaceBySketch(sketchUpEdge=up_edge,
-                                                    faces=face_to_partition, sketch=partition_sketch)
+                                                    faces=face, sketch=partition_sketch)
             edges = self.fatigue_part.edges
             sweep_path = edges.findAt((self.L/2, 0, self.t/4))
-            cell_to_partition = self.fatigue_part.cells.findAt((edge_pts[0][0], edge_pts[0][1], self.t/4))
-            partition_edges = tuple([edges.findAt((ep[0], ep[1], 0)) for ep in edge_pts])
-            self.fatigue_part.PartitionCellBySweepEdge(sweepPath=sweep_path, cells=cell_to_partition,
-                                                       edges=partition_edges)
+            cell = self.fatigue_part.cells.findAt((edge_pts[0][0], edge_pts[0][1], self.t/4))
+            partition_edges = tuple([edges.findAt((p[0], p[1], 0)) for p in edge_pts])
+            self.fatigue_part.PartitionCellBySweepEdge(sweepPath=sweep_path, cells=cell, edges=partition_edges)
 
         def get_edge_from_points(point1, point2, z_val):
             return self.fatigue_part.edges.findAt(((point1[0] + point2[0])/2, (point1[1] + point2[1])/2, z_val))
@@ -223,6 +219,7 @@ class AsymmetricBendingSpecimen:
 
             for p1, p2 in zip(self.inner_line_points, center_line_points):
                 y_edges.append(get_edge_from_points(p1, p2, z))
+                y_edges.append(get_edge_from_points((p1[0], -p1[1]), (p2[0], -p2[1]), z))
 
         self.fatigue_part.seedEdgeByBias(biasMethod=SINGLE, end1Edges=tuple(side1_edges), end2Edges=tuple(side2_edges),
                                          number=mesh_parameters['N_case'], ratio=mesh_parameters['bias_case'],
@@ -235,7 +232,7 @@ class AsymmetricBendingSpecimen:
             #  use the length of the first edge to calculate the number of elements
             n1 = int(edge_list[0].getSize()/size)
             self.fatigue_part.seedEdgeByNumber(edges=edge_list, number=n1, constraint=FIXED)
-        number_elems = int(y_edges[3].getSize()/mesh_parameters['notch_elem_size'])
+        number_elems = int(y_edges[6].getSize()/mesh_parameters['notch_elem_size'])
         self.fatigue_part.seedEdgeByNumber(edges=y_edges, number=number_elems, constraint=FIXED)
 
         # Seeding edges in the thickness direction
