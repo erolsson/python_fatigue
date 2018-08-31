@@ -2,8 +2,9 @@ from odbAccess import *
 
 import glob
 import os
-
 import pickle
+
+import numpy as np
 
 from odb_io_functions import add_element_set
 from odb_io_functions import read_field_from_odb
@@ -33,3 +34,13 @@ if __name__ == '__main__':
 
     stress_dict = {'tooth_left': {'min_load': {}, 'max_load': {}},
                    'tooth_right': {'min_load': {}, 'max_load': {}}}
+    root_path_names = {'tooth_left': 'neg', 'tooth_right': 'pos'}
+
+    for load in simulated_loads:
+        for tooth_part in ['tooth_left', 'tooth_right']:
+            tooth_stress_pickle_dir = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/'
+            tooth_root_pickle_name = 'stresses' + str(int(load)) + '_' + root_path_names[tooth_part]
+            with open(tooth_stress_pickle_dir + tooth_root_pickle_name) as pickle_handle:
+                tooth_root_stresses = pickle.load(pickle_directory)
+            print np.max(tooth_root_stresses[:, 0]), np.argmax(tooth_root_stresses[:, 0])
+        # odb_file =
