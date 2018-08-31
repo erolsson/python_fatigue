@@ -65,7 +65,7 @@ def perform_mechanical_analysis(specimen_geometry, delta, run_directory):
     b2 = 48
 
     specimen = AsymmetricBendingSpecimen(**specimen_geometry)
-    b1 = ceil(-specimen.outer_line_points[1][0])
+    b1 = ceil(-specimen.outer_line_points[1][0]+0.1)
     specimen.mesh('Mechanical')
     specimen_part = specimen.fatigue_part
 
