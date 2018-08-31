@@ -10,7 +10,9 @@ try:
     import step
     import mesh
     import interaction
-    from abaqusConstants import *
+    from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
+    from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
+    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
