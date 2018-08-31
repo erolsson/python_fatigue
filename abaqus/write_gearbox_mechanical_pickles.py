@@ -53,4 +53,8 @@ if __name__ == '__main__':
                                            step_name='mechanical_stresses', frame_number=idx_max,
                                            instance_name=tooth_part)
 
-        # odb_file =
+            stress_dict[tooth_part]['max_load'][load] = max_load
+            stress_dict[tooth_part]['min_load'][load] = min_load
+
+    with open(pickle_directory + 'gear_stresses.pkl') as pickle_handle:
+        pickle.dump(stress_dict, pickle_handle)
