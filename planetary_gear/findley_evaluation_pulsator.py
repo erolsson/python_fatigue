@@ -32,7 +32,7 @@ with open(mechanical_pickle_directory + 'pulsator_stresses.pkl') as pickle_handl
 loads = np.arange(30, 41, 1.)
 n = dante_data.values()[0].shape[0]
 stress_history = np.zeros((2, n, 6))
-print np.min(dante_data['S'][:, 3]), np.max(dante_data['S'][:, 3])
+
 for load in loads:
     fem_loads = np.array(mechanical_data.values()[0].keys())
     f1, f2 = tuple(np.sort(fem_loads[np.argsort(np.abs(fem_loads - load))][0:2]))
