@@ -36,8 +36,7 @@ stress_history = np.zeros((2, n, 6))
 
 for load in loads:
     fem_loads = np.array(mechanical_data.values()[0].values()[0].keys())
-    print fem_loads
-    sdfsdfsd
+
     f1, f2 = tuple(np.sort(fem_loads[np.argsort(np.abs(fem_loads - load))][0:2]))
 
     min_stresses = mechanical_data['min_load']
