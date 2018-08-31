@@ -42,5 +42,15 @@ if __name__ == '__main__':
             tooth_root_pickle_name = 'stresses_' + str(int(load)) + '_Nm_' + root_path_names[tooth_part] + '.pkl'
             with open(tooth_stress_pickle_dir + tooth_root_pickle_name) as pickle_handle:
                 tooth_root_stresses = pickle.load(pickle_handle)
-            print np.max(tooth_root_stresses[:, 1]), np.argmax(tooth_root_stresses[:, 1])
+            idx_max = np.argmax(tooth_root_stresses[:, 1])
+            idx_min = np.argmin(tooth_root_stresses[:, 1])
+
+            odb_file_name = gear_odb_directory + 'planet_gear_stresses_' + str(int(load)) + '_Nm.odb'
+            min_load = read_field_from_odb('S', odb_file_name=odb_file_name, element_set_name=element_set_name,
+                                           step_name='mechanical_stresses', frame_number=idx_min,
+                                           instance_name=tooth_part)
+            max_load = read_field_from_odb('S', odb_file_name=odb_file_name, element_set_name=element_set_name,
+                                           step_name='mechanical_stresses', frame_number=idx_max,
+                                           instance_name=tooth_part)
+
         # odb_file =
