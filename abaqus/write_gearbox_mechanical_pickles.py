@@ -56,5 +56,5 @@ if __name__ == '__main__':
             stress_dict[tooth_part]['max_load'][load] = max_load
             stress_dict[tooth_part]['min_load'][load] = min_load
 
-    with open(pickle_directory + 'gear_stresses.pkl') as pickle_handle:
+    with open(pickle_directory + 'gear_stresses.pkl', 'w') as pickle_handle:
         pickle.dump(stress_dict, pickle_handle)
