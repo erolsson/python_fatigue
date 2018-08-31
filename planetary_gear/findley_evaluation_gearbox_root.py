@@ -27,7 +27,7 @@ findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/to
 with open(dante_pickle_directory + 'data_' + str(cd).replace('.', '_') + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 
-with open(mechanical_pickle_directory + 'pulsator_stresses.pkl') as pickle_handle:
+with open(mechanical_pickle_directory + 'gear_stresses.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
 
 loads = np.arange(900, 1600, 100.)
