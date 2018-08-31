@@ -39,7 +39,7 @@ if __name__ == '__main__':
     for load in simulated_loads:
         for tooth_part in ['tooth_left', 'tooth_right']:
             tooth_stress_pickle_dir = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/'
-            tooth_root_pickle_name = 'stresses' + str(int(load)) + '_' + root_path_names[tooth_part]
+            tooth_root_pickle_name = 'stresses_' + str(int(load)) + '_Nm_' + root_path_names[tooth_part] + '.pkl'
             with open(tooth_stress_pickle_dir + tooth_root_pickle_name) as pickle_handle:
                 tooth_root_stresses = pickle.load(pickle_directory)
             print np.max(tooth_root_stresses[:, 0]), np.argmax(tooth_root_stresses[:, 0])
