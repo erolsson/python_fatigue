@@ -41,6 +41,6 @@ if __name__ == '__main__':
             tooth_stress_pickle_dir = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_stresses/'
             tooth_root_pickle_name = 'stresses_' + str(int(load)) + '_Nm_' + root_path_names[tooth_part] + '.pkl'
             with open(tooth_stress_pickle_dir + tooth_root_pickle_name) as pickle_handle:
-                tooth_root_stresses = pickle.load(pickle_directory)
+                tooth_root_stresses = pickle.load(pickle_handle)
             print np.max(tooth_root_stresses[:, 0]), np.argmax(tooth_root_stresses[:, 0])
         # odb_file =
