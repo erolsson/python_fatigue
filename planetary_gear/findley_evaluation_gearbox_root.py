@@ -35,26 +35,28 @@ n = dante_data.values()[0].shape[0]
 stress_history = np.zeros((2, n, 6))
 
 for load in loads:
-    fem_loads = np.array(mechanical_data.values()[0].values()[0].keys())
+    for tooth_part in ['tooth_left', 'tooth_right']:
+        fem_loads = np.array(mechanical_data.values()[0].values()[0].keys())
 
-    f1, f2 = tuple(np.sort(fem_loads[np.argsort(np.abs(fem_loads - load))][0:2]))
+        f1, f2 = tuple(np.sort(fem_loads[np.argsort(np.abs(fem_loads - load))][0:2]))
 
-    min_stresses = mechanical_data['min_load']
-    max_stresses = mechanical_data['max_load']
-    min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
-    max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
+        min_stresses = mechanical_data[tooth_part]['min_load']
+        max_stresses = mechanical_data[tooth_part]['max_load']
+        min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
+        max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
 
-    stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
-    stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
-    steel_data = SteelData(HV=dante_data['HV'])
-    print np.max(stress_history[1, :, :], 0)
+        stress_history[0, :, :] = min_stress + dante_data['S']*residual_stress_multiplier
+        stress_history[1, :, :] = max_stress + dante_data['S']*residual_stress_multiplier
+        steel_data = SteelData(HV=dante_data['HV'])
+        print np.max(stress_history[1, :, :], 0)
 
-    findley_k = SS2506.findley_k(steel_data)
-    findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
-                                    num_workers=8, chunk_size=300, search_grid=10)
+        findley_k = SS2506.findley_k(steel_data)
+        findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
+                                        num_workers=8, chunk_size=300, search_grid=10)
 
-    findley_stress = findley_data[:, 2]
-    print "Maximum Findley stress", np.max(findley_stress), 'MPa'
-    findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
-    with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
-        pickle.dump(findley_stress, pickle_handle)
+        findley_stress = findley_data[:, 2]
+        print "Maximum Findley stress", np.max(findley_stress), 'MPa'
+        findley_pickle_name = 'findley_' + tooth_part + '_CD=' + str(cd).replace('.', '_') + '_Pamp=' + \
+                              str(load).replace('.', '_') + 'kN.pkl'
+        with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
+            pickle.dump(findley_stress, pickle_handle)
