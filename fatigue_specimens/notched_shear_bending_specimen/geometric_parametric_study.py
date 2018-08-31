@@ -19,8 +19,8 @@ def run_simulation(geometry):
 
 
 if __name__ == '__main__':
-    for r in (4.5, 5.5):
-            for q in (0, 15, 30, 45):
+    for r in (5.0,):
+            for q in (0, ):
                 specimen = SpecimenGeometry(L=100, R=r, q=q, t=6, h=24, h1=8, CD=2, delta=0,
                                             name='BendingSpecimenPart')
                 run_simulation(specimen)
