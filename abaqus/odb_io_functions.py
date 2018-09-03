@@ -8,7 +8,7 @@ from abaqusConstants import SCALAR, TENSOR_3D_FULL
 
 
 CoordinateSystem = namedtuple('CoordinateSystem', ['name', 'origin', 'point1', 'point2', 'system_type'])
-cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.), point1=(0., 0., 0.),
+cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.), point1=(1., 0., 0.),
                                         point2=(0., 1., 0.), system_type=CYLINDRICAL)
 
 
