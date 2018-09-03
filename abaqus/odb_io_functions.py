@@ -56,6 +56,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
             field = field.getTransformedField(transform_system)
     field = field.values
 
+    # ToDo raise exception if field is empty
     n1 = len(field)
     n2 = 1 if type(field[0].data) is float else len(field[0].data)
 
