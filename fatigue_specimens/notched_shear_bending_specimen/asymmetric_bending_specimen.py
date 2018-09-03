@@ -281,9 +281,8 @@ class AsymmetricBendingSpecimen:
         self.fatigue_part.Set(nodes=self.fatigue_part.nodes[0:], name='All_Nodes')
         # Create element sets
         self.fatigue_part.Set(elements=self.fatigue_part.elements[0:], name='All_Elements')
+
         # Surface exposed to carbon
-        print self.h1/2 + self.R*(1-cos(0.01))
-        print -self.h1/2-self.R*(1-cos(0.01))
         exposed_face_list = [self.fatigue_part.faces.findAt((self.L/2-0.001, self.h/2, self.t/4)),
                              self.fatigue_part.faces.findAt((self.R*sin(0.01), self.h1/2 + self.R*(1-cos(0.01)),
                                                              self.t/4)),
