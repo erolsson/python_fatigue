@@ -57,5 +57,7 @@ for pulsator_test in pulsator_tests:
     plt.plot(stress_mean, findley_stress, pulsator_test.color + 's', ms=12)
 
 
-
+plt.xlabel('Mean stress [MPa]')
+plt.ylabel('Effective fatigue stress [MPa]')
+plt.grid(True)
 plt.show()
