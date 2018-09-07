@@ -57,6 +57,24 @@ for pulsator_test in pulsator_tests:
     plt.plot(stress_mean, findley_stress, pulsator_test.color + 's', ms=12)
 
 
+torques = np.array([1000., 1200., 1400.])
+simulated_torques = np.array([0, 400, 1000, 1200, 1400])
+stress_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_stresses/')
+for cd in [0.5, 0.8]:
+    with open(dante_pickle_directory + 'dante_results_' +
+              str(cd).replace('.', '_') + '_root.pkl') as pickle_handle:
+        root_data = pickle.load(pickle_handle)
+    residual_stress = root_data['S'][0] * residual_stress_multiplier
+    hardness = root_data['HV'][0]
+    for torque in torques:
+        f1, f2 = tuple(np.sort(simulated_torques[np.argsort(np.abs(simulated_torques - torque))][0:2]))
+        print f1, f2
+        for name in ['pos', 'neg']:
+            stress_pickle_name = stress_pickle_directory + 'stresses_' + str(int(torque)) + '_Nm_' + name + '.pkl'
+            with open(stress_pickle_name) as stress_pickle:
+                stress_data = pickle.load(stress_pickle)
+
+
 plt.xlabel('Mean stress [MPa]')
 plt.ylabel('Effective fatigue stress [MPa]')
 plt.grid(True)
