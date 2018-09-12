@@ -58,8 +58,8 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/mesh_1x/planet_gear_stresses_' + \
-                          str(torque) + '_Nm.odb'
+    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_1x/' \
+                          'planet_gear_stresses_' + str(torque) + '_Nm.odb'
 
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
 
