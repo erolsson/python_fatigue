@@ -64,7 +64,7 @@ if __name__ == '__main__':
     create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
 
     # Importing stress history from the planet-sun simulations
-    simulation_odb_name = odb_directory + 'planet_sun_' + str(torque) + '_Nm.odb'
+    simulation_odb_name = odb_directory + 'planet_sun_' + str(torque) + '_Nm.odb'dfsfs
     transfer_gear_stresses(simulation_odb_name, tooth_odb_file_name)
 
     simulation_odb_name = odb_directory + 'planet_ring_' + str(torque) + '_Nm.odb'
