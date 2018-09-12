@@ -35,7 +35,7 @@ if __name__ == '__main__':
     planet.teeth_array[2].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
     planet.teeth_array[3].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
 
-    for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
+    for gear, mesh in zip(['sun', 'planet', 'planet'], ['coarse', 'coarse', 'mesh_1x']):
         mesh_dir = gear_model_dir + gear + '_gear/'
         write_include_files_for_tooth(full_model_file_name=mesh_dir + mesh + '_mesh_' + gear + '.inc',
                                       include_file_names=[simulation_dir + gear + '_' + mesh + '_geom_xpos.inc',
