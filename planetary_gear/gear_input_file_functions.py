@@ -59,6 +59,7 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
 
 
 def write_load_step(step_name, torque_gear_name='sun', applied_torque=None, planet_velocity=0.0, initial_inc=0.01):
+    print applied_torque
     lines = ['*step, name=' + step_name + ', nlgeom=Yes',
              '\t*Static',
              '\t\t' + str(initial_inc) + ', 1., 1e-12, 1.']
