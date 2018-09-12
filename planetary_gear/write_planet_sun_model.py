@@ -86,7 +86,7 @@ if __name__ == '__main__':
     file_lines += initiate_contact_lines
     file_lines += write_load_step('Apply_load', applied_torque=-torque/2)
     for i in range(4):
-        file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=-torque, planet_velocity=1./20*2*pi)
+        file_lines += write_load_step('loading_tooth_' + str(i+1), applied_torque=-torque/2, planet_velocity=1./20*2*pi)
 
     with open(simulation_dir + 'planet_sun_' + str(int(torque)) + '_Nm.inp', 'w') as input_file:
         for line in file_lines:
