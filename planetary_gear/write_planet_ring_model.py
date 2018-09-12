@@ -36,12 +36,12 @@ if __name__ == '__main__':
     planet.teeth_array[2].part_names = ['planet_dense_tooth_pos', 'planet_dense_tooth_neg']
     planet.teeth_array[3].part_names = ['planet_dense_tooth_pos', 'planet_coarse_tooth_neg']
 
-    for gear, mesh in zip(['ring', 'planet', 'planet'], ['coarse', 'coarse', 'dense']):
+    for gear, mesh in zip(['ring', 'planet', 'planet'], ['coarse_mesh', 'coarse_mesh', 'mesh_1x']):
         mesh_dir = gear_model_dir + gear + '_gear/'
-        write_include_files_for_tooth(full_model_file_name=mesh_dir + mesh + '_mesh_' + gear + '.inc',
+        write_include_files_for_tooth(full_model_file_name=mesh_dir + mesh + '/mesh_' + gear + '.inc',
                                       include_file_names=[simulation_dir + gear + '_' + mesh + '_geom_xpos.inc',
                                                           simulation_dir + gear + '_' + mesh + '_geom_xneg.inc'],
-                                      full_set_file_name=mesh_dir + mesh + '_mesh_' + gear + '_sets.inc',
+                                      full_set_file_name=mesh_dir + mesh + '/' + gear + '_sets.inc',
                                       set_include_file_name=simulation_dir + gear + '_' + mesh + '_geom_sets.inc')
     file_lines = ['*Heading',
                   '\tModel of a meshing between a ring gear and a planetary gear']
