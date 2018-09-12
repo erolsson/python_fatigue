@@ -44,7 +44,7 @@ def transfer_gear_stresses(from_odb_name, to_odb_name):
 
 
 if __name__ == '__main__':
-    odb_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/planet_gear/mesh_1x')
+    odb_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/planet_gear/mesh_1x/')
     torque = int(sys.argv[-1])
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
