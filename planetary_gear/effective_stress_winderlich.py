@@ -62,7 +62,7 @@ for pulsator_test in pulsator_tests:
 
 
 torques = np.array([1000., 1200., 1400.])
-simulated_torques = np.array([0, 400, 1000, 1200, 1400])
+simulated_torques = np.array([0, 1000, 1200, 1400])
 stress_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_stresses/')
 for cd, color in zip([0.8, 1.1], ['r', 'g']):
     with open(dante_pickle_directory + 'dante_results_' +
