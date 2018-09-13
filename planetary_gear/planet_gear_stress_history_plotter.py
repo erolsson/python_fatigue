@@ -16,12 +16,12 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 Simulation = namedtuple('Simulation', ['torque', 'color'])
-simulations = [Simulation(torque=400, color='k'), Simulation(torque=1000, color='b'),
+simulations = [Simulation(torque=1000, color='b'),
                Simulation(torque=1200, color='r'), Simulation(torque=1400, color='g')]
 
 pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_stresses/')
 max_values = {'pos': {'max': [0], 'min': [0]}, 'neg': {'max': [0], 'min': [0]}}
-torques = np.array([0, 400, 1000, 1200, 1400])
+torques = np.array([0, 1000, 1200, 1400])
 for i, name in enumerate(['pos', 'neg']):
     plt.figure(i)
     for simulation in simulations:
