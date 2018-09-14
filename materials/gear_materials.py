@@ -23,5 +23,5 @@ class SS2506MaterialTemplate:
         return self.m_par[0]/steel_properties.HV**2
 
 
-SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
-# SS2506 = SS2506MaterialTemplate(swa=238, swb=0.487, mb=11.06e6)
+# SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
+SS2506 = SS2506MaterialTemplate(swa=240, swb=0.482, mb=11.06e6)

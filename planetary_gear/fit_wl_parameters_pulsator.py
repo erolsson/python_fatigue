@@ -25,7 +25,6 @@ def calc_pf_for_simulation(cd, load, par):
     with open(data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
-
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
