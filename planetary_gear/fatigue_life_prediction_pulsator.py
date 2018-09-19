@@ -26,14 +26,11 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 haiback = True
 
 
-def calculate_life(load, cd):
-    findley_file_name = 'findley/pulsator/findley_CD=' + str(cd).replace('.', '_') + \
-                        '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
+def calculate_life(findley_file_name, cd, size_factor):
     with open(data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
-    if load == 30.:
-        print np.max(stress)
+
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
@@ -45,7 +42,7 @@ def calculate_life(load, cd):
                           steel_data=steel_data_volume,
                           nodal_positions=position.reshape(n_vol / 8, 8, 3))
 
-    wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=4)
+    wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=size_factor)
     lives = 0*pf_levels
     for it, pf in enumerate(pf_levels):
         lives[it] = wl_evaluator.calculate_life_time(pf=pf, haiback=haiback)
@@ -78,7 +75,9 @@ for i, case_depth in enumerate(case_depths):
     # Calculating life time at specific pf
     job_list = []
     for force in sim_forces:
-        job_list.append((calculate_life, [force, case_depth], {}))
+        data_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
+                            '_Pamp=' + str(force).replace('.', '_') + 'kN.pkl'
+        job_list.append((calculate_life, [data_file_name, case_depth, 4], {}))
 
     wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
 
