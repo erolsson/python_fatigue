@@ -23,8 +23,6 @@ plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
-haiback = True
-
 
 def calculate_life(findley_file_name, cd, size_factor):
     with open(data_directory + findley_file_name) as findley_pickle:
@@ -50,73 +48,76 @@ def calculate_life(findley_file_name, cd, size_factor):
     return pf, lives
 
 
-case_depths = [0.5, 0.8, 1.1, 1.4]
-# case_depths = [1.4]
-pf_levels = np.array([0.25, 0.5, 0.75])
-sim_forces = np.arange(30., 41., 1.)
-mesh = '1x'
-test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/pulsator_testing/')
-data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
+if __name__ == '__main__':
+    haiback = True
 
-for i, case_depth in enumerate(case_depths):
-    # Plotting test results
-    name = test_directory + 'case_depth_' + str(case_depth)
-    name = name.replace('.', '_')
-    testData = TestResults(name + '.dat')
+    case_depths = [0.5, 0.8, 1.1, 1.4]
+    # case_depths = [1.4]
+    pf_levels = np.array([0.25, 0.5, 0.75])
+    sim_forces = np.arange(30., 41., 1.)
+    mesh = '1x'
+    test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/pulsator_testing/')
+    data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
 
-    data = testData.get_test_results()
-    plot_test_results(data, i, 'b', [1E4, 1E7, 29, 40],
-                      ylab='$P_{a}$ [kN]',
-                      plot_fatigue_line=False,
-                      title='Experiment')
+    for i, case_depth in enumerate(case_depths):
+        # Plotting test results
+        name = test_directory + 'case_depth_' + str(case_depth)
+        name = name.replace('.', '_')
+        testData = TestResults(name + '.dat')
 
-    N = np.zeros((sim_forces.shape[0], len(pf_levels)))
+        data = testData.get_test_results()
+        plot_test_results(data, i, 'b', [1E4, 1E7, 29, 40],
+                          ylab='$P_{a}$ [kN]',
+                          plot_fatigue_line=False,
+                          title='Experiment')
 
-    # Calculating life time at specific pf
-    job_list = []
-    for force in sim_forces:
-        data_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
-                            '_Pamp=' + str(force).replace('.', '_') + 'kN.pkl'
-        job_list.append((calculate_life, [data_file_name, case_depth, 4], {}))
+        N = np.zeros((sim_forces.shape[0], len(pf_levels)))
 
-    wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
+        # Calculating life time at specific pf
+        job_list = []
+        for force in sim_forces:
+            data_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
+                                '_Pamp=' + str(force).replace('.', '_') + 'kN.pkl'
+            job_list.append((calculate_life, [data_file_name, case_depth, 4], {}))
 
-    simulated_pf = 0 * sim_forces
-    for force_level in range(sim_forces.shape[0]):
-        simulated_pf[force_level] = wl_data[force_level][0]
-        N[force_level, :] = wl_data[force_level][1]
+        wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
 
-    # Plotting life curves
-    data_to_write = []
-    for pf_level, (pf_val, color) in enumerate(zip(pf_levels, 'brg')):
-        if haiback:
-            data_to_plot = np.vstack((N[:, pf_level].T, sim_forces.T))
-        else:
-            force_at_pf = np.interp(pf_val, simulated_pf, sim_forces)
-            data_to_plot = np.vstack((N[sim_forces > force_at_pf, pf_level].T, sim_forces[sim_forces > force_at_pf].T))
-            data_to_plot = np.hstack((np.array([[1E7, np.exp(SS2506.ne)],
-                                                [force_at_pf, force_at_pf]]),
-                                      data_to_plot))
-        plt.plot(data_to_plot[0, :], data_to_plot[1, :], '--' + color, lw=2)
-        data_to_write.append(data_to_plot)
+        simulated_pf = 0 * sim_forces
+        for force_level in range(sim_forces.shape[0]):
+            simulated_pf[force_level] = wl_data[force_level][0]
+            N[force_level, :] = wl_data[force_level][1]
 
-    n = max(data_to_write, key=lambda x: x.shape[1]).shape[1]
-    write_array = np.zeros((n, 6))
+        # Plotting life curves
+        data_to_write = []
+        for pf_level, (pf_val, color) in enumerate(zip(pf_levels, 'brg')):
+            if haiback:
+                data_to_plot = np.vstack((N[:, pf_level].T, sim_forces.T))
+            else:
+                force_at_pf = np.interp(pf_val, simulated_pf, sim_forces)
+                data_to_plot = np.vstack((N[sim_forces > force_at_pf, pf_level].T, sim_forces[sim_forces > force_at_pf].T))
+                data_to_plot = np.hstack((np.array([[1E7, np.exp(SS2506.ne)],
+                                                    [force_at_pf, force_at_pf]]),
+                                          data_to_plot))
+            plt.plot(data_to_plot[0, :], data_to_plot[1, :], '--' + color, lw=2)
+            data_to_write.append(data_to_plot)
 
-    for pf_level, data in enumerate(data_to_write):
-        write_array[:, 2*pf_level] = data[0, 0]
-        write_array[:, 2 * pf_level+1] = data[1, 0]
-        write_array[n-data.shape[1]:, 2*pf_level:2*pf_level+2] = data.T
+        n = max(data_to_write, key=lambda x: x.shape[1]).shape[1]
+        write_array = np.zeros((n, 6))
 
-    load_cycles = np.log(np.array([write_array[-1, 0], write_array[-1, 2], write_array[-1, 4]]))
-    long_life = (np.linspace(load_cycles[-1], np.log(1e7), 100))
-    load_cycles = np.hstack((load_cycles, long_life))
-    data_to_write = np.zeros((load_cycles.shape[0], 4))
-    data_to_write[:, 0] = np.exp(load_cycles)
-    for j in range(3):
-        data_to_write[:, j+1] = np.interp(load_cycles, np.log(write_array[::-1, 2*j]), write_array[::-1, 2*j+1],
-                                          left=41)
-        plt.plot(np.exp(load_cycles), data_to_write[:, j+1], ':')
-    print data_to_write
-    np.savetxt(str(case_depth).replace('.', '_') + 'lifeData.csv', data_to_write, delimiter=',')
-plt.show()
+        for pf_level, data in enumerate(data_to_write):
+            write_array[:, 2*pf_level] = data[0, 0]
+            write_array[:, 2 * pf_level+1] = data[1, 0]
+            write_array[n-data.shape[1]:, 2*pf_level:2*pf_level+2] = data.T
+
+        load_cycles = np.log(np.array([write_array[-1, 0], write_array[-1, 2], write_array[-1, 4]]))
+        long_life = (np.linspace(load_cycles[-1], np.log(1e7), 100))
+        load_cycles = np.hstack((load_cycles, long_life))
+        data_to_write = np.zeros((load_cycles.shape[0], 4))
+        data_to_write[:, 0] = np.exp(load_cycles)
+        for j in range(3):
+            data_to_write[:, j+1] = np.interp(load_cycles, np.log(write_array[::-1, 2*j]), write_array[::-1, 2*j+1],
+                                              left=41)
+            plt.plot(np.exp(load_cycles), data_to_write[:, j+1], ':')
+        print data_to_write
+        np.savetxt(str(case_depth).replace('.', '_') + 'lifeData.csv', data_to_write, delimiter=',')
+    plt.show()
