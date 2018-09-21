@@ -36,9 +36,10 @@ if __name__ == '__main__':
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
 
-    add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_right')
-    add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_left')
+    for part in ['left', 'right']:
+        add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_' + part)
 
-    for cd in [0.5, 0.8, 1.1, 1.4]:
-        pickle_name = pickle_directory + 'data_' + str(cd).replace('.', '_') + '.pkl'
-        write_pickle_for_case_depth(dante_odb_filename, cd, pickle_name, 'tooth_root_volume_elements')
+        for cd in [0.5, 0.8, 1.1, 1.4]:
+            pickle_name = pickle_directory + 'data_' + str(cd).replace('.', '_') + '_' + part + '.pkl'
+            write_pickle_for_case_depth(dante_odb_filename, cd, pickle_name, 'tooth_root_volume_elements',
+                                        tooth_half=part)
