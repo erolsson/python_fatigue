@@ -22,27 +22,31 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def calculate_life(load, cd, size_factor):
-    tooth_stresses = []
-    for tooth_part in ['tooth_left', 'tooth_right']:
-        findley_file_name = 'findley/gear_box/findley_' + tooth_part + '_CD=' + str(case_depth).replace('.', '_') + \
-                            '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
+    tooth_data = {'stress': [], 'HV': []}
+    for tooth_part in ['left', 'right']:
+        findley_file_name = 'findley/gear_box/findley_tooth_' + tooth_part + '_CD=' + \
+                            str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'Nm.pkl'
         with open(data_directory + findley_file_name) as findley_pickle:
-            tooth_stresses.append(pickle.load(findley_pickle))
-    stress = np.zeros(tooth_stresses[0].shape[0] + tooth_stresses[0].shape[0])
-    stress[0:tooth_stresses[0].shape[0]] = tooth_stresses[0]
-    stress[tooth_stresses[0].shape[0]:tooth_stresses[1].shape[0]] = tooth_stresses[1]
-    n_vol = stress.shape[0]
+            stress_data = pickle.load(findley_pickle)
+        stress_data = stress_data.reshape(stress_data.shape[0]/8, 8)
+        tooth_data['stress'].append(stress_data)
 
     with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
-    steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
+
+    hardness = dante_data['HV'].reshape(dante_data['HV'].shape[0]/8, 8)
+
+    stress = np.concatenate(tooth_data['stress'])
+    hardness = np.concatenate([hardness, hardness])
 
     with open(data_directory + 'geometry/nodal_positions.pkl') as position_pickle:
         position = pickle.load(position_pickle)
+    position = position.reshape(position.shape[0]/8, 8, 3)
+    position = np.concatenate([position, position])
 
-    fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
-                          steel_data=steel_data_volume,
-                          nodal_positions=position.reshape(n_vol / 8, 8, 3))
+    fem_volume = FEM_data(stress=stress,
+                          steel_data=SteelData(HV=hardness),
+                          nodal_positions=position)
 
     wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=size_factor)
     lives = 0*pf_levels
@@ -51,9 +55,10 @@ def calculate_life(load, cd, size_factor):
     pf = wl_evaluator.calculate_pf()
     return pf, lives
 
+
 if __name__ == '__main__':
-    haiback = True
-    pf_levels = np.array([0.25, 0.5, 0.75])
+    haiback = False
+    pf_levels = np.array([0.5])
     mesh = '1x'
     test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/gearbox_testing/')
     data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
@@ -65,13 +70,26 @@ if __name__ == '__main__':
     plt.semilogx(root_run_outs[:, -1], root_run_outs[:, 2], 'ko', ms=12, mew=2, mfc='w')
     plt.semilogx(root_failures[:, -1], root_failures[:, 1], 'kx', ms=12, mew=2, mfc='w')
 
-    torques = np.arange(900, 1600, 1000)
-    case_depths = [0.8, 1.1]
+    torques = np.arange(900., 1600., 100.)
+    case_depths = np.array([1.1])
 
-    for case_depth in case_depths:
+    for sectors in [2, 200]:
         job_list = []
         for torque in torques:
+            job_list.append([calculate_life, [torque, 1.1, sectors], {}])
 
+        wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
+
+        simulated_pf = 0*torques
+        N = np.zeros((torques.shape[0], len(pf_levels)))
+
+        for force_level in range(torques.shape[0]):
+            simulated_pf[force_level] = wl_data[force_level][0]
+            N[force_level, :] = wl_data[force_level][1]
+
+        for pf_level, (pf_val, color) in enumerate(zip(pf_levels, 'brg')):
+            data_to_plot = np.vstack((N[:, pf_level].T, torques.T))
+            plt.plot(data_to_plot[0, :], data_to_plot[1, :], '--' + color, lw=2)
 
     plt.ylabel('Torque [Nm]')
     plt.xlabel('Cycles')
