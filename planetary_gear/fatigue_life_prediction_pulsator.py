@@ -24,7 +24,9 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 
-def calculate_life(findley_file_name, cd, size_factor):
+def calculate_life(load, cd, size_factor):
+    findley_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
+                        '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
@@ -76,9 +78,7 @@ if __name__ == '__main__':
         # Calculating life time at specific pf
         job_list = []
         for force in sim_forces:
-            data_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
-                                '_Pamp=' + str(force).replace('.', '_') + 'kN.pkl'
-            job_list.append((calculate_life, [data_file_name, case_depth, 4], {}))
+            job_list.append((calculate_life, [force, case_depth, 4], {}))
 
         wl_data = multi_processer(job_list, timeout=600, delay=0., cpus=8)
 

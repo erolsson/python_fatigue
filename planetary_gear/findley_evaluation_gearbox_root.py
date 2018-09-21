@@ -56,7 +56,7 @@ for load in loads:
 
         findley_stress = findley_data[:, 2]
         print "Maximum Findley stress", np.max(findley_stress), 'MPa'
-        findley_pickle_name = 'findley_' + tooth_part + '_CD=' + str(cd).replace('.', '_') + '_Pamp=' + \
+        findley_pickle_name = 'findley_' + tooth_part + '_CD=' + str(cd).replace('.', '_') + '_M=' + \
                               str(load).replace('.', '_') + 'Nm.pkl'
         with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
             pickle.dump(findley_stress, pickle_handle)
