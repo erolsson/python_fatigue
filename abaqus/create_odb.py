@@ -11,7 +11,6 @@ OdbInstance = namedtuple('OdbInstance', ['name', 'nodes', 'elements'])
 
 
 def create_odb(odb_file_name, instance_data):
-    print os.path.basename(odb_file_name), os.path.dirname(odb_file_name)
     odb = Odb(name=os.path.basename(odb_file_name), path=odb_file_name)
 
     for instance in instance_data:
@@ -24,6 +23,7 @@ def create_odb(odb_file_name, instance_data):
     odb.update()
     odb.save()
     odb.close()
+
 
 if __name__ == '__main__':
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
