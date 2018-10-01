@@ -14,7 +14,7 @@ from odb_io_functions import add_element_set
 
 
 def setup_odb_files(odb_file_name, parts, element_set_name='tooth_root_volume_elements'):
-    model_file = '../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + 'mesh_planet.inc'
+    model_file = '../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/mesh_planet.inc'
 
     quarter_nodes, quarter_elements = create_quarter_model(model_file)
     model_data = [(quarter_nodes, quarter_elements)]
