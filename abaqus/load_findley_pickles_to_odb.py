@@ -18,7 +18,7 @@ def setup_odb_files(odb_file_name, parts):
     part_names = ['left', 'right']
 
     instances = []
-    for i in range(parts-1):
+    for i in range(parts):
         nodes, elements = read_nodes_and_elements(input_file_names[i])
         instances.append(OdbInstance(name='tooth_' + part_names[i], nodes=nodes, elements=elements))
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
