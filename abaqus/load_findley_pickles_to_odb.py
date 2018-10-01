@@ -48,6 +48,7 @@ FileInfo = namedtuple('FileInfo', ['load', 'instance', 'case_depth'])
 
 def extract_gearbox_info(filename):
     filename = os.path.basename(filename)
+    print filename
     match = re.search('findley_tooth_(.+?)_CD_=_(.+?)_Pamp=(.+?).pkl', filename)
     print match.group(0), match.group(1)
 
