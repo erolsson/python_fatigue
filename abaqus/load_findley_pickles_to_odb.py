@@ -45,19 +45,23 @@ def setup_odb_files(odb_file_name, parts, element_set_name='tooth_root_volume_el
 
 FileInfo = namedtuple('FileInfo', ['load', 'instance', 'case_depth'])
 
+
 def extract_gearbox_info(filename):
     filename = os.path.basename(filename)
     match = re.search('findley_tooth_(.+?)_CD_=_(.+?)_Pamp=(.+?).pkl', filename)
     print match.group(0), match.group(1)
 
-def load_findley_data(odb_file_name, element_set_name='tooth_root_volume_elements'):
+
+def load_findley_data(odb_file_name, filename_function, element_set_name='tooth_root_volume_elements'):
     data_directory = findley_directory + '/gear_box/'
     findley_files = glob.glob(data_directory + 'findley_*.pkl')
     for findley_file in findley_files:
-        with open(findley_file, 'r') as findley_pickle:
-            findley_data = pickle.load(findley_pickle)
+        filename_function(findley_file)
+        # with open(findley_file, 'r') as findley_pickle:
+        #    findley_data = pickle.load(findley_pickle)
 
-        write_field_to_odb(findley_data, 'SF', odb_file_name=odb_file_name, set_name=element_set_name)
+        # write_field_to_odb(findley_data, 'SF', odb_file_name=odb_file_name, set_name=element_set_name)
+
 
 if __name__ == '__main__':
     mesh = '1x'
@@ -72,4 +76,4 @@ if __name__ == '__main__':
                              'findley_gear_stresses_pulsator.odb'
     setup_odb_files(pulsator_odb_file_name, 1)
 
-    load_findley_data()
+    load_findley_data(gearbox_odb_file_name, extract_gearbox_info)
