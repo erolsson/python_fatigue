@@ -128,6 +128,8 @@ def create_quarter_model(full_model_file):
 
 def mirror_quarter_model(nodes, elements):
     # Generating a quarter tooth for the left part
+    nodes = np.copy(nodes)
+    elements = np.copy(elements)
     nodes[:, 1] *= -1
 
     # Swapping the nodes in the z-direction to get correct ordering of the nodes
