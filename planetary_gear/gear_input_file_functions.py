@@ -46,13 +46,7 @@ def write_include_files_for_tooth(full_model_file_name, include_file_names, full
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements)
 
-    # Generating a quarter tooth for the left part
-    quarter_nodes[:, 1] *= -1
-
-    # Swapping the nodes in the z-direction to get correct ordering of the nodes
-    temp_connectivity = quarter_elements[:, 5:].copy()
-    quarter_elements[:, 5:] = quarter_elements[:, 1:5]
-    quarter_elements[:, 1:5] = temp_connectivity
+    quarter_nodes, quarter_elements = mirror_quarter_model(quarter_nodes, quarter_elements)
 
     write_geom_include_file(quarter_nodes, quarter_elements,
                             filename=include_file_names[1])
@@ -130,6 +124,17 @@ def create_quarter_model(full_model_file):
     quarter_model_elements = get_elements_from_nodes(nodal_data[:, 0], elements)
 
     return nodal_data, quarter_model_elements
+
+
+def mirror_quarter_model(nodes, elements):
+    # Generating a quarter tooth for the left part
+    nodes[:, 1] *= -1
+
+    # Swapping the nodes in the z-direction to get correct ordering of the nodes
+    temp_connectivity = elements[:, 5:].copy()
+    elements[:, 5:] = elements[:, 1:5]
+    elements[:, 1:5] = temp_connectivity
+    return nodes, elements
 
 
 def write_sets_file(filename, full_model_sets_file, nodal_data, element_data, monitor_node=None):
