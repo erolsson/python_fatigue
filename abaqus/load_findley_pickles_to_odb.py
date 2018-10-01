@@ -9,25 +9,29 @@ from create_odb import create_odb
 from create_odb import OdbInstance
 
 
+def setup_odb_files(odb_file_name, parts):
+    input_file_names = ['/scratch/users/erik/python_fatigue/planetary_gear/'
+                        'input_files/planet_sun/planet_dense_geom_xneg.inc',
+                        '/scratch/users/erik/python_fatigue/planetary_gear/'
+                        'input_files/planet_sun/planet_dense_geom_xpos.inc']
+
+    part_names = ['left', 'right']
+
+    instances = []
+    for i in range(parts-1):
+        nodes, elements = read_nodes_and_elements(input_file_names[i])
+        instances.append(OdbInstance(name='tooth_' + part_names[i], nodes=nodes, elements=elements))
+    create_odb(odb_file_name=odb_file_name, instance_data=instances)
+
+
 if __name__ == '__main__':
+    findley_directory = os.path.expanduser('~/scania_gear_analysis/pickles/'
+                                           'tooth_root_fatigue_analysis/mesh_1x/findley')
 
-    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                      'input_files/planet_sun/planet_dense_geom_xpos.inc'
-    nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
+    gearbox_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_1x/' \
+                            'findley_gear_stresses_gearbox.odb'
+    setup_odb_files(gearbox_odb_file_name, 2)
 
-    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                      'input_files/planet_sun/planet_dense_geom_xneg.inc'
-    nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
-
-    instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
-                 OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
-
-    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_1x/' \
-                          'findley_gear_stresses_gearbox.odb'
-
-    create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
-
-    tooth_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_1x/' \
-                          'findley_gear_stresses_pulsator.odb'
-
-    create_odb(odb_file_name=tooth_odb_file_name, instance_data=instances)
+    pulsator_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_1x/' \
+                             'findley_gear_stresses_pulsator.odb'
+    setup_odb_files(pulsator_odb_file_name, 1)
