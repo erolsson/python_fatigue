@@ -41,10 +41,10 @@ if __name__ == '__main__':
     findley_directory = os.path.expanduser('~/scania_gear_analysis/pickles/'
                                            'tooth_root_fatigue_analysis/mesh_' + mesh + '/findley')
 
-    gearbox_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + \
+    gearbox_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + '/' +  \
                             'findley_gear_stresses_gearbox.odb'
     setup_odb_files(gearbox_odb_file_name, 2)
 
-    pulsator_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + \
+    pulsator_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + '/' + \
                              'findley_gear_stresses_pulsator.odb'
     setup_odb_files(pulsator_odb_file_name, 1)
