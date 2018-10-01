@@ -1,3 +1,4 @@
+import glob
 import os
 
 from odbAccess import *
@@ -36,6 +37,11 @@ def setup_odb_files(odb_file_name, parts, element_set_name='tooth_root_volume_el
         add_element_set(odb_file_name, element_set_name, element_labels, 'tooth_' + part_names[i])
 
 
+def load_gearbox_data():
+    data_directory = findley_directory + '/gear_box/'
+    findley_files = glob.glob(data_directory + 'findley_*.pkl')
+    print findley_files
+
 if __name__ == '__main__':
     mesh = '1x'
     findley_directory = os.path.expanduser('~/scania_gear_analysis/pickles/'
@@ -48,3 +54,4 @@ if __name__ == '__main__':
     pulsator_odb_file_name = '/scratch/users/erik/scania_gear_analysis/odb_files/planet_gear/mesh_' + mesh + '/' + \
                              'findley_gear_stresses_pulsator.odb'
     setup_odb_files(pulsator_odb_file_name, 1)
+
