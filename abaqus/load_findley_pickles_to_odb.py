@@ -1,11 +1,17 @@
 import glob
 import os
+import pickle
+import re
+
+from collections import namedtuple
 
 from odbAccess import *
 from abaqusConstants import *
 
 from create_odb import create_odb
 from create_odb import OdbInstance
+
+from odb_io_functions import write_field_to_odb
 
 from planetary_gear.gear_input_file_functions import create_quarter_model
 from planetary_gear.gear_input_file_functions import mirror_quarter_model
@@ -37,11 +43,21 @@ def setup_odb_files(odb_file_name, parts, element_set_name='tooth_root_volume_el
         add_element_set(odb_file_name, element_set_name, element_labels, 'tooth_' + part_names[i])
 
 
-def load_gearbox_data():
+FileInfo = namedtuple('FileInfo', ['load', 'instance', 'case_depth'])
+
+def extract_gearbox_info(filename):
+    filename = os.path.basename(filename)
+    match = re.search('findley_tooth_(.+?)_CD_=_(.+?)_Pamp=(.+?).pkl', filename)
+    print match.group(0), match.group(1)
+
+def load_findley_data(odb_file_name, element_set_name='tooth_root_volume_elements'):
     data_directory = findley_directory + '/gear_box/'
     findley_files = glob.glob(data_directory + 'findley_*.pkl')
-    print findley_files
+    for findley_file in findley_files:
+        with open(findley_file, 'r') as findley_pickle:
+            findley_data = pickle.load(findley_pickle)
 
+        write_field_to_odb(findley_data, 'SF', odb_file_name=odb_file_name, set_name=element_set_name)
 
 if __name__ == '__main__':
     mesh = '1x'
@@ -56,4 +72,4 @@ if __name__ == '__main__':
                              'findley_gear_stresses_pulsator.odb'
     setup_odb_files(pulsator_odb_file_name, 1)
 
-    load_gearbox_data()
+    load_findley_data()
