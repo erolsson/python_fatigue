@@ -42,6 +42,7 @@ def load_gearbox_data():
     findley_files = glob.glob(data_directory + 'findley_*.pkl')
     print findley_files
 
+
 if __name__ == '__main__':
     mesh = '1x'
     findley_directory = os.path.expanduser('~/scania_gear_analysis/pickles/'
@@ -55,3 +56,4 @@ if __name__ == '__main__':
                              'findley_gear_stresses_pulsator.odb'
     setup_odb_files(pulsator_odb_file_name, 1)
 
+    load_gearbox_data()
