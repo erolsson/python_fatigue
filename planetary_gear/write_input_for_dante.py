@@ -124,7 +124,7 @@ def write_input_files(sim_data, simulation_directory):
 
     # Add remaining data to the thermal and mechanical file
     for lines, name in [(thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
-        with open(simulation_directory + 'end_' + name + '_file.txt') as end_file:
+        with open(simulation_directory + 'end_' + name + '_File.txt') as end_file:
             end_lines = end_file.readlines()
             for line in end_lines:
                 line = line.replace('/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/', '')
@@ -142,7 +142,7 @@ def write_input_files(sim_data, simulation_directory):
 
 
 if __name__ == '__main__':
-    mesh = '_3x'
+    mesh = '_1x'
     sim_directory = 'input_files/dante_quarter' + mesh + '/'
 
     monitor_node = {'_1x': 60674, '_2x': 143035, '_3x': 276030}
