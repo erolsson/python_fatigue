@@ -221,6 +221,7 @@ class AsymmetricBendingSpecimen:
 
             for p1, p2 in zip(self.inner_line_points, center_line_points):
                 y_edges.append(get_edge_from_points(p1, p2, z))
+                print p1, p2
                 y_edges.append(get_edge_from_points((p1[0], -p1[1]), (p2[0], -p2[1]), z))
 
         self.fatigue_part.seedEdgeByBias(biasMethod=SINGLE, end1Edges=tuple(side1_edges), end2Edges=tuple(side2_edges),
