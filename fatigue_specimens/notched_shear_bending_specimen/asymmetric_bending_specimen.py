@@ -358,4 +358,4 @@ class AsymmetricBendingSpecimen:
 if __name__ == '__main__':
     specimen = AsymmetricBendingSpecimen()
     specimen.mesh()
-    specimen.write_file('../MechanicalAnalysis/shear_bending_specimen.inc')
+    specimen.write_file('../shear_bending_specimen.inc')
