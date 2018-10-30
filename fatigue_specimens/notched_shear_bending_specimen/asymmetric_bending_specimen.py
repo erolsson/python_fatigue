@@ -350,12 +350,11 @@ class AsymmetricBendingSpecimen:
         del mdb.jobs[output_file_name_no_ext]
 
         # Fix file name
-        if os.path.exists(os.path.abspath(file_name)):
-            os.remove(os.path.abspath(file_name))
+
         os.rename(os.path.join(output_directory, output_file_name_no_ext + '.inp'), file_name)
 
 
 if __name__ == '__main__':
     specimen = AsymmetricBendingSpecimen()
     specimen.mesh()
-    specimen.write_file('../shear_bending_specimen.inc')
+    specimen.write_file('shear_bending_specimen.inc')
