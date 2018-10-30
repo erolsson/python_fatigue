@@ -221,7 +221,7 @@ class AsymmetricBendingSpecimen:
 
             for p1, p2 in zip(self.inner_line_points, center_line_points):
                 y_edges.append(get_edge_from_points(p1, p2, z))
-            for p1, p2 in zip(self.inner_line_points[::-1], center_line_points):
+            for p1, p2 in zip(self.inner_line_points[::-1], center_line_points[::-1]):
                 print p1, p2
                 y_edges.append(get_edge_from_points((p1[0], -p1[1]), (p2[0], -p2[1]), z))
 
