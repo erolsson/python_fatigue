@@ -124,12 +124,17 @@ def write_input_files(sim_data, simulation_directory):
 
     # Add remaining data to the thermal and mechanical file
     for lines, name in [(thermal_lines, 'Thermal'), (mechanical_lines, 'Mechanical')]:
-        with open(simulation_directory + 'end_' + name + '_File.txt') as end_file:
+        with open(simulation_directory + 'end_' + name + '_file.txt') as end_file:
             end_lines = end_file.readlines()
             for line in end_lines:
                 line = line.replace('/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/', '')
                 line = line.replace('0_5_v6', str(sim_data.CD).replace('.', '_') + '_quarter')
                 line = line.replace('\n', '')
+                if '$TEMPERING_TIME$' in line:
+                    line = line.replace('$TEMPERING_TIME$', str(sim.tempering[1]*60.))
+                    print line
+                if '$TEMPERING_TEMP$' in line:
+                    line = line.replace('$TEMPERING_TEMP$', str(sim.tempering[0]))
                 lines.append(line)
 
     # Write the input files
@@ -146,11 +151,15 @@ if __name__ == '__main__':
     sim_directory = 'input_files/dante_quarter' + mesh + '/'
 
     monitor_node = {'_1x': 60674, '_2x': 143035, '_3x': 276030}
-    Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon'])
-    simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
-                   Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
-                   Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8)),
-                   Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8))]
+    Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
+    simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                              tempering=(180., 60)),
+                   Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                              tempering=(180., 60)),
+                   Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                              tempering=(180., 60)),
+                   Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                              tempering=(180., 60))]
 
     quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/mesh' + mesh +
                                                            '/mesh_planet.inc')
