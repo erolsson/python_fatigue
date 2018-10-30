@@ -21,7 +21,7 @@ except ImportError:
 
 
 class AsymmetricBendingSpecimen:
-    def __init__(self, L=100, R=4.5, q=0, t=6, h=24, h1=8, CD=2, delta=0, name='BendingSpecimenPart'):
+    def __init__(self, L=100, R=4.5, q=15, t=6, h=24, h1=8, CD=2, delta=0, name='BendingSpecimenPart'):
         """        
         :param L: Length of the specimen
         :param R: Radius of the main notch
@@ -318,6 +318,14 @@ class AsymmetricBendingSpecimen:
         self.fatigue_part.Set(nodes=nodes_on(sym_faces), name='symZ_Nodes')
         self.fatigue_part.Set(elements=elements_on(sym_faces), name='symZ_Elements')
         self.fatigue_part.Surface(side1Faces=sym_faces, name='symZ_Surface')
+
+        mid_node = self.fatigue_part.vertices.findAt((0, 0, 0))
+        node = mid_node.getNodes()[0]
+        self.fatigue_part.Set(nodes=self.fatigue_part.nodes[node.label - 1:node.label], name='mid_node')
+
+        lower_left_node = self.fatigue_part.vertices.findAt((-self.L/2, -self.h1/2, 0))
+        node = lower_left_node.getNodes()[0]
+        self.fatigue_part.Set(nodes=self.fatigue_part.nodes[node.label - 1:node.label], name='lower_left__node')
 
         # Finding a suitable monitor node, surface node at the notch
         vertex = self.fatigue_part.vertices.findAt((self.delta, self.h1/2, 0))
