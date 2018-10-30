@@ -323,7 +323,7 @@ class AsymmetricBendingSpecimen:
         node = mid_node.getNodes()[0]
         self.fatigue_part.Set(nodes=self.fatigue_part.nodes[node.label - 1:node.label], name='mid_node')
 
-        lower_left_node = self.fatigue_part.vertices.findAt((-self.L/2, -self.h1/2, 0))
+        lower_left_node = self.fatigue_part.vertices.findAt((-self.L/2, -self.h/2, 0))
         node = lower_left_node.getNodes()[0]
         self.fatigue_part.Set(nodes=self.fatigue_part.nodes[node.label - 1:node.label], name='lower_left__node')
 
