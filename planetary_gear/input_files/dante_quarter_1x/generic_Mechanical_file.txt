@@ -1,0 +1,68 @@
+**
+**
+** Generated input file by Case Hardening Simulation Toolbox, version 0.9.1
+** Written by Niklas Melin, Scania CV AB
+**
+*Heading
+  Case hardening toolbox - Case hardening by carburization - Mechanical simulation
+**
+*Preprint, echo=NO, model=NO, history=NO, contact=NO
+**
+** ----------------------------------------------------------------
+** Load required include files
+**
+**   Load geometry
+*INCLUDE, INPUT = ../Toolbox_Mechanical_quarter_geo.inc
+**
+**   Load geometry set definitions
+*INCLUDE, INPUT = ../planetGear_sets.inc
+**
+** ----------------------------------------------------------------
+**
+**   Load material and heat conductivity properties
+**   Define material properties for UMAT
+*Solid Section, elset=ALL_ELEMENTS, material=U92506
+1.,
+*Hourglass Stiffness
+225.0, 0.0, 0.0
+** 
+** DEFINE MATERIAL PROPERTIES
+**
+*Material, name=U92506
+*Density
+ 7.83e-06,
+*Depvar
+     100,
+   1, CARBON,    VOLUME FRACTION of CARBON
+   2, HARDNESS, Hardness in Rockwell C
+   5, PLASTIC STRAIN, EFFECTIVE PLASTIC STRAIN
+  21, AUSTENITE, VOLUME FRACTION of AUSTENITE
+  34, FERRITE,   VOLUME FRACTION of FERRITE
+  47, PEARLITE, VOLUME FRACTION of PEARLITE
+  60, UBAINITE, VOLUME FRACTION of UPPER BAINITE
+  73, LBAINITE, VOLUME FRACTION of LOWER BAINITE
+  86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE
+  99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE
+*User Material, constants=8, type=MECHANICAL
+ 1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+** 
+**
+** ----------------------------------------------------------------
+** Set initial temperature
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+ ALL_NODES , 20.000000
+**
+**
+**
+**
+** Set initial carbon content
+*INITIAL CONDITIONS, TYPE=FIELD, VAR=1
+ ALL_NODES , 0.002200
+**
+**
+** Set analysis kinematics type
+*INITIAL CONDITIONS, TYPE=FIELD, VAR=2
+ ALL_NODES , -8      
+*INCLUDE, INPUT = ../planetGear_BC.inc
+**
+**
