@@ -149,17 +149,18 @@ def write_input_files(sim_data, simulation_directory):
 if __name__ == '__main__':
     mesh = '_1x'
     sim_directory = 'input_files/dante_quarter' + mesh + '/'
+    tempering = (180, 60)
 
     monitor_node = {'_1x': 60674, '_2x': 143035, '_3x': 276030}
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
     simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=(180., 120)),
+                              tempering=tempering),
                    Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=(180., 120)),
+                              tempering=tempering),
                    Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=(180., 120)),
+                              tempering=tempering),
                    Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=(180., 120))]
+                              tempering=tempering)]
 
     quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/mesh' + mesh +
                                                            '/mesh_planet.inc')
