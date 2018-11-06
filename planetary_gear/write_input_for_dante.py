@@ -64,7 +64,7 @@ def write_input_files(sim_data, simulation_directory):
         mechanical_lines.append('Mechanical simulation')
         mechanical_lines.append('**')
         mechanical_lines.append('*STATIC')
-        thermal_lines.append('\t0.01,  ' + str(t2 - t1) + ', 1e-05,  10000')
+        mechanical_lines.append('\t0.01,  ' + str(t2 - t1) + ', 1e-05,  10000')
         mechanical_lines.append('*TEMPERATURE, FILE=Toolbox_Thermal_' + str(sim_data.CD).replace('.', '_') +
                                 '_quarter.odb, BSTEP=' + str(step_idx) + ', ESTEP=' + str(step_idx))
         mechanical_lines.append('** Add convergence control parameters')
