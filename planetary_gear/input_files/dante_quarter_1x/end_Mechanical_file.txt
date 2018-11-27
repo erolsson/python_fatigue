@@ -94,7 +94,7 @@ Quenching of the part:  Media: QUENCHWAY125B_Used_0mps at  60C, INC=10000
 *End Step
 **
 *Step, name=Cool down - Media: Air at  22C, INC=10000, AMP=STEP, inc=1000
-COOL_DOWN of the part, kinematic mode: -3
+COOL_DOWN of the part, kinematic mode: -2
 *Static
   0.01,  3600.0, 1e-05,  10000
 *TEMPERATURE, FILE=/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/Toolbox_Thermal_0_5_v6.odb, BSTEP=8, ESTEP=8
