@@ -20,6 +20,7 @@ def write_dilatometer_file(carbon, cooling_rate, start_temp=400, end_temp=22, fi
 
 
 def write_transformation_strain_file():
+    pass
 
 
 if __name__ == '__main__':
