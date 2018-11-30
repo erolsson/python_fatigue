@@ -13,6 +13,8 @@ class SS2506MaterialTemplate:
         self.sw_par = [swa, swb]
         self.m_par = [mb]
 
+        self.name = 'SS2506'
+
         self.transformation_strain = PhaseData(Martensite=self._trans_strain_martensite,
                                                Austenite=self._trans_strain_austenite,
                                                Bainite=self._trans_strain_bainite,
