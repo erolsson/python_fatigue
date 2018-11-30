@@ -52,7 +52,7 @@ class SS2506MaterialTemplate:
 
     @staticmethod
     def _thermal_exp_austenite(temperature, carbon):
-        return 2.4e-5
+        return 2.4e-5 + 0*temperature
 
     @staticmethod
     def _trans_strain_fp(temperature, carbon):

@@ -37,7 +37,18 @@ def write_transformation_strain_file(carbon, direcory='', num_points=15):
     for phase_name in phases:
         write_trstrn_section(phase_name)
 
+    file_lines.append('## COEFFICIENT OF THERMAL EXPANSION')
 
+    def write_thermal_expansion_section(phase):
+        file_lines.append('# CTE ' + phase)
+        file_lines.append(str(num_points))
+        alpha = getattr(SS2506.thermal_expansion, phase)(temperature, carbon)
+        print alpha
+        for t, a in zip(temperature, alpha):
+            file_lines.append(str(t) + '\t' + str(a))
+
+    for phase_name in ['Austenite'] + phases:
+        write_thermal_expansion_section(phase_name)
 
     with open(direcory + 'TRSTRN.CTL', 'w') as ctl_file:
         for line in file_lines:
