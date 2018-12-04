@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -14,11 +15,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 
-def write_dilatometer_file(carbon, cooling_rate, start_temp=400, end_temp=22, file_name=None, figure=None):
-    pass
-
-
-def write_transformation_strain_file(carbon, direcory='', num_points=15):
+def write_transformation_strain_file(carbon, num_points=15):
 
     temperature = np.linspace(0, 700, num_points, endpoint=True)
     file_lines = ['# TRSTRN & CTE for "' + SS2506.name + ',"' + '%04.2f' % (carbon*100) +
@@ -50,11 +47,53 @@ def write_transformation_strain_file(carbon, direcory='', num_points=15):
     for phase_name in ['Austenite'] + phases:
         write_thermal_expansion_section(phase_name)
 
-    with open(direcory + 'TRSTRN.CTL', 'w') as ctl_file:
+    file_lines.append('## END OF FILE')
+
+    with open('TRSTRN.CTL', 'w') as ctl_file:
+        for line in file_lines:
+            ctl_file.write(line + '\n')
+
+
+def write_dilatometer_data_strain_file(carbon, cooling_rate=50., numpoints=500, start_temp=400, end_temp=20):
+    file_lines = ['SS2506  Continuous cooling martensite + Others (C=' + '%04.2f' % (carbon*100) + '%)',
+                  'Project 2018',
+                  '0.77	    Mn',
+                  '0.28	    Si',
+                  '0.42	    Ni',
+                  '0.46	    Cr',
+                  '0.19	    Mo',
+                  '0.03	    S',
+                  '0.00	    Co',
+                  '0.048	Cu',
+                  '0.009	P',
+                  '0.028	Al',
+                  'NUMBER	OF	DATA	IN	THIS	SET',
+                  '1',
+                  '950C_' + str(int(cooling_rate)) + 'C-Cooling_1.DAT	   (1)',
+                  '%04.2f' % (carbon*100),
+                  str(numpoints) + 	'\t3',
+                  '1 ' + str(numpoints),
+                  'Temperature Strain  DATA (Sample-1-1 000C; ' + str(int(cooling_rate)) + 'C/s)']
+
+    file_name = 'SS2506_continuous_cooling_martensite_C=' + str(carbon*100).replace('.', '_')[0:4] + '.dat'
+    temperature = np.linspace(start_temp, end_temp, numpoints, endpoint=True)
+    t_end = (start_temp - end_temp)/cooling_rate
+    time = np.linspace(0, t_end, numpoints, endpoint=True)
+
+    with open(file_name, 'w') as ctl_file:
         for line in file_lines:
             ctl_file.write(line + '\n')
 
 
 if __name__ == '__main__':
-    write_transformation_strain_file(carbon=0.0043)
-
+    if not os.path.isdir('SS2506_data'):
+        os.makedirs('SS2506_data')
+    os.chdir('SS2506_data')
+    for carbon_content in np.arange(0.002, 0.009, 0.001):
+        dir_name = 'carbon_' + str(carbon_content).replace('.', '_')
+        if not os.path.isdir(dir_name):
+            os.makedirs(dir_name)
+        os.chdir(dir_name)
+        write_transformation_strain_file(carbon=carbon_content)
+        write_dilatometer_data_strain_file(carbon=carbon_content)
+        os.chdir('..')

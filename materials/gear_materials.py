@@ -40,42 +40,42 @@ class SS2506MaterialTemplate:
     # Phase transformation data
     @staticmethod
     def _trans_strain_martensite(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         e = t*(1.6369e-5 - 2.1344e-3*c) - 6.12e-3 + 1.05*c
         return np.squeeze(e)
 
     @staticmethod
     def _thermal_exp_martensite(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         a = 1.6369e-5 - 2.1344e-3*c
         return np.squeeze(a)
 
     @staticmethod
     def _trans_strain_austenite(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         e = t*2.4e-5 - 0.017961 + 0.33041*c
         return np.squeeze(e)
 
     @staticmethod
     def _thermal_exp_austenite(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         a = 2.4e-5 + 0*t
         return np.squeeze(a)
 
     @staticmethod
     def _trans_strain_fp(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         e = 2.2520e-9*t**2 + 1.1643e-5*t - 3.6923e-3
         return np.squeeze(e)
 
     @staticmethod
     def _thermal_exp_fp(temperature, carbon):
-        temperature += 273.15
+        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
         a = 2*2.2520e-9*t + 1.1643e-5
         return np.squeeze(a)
@@ -89,9 +89,29 @@ class SS2506MaterialTemplate:
         a = self._thermal_exp_fp(temperature, carbon)
         return np.squeeze(a)
 
+    @staticmethod
+    def ms_temperature(carbon):
+        return 706.05 - 31745 * carbon
+
+    def martensite_fraction(self, temperature, carbon, austenite_fraction=None):
+        temperature = temperature + 273.15
+        t, c = np.meshgrid(temperature, carbon)
+        if isinstance(carbon, float):
+            carbon = np.array([carbon])
+        martensite_start_temp = self.ms_temperature(carbon)
+        a = 4.8405e-2 - 4.3710*carbon
+        f = 0 * t
+
+        for i, ms in enumerate(martensite_start_temp):
+            f[i, temperature < ms] = 1-np.exp(-a[i]*(ms-temperature[temperature < ms]))
+        if austenite_fraction is None:
+            austenite_fraction = 0*f + 1.
+        return np.squeeze(f * austenite_fraction)
+
 
 # SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
 SS2506 = SS2506MaterialTemplate(swa=240, swb=0.482, mb=11.06e6)
+
 
 if __name__ == '__main__':
     # Testing the transformation functions
@@ -102,3 +122,7 @@ if __name__ == '__main__':
 
     for trans_strain_func in SS2506.transformation_strain:
         print trans_strain_func, trans_strain_func(temp, carb)
+
+    carb = np.linspace(0.002, 0.01, 10)
+    temp = np.linspace(0, 1000, 100)
+    SS2506.martensite_fraction(temp, carb)
