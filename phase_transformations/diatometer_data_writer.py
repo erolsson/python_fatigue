@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.style
 
+from phase_transformation_functions import dilatormeter_experiment
+
 from materials.gear_materials import SS2506
 
 matplotlib.style.use('classic')
@@ -40,7 +42,6 @@ def write_transformation_strain_file(carbon, num_points=15):
         file_lines.append('# CTE ' + phase)
         file_lines.append(str(num_points))
         alpha = getattr(SS2506.thermal_expansion, phase)(temperature, carbon)
-        print alpha
         for t, a in zip(temperature, alpha):
             file_lines.append(str(t) + '\t' + str(a))
 
@@ -71,26 +72,43 @@ def write_dilatometer_data_strain_file(carbon, cooling_rate=50., numpoints=500, 
                   '1',
                   '950C_' + str(int(cooling_rate)) + 'C-Cooling_1.DAT	   (1)',
                   '%04.2f' % (carbon*100),
-                  str(numpoints) + 	'\t3',
+                  str(numpoints) + '\t3',
                   '1 ' + str(numpoints),
                   'Temperature Strain  DATA (Sample-1-1 000C; ' + str(int(cooling_rate)) + 'C/s)']
 
-    file_name = 'SS2506_continuous_cooling_martensite_C=' + str(carbon*100).replace('.', '_')[0:4] + '.dat'
     temperature = np.linspace(start_temp, end_temp, numpoints, endpoint=True)
     t_end = (start_temp - end_temp)/cooling_rate
     time = np.linspace(0, t_end, numpoints, endpoint=True)
 
-    with open(file_name, 'w') as ctl_file:
+    strain = dilatormeter_experiment(temperature, carbon)
+    strain = strain - strain[0]
+    for (t, temp, e) in zip(time, temperature, strain):
+        file_lines.append(str(t) + '\t' + str(temp) + '\t' + str(e))
+
+    file_lines.append('END OF FILE')
+    file_name = 'SS2506_continuous_cooling_martensite_C=' + str(carbon * 100).replace('.', '_')[0:4] + '.dat'
+    with open(file_name, 'w') as dlatometer_file:
         for line in file_lines:
-            ctl_file.write(line + '\n')
+            dlatometer_file.write(line + '\n')
+
+
+def write_ms_temperature_file(carbon):
+    ms_temperature = SS2506.ms_temperature(carbon) - 273.15
+    with open('ms_temperature.dat', 'w') as ms_file:
+        for ms, c in zip(ms_temperature, carbon):
+            ms_file.write('%04.2f' % (c*100) + '%\t' + str(ms) + '\n')
 
 
 if __name__ == '__main__':
     if not os.path.isdir('SS2506_data'):
         os.makedirs('SS2506_data')
     os.chdir('SS2506_data')
-    for carbon_content in np.arange(0.002, 0.009, 0.001):
-        dir_name = 'carbon_' + str(carbon_content).replace('.', '_')
+
+    carbon_contents = np.arange(0.002, 0.01, 0.001)
+    write_ms_temperature_file(carbon_contents)
+
+    for carbon_content in carbon_contents:
+        dir_name = 'carbon_' + str(carbon_content).replace('.', '_')[0:5]
         if not os.path.isdir(dir_name):
             os.makedirs(dir_name)
         os.chdir(dir_name)

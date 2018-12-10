@@ -28,7 +28,8 @@ if __name__ == '__main__':
     simulations = [Simulation(carbon=0.002, color='k'),
                    Simulation(carbon=0.0036, color='b'),
                    Simulation(carbon=0.0052, color='m'),
-                   Simulation(carbon=0.0065, color='r')]
+                   Simulation(carbon=0.0065, color='r'),
+                   Simulation(carbon=0.008, color='y')]
     t = np.linspace(300, 1200, 1000) - 273.15
     for simulation in simulations:
         c = simulation.carbon
