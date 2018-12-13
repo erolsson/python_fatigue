@@ -16,7 +16,7 @@
 ** ---------------------------------------------------------                        line 16
 **     Mechanical Data starts from here                                             line 17
 DEC2015        ! DATA version control  UPPERCASE                                    line 18
-U92506         ! matnam must be UPPERCASE                                           line 19
+U92506EO         ! matnam must be UPPERCASE                                           line 19
 ** ---------------------------------------------------------                        line 20
 ** 27 plastic parameters for each phase                                             line 21
 ** Aust.    Ferr.       Pear.       U_Bain.     L_Bain.     Mart.       T_Mart.     line 22
