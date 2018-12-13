@@ -1,12 +1,12 @@
-** SS2506 Kinetics Data by Erik Olsson 13/12/2018
-DEC2018       ! model implementation date : use UPPERCASE
-U92506EO         ! matnam must be UPPERCASE
-1           ! itprdb=1, require tempering data; otherwise no.
-1           ! iheat=1, require heating data; otherwise no.
+** 86XX Kinetics Data by Charlie 1/27/2005, 
+DEC2015        ! model implementation date : use UPPERCASE
+U92506         ! matnam must be UPPERCASE
+  1            ! itprdb=1, require tempering data; otherwise no.
+  1            ! iheat=1, require heating data; otherwise no.
 ** stress effect on martensitic transformation
  6.500000E-02   !stress effect on martensite transformation
 ** Total number of kinetic data sets with different chemistry
-3
+ 3
 # Chemical composition of data set NO. 1  (8620)
 #  G.S.     Carb.    Mn.      Si.      Ni.      Cr.      Mo.      ...
    0.70E+1  0.20E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0

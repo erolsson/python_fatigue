@@ -17,8 +17,8 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 base_file_name = 'U92506.DQT'
-material_name = 'U92506EO'
-umat_file_name = 'UMAT_files/U92506EO/' + material_name
+material_name = 'U925062'
+umat_file_name = 'UMAT_files/U925062/' + material_name
 directory = 'SS2506_data'
 carbon_levels = np.arange(0.002, 0.01, 0.003)
 
@@ -56,19 +56,19 @@ with open(base_file_name, 'r') as template_file:
     data_indices.append(len(template_lines))
 
 # Remove line breaks in template_lines
-template_lines = [line.replace('\r\n', '') for line in template_lines]
+template_lines = [line.replace('\n', '') for line in template_lines]
 
 now = datetime.datetime.now()
-file_lines = ['** SS2506 Kinetics Data by Erik Olsson ' + now.strftime('%d/%m/%Y'),
-              now.strftime('%b').upper() + str(now.year) + '       ! model implementation date : use UPPERCASE',
-              material_name + '         ! matnam must be UPPERCASE',
-              '1           ! itprdb=1, require tempering data; otherwise no.',
-              '1           ! iheat=1, require heating data; otherwise no.',
-              '** stress effect on martensitic transformation',
-              ' 6.500000E-02   !stress effect on martensite transformation',
-              '** Total number of kinetic data sets with different chemistry',
-              str(carbon_levels.shape[0])]
-
+# file_lines = ['** SS2506 Kinetics Data by Erik Olsson ' + now.strftime('%d/%m/%Y'),
+#               'DEC2015       ! model implementation date : use UPPERCASE',
+#              material_name + '         ! matnam must be UPPERCASE',
+#              '1           ! itprdb=1, require tempering data; otherwise no.',
+#              '1           ! iheat=1, require heating data; otherwise no.',
+#              '** stress effect on martensitic transformation',
+#              ' 6.500000E-02   !stress effect on martensite transformation',
+#              '** Total number of kinetic data sets with different chemistry',
+#              str(carbon_levels.shape[0])]
+file_lines = template_lines[0:9]
 for i, carbon in enumerate(carbon_levels):
     file_lines += template_lines[data_indices[i]:data_indices[i]+3]
     file_lines.append(str(martensite_parameters[i, 0]) + '              !Ms')
