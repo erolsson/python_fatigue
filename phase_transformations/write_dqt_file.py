@@ -18,6 +18,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 base_file_name = 'U92506.DQT'
 material_name = 'U92506EO'
+umat_file_name = 'UMAT_files/U92506EO/' + material_name
 directory = 'SS2506_data'
 carbon_levels = np.arange(0.002, 0.01, 0.003)
 
@@ -77,7 +78,7 @@ for i, carbon in enumerate(carbon_levels):
     file_lines.append(str(martensite_parameters[i, 4]) + '              !epsilon_m')
     file_lines += template_lines[data_indices[i]+9:data_indices[i+1]]
 
-with open(material_name + '.DQT', 'w+') as new_material_file:
+with open(umat_file_name + '.DQT', 'w+') as new_material_file:
     for line in file_lines:
         new_material_file.write(line + '\n')
 plt.show()
