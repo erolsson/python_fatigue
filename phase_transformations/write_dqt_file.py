@@ -70,15 +70,15 @@ file_lines = ['** SS2506 Kinetics Data by Erik Olsson ' + now.strftime('%d/%m/%Y
               ' ' + str(carbon_levels.shape[0])]
 
 for i, carbon in enumerate(carbon_levels):
-    file_lines += template_lines[data_indices[i]:data_indices[i]+3]
-    file_lines.append(str(martensite_parameters[i, 0]) + '              !Ms')
-    file_lines.append(str(martensite_parameters[i, 1]) + '              !mobility')
-    file_lines.append(str(martensite_parameters[i, 2]) + '              !alpha')
-    file_lines.append(str(martensite_parameters[i, 3]) + '              !beta')
-    file_lines.append(str(martensite_parameters[i, 4]) + '              !epsilon_m')
+    file_lines += template_lines[data_indices[i]:data_indices[i]+4]
+    file_lines.append('{:.8E}'.format(martensite_parameters[i, 0]) + '              !Ms')
+    file_lines.append('{:.8E}'.format(martensite_parameters[i, 1]) + '              !mobility')
+    file_lines.append('{:.8E}'.format(martensite_parameters[i, 2]) + '              !alpha')
+    file_lines.append('{:.8E}'.format(martensite_parameters[i, 3]) + '              !beta')
+    file_lines.append(' ' + '{:.6E}'.format(martensite_parameters[i, 4]) + '               !epsilon_m')
     file_lines += template_lines[data_indices[i]+9:data_indices[i+1]]
 
 with open(umat_file_name + '.DQT', 'w+') as new_material_file:
     for line in file_lines:
         new_material_file.write(line + '\r\n')
-plt.show()
+# plt.show()

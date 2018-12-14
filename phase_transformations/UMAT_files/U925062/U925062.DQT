@@ -1,4 +1,4 @@
-** SS2506 Kinetics Data by Erik Olsson 13/12/2018
+** SS2506 Kinetics Data by Erik Olsson 14/12/2018
 DEC2015        ! model implementation date : use UPPERCASE
 U925062        ! matnam must be UPPERCASE
   1            ! itprdb=1, require tempering data; otherwise no.
@@ -10,11 +10,12 @@ U925062        ! matnam must be UPPERCASE
 # Chemical composition of data set NO. 1  (8620)
 #  G.S.     Carb.    Mn.      Si.      Ni.      Cr.      Mo.      ...
    0.70E+1  0.20E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
-369.40999999999997              !Ms
-0.04014017645405384              !mobility
-0.0126473302309058              !alpha
-0.01000902243537927              !beta
-0.2              !epsilon_m
+** Austenite-->Martensite
+3.69410000E+02              !Ms
+4.01401765E-02              !mobility
+1.26473302E-02              !alpha
+1.00090224E-02              !beta
+ 2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                      !1 Lower T Bound  T1
  740.0                      !2 Upper T Bound  T2
@@ -122,11 +123,12 @@ U925062        ! matnam must be UPPERCASE
 # Chemical composition of data set NO. 2  (8650)
 #  G.S.     Carb.    Mn.      Si.      Ni.      Cr.      Mo.      ...
    0.70E+1  0.50E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
-274.17499999999995              !Ms
-0.02613284045149633              !mobility
-0.01179970953509736              !alpha
-0.01007656694379766              !beta
-0.2              !epsilon_m
+** Austenite-->Martensite
+2.74175000E+02              !Ms
+2.61328405E-02              !mobility
+1.17997095E-02              !alpha
+1.00765669E-02              !beta
+ 2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                     !1 Lower T Bound  T1
  740.0                     !2 Upper T Bound  T2
@@ -234,11 +236,12 @@ U925062        ! matnam must be UPPERCASE
 # Chemical composition of data set NO. 3  (8680)
 #  G.S.     Carb.    Mn.      Si.      Ni.      Cr.      Mo.      ...
    0.70E+1  0.80E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
-178.93999999999994              !Ms
-0.01709996105738507              !mobility
-0.01412260793404732              !alpha
-0.01260932929462011              !beta
-0.2              !epsilon_m
+** Austenite-->Martensite
+1.78940000E+02              !Ms
+1.70999611E-02              !mobility
+1.41226079E-02              !alpha
+1.26093293E-02              !beta
+ 2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                      !1 Lower T Bound  T1
  740.0                      !2 Upper T Bound  T2
