@@ -79,7 +79,7 @@ for cd, color in zip([0.8, 1.1], ['r', 'g']):
             for level in (f1, f2):
                 stress_pickle_name = stress_pickle_directory + 'stresses_' + str(int(torque)) + '_Nm_' + name + '.pkl'
                 with open(stress_pickle_name) as stress_pickle:
-                    stresses.append(pickle.load(stress_pickle)[:,1])
+                    stresses.append(pickle.load(stress_pickle)[:, 1])
 
             stress_history = stresses[0] + (stresses[1]-stresses[0])/(f2-f1)*(torque - f1)
             stress_history += residual_stress
@@ -90,7 +90,7 @@ for cd, color in zip([0.8, 1.1], ['r', 'g']):
             winderlich_stress = stress_amplitude + kw*stress_mean
             print kw
             findley_stress = 0.5*(kf*(stress_amplitude+stress_mean) +
-                                 np.sqrt(stress_amplitude**2 + kf**2*(stress_amplitude+stress_mean)**2))
+                                  np.sqrt(stress_amplitude**2 + kf**2*(stress_amplitude+stress_mean)**2))
 
             plt.figure(0)
             plt.plot(stress_mean, winderlich_stress, color + 'o', ms=12)
