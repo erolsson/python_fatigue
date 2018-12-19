@@ -30,7 +30,7 @@ if __name__ == '__main__':
                    Simulation(carbon=0.0052, color='m'),
                    Simulation(carbon=0.0065, color='r'),
                    Simulation(carbon=0.008, color='y')]
-    t = np.linspace(0, 860, 1000)
+    t = np.linspace(120, 860, 1000)
     for simulation in simulations:
         c = simulation.carbon
         strain = dilatormeter_experiment(t, c)

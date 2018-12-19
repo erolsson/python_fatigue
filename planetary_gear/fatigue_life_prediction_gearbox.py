@@ -73,7 +73,7 @@ if __name__ == '__main__':
     torques = np.arange(900., 1600., 100.)
     case_depths = np.array([1.1])
 
-    for sectors in [2, 200]:
+    for sectors in [2, 2]:
         job_list = []
         for torque in torques:
             job_list.append([calculate_life, [torque, 1.1, sectors], {}])

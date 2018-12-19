@@ -76,12 +76,13 @@ def write_dilatometer_data_strain_file(carbon, cooling_rate=50., numpoints=500, 
                   '1 ' + str(numpoints),
                   'Temperature Strain  DATA (Sample-1-1 000C; ' + str(int(cooling_rate)) + 'C/s)']
 
-    temperature = np.linspace(start_temp, end_temp, numpoints, endpoint=True)
+    temperature = np.linspace(start_temp, end_temp, numpoints, endpoint=False)
     t_end = (start_temp - end_temp)/cooling_rate
-    time = np.linspace(0, t_end, numpoints, endpoint=True)
+    time = np.linspace(0, t_end, numpoints, endpoint=False)
 
     strain = dilatormeter_experiment(temperature, carbon)
     strain = strain - strain[0]
+
     for (t, temp, e) in zip(time, temperature, strain):
         file_lines.append(str(t) + '\t' + str(temp) + '\t' + str(e))
 
@@ -104,7 +105,7 @@ if __name__ == '__main__':
         os.makedirs('SS2506_data')
     os.chdir('SS2506_data')
 
-    carbon_contents = np.arange(0.002, 0.01, 0.001)
+    carbon_contents = np.arange(0.008, 0.009, 0.001)
     write_ms_temperature_file(carbon_contents)
 
     for carbon_content in carbon_contents:
@@ -113,5 +114,5 @@ if __name__ == '__main__':
             os.makedirs(dir_name)
         os.chdir(dir_name)
         write_transformation_strain_file(carbon=carbon_content)
-        write_dilatometer_data_strain_file(carbon=carbon_content)
+        write_dilatometer_data_strain_file(carbon=carbon_content, cooling_rate=50, end_temp=120)
         os.chdir('..')
