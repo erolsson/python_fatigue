@@ -28,7 +28,7 @@
 ** 
 ** DEFINE MATERIAL PROPERTIES
 **
-*Material, name=U92506
+*Material, name=U925062
 *Density
  7.83e-06,
 *Depvar
