@@ -149,7 +149,7 @@ def write_input_files(sim_data, simulation_directory):
 if __name__ == '__main__':
     mesh = '_1x'
     sim_directory = 'input_files/dante_quarter' + mesh + '/'
-    tempering = (180, 60)
+    tempering = (180, 120)
 
     monitor_node = {'_1x': 60674, '_2x': 143035, '_3x': 276030}
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
