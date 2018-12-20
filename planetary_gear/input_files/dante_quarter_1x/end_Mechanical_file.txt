@@ -158,36 +158,4 @@ Tempering of the part, kinematic mode: 4
 *End Step
 **
 **
-*Step, name=Tempering_cooldown, INC=10000, AMP=STEP, inc=1000
-Cooldown after tempering, kinematic mode: -3
-*Static
-  0.01,  3600., 1e-05,  10000
-*FIELD, OP=NEW, VAR=2
-    All_Nodes,  -3
-*TEMPERATURE, FILE=/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/Toolbox_Thermal_0_5_v6.odb, BSTEP=10, ESTEP=10
-** Add convergence control parameters
-*CONTROLS, PARAMETERS=LINE SEARCH
- 6,
-*CONTROLS, PARAMETERS=TIME INCREMENTATION
- 20, 30
-*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD
- 0.05,0.05
-**
-** Add output variables
-*RESTART, WRITE, FREQ=1000
-*MONITOR, NODE=MONITOR_NODE, DOF=1, FREQ=1
-**
-*OUTPUT, FIELD, FREQ=10
-*ELEMENT OUTPUT, directions=YES
-  S
-**
-*OUTPUT, FIELD, FREQ=10
-*ELEMENT OUTPUT
-  SDV1,SDV2,SDV5,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99
-*OUTPUT, FIELD, FREQ=10
-*NODE OUTPUT
-  NT,U
-**
-**
-*End Step
 **EOF
