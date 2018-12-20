@@ -20,7 +20,7 @@
 ** ----------------------------------------------------------------
 **
 **   Define material properties for UMAT
-*Solid Section, elset=ALL_ELEMENTS, material=U92506
+*Solid Section, elset=ALL_ELEMENTS, material=U925062
 1.,
 *Hourglass Stiffness
 225.0, 0.0, 0.0
