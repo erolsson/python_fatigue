@@ -23,6 +23,7 @@ for i, carbon_level in enumerate(carbon_levels):
 
 plt.plot(carbon_levels, thermal_expansion, 's', ms=12)
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
+plt.plot(0.008, 1.17e-5, 's', ms=12)
 plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
 
 

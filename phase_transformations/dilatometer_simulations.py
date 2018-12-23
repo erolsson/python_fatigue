@@ -49,12 +49,20 @@ if __name__ == '__main__':
     simulations = [Simulation(carbon=0.002, color='k'),
                    Simulation(carbon=0.0036, color='b'),
                    Simulation(carbon=0.0052, color='m'),
-                   Simulation(carbon=0.0065, color='r')]
+                   Simulation(carbon=0.0065, color='r'),
+                   Simulation(carbon=0.008, color='k')]
     for simulation in simulations:
         c = simulation.carbon
-        t = np.linspace(300, 1200, 1000) - 273.15
+        t = np.linspace(300, 860 + 273.15, 1000) - 273.15
         f_martensite = martensite_fraction(c, t)
         f_austenite = 1 - f_martensite
         strain = volume_expansion(t, c, f_martensite, f_austenite)
         plt.plot(t+273.15, strain, simulation.color, lw=2)
+
+    jmat_data = np.genfromtxt('SS2506_data/jmat_pro_0_8_carbon.csv', delimiter=',', skip_header=1)
+    temperature = jmat_data[:, 0]
+    strain = jmat_data[:, 11]/100 + strain[-1]
+
+    plt.plot(temperature+273.15, strain)
+
     plt.show()

@@ -52,7 +52,7 @@ class SS2506MaterialTemplate:
         a2 = - 2.1344e-3
         b1 = a1 + a2 * c0
         b2 = -a2 / (a1 + a2 * c0)
-        t, c = np.meshgrid(temperature, carbon)
+        _, c = np.meshgrid(temperature, carbon)
         a = a1 + a2*c
 
         a[c > c0] = b1*np.exp(-b2*(c[c > c0] - c0))
