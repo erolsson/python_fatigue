@@ -60,9 +60,9 @@ if __name__ == '__main__':
         plt.plot(t+273.15, strain, simulation.color, lw=2)
 
     jmat_data = np.genfromtxt('SS2506_data/jmat_pro_0_8_carbon.csv', delimiter=',', skip_header=1)
-    temperature = jmat_data[:, 0]
+    t = jmat_data[:, 0]
     strain = jmat_data[:, 11]/100 + strain[-1]
 
-    plt.plot(temperature+273.15, strain)
+    plt.plot(t+273.15, strain)
 
     plt.show()

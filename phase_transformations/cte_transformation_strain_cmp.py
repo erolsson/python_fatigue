@@ -47,7 +47,7 @@ for i, phase in enumerate(phases):
         plt.plot(temperature, cte, lw=2)
 
         p = parameters[phase]
-        carbon = carbon
+        carbon = carbon*100
         cte_model = p[0]+p[1]*carbon + p[2]*carbon**2 + p[3]*temperature + p[4]*carbon*temperature + \
             p[5]*temperature**2 + p[6]*carbon*temperature**2 + p[7]*temperature**3
 
