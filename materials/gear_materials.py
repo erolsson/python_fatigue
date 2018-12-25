@@ -41,7 +41,7 @@ class SS2506MaterialTemplate:
     def _trans_strain_martensite(self, temperature, carbon):
         temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
-        e = t*(self._thermal_exp_martensite(temperature, carbon)) - 6.12e-3 + 1.05*c
+        e = t*(self._thermal_exp_martensite(temperature-273.15, carbon)) - 6.12e-3 + 1.05*c
         return np.squeeze(e)
 
     @staticmethod
@@ -49,7 +49,7 @@ class SS2506MaterialTemplate:
         temperature = temperature + 273.15
         c0 = 0.0065
         a1 = 1.6369e-5
-        a2 = - 2.1344e-3
+        a2 = -2.1344e-3
         b1 = a1 + a2 * c0
         b2 = -a2 / (a1 + a2 * c0)
         _, c = np.meshgrid(temperature, carbon)
@@ -88,7 +88,7 @@ class SS2506MaterialTemplate:
 
     def _trans_strain_bainite(self, temperature, carbon):
         _, c = np.meshgrid(temperature, carbon)
-        e = self._thermal_exp_fp(temperature, carbon) - 1.3315e-3 + 0.10908*c
+        e = self._trans_strain_fp(temperature, carbon) - 1.3315e-3 + 0.10908*c
         return np.squeeze(e)
 
     def _thermal_exp_bainite(self, temperature, carbon):
@@ -132,3 +132,5 @@ if __name__ == '__main__':
     carb = np.linspace(0.002, 0.01, 10)
     temp = np.linspace(0, 1000, 100)
     SS2506.martensite_fraction(temp, carb)
+
+    print SS2506.transformation_strain.Martensite(0, 0)

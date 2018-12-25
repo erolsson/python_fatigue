@@ -38,6 +38,15 @@ f[carbon <= c0] = a1 + a2*carbon[carbon <= c0]
 f[carbon > c0] = b1*np.exp(-b2*(carbon[carbon > c0] - c0))
 plt.plot(carbon, f)
 
+f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*200 + 2*1.4e-9*carbon*100*200 + 3*1.091e-12*200**2
+plt.plot(carbon, f)
+
+f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e-12*20**2
+plt.plot(carbon, f)
+
+f = 1.3e-5 - 4.3e-6*carbon*100
+plt.plot(carbon, f)
+
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
 data = np.zeros((5, 2))

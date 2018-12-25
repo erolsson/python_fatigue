@@ -15,43 +15,66 @@ plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
-phases = ['Austenite', 'Martensite']
-data_lines = [100, 115]
-umat_filename = 'U92506.MEC'
-parameters = {}
-with open(umat_filename, 'r') as umat_file:
-    lines = umat_file.readlines()
-    for i, phase in enumerate(phases):
-        parameters[phase] = np.zeros(8)
-        parameter_line = lines[data_lines[i]]
-        parameter_line = re.sub('line.+', '', parameter_line)
-        parameter_line = parameter_line.replace(' ', '')
-        parameter_line = parameter_line.split(',')
-        n = len(parameter_line)
-        if n == 3:
-            parameters[phase][0:2] = parameter_line[0:2]
-            parameters[phase][3] = parameter_line[2]
-        else:
-            parameters[phase] = np.array([float(p) for p in parameter_line])
 
-print parameters
+umat_filename = 'UMAT_files/U925062/U925062.MEC'
+
+
+def get_parameters_from_mech_file(mec_file):
+    parameters = {}
+    phases = ['Austenite', 'Martensite', 'Bainite']
+    data_lines = [100, 115, ]
+    with open(mec_file, 'r') as umat_file:
+        lines = umat_file.readlines()
+        for i, phase in enumerate(phases):
+            parameters[phase] = np.zeros(8)
+            parameter_line = lines[data_lines[i]]
+            parameter_line = re.sub('line.+', '', parameter_line)
+            parameter_line = parameter_line.replace(' ', '')
+            parameter_line = parameter_line.split(',')
+            n = len(parameter_line)
+            if n == 3:
+                parameters[phase][0:2] = parameter_line[0:2]
+                parameters[phase][3] = parameter_line[2]
+            else:
+                parameters[phase] = np.array([float(par) for par in parameter_line])
+    return parameters
+
+
+def cte_model(t, c, parameter_dict, phase):
+    p = parameter_dict[phase]
+    return p[0]+p[1]*c + p[2]*c**2 + p[3]*t + p[4]*c*t + p[5]*t**2 + p[6]*c*t**2 + p[7]*t**3
+
 
 temperature = np.linspace(20, 500, 1000)
 carbon_levels = np.arange(0.2, 1.0, 0.3)/100
 
-for i, phase in enumerate(phases):
-    plt.figure(i)
+parameters = get_parameters_from_mech_file(umat_filename)
+
+for fig, phase_name in enumerate(['Austenite', 'Martensite']):
+    plt.figure(fig)
     for carbon in carbon_levels:
-        cte = SS2506.transformation_strain.__getattribute__(phase)(temperature, carbon)
+        cte = SS2506.transformation_strain.__getattribute__(phase_name)(temperature, carbon)
 
         plt.plot(temperature, cte, lw=2)
 
-        p = parameters[phase]
-        carbon = carbon*100
-        cte_model = p[0]+p[1]*carbon + p[2]*carbon**2 + p[3]*temperature + p[4]*carbon*temperature + \
-            p[5]*temperature**2 + p[6]*carbon*temperature**2 + p[7]*temperature**3
+        cte = cte_model(temperature, carbon*100, parameters, phase_name)
 
-        plt.plot(temperature, cte_model, '--', lw=2)
+        plt.plot(temperature, cte, '--', lw=2)
 
 
+plt.figure(100)
+color_codes = 'rbg'
+
+for carbon, color in zip(carbon_levels, color_codes):
+    e_trans = cte_model(temperature, carbon*100, parameters, 'Martensite') -\
+              cte_model(temperature, carbon*100, parameters, 'Austenite')
+
+    plt.plot(temperature, e_trans, color, lw=2)
+
+parameters = get_parameters_from_mech_file('UMAT_files/U925062/U925062.MEC.BAK')
+for carbon, color in zip(carbon_levels, color_codes):
+    e_trans = cte_model(temperature, carbon*100, parameters, 'Martensite') - \
+              cte_model(temperature, carbon*100, parameters, 'Austenite')
+
+    plt.plot(temperature, e_trans, '--'+color, lw=2)
 plt.show()
