@@ -165,18 +165,18 @@ if __name__ == '__main__':
     quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/mesh' + mesh +
                                                            '/mesh_planet.inc')
 
-    write_sets_file(filename=sim_directory + '/planetGear_sets.inc',
+    write_sets_file(filename=sim_directory + '/VBC_quarter_sets.inc',
                     full_model_sets_file='input_files/gear_models/planet_gear/mesh' + mesh + '/planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
                     monitor_node=monitor_node[mesh])
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
-                            filename=sim_directory + '/Toolbox_Carbon_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Carbon_VBC_quarter_geo.inc')
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Thermal',
-                            filename=sim_directory + '/Toolbox_Thermal_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Thermal_VBC_quarter_geo.inc')
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Mechanical',
-                            filename=sim_directory + '/Toolbox_Mechanical_quarter_geo.inc')
+                            filename=sim_directory + '/Toolbox_Mechanical_VBC_quarter_geo.inc')
 
     for sim in simulations:
         if not os.path.isdir(sim_directory + 'VBC_fatigue_' + str(sim.CD).replace('.', '_')):
