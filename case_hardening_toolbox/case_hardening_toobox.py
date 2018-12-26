@@ -1,11 +1,26 @@
 from collections import namedtuple
+import os
 
-from planetary_gear.gear_input_file_functions import create_quarter_model
-from planetary_gear.gear_input_file_functions import write_sets_file
 
-CarburizationData = namedtuple('CarburizationStep', ['time', 'temperature', 'carbon'])
-TemperatureData = namedtuple('TemperatureData', ['time', 'temperature', 'interaction_property_name'])
-QuenchingData = namedtuple('QuenchingData', ['time', 'temperature', 'oil_name'])
+class CarburizationData:
+    def __init__(self, time, temperature, carbon):
+        self.time = time
+        self.temperature = temperature
+        self.carbon = carbon
+
+
+class TemperatureData:
+    def __init__(self, time, temperature, interaction_property_name):
+        self.time = time
+        self.temperature = temperature
+        self.interaction_property_name = interaction_property_name
+
+
+class QuenchingData:
+    def __init__(self, time, temperature, oil_name):
+        self.time = time
+        self.temperature = temperature
+        self.oil_name = oil_name
 
 
 class CaseHardeningToolbox:
@@ -26,7 +41,7 @@ class CaseHardeningToolbox:
         self.heating_data = CarburizationData(time=None, temperature=self.initial_temperature,
                                               carbon=self.initial_carbon)
         self.carburization_steps = []
-        self.furnance_interaction_property = 'FURNACE'
+        self.furnace_interaction_property = 'FURNACE'
         self.quenching_data = QuenchingData(time=None, temperature=None, oil_name='QUENCHWAY125B_Used_0mps')
         self.cooldown_data = TemperatureData(time=None, temperature=80, interaction_property_name='AIR_COOL')
         self.tempering_data = TemperatureData(time=None, temperature=None, interaction_property_name='HOT_AIR')
@@ -55,23 +70,24 @@ class CaseHardeningToolbox:
                 '*INCLUDE, INPUT = ' + self.include_file_directory + 'Toolbox_Carbon_' +
                 self.include_file_name + '_geo.inc',
                 '** Load geometry set definitions',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_sets.inc'
+                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_sets.inc',
                 '**',
                 '** ----------------------------------------------------------------',
                 '**',
                 '**   Define material properties',
                 '**',
                 '*Solid Section, elset=All_Elements, material=' + self.material,
-                '\t1.0'
-                '*Hourglass Stiffness'
-                '\t225.0, 0.0, 0.0'
+                '\t1.0',
+                '*Hourglass Stiffness',
+                '\t225.0, 0.0, 0.0',
                 '**',
                 '** DEFINE MATERIAL PROPERTIES',
                 '**',
                 '*Material, name=' + self.material,
-                '\t*Density'
-                '\t\t7.83e-06,'
-                '\t*INCLUDE, INPUT = ' + self.diffusion_file,
+                '\t*Density',
+                '\t\t7.83e-06,',
+                '\t*Diffusivity',
+                '\t\t*INCLUDE, INPUT = ' + self.include_file_directory + self.diffusion_file,
                 '\t*Solubility',
                 '\t\t1.0',
                 '**',
@@ -106,9 +122,9 @@ class CaseHardeningToolbox:
                 '**   Define material properties',
                 '**',
                 '*Solid Section, elset=All_Elements, material=' + self.material,
-                '\t1.0'
-                '*Hourglass Stiffness'
-                '\t225.0, 0.0, 0.0'
+                '\t1.0',
+                '*Hourglass Stiffness',
+                '\t225.0, 0.0, 0.0',
                 '**',
                 '** DEFINE MATERIAL PROPERTIES',
                 '**',
@@ -127,10 +143,10 @@ class CaseHardeningToolbox:
                 '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                 '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                 '\t*User Material, constants=8, type=THERMAL',
-                '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00'
+                '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                 '**',
                 '** ----------------------------------------------------------------',
-                '*INCLUDE, INPUT = ' + self.interaction_property_file,
+                '*INCLUDE, INPUT = ' + self.include_file_directory + self.interaction_property_file,
                 '** ----------------------------------------------------------------',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
@@ -169,9 +185,9 @@ class CaseHardeningToolbox:
                 '**   Define material properties',
                 '**',
                 '*Solid Section, elset=All_Elements, material=' + self.material,
-                '\t1.0'
-                '*Hourglass Stiffness'
-                '\t225.0, 0.0, 0.0'
+                '\t1.0',
+                '*Hourglass Stiffness',
+                '\t225.0, 0.0, 0.0',
                 '**',
                 '** DEFINE MATERIAL PROPERTIES',
                 '**',
@@ -191,7 +207,7 @@ class CaseHardeningToolbox:
                 '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                 '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                 '\t*User Material, constants=8, type=MECHANICAL',
-                '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00'
+                '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                 '**',
                 '** ----------------------------------------------------------------',
                 '*INCLUDE, INPUT = ' + self.interaction_property_file,
@@ -215,7 +231,7 @@ class CaseHardeningToolbox:
         self.carbon_file_lines.append('\t' + step_name + ' - Total time: ' + str(t1) + ' - ' +
                                       str(t2) + 's, Carbon: ' + str(carbon) + '%')
         self.carbon_file_lines.append('\t*MASS DIFFUSION, DCMAX=0.001')
-        self.carbon_file_lines.append('\\tt0.2,  ' + str(t2 - t1) + ', 1e-05,  10000')
+        self.carbon_file_lines.append('\t\t0.2,  ' + str(t2 - t1) + ', 1e-05,  10000')
         self.carbon_file_lines.append('\t*TEMPERATURE, AMPLITUDE=TEMP_AMPLITUDE')
         self.carbon_file_lines.append('\t\tAll_Nodes')
         self.carbon_file_lines.append('\t*BOUNDARY')
@@ -229,6 +245,7 @@ class CaseHardeningToolbox:
         self.carbon_file_lines.append('\t\t*Element Output, directions=YES,  POSITION=NODES')
         self.carbon_file_lines.append('\t\t\tCONC')
         self.carbon_file_lines.append('*END STEP')
+        self.carbon_file_lines.append('**')
 
         self.thermal_file_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
         self.thermal_file_lines.append('\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD')
@@ -237,32 +254,28 @@ class CaseHardeningToolbox:
         self.thermal_file_lines.append('\t\t6,')
         self.thermal_file_lines.append('\t*CONTROLS, PARAMETERS = TIME INCREMENTATION')
         self.thermal_file_lines.append('\t\t20, 30')
-        self.thermal_file_lines.append('*\tCONTROLS, FIELD = TEMPERATURE, PARAMETERS = FIELD')
+        self.thermal_file_lines.append('\t*CONTROLS, FIELD = TEMPERATURE, PARAMETERS = FIELD')
         self.thermal_file_lines.append('\t\t0.05, 0.05')
         self.thermal_file_lines.append('\t*SFILM, OP = NEW, AMPLITUDE=TEMP_AMPLITUDE')
-        self.thermal_file_lines.append('\t\tEXPOSED_SURFACE, F, 1.000000, ' + self.furnance_interaction_property)
+        self.thermal_file_lines.append('\t\tEXPOSED_SURFACE, F, 1.000000, ' + self.furnace_interaction_property)
         self.thermal_file_lines.append('\t*MONITOR, NODE = MONITOR_NODE, DOF=11, FREQ=1')
         self.thermal_file_lines.append('\t*RESTART, WRITE, FREQ=1000')
-        self.thermal_file_lines.append('\t**')
         self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=200')
         self.thermal_file_lines.append('\t\t*ELEMENT OUTPUT')
         self.thermal_file_lines.append('\t\t\tSDV1, SDV21, SDV34, SDV47, SDV60, SDV73, SDV86, HFL')
         self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=10')
         self.thermal_file_lines.append('\t\t*NODE OUTPUT')
         self.thermal_file_lines.append('\t\t\tNT')
-        self.thermal_file_lines.append('\t**')
-        self.thermal_file_lines.append('*\tEL FILE, FREQUENCY=0')
-        self.thermal_file_lines.append('*\tNODE FILE, FREQUENCY=1')
+        self.thermal_file_lines.append('\t*EL FILE, FREQUENCY=0')
+        self.thermal_file_lines.append('\t*NODE FILE, FREQUENCY=1')
         self.thermal_file_lines.append('\t\tNT')
-        self.thermal_file_lines.append('*\tEL PRINT, FREQ=0')
-        self.thermal_file_lines.append('*\tNODE PRINT, FREQ=0')
-        self.thermal_file_lines.append('\t**')
-        self.thermal_file_lines.append('\t**')
+        self.thermal_file_lines.append('\t*EL PRINT, FREQ=0')
+        self.thermal_file_lines.append('\t*NODE PRINT, FREQ=0')
         self.thermal_file_lines.append('*END STEP')
+        self.thermal_file_lines.append('**')
 
         self.mechanical_file_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
         self.mechanical_file_lines.append('\tMechanical simulation')
-        self.mechanical_file_lines.append('\t**')
         self.mechanical_file_lines.append('\t*STATIC')
         self.mechanical_file_lines.append('\t\t0.01,  ' + str(t2 - t1) + ', 1e-05,  10000')
         self.mechanical_file_lines.append('\t*TEMPERATURE, FILE=Toolbox_Thermal_' + self.name + '.odb, '
@@ -275,26 +288,61 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t\t20, 30')
         self.mechanical_file_lines.append('\t*CONTROLS, FIELD = DISPLACEMENT, PARAMETERS = FIELD')
         self.mechanical_file_lines.append('\t\t0.05, 0.05')
-        self.mechanical_file_lines.append('\t**')
         self.mechanical_file_lines.append('\t** Add output variables')
         self.mechanical_file_lines.append('\t*RESTART, WRITE, FREQ = 1000')
         self.mechanical_file_lines.append('\t*MONITOR, NODE = MONITOR_NODE, DOF = 1, FREQ = 1')
-        self.mechanical_file_lines.append('\t**')
         self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
         self.mechanical_file_lines.append('\t\t*ELEMENT OUTPUT, directions = YES')
         self.mechanical_file_lines.append('\t\t\tS')
-        self.mechanical_file_lines.append('\t**')
         self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
         self.mechanical_file_lines.append('\t\t*ELEMENT OUTPUT')
         self.mechanical_file_lines.append('\t\t\tSDV1, SDV2, SDV5, SDV21, SDV34, SDV47, SDV60, SDV73, SDV86, SDV99')
         self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
         self.mechanical_file_lines.append('\t\t*NODE OUTPUT')
-        self.mechanical_file_lines.append('\t\tNT, U')
+        self.mechanical_file_lines.append('\t\t\tNT, U')
         self.mechanical_file_lines.append('*END  STEP')
+        self.mechanical_file_lines.append('**')
 
         self.thermal_step_counter += 1
 
     def write_geometry_files(self):
+        pass
+
+    def add_carburization_steps(self, times, temperatures, carbon_levels):
+        for t, temp, carbon in zip(times, temperatures, carbon_levels):
+            self.carburization_steps.append(CarburizationData(time=t*60, temperature=temp, carbon=carbon))
+
+    def _add_add_carbon_step(self):
+        """
+        *STEP,NAME=Add carbon , INC=10000
+          Import carbon content from mass diffusion simulation
+        **
+        *HEAT TRANSFER, DELTMX=10.0, END=PERIOD
+          0.01,  1.0, 1e-05,  1
+        *FIELD, OP=NEW, VAR=1,  INPUT=/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/Toolbox_Carbon_0_5_v6.nod
+        *SFILM, OP=NEW
+          EXPOSED_SURFACE,F,840.000000,HOT_AIR
+        *MONITOR, NODE=MONITOR_NODE, DOF=11, FREQ=1
+        *RESTART, WRITE, FREQ=1000
+        **
+        *OUTPUT, FIELD, FREQ=1
+        *ELEMENT OUTPUT
+          SDV1,SDV2,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99,HFL
+        *OUTPUT, FIELD, FREQ=1
+        *NODE OUTPUT
+          NT
+        **
+        *EL FILE, FREQUENCY=0
+        *NODE FILE, FREQUENCY=1
+         NT
+        *EL PRINT, FREQ=0
+        *NODE PRINT, FREQ=0
+        **
+        **
+        *END STEP
+        **
+        :return:
+        """
         pass
 
     def write_files(self):
@@ -302,15 +350,40 @@ class CaseHardeningToolbox:
         self.thermal_file_lines = self._init_thermal_lines()
         self.mechanical_file_lines = self._init_mechanical_lines()
 
+        for line_set in [self.carbon_file_lines, self.thermal_file_lines]:
+            line_set.append('*AMPLITUDE, NAME=TEMP_AMPLITUDE, TIME=TOTAL TIME, VALUE=ABSOLUTE')
+            line_set.append('\t ' + str(0.) + ', \t ' + str(self.initial_temperature))
+            total_time = 0.
+            if self.heating_data.time is not None:
+                line_set.append('\t ' + str(60.) + ', \t ' + str(self.heating_data.temperature))
+                line_set.append('\t ' + str(self.heating_data.time*60) + ', \t ' +
+                                str(self.heating_data.temperature))
+                total_time = self.heating_data.time*60
+
+            for carb_step in self.carburization_steps:
+                line_set.append('\t ' + str(total_time + 60.) + ', \t ' + str(carb_step.temperature))
+                line_set.append('\t ' + str(total_time + carb_step.time) + ', \t ' + str(carb_step.temperature))
+                total_time += carb_step.time
+            line_set.append('**')
+
         # Add a heating step
         if self.heating_data.time is not None:
-            self._write_carburization_step('Heating', self.total_time, self.total_time + self.heating_data.time,
+            self._write_carburization_step('Heating', self.total_time, self.total_time + self.heating_data.time*60,
                                            self.heating_data.carbon)
+            self.total_time += self.heating_data.time*60
+
         # Add the carburization steps
         for i, carburization_step in enumerate(self.carburization_steps):
-            step_name = 'Carburization - ' + str(i)
+            step_name = 'Carburization - ' + str(i+1)
             self._write_carburization_step(step_name, self.total_time, self.total_time + carburization_step.time,
                                            carburization_step.carbon)
+            self.total_time += carburization_step.time
+
+        for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
+                               [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):
+            with open('Toolbox_' + name + '_' + self.name + '.inp', 'w+') as inp_file:
+                for line in lines:
+                    inp_file.write(line + '\n')
 
 
 if __name__ == '__main__':
@@ -330,6 +403,19 @@ if __name__ == '__main__':
                               tempering=tempering)]
 
     for simulation in simulations:
-        toolbox_writer = CaseHardeningToolbox(name=str(simulation.CD).replace('.', '_' + '_quarter'))
+        toolbox_writer = CaseHardeningToolbox(name=str(simulation.CD).replace('.', '_') + '_quarter',
+                                              include_file_name='VBC_quarter')
         toolbox_writer.include_file_directory = '../'
-        toolbox_writer.diffusion_file =
+        toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
+        toolbox_writer.interaction_property_file = 'interaction_properties.inc'
+        toolbox_writer.heating_data.carbon = 0.5
+        toolbox_writer.heating_data.time = 90.
+        toolbox_writer.heating_data.temperature = 930.
+        toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
+                                               carbon_levels=simulation.carbon)
+        directory_name = 'VBC_fatigue_' + str(simulation.CD).replace('.', '_')
+        if not os.path.isdir(directory_name):
+            os.makedirs(directory_name)
+        os.chdir(directory_name)
+        toolbox_writer.write_files()
+        os.chdir('../')
