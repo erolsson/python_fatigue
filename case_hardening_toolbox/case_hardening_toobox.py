@@ -42,9 +42,12 @@ class CaseHardeningToolbox:
                                               carbon=self.initial_carbon)
         self.carburization_steps = []
         self.furnace_interaction_property = 'FURNACE'
+        self.hot_air_interaction_property = 'HOT_AIR'
+        self.cool_air_interaction_property = 'AIR_COOL'
+        self.transfer_data = TemperatureData(time=60, temperature=650, interaction_property_name=None)
         self.quenching_data = QuenchingData(time=None, temperature=None, oil_name='QUENCHWAY125B_Used_0mps')
-        self.cooldown_data = TemperatureData(time=None, temperature=80, interaction_property_name='AIR_COOL')
-        self.tempering_data = TemperatureData(time=None, temperature=None, interaction_property_name='HOT_AIR')
+        self.cooldown_data = TemperatureData(time=None, temperature=80, interaction_property_name=None)
+        self.tempering_data = TemperatureData(time=None, temperature=None, interaction_property_name=None)
 
         self.carbon_file_lines = None
         self.thermal_file_lines = None
@@ -312,38 +315,98 @@ class CaseHardeningToolbox:
         for t, temp, carbon in zip(times, temperatures, carbon_levels):
             self.carburization_steps.append(CarburizationData(time=t*60, temperature=temp, carbon=carbon))
 
+    @staticmethod
+    def _thermal_step_data(step_name, step_description, step_time, surface_temperature, interaction_property,
+                           kinematic_mode, output_frequency=5):
+        return ['*STEP,NAME=' + step_name + ' , INC=10000',
+                '\t' + step_description,
+                '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
+                '\t\t0.01,  ' + str(step_time) + ', 1e-05,  1000.',
+                '\t*FIELD, OP=NEW, VAR = 2',
+                '\t\tAll_Nodes, ' + str(kinematic_mode),
+                '\t*SFILM, OP=NEW',
+                '\t\tEXPOSED_SURFACE,F, ' + str(surface_temperature) + ', ' + interaction_property,
+                '\t*MONITOR, NODE=MONITOR_NODE, DOF=11, FREQ=1',
+                '\t*RESTART, WRITE, FREQ=1000',
+                '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
+                '\t\t*ELEMENT OUTPUT',
+                '\t\t\tSDV1,SDV2,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99,HFL',
+                '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
+                '\t\t*NODE OUTPUT',
+                '\t\t\tNT',
+                '\t\t*EL FILE, FREQUENCY=0',
+                '\t\t*NODE FILE, FREQUENCY=1',
+                '\t\t\tNT',
+                '\t\t*EL PRINT, FREQ=0',
+                '\t\t*NODE PRINT, FREQ=0',
+                '*END STEP',
+                '**']
+
+    def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5):
+        return ['*STEP, NAME=' + step_name + ' Transfer, AMP=STEP, inc=10000',
+                '\t' + step_description,
+                '\t*STATIC',
+                '\t\t0.01,  ' + str(step_time) + ', 1e-05,  1000.',
+                '\t*FIELD, OP=NEW, VAR=2',
+                '\t\tAll_Nodes,  ' + str(kinematic_mode),
+                '\t*TEMPERATURE, FILE=Toolbox_Thermal_' + self.name + '.odb, BSTEP = ' +
+                str(self.thermal_step_counter) + ', ESTEP = ' + str(self.thermal_step_counter),
+                '\t*CONTROLS, PARAMETERS=LINE SEARCH',
+                '\t\t 6,',
+                '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
+                '\t\t20, 30',
+                '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
+                '\t\t0.05,0.05',
+                '\t*RESTART, WRITE, FREQ=1000',
+                '\t*MONITOR, NODE=MONITOR_NODE, DOF=1, FREQ=1',
+                '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
+                '\t\t*ELEMENT OUTPUT, directions=YES',
+                '\t\t\tS',
+                '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
+                '\t\t*ELEMENT OUTPUT',
+                '\t\t\tSDV1,SDV2,SDV5,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99',
+                '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
+                '\t\t*NODE OUTPUT',
+                '\t\t\tNT,U',
+                '*END STEP',
+                '**']
+
     def _add_add_carbon_step(self):
-        """
-        *STEP,NAME=Add carbon , INC=10000
-          Import carbon content from mass diffusion simulation
-        **
-        *HEAT TRANSFER, DELTMX=10.0, END=PERIOD
-          0.01,  1.0, 1e-05,  1
-        *FIELD, OP=NEW, VAR=1,  INPUT=/scratch/sssnks/VBC_Fatigue/VBC_v6/VBC_fatigue_0_5/Toolbox_Carbon_0_5_v6.nod
-        *SFILM, OP=NEW
-          EXPOSED_SURFACE,F,840.000000,HOT_AIR
-        *MONITOR, NODE=MONITOR_NODE, DOF=11, FREQ=1
-        *RESTART, WRITE, FREQ=1000
-        **
-        *OUTPUT, FIELD, FREQ=1
-        *ELEMENT OUTPUT
-          SDV1,SDV2,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99,HFL
-        *OUTPUT, FIELD, FREQ=1
-        *NODE OUTPUT
-          NT
-        **
-        *EL FILE, FREQUENCY=0
-        *NODE FILE, FREQUENCY=1
-         NT
-        *EL PRINT, FREQ=0
-        *NODE PRINT, FREQ=0
-        **
-        **
-        *END STEP
-        **
-        :return:
-        """
-        pass
+        step_lines = self._thermal_step_data(step_name='Add carbon',
+                                             step_description='Import carbon content from mass diffusion simulation',
+                                             step_time=1.0,
+                                             surface_temperature=self.carburization_steps[-1].temperature,
+                                             interaction_property=self.hot_air_interaction_property,
+                                             kinematic_mode=-2,
+                                             output_frequency=1)
+        step_lines.insert(4, '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
+        self.thermal_file_lines += step_lines
+        self.thermal_step_counter += 1
+
+    def _add_transfer_step(self):
+        step_name = 'Transfer'
+        step_description = 'Transfer from furnace to quench tank in air'
+        interaction_property = self.hot_air_interaction_property
+        if self.transfer_data.interaction_property_name is not None:
+            interaction_property = self.transfer_data.interaction_property_name
+
+        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
+                                                           step_description=step_description,
+                                                           step_time=self.transfer_data.time,
+                                                           surface_temperature=self.transfer_data.temperature,
+                                                           interaction_property=interaction_property,
+                                                           kinematic_mode=-2,
+                                                           output_frequency=1)
+
+        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
+                                                                 step_description=step_description,
+                                                                 step_time=self.transfer_data.time,
+                                                                 kinematic_mode=-2,
+                                                                 output_frequency=10)
+
+        self.thermal_step_counter += 1
+
+
 
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
@@ -379,11 +442,19 @@ class CaseHardeningToolbox:
                                            carburization_step.carbon)
             self.total_time += carburization_step.time
 
+        # Add the add carbon step to the thermal input file
+        self._add_add_carbon_step()
+
+        # Add step for transfer from oven to quench bath
+        if self.transfer_data.time is not None and self.transfer_data.time > 0.:
+            self._add_transfer_step()
+
         for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
                                [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):
             with open('Toolbox_' + name + '_' + self.name + '.inp', 'w+') as inp_file:
                 for line in lines:
                     inp_file.write(line + '\n')
+                inp_file.write('**EOF')
 
 
 if __name__ == '__main__':
