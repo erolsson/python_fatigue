@@ -21,8 +21,8 @@ umat_filename = 'UMAT_files/U925062/U925062.MEC'
 
 def get_parameters_from_mech_file(mec_file):
     parameters = {}
-    phases = ['Austenite', 'Martensite', 'Bainite']
-    data_lines = [100, 115, ]
+    phases = ['Austenite', 'Martensite']
+    data_lines = [100, 115]
     with open(mec_file, 'r') as umat_file:
         lines = umat_file.readlines()
         for i, phase in enumerate(phases):
@@ -45,8 +45,8 @@ def cte_model(t, c, parameter_dict, phase):
     return p[0]+p[1]*c + p[2]*c**2 + p[3]*t + p[4]*c*t + p[5]*t**2 + p[6]*c*t**2 + p[7]*t**3
 
 
-temperature = np.linspace(20, 500, 1000)
-carbon_levels = np.arange(0.2, 1.0, 0.3)/100
+temperature = np.linspace(0, 500, 1000)
+carbon_levels = np.arange(0.0, 1.0, 0.3)/100
 
 parameters = get_parameters_from_mech_file(umat_filename)
 

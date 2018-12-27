@@ -47,6 +47,9 @@ plt.plot(carbon, f)
 f = 1.3e-5 - 4.3e-6*carbon*100
 plt.plot(carbon, f)
 
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01))
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01))
+
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
 data = np.zeros((5, 2))
