@@ -57,6 +57,7 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
     base_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/heat_treatment/mesh_1x/fem_results/'
+    base_pickle_directory += 'tempering_2h_180C'
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results.odb'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_180C.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:

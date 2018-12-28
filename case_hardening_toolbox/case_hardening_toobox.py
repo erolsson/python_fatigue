@@ -44,9 +44,9 @@ class CaseHardeningToolbox:
         self.furnace_interaction_property = 'FURNACE'
         self.hot_air_interaction_property = 'HOT_AIR'
         self.cool_air_interaction_property = 'AIR_COOL'
-        self.transfer_data = TemperatureData(time=60, temperature=650, interaction_property_name=None)
+        self.transfer_data = TemperatureData(time=60., temperature=650., interaction_property_name=None)
         self.quenching_data = QuenchingData(time=None, temperature=None, oil_name='QUENCHWAY125B_Used_0mps')
-        self.cooldown_data = TemperatureData(time=None, temperature=80, interaction_property_name=None)
+        self.cooldown_data = TemperatureData(time=None, temperature=80., interaction_property_name=None)
         self.tempering_data = TemperatureData(time=None, temperature=None, interaction_property_name=None)
 
         self.carbon_file_lines = None
@@ -405,8 +405,6 @@ class CaseHardeningToolbox:
                                                                  output_frequency=10)
 
         self.thermal_step_counter += 1
-
-
 
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
