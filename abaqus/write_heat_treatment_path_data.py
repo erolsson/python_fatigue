@@ -58,8 +58,8 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
 if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
         main_path = '/scratch/users/erik/scania_gear_analysis'
-        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results.odb'
-        pickle_name = main_path + '/pickles/heat_treatment/dante_results_' + cd + '.pkl'
+        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C.odb'
+        pickle_name = main_path + '/pickles/heat_treatment/tempering_2h_180C/dante_results_' + cd + '.pkl'
         write_root_pickle(odb_name, step_name='dante_results_' + str(cd), result_pickle_name=pickle_name)
 
 
