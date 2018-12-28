@@ -57,7 +57,7 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
     base_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/heat_treatment/mesh_1x/fem_results/'
-    base_pickle_directory += 'tempering_2h_180C'
+    base_pickle_directory += 'tempering_2h_180C/'
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
