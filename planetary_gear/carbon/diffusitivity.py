@@ -9,9 +9,10 @@ def LeeChesterTyne(temp, carbon):
 
 
 def write_diffusion_file(filename):
-    file_lines = ['*Diffusivity']
+    file_lines = []
     carbon = np.arange(0.002, 0.012, 0.0005)
     temperature = np.arange(750, 1150, 10)
+
     for temp in temperature:
         for carb in carbon:
             file_lines.append('\t' + str(LeeChesterTyne(temp, carb)) + ', ' + str(carb) + ', ' + str(temp))

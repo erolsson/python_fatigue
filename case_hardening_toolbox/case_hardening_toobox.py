@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 
+from planetary_gear.carbon.diffusitivity import write_diffusion_file
 
 class CarburizationData:
     def __init__(self, time, temperature, carbon):
@@ -529,7 +530,7 @@ class CaseHardeningToolbox:
 
 if __name__ == '__main__':
     mesh = '1x'
-    simulation_directory = 'dante_quarter_1x'
+    simulation_directory = 'dante_quarter_1x/'
     current_directory = os.getcwd()
     tempering = (180, 120)
 
@@ -559,10 +560,11 @@ if __name__ == '__main__':
         toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                                carbon_levels=simulation.carbon)
         directory_name = simulation_directory + '/VBC_fatigue_' + str(simulation.CD).replace('.', '_')
-        print directory_name, os.path.isdir(directory_name)
-        print current_directory
+
         if not os.path.isdir(directory_name):
             os.makedirs(directory_name)
         os.chdir(directory_name)
         toolbox_writer.write_files()
         os.chdir(current_directory)
+
+    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc')
