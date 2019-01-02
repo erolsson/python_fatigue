@@ -406,6 +406,69 @@ class CaseHardeningToolbox:
 
         self.thermal_step_counter += 1
 
+    def _add_quenching_step(self):
+        step_name = 'Quenching'
+        step_description = 'Quenching in oil ' + self.quenching_data.oil_name
+        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
+                                                           step_description=step_description,
+                                                           step_time=self.quenching_data.time,
+                                                           surface_temperature=self.quenching_data.temperature,
+                                                           interaction_property=self.quenching_data.oil_name,
+                                                           kinematic_mode=-2,
+                                                           output_frequency=1)
+
+        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
+                                                                 step_description=step_description,
+                                                                 step_time=self.quenching_data.time,
+                                                                 kinematic_mode=-2,
+                                                                 output_frequency=10)
+
+        self.thermal_step_counter += 1
+
+    def _add_cooldown_step(self):
+        step_name = 'Cooldown_1'
+        step_description = 'Cooling before tempering'
+        interaction_property = self.cool_air_interaction_property
+        if self.cooldown_data.interaction_property_name is not None:
+            interaction_property = self.cooldown_data.interaction_property_name
+
+        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
+                                                           step_description=step_description,
+                                                           step_time=self.cooldown_data.time,
+                                                           surface_temperature=self.cooldown_data.temperature,
+                                                           interaction_property=interaction_property,
+                                                           kinematic_mode=-2,
+                                                           output_frequency=5)
+
+        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
+                                                                 step_description=step_description,
+                                                                 step_time=self.cooldown_data.time,
+                                                                 kinematic_mode=-2,
+                                                                 output_frequency=10)
+
+        self.thermal_step_counter += 1
+
+    def _add_tempering_step(self):
+        step_name = 'Tempering'
+        step_description = 'Tempering'
+        interaction_property = self.cool_air_interaction_property
+        if self.tempering_data.interaction_property_name is not None:
+            interaction_property = self.tempering_data.interaction_property_name
+
+        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
+                                                           step_description=step_description,
+                                                           step_time=self.tempering_data.time,
+                                                           surface_temperature=self.tempering_data.temperature,
+                                                           interaction_property=interaction_property,
+                                                           kinematic_mode=-3,
+                                                           output_frequency=5)
+
+        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
+                                                                 step_description=step_description,
+                                                                 step_time=self.tempering_data.time,
+                                                                 kinematic_mode=-3,
+                                                                 output_frequency=10)
+
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
         self.thermal_file_lines = self._init_thermal_lines()
@@ -447,6 +510,15 @@ class CaseHardeningToolbox:
         if self.transfer_data.time is not None and self.transfer_data.time > 0.:
             self._add_transfer_step()
 
+        if self.quenching_data.time is not None and self.quenching_data.time > 0.:
+            self._add_quenching_step()
+
+        if self.cooldown_data.time is not None and self.cooldown_data.time > 0.:
+            self._add_cooldown_step()
+
+        if self.tempering_data.time is not None and self.tempering_data.time > 0:
+            self._add_tempering_step()
+
         for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
                                [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):
             with open('Toolbox_' + name + '_' + self.name + '.inp', 'w+') as inp_file:
@@ -458,7 +530,7 @@ class CaseHardeningToolbox:
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = 'dante_quarter_1x'
-
+    current_directory = os.getcwd()
     tempering = (180, 120)
 
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
@@ -480,11 +552,17 @@ if __name__ == '__main__':
         toolbox_writer.heating_data.carbon = 0.5
         toolbox_writer.heating_data.time = 90.
         toolbox_writer.heating_data.temperature = 930.
+
+        toolbox_writer.quenching_data.time = 3600.
+        toolbox_writer.quenching_data.temperature = 120.
+
         toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                                carbon_levels=simulation.carbon)
-        directory_name = 'VBC_fatigue_' + str(simulation.CD).replace('.', '_')
+        directory_name = simulation_directory + '/VBC_fatigue_' + str(simulation.CD).replace('.', '_')
+        print directory_name, os.path.isdir(directory_name)
+        print current_directory
         if not os.path.isdir(directory_name):
             os.makedirs(directory_name)
         os.chdir(directory_name)
         toolbox_writer.write_files()
-        os.chdir('../')
+        os.chdir(current_directory)
