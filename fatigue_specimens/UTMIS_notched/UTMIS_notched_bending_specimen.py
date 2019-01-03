@@ -1,6 +1,6 @@
 import sys
 import os
-from math import sqrt, sin, cos, tan, pi
+from math import sqrt, sin, cos, pi
 try:
     import mesh
     from abaqus import session, Mdb, mdb
@@ -61,7 +61,7 @@ class NotchedBendingSpecimenClass:
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
-            p1 = (0, self.notch_height / 2 - d)
+            p1 = (0, self.notch_height/2 - d)
             p2 = (self.R*sqrt(3)/2, self.notch_height/2 + self.R/2 - d)
 
             x2 = p2[0] + 1/sqrt(3)*(self.width/2 - p2[1] - d)
