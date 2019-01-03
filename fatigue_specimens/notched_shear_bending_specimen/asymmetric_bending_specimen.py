@@ -1,7 +1,6 @@
 import sys
 import os
-import numpy as np
-from math import sqrt, sin, cos, tan, acos, pi
+from math import sqrt, sin, cos, tan, pi
 try:
     import mesh
     from abaqus import *
