@@ -378,9 +378,9 @@ class NotchedBendingSpecimenClass:
     def write_file(self, file_name):
         
         # Set filename and path
-        output_file_name=os.path.basename(file_name)
-        output_file_name_no_ext=output_file_name.split('.')[0]
-        output_directory=os.path.dirname(file_name)
+        output_file_name = os.path.basename(file_name)
+        output_file_name_no_ext = output_file_name.split('.')[0]
+        output_directory = os.path.dirname(file_name)
         
         # Set path as working directory
         os.chdir(output_directory)
@@ -404,7 +404,7 @@ class NotchedBendingSpecimenClass:
 
         if os.path.exists(os.path.abspath(file_name)):
             os.remove(os.path.abspath(file_name))
-        os.rename(os.path.join(output_directory,output_file_name_no_ext+'.inp'), file_name)
+        os.rename(os.path.join(output_directory, output_file_name_no_ext+'.inp'), file_name)
 
     # Function by erolssson
     def mechanical_material_assignment(self, part_name='fatiguePart'):
@@ -417,6 +417,6 @@ class NotchedBendingSpecimenClass:
 
 
 if __name__ == "__main__":
-    m=NotchedBendingSpecimenClass()
+    m = NotchedBendingSpecimenClass()
     m.mesh(analysis_type='Mechanical')
     m.mechanical_material_assignment()
