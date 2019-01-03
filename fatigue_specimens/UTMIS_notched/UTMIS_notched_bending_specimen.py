@@ -27,7 +27,7 @@ class NotchedBendingSpecimenClass:
         self.R2 = float(0.5)
         self.notch_height = float(5)
         self.height = float(11.)
-        self.width = float(4.)
+        self.thickness = float(4.)
         self.case_mesh_thickness = float(t)
         self.loadX = float(loadX)
         self.my_part_inner = None
@@ -64,9 +64,10 @@ class NotchedBendingSpecimenClass:
             p1 = (0, self.notch_height/2 - d)
             p2 = (self.R*sqrt(3)/2, self.notch_height/2 + self.R/2 - d)
 
-            x2 = p2[0] + 1/sqrt(3)*(self.width/2 - p2[1] - d)
-            p3 = (x2, self.width / 2 - d)
-            p4 = (self.length/2 - self.R1, self.width/2 - d)
+            x2 = p2[0] + 1./sqrt(3)*(self.height/2 - p2[1] - d)
+            p3 = (x2, self.height/2 - d)
+            print p3
+            p4 = (self.length/2 - self.R1, self.height/2 - d)
             p5 = (self.length/2 - d, 0.)
 
             # Create sketch :InnerSpecimen
@@ -76,12 +77,13 @@ class NotchedBendingSpecimenClass:
             my_sketch.ArcByStartEndTangent(point1=p1, point2=p2, vector=(1., 0))
             my_sketch.Line(point1=p2, point2=p3)
             my_sketch.Line(point1=p3, point2=p4)
+
             my_sketch.ArcByStartEndTangent(point1=p4, point2=p5, vector=(1., 0))
             my_sketch.Line(point1=p5, point2=p0)
 
             # fixing the fillet
             e1 = g.findAt(((p2[0] + p3[0])/2, (p2[1] + p3[1])/2))
-            e2 = g.findAt(((p3[0] + p4[0])/2, self.width/2 - d))
+            e2 = g.findAt(((p3[0] + p4[0])/2, self.height/2 - d))
             my_sketch.FilletByRadius(radius=self.R2,
                                      curve1=e1,
                                      nearPoint1=e1.pointOn,
@@ -95,7 +97,7 @@ class NotchedBendingSpecimenClass:
             self.x3 = v[12].coords[0]
 
             part = mdb.models['Model-1'].Part(name=profile_name, dimensionality=THREE_D, type=DEFORMABLE_BODY)
-            part.BaseSolidExtrude(sketch=my_sketch, depth=self.height/2)
+            part.BaseSolidExtrude(sketch=my_sketch, depth=self.thickness / 2)
             return part
 
         self.my_part_inner = make_profile(self.case_mesh_thickness, 'inner')
@@ -199,7 +201,7 @@ class NotchedBendingSpecimenClass:
         xy = {self.notch_height / 2 - self.case_mesh_thickness / 2: [0.],
               self.y - self.case_mesh_thickness / 2:                [self.x],
               self.y2 - self.case_mesh_thickness / 2:               [self.x2],
-              self.width / 2 - self.case_mesh_thickness / 2:        [self.x3, self.loadX, self.length / 2 - self.R1],
+              self.thickness / 2 - self.case_mesh_thickness / 2:        [self.x3, self.loadX, self.length / 2 - self.R1],
               0.:                                                   [self.length / 2 - self.case_mesh_thickness / 2]}
 
         z_coordinates = [0, self.height / 2]
@@ -220,7 +222,7 @@ class NotchedBendingSpecimenClass:
         # Edges in the z-direction
         z = self.height / 4
         x_coordinates = [0, self.x, self.x2, self.x3, self.loadX, self.length / 2 - self.R1]
-        y_coordinates = [self.notch_height / 2, self.y, self.y2, self.width / 2, self.width / 2, self.width / 2, ]
+        y_coordinates = [self.notch_height / 2, self.y, self.y2, self.thickness / 2, self.thickness / 2, self.thickness / 2, ]
         edges = []
         for i, x in enumerate(x_coordinates):
             edges.append(part.edges.findAt((x, 0,                                           z)))
@@ -242,9 +244,9 @@ class NotchedBendingSpecimenClass:
         # Seeding the notch
         num = [nx1, nx2, n_fillet]
         x_coordinates = [self.R*sin(15*pi/180), (self.x2 + self.x)/2, self.x3 - self.R2*sin(1E-3)]
-        y_coordinates = [self.notch_height/2 + self.R*(1 - cos(15*pi/180)),
-                         (self.y2 + self.y)/2,
-                         self.width/2 - self.R2*(1 - cos(1E-3))]
+        y_coordinates = [self.notch_height / 2 + self.R * (1 - cos(15*pi/180)),
+                         (self.y2 + self.y) / 2,
+                         self.thickness / 2 - self.R2 * (1 - cos(1E-3))]
         for x, y, n in zip(x_coordinates, y_coordinates, num):
             edges = []
             for z in [0, self.height / 2]:
@@ -257,7 +259,7 @@ class NotchedBendingSpecimenClass:
 
         # Mid section
         x_coordinates = [self.loadX + (self.length / 2 - self.R1) / 2, (self.x + self.loadX) / 2]
-        y_coordinates = [0, self.width / 2 - self.case_mesh_thickness, self.width / 2]
+        y_coordinates = [0, self.thickness / 2 - self.case_mesh_thickness, self.thickness / 2]
         z_coordinates = [0, self.height / 2]
         edges = []
         for x in x_coordinates:
@@ -271,7 +273,7 @@ class NotchedBendingSpecimenClass:
         # Vertical edges
         x_coordinates = [0, self.x, self.x2, self.x3, self.loadX, self.length / 2 - self.R1]
         z_coordinates = [0, self.height / 2]
-        y = (self.width/2 - self.case_mesh_thickness)/2
+        y = (self.thickness / 2 - self.case_mesh_thickness) / 2
         edges = []
         for x in x_coordinates:
             for z in z_coordinates:
@@ -309,8 +311,8 @@ class NotchedBendingSpecimenClass:
             z = self.height / 2
         #       - Exposed Elements and Nodes
         #              Pick surface on arc at failure point
-        f1 = part.faces.findAt((1.001 * self.x3, self.width / 2, self.height / 4))
-        f2 = part.faces.findAt((1.001 * self.x3, self.width / 4, z))
+        f1 = part.faces.findAt((1.001 * self.x3, self.thickness / 2, self.height / 4))
+        f2 = part.faces.findAt((1.001 * self.x3, self.thickness / 4, z))
         #              Pick connected faces by angle
         exposed_faces = f1.getFacesByFaceAngle(89) + f2.getFacesByFaceAngle(0)
         #              Get elements and nodes connected to selected faces
@@ -339,7 +341,7 @@ class NotchedBendingSpecimenClass:
         part.Set(elements=y_sym_elements, name='YSym_Elements')
         part.Surface(side1Faces=y_sym_faces, name='YSym_Surface')
 
-        f = part.faces.findAt((1.001*self.x3, self.width/4, z))
+        f = part.faces.findAt((1.001 * self.x3, self.thickness / 4, z))
         z_sym_faces = f.getFacesByFaceAngle(0)
         z_sym_nodes = nodes_on(z_sym_faces)
         z_sym_elements = elements_on(z_sym_faces)
