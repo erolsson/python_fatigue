@@ -22,9 +22,8 @@ except ImportError:
 class NotchedBendingSpecimenClass:
     def __init__(self, t=1.2, loadX=15, analysisType='Mechanical'):
         self.length = float(90)
-        self.R = float(0.9)
+        self.R = float(30.)
         self.R1 = float(5.5)
-        self.R2 = float(0.5)
         self.notch_height = float(5)
         self.height = float(11.)
         self.thickness = float(4.)
@@ -49,8 +48,7 @@ class NotchedBendingSpecimenClass:
 
         # Set replay file output format to INDEX for readability
         session.journalOptions.setValues(replayGeometry=INDEX)
-        self.x = self.R * sqrt(3) / 2
-        self.y = self.notch_height / 2 + self.R / 2
+        self.x = (self.R**2 - (self.R - (self.height - self.notch_height)/2)**2)**0.5
 
         self.make_part()
 
@@ -59,41 +57,22 @@ class NotchedBendingSpecimenClass:
         def make_profile(d, profile_name):
             p0 = (0., 0.)
             p1 = (0, self.notch_height/2 - d)
-            p2 = (self.R*sqrt(3)/2, self.notch_height/2 + self.R/2 - d)
 
-            x2 = p2[0] + 1./sqrt(3)*(self.height/2 - p2[1] - d)
-            p3 = (x2, self.height/2 - d)
-            p4 = (self.length/2 - self.R1, self.height/2 - d)
-            p5 = (self.length/2 - d, 0.)
+            p2 = (self.x, self.height/2 - d)
+            p3 = (self.length/2 - self.R1, self.height/2 - d)
+            p4 = (self.length/2 - d, 0.)
 
             # Create sketch :InnerSpecimen
             my_sketch = self.modelDB.ConstrainedSketch(name=profile_name, sheetSize=800.0)
-            g, v = my_sketch.geometry, my_sketch.vertices
             my_sketch.Line(point1=p0, point2=p1)
             my_sketch.ArcByStartEndTangent(point1=p1, point2=p2, vector=(1., 0))
             my_sketch.Line(point1=p2, point2=p3)
-            my_sketch.Line(point1=p3, point2=p4)
 
-            my_sketch.ArcByStartEndTangent(point1=p4, point2=p5, vector=(1., 0))
-            my_sketch.Line(point1=p5, point2=p0)
-
-            # fixing the fillet
-            e1 = g.findAt(((p2[0] + p3[0])/2, (p2[1] + p3[1])/2))
-            e2 = g.findAt(((p3[0] + p4[0])/2, self.height/2 - d))
-            my_sketch.FilletByRadius(radius=self.R2,
-                                     curve1=e1,
-                                     nearPoint1=e1.pointOn,
-                                     curve2=e2,
-                                     nearPoint2=e2.pointOn)
-
-            # finding the x-coordinates of the fillet points
-            # Warning the points are chosen manually
-            self.x2 = v[8].coords[0]
-            self.y2 = v[8].coords[1]
-            self.x3 = v[12].coords[0]
+            my_sketch.ArcByStartEndTangent(point1=p3, point2=p4, vector=(1., 0))
+            my_sketch.Line(point1=p4, point2=p0)
 
             part = mdb.models['Model-1'].Part(name=profile_name, dimensionality=THREE_D, type=DEFORMABLE_BODY)
-            part.BaseSolidExtrude(sketch=my_sketch, depth=self.thickness / 2)
+            part.BaseSolidExtrude(sketch=my_sketch, depth=self.thickness/2)
             return part
 
         self.my_part_inner = make_profile(self.case_mesh_thickness, 'inner')
@@ -114,14 +93,6 @@ class NotchedBendingSpecimenClass:
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical1.id],
                                                     cells=self.fatigue_part.cells)
 
-        datum_plane_vertical2 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=self.x2)
-        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical2.id],
-                                                    cells=self.fatigue_part.cells)
-
-        datum_plane_vertical3 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=self.x3)
-        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical3.id],
-                                                    cells=self.fatigue_part.cells)
-
         datum_plane_vertical4 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE,
                                                                              offset=self.length/2 - self.R1)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical4.id],
@@ -140,7 +111,7 @@ class NotchedBendingSpecimenClass:
         
         nr = 25
         nd = 20
-        nx1 = 20      # x - dir closest to the notch
+        nx1 = 40      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
         n_fillet = 2  # filletRadius
         n_height = 30
@@ -195,9 +166,7 @@ class NotchedBendingSpecimenClass:
         # Edges in the hardness gradient
         # y-coord key, data x-coords
         xy = {self.notch_height/2 - self.case_mesh_thickness/2:   [0.],
-              self.y - self.case_mesh_thickness/2:                [self.x],
-              self.y2 - self.case_mesh_thickness/2:               [self.x2],
-              self.height/2 - self.case_mesh_thickness/2:         [self.x3, self.loadX, self.length / 2 - self.R1],
+              self.height/2 - self.case_mesh_thickness/2:         [self.x, self.loadX, self.length/2 - self.R1],
               0.:                                                 [self.length/2 - self.case_mesh_thickness/2]}
 
         z_coordinates = [0, self.thickness/2]
@@ -217,15 +186,15 @@ class NotchedBendingSpecimenClass:
 
         # Edges in the z-direction
         z = self.thickness/4
-        x_coordinates = [0, self.x, self.x2, self.x3, self.loadX, self.length / 2 - self.R1]
-        y_coordinates = [self.notch_height/2, self.y, self.y2, self.height/2, self.height/2, self.height/2]
+        x_coordinates = [0, self.x, self.loadX, self.length/2 - self.R1]
+        y_coordinates = [self.notch_height/2, self.height/2, self.height/2, self.height/2]
         edges = []
         for i, x in enumerate(x_coordinates):
             edges.append(part.edges.findAt((x, 0,                                           z)))
             edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
             edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
 
-        edges.append(part.edges.findAt((self.length / 2, 0, self.thickness/4)))
+        edges.append(part.edges.findAt((self.length/2, 0, self.thickness/4)))
         edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
 
         if flip is True:
@@ -239,10 +208,8 @@ class NotchedBendingSpecimenClass:
 
         # Seeding the notch
         num = [nx1, nx2, n_fillet]
-        x_coordinates = [self.R*sin(15*pi/180), (self.x2 + self.x)/2, self.x3 - self.R2*sin(1E-3)]
-        y_coordinates = [self.notch_height / 2 + self.R*(1 - cos(15*pi/180)),
-                         (self.y2 + self.y) / 2,
-                         self.height/2 - self.R2 * (1 - cos(1E-3))]
+        x_coordinates = [self.R*sin(15*pi/180)]
+        y_coordinates = [self.notch_height / 2 + self.R*(1 - cos(15*pi/180))]
         for x, y, n in zip(x_coordinates, y_coordinates, num):
             edges = []
             for z in [0, self.thickness/2]:
@@ -267,7 +234,7 @@ class NotchedBendingSpecimenClass:
                             size=size_length_direction)
 
         # Vertical edges
-        x_coordinates = [0, self.x, self.x2, self.x3, self.loadX, self.length / 2 - self.R1]
+        x_coordinates = [0, self.x, self.loadX, self.length / 2 - self.R1]
         z_coordinates = [0, self.thickness/2]
         y = (self.height/2 - self.case_mesh_thickness)/2
         edges = []
@@ -308,8 +275,8 @@ class NotchedBendingSpecimenClass:
             z1, z2 = z2, z1
         #       - Exposed Elements and Nodes
         #              Pick surface on arc at failure point
-        f1 = part.faces.findAt((1.001*self.x3, self.height/2, self.thickness/4))
-        f2 = part.faces.findAt((1.001*self.x3, self.height/4, z1))
+        f1 = part.faces.findAt((self.length/2 - 1.001*self.R1, self.height/2, self.thickness/4))
+        f2 = part.faces.findAt((1.001*self.x, self.height/4, z1))
         #              Pick connected faces by angle
         exposed_faces = f1.getFacesByFaceAngle(89) + f2.getFacesByFaceAngle(0)
         #              Get elements and nodes connected to selected faces
@@ -330,7 +297,7 @@ class NotchedBendingSpecimenClass:
         part.Set(elements=x_sym_elements, name='XSym_Elements')
         part.Surface(side1Faces=x_sym_faces, name='XSym_Surface')
 
-        f = part.faces.findAt((1.001*self.x3, 0, self.thickness/4))
+        f = part.faces.findAt((1.001*self.x, 0, self.thickness/4))
         y_sym_faces = f.getFacesByFaceAngle(1)
         y_sym_nodes = nodes_on(y_sym_faces)
         y_sym_elements = elements_on(y_sym_faces)
@@ -338,7 +305,7 @@ class NotchedBendingSpecimenClass:
         part.Set(elements=y_sym_elements, name='YSym_Elements')
         part.Surface(side1Faces=y_sym_faces, name='YSym_Surface')
 
-        f = part.faces.findAt((1.001 * self.x3, self.height/4, z2))
+        f = part.faces.findAt((1.001 * self.x, self.height/4, z2))
         z_sym_faces = f.getFacesByFaceAngle(0)
         z_sym_nodes = nodes_on(z_sym_faces)
         z_sym_elements = elements_on(z_sym_faces)
@@ -421,4 +388,4 @@ if __name__ == "__main__":
     m = NotchedBendingSpecimenClass()
     m.mesh(analysis_type='Mechanical')
     m.mechanical_material_assignment()
-    m.write_file('utmis_notched_geo.inc')
+    m.write_file('utmis_smooth_geo.inc')
