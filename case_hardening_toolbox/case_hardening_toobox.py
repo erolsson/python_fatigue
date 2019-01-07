@@ -3,6 +3,7 @@ import os
 
 from planetary_gear.carbon.diffusitivity import write_diffusion_file
 
+
 class CarburizationData:
     def __init__(self, time, temperature, carbon):
         self.time = time
