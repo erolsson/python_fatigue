@@ -51,7 +51,7 @@ class CaseHardeningToolbox:
         self.cool_air_interaction_property = 'AIR_COOL'
         self.transfer_data = TemperatureData(time=60., temperature=650., interaction_property_name=None)
         self.quenching_data = QuenchingData(time=None, temperature=None, oil_name='QUENCHWAY125B_Used_0mps')
-        self.cooldown_data = TemperatureData(time=None, temperature=80., interaction_property_name=None)
+        self.cooldown_data = TemperatureData(time=600, temperature=80., interaction_property_name=None)
         self.tempering_data = TemperatureData(time=None, temperature=None, interaction_property_name=None)
 
         self.carbon_file_lines = None
@@ -140,7 +140,7 @@ class CaseHardeningToolbox:
                 '\t*Density',
                 '\t\t7.83e-06,',
                 '\t*Depvar',
-                '\t\t100',
+                '\t\t100,',
                 '\t\t1,  CARBON,       VOLUME FRACTION of CARBON',
                 '\t\t2,  HARDNESS,     Hardness in Rockwell C',
                 '\t\t21, AUSTENITE,    VOLUME FRACTION of AUSTENITE',
@@ -203,7 +203,7 @@ class CaseHardeningToolbox:
                 '\t*Density',
                 '\t\t7.83e-06,',
                 '\t*Depvar',
-                '\t\t100',
+                '\t\t100,',
                 '\t\t1,  CARBON,       VOLUME FRACTION of CARBON',
                 '\t\t2,  HARDNESS,     Hardness in Rockwell C',
                 '\t\t5,  PLASTIC STRAIN, EFFECTIVE PLASTIC STRAIN',
@@ -217,9 +217,6 @@ class CaseHardeningToolbox:
                 '\t*User Material, constants=8, type=MECHANICAL',
                 '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                 '**',
-                '** ----------------------------------------------------------------',
-                '*INCLUDE, INPUT = ' + self.interaction_property_file,
-                '** ----------------------------------------------------------------',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
                 '\tALL_NODES , ' + str(self.initial_temperature),
@@ -312,26 +309,6 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('**')
 
         self.thermal_step_counter += 1
-
-    def write_geometry_files(self, geometry_data_file, directory_to_write, str_to_remove_from_set_names='_'):
-        self.input_file_reader.read_input_file(geometry_data_file)
-        if not os.path.isdir(directory_to_write):
-            os.makedirs(directory_to_write)
-
-        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Carbon_ ' +
-                                                       self.include_file_name + '_geo.inc',
-                                                       simulation_type='Carbon')
-
-        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Thermal_ ' +
-                                                       self.include_file_name + '_geo.inc',
-                                                       simulation_type='Thermal')
-
-        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Mechanical_ ' +
-                                                       self.include_file_name + '_geo.inc',
-                                                       simulation_type='Mechanical')
-
-        self.input_file_reader.write_sets_file(directory_to_write + self.include_file_name + '_sets.inc',
-                                               str_to_remove_from_setname=str_to_remove_from_set_names)
 
     def add_carburization_steps(self, times, temperatures, carbon_levels):
         for t, temp, carbon in zip(times, temperatures, carbon_levels):
@@ -549,11 +526,36 @@ class CaseHardeningToolbox:
                 inp_file.write('**EOF')
 
 
+def write_geometry_files_for_dante(geometry_data_file, directory_to_write, dante_include_file_name,
+                                   str_to_remove_from_set_names='_'):
+    input_file_reader = InputFileReader()
+    input_file_reader.read_input_file(geometry_data_file)
+    if not os.path.isdir(directory_to_write):
+        os.makedirs(directory_to_write)
+
+    input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Carbon_' +
+                                              dante_include_file_name + '_geo.inc',
+                                              simulation_type='Carbon')
+
+    input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Thermal_' +
+                                              dante_include_file_name + '_geo.inc',
+                                              simulation_type='Thermal')
+
+    input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Mechanical_' +
+                                              dante_include_file_name + '_geo.inc',
+                                              simulation_type='Mechanical')
+
+    surfaces = [('EXPOSED_SURFACE', 'EXPOSED_ELEMENTS')]
+    input_file_reader.write_sets_file(directory_to_write + dante_include_file_name + '_sets.inc',
+                                      str_to_remove_from_setname=str_to_remove_from_set_names,
+                                      surfaces_from_element_sets=surfaces)
+
+
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = 'dante_quarter_1x/'
     current_directory = os.getcwd()
-    tempering = (180, 120)
+    tempering = (180, 7200)
 
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
     simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
@@ -577,6 +579,9 @@ if __name__ == '__main__':
 
         toolbox_writer.quenching_data.time = 3600.
         toolbox_writer.quenching_data.temperature = 120.
+
+        toolbox_writer.tempering_data.temperature = simulation.tempering[0]
+        toolbox_writer.tempering_data.time = simulation.tempering[1]
 
         toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                                carbon_levels=simulation.carbon)

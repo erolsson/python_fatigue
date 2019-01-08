@@ -93,7 +93,7 @@ class InputFileReader:
 
 
 if __name__ == '__main__':
-    directory = '../fatigue_specimens/UTMIS_notched/'
+    directory = '../fatigue_specimens/utmis_notched/'
     reader = InputFileReader()
     surfaces = [('EXPOSED_SURFACE', 'EXPOSED_ELEMENTS')]
     reader.read_input_file(directory + 'utmis_notched_geo.inc')
