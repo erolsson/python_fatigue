@@ -1,3 +1,5 @@
+import os
+
 from odbAccess import *
 
 import pickle
@@ -29,13 +31,15 @@ if __name__ == '__main__':
     mesh = '1x'
     element_set_name = 'tooth_root_volume_elements'
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
-                         mesh + '/dante_results.odb'
+                         mesh + '/dante_results_tempering_2h_180C.odb'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
-                       + mesh + '/dante/'
+                       + mesh + '/dante_tempering_2h_180C.odb/'
 
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
 
+    if not os.path.isdir(pickle_directory):
+        os.makedirs(pickle_directory)
     for part in ['left', 'right']:
         add_element_set(dante_odb_filename, element_set_name, element_labels, 'tooth_' + part)
 
