@@ -388,4 +388,4 @@ if __name__ == "__main__":
     m = NotchedBendingSpecimenClass()
     m.mesh(analysis_type='Mechanical')
     m.mechanical_material_assignment()
-    m.write_file('utmis_smooth_geo.inc')
+    m.write_file('utmis_smooth.inc')

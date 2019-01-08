@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 
+from input_file_reader.input_file_reader import InputFileReader
 from planetary_gear.carbon.diffusitivity import write_diffusion_file
 
 
@@ -31,6 +32,8 @@ class CaseHardeningToolbox:
 
         self.name = name
         self.include_file_name = include_file_name
+
+        self.input_file_reader = InputFileReader()
 
         self.material = 'U925062'
 
@@ -310,8 +313,25 @@ class CaseHardeningToolbox:
 
         self.thermal_step_counter += 1
 
-    def write_geometry_files(self):
-        pass
+    def write_geometry_files(self, geometry_data_file, directory_to_write, str_to_remove_from_set_names='_'):
+        self.input_file_reader.read_input_file(geometry_data_file)
+        if not os.path.isdir(directory_to_write):
+            os.makedirs(directory_to_write)
+
+        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Carbon_ ' +
+                                                       self.include_file_name + '_geo.inc',
+                                                       simulation_type='Carbon')
+
+        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Thermal_ ' +
+                                                       self.include_file_name + '_geo.inc',
+                                                       simulation_type='Thermal')
+
+        self.input_file_reader.write_geom_include_file(directory_to_write + '/Toolbox_Mechanical_ ' +
+                                                       self.include_file_name + '_geo.inc',
+                                                       simulation_type='Mechanical')
+
+        self.input_file_reader.write_sets_file(directory_to_write + self.include_file_name + '_sets.inc',
+                                               str_to_remove_from_setname=str_to_remove_from_set_names)
 
     def add_carburization_steps(self, times, temperatures, carbon_levels):
         for t, temp, carbon in zip(times, temperatures, carbon_levels):
