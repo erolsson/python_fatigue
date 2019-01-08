@@ -33,7 +33,7 @@ if __name__ == '__main__':
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
                          mesh + '/dante_results_tempering_2h_180C.odb'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
-                       + mesh + '/dante_tempering_2h_180C.odb/'
+                       + mesh + '/dante_tempering_2h_180C/'
 
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                                             element_set_name + '.inc')
