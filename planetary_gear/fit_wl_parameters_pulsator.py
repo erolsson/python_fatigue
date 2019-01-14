@@ -16,20 +16,17 @@ from weakest_link.weakest_link_gear import FEM_data
 
 
 def calc_pf_for_simulation(cd, load, par):
-    if par[1] < 0:
-        par[1] *= -1
 
-    fit_material = SS2506MaterialTemplate(par[0], par[1], 11.06e6)
-    findley_file_name = 'findley/pulsator/findley_CD=' + str(cd).replace('.', '_') + \
-                        '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
-    with open(data_directory + findley_file_name) as findley_pickle:
+    fit_material = SS2506MaterialTemplate(par[0], 0, 6.4e6)
+    findley_file_name = '/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
+    with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
-    with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
+    with open(dante_data_directory + '/data_' + str(cd).replace('.', '_') + '_left.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
 
-    with open(data_directory + 'geometry/nodal_positions.pkl') as position_pickle:
+    with open(geometry_data_directory + '/nodal_positions.pkl') as position_pickle:
         position = pickle.load(position_pickle)
 
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
@@ -52,18 +49,30 @@ def residual(par, *data):
 
 if __name__ == '__main__':
     mesh = '1x'
-    data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
+    findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                                mesh + '/findley/pulsator/tempering_2h_180C/')
+
+    dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                              mesh + '/dante/tempering_2h_180C/')
+
+    geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                                 mesh + '/geometry/')
+
     SimulationsToProcess = namedtuple('SimulationsToProcess', ['cd', 'load', 'pf_experimental'])
-    simulations = [SimulationsToProcess(cd=0.5, load=30., pf_experimental=0.25),
-                   SimulationsToProcess(cd=0.5, load=33., pf_experimental=0.99),
+    simulations = [SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
+                   SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.5),
+                   SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
 
-                   SimulationsToProcess(cd=0.8, load=30., pf_experimental=0.01),
-                   SimulationsToProcess(cd=0.8, load=34., pf_experimental=0.9),
+                   # SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
+                   # SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.50),
+                   # SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
 
-                   SimulationsToProcess(cd=1.1, load=33., pf_experimental=0.1),
-                   SimulationsToProcess(cd=1.1, load=36., pf_experimental=0.9),
+                   # SimulationsToProcess(cd=1.1, load=33., pf_experimental=0.25),
+                   # SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
+                   # SimulationsToProcess(cd=1.1, load=35., pf_experimental=0.75),
 
-                   SimulationsToProcess(cd=1.4, load=34., pf_experimental=0.1),
-                   SimulationsToProcess(cd=1.4, load=37., pf_experimental=0.9)]
+                   SimulationsToProcess(cd=1.4, load=34., pf_experimental=0.20),
+                   SimulationsToProcess(cd=1.4, load=35., pf_experimental=0.5),
+                   SimulationsToProcess(cd=1.4, load=36., pf_experimental=0.8)]
 
-    print fmin(residual, [138, 0.76], tuple(simulations))
+    print fmin(residual, [500], tuple(simulations))

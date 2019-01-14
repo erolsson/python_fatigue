@@ -18,8 +18,9 @@ plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
-dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/')
-residual_stress_multiplier = 0.57
+dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/'
+                                            'root_data/tempering_2h_180C')
+residual_stress_multiplier = 1.
 pulsator_loads = np.array([30., 35., 40.])
 
 
@@ -34,7 +35,7 @@ with open(os.path.expanduser('~/scania_gear_analysis/pickles/pulsator/tooth_root
 stress_data = {30: stress_data[0:2, 1], 35: stress_data[2:4, 1], 40: stress_data[4:6, 1]}
 
 for pulsator_test in pulsator_tests:
-    with open(dante_pickle_directory + 'dante_results_' +
+    with open(dante_pickle_directory + '/dante_results_' +
               str(pulsator_test.case_depth).replace('.', '_') + '_root.pkl') as pickle_handle:
         root_data = pickle.load(pickle_handle)
     residual_stress = root_data['S'][0]*residual_stress_multiplier
@@ -65,13 +66,14 @@ torques = np.array([1000., 1200., 1400.])
 simulated_torques = np.array([0, 1000, 1200, 1400])
 stress_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_stresses/')
 for cd, color in zip([0.8, 1.1], ['r', 'g']):
-    with open(dante_pickle_directory + 'dante_results_' +
+    with open(dante_pickle_directory + '/dante_results_' +
               str(cd).replace('.', '_') + '_root.pkl') as pickle_handle:
         root_data = pickle.load(pickle_handle)
     residual_stress = root_data['S'][0] * residual_stress_multiplier
     hardness = root_data['HV'][0]
     kw = hardness / 1000
     kf = SS2506.findley_k(SteelData(HV=hardness))
+    print kf
     for torque in torques:
         f1, f2 = tuple(np.sort(simulated_torques[np.argsort(np.abs(simulated_torques - torque))][0:2]))
         for name in ['pos', 'neg']:

@@ -25,17 +25,17 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def calculate_life(load, cd, size_factor):
-    findley_file_name = 'findley/pulsator/findley_CD=' + str(case_depth).replace('.', '_') + \
+    findley_file_name = '/findley_CD=' + str(case_depth).replace('.', '_') + \
                         '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
-    with open(data_directory + findley_file_name) as findley_pickle:
+    with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     n_vol = stress.shape[0]
 
-    with open(data_directory + 'dante/data_' + str(cd).replace('.', '_') + '.pkl') as dante_pickle:
+    with open(dante_data_directory + '/data_' + str(cd).replace('.', '_') + '_left.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
     steel_data_volume = SteelData(HV=dante_data['HV'].reshape(n_vol / 8, 8))
 
-    with open(data_directory + 'geometry/nodal_positions.pkl') as position_pickle:
+    with open(geometry_data_directory + 'nodal_positions.pkl') as position_pickle:
         position = pickle.load(position_pickle)
 
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
@@ -57,9 +57,17 @@ if __name__ == '__main__':
     # case_depths = [1.4]
     pf_levels = np.array([0.25, 0.5, 0.75])
     sim_forces = np.arange(30., 41., 1.)
-    mesh = '1x'
+
     test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/pulsator_testing/')
-    data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' + mesh + '/')
+    mesh = '1x'
+    findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                                mesh + '/findley/pulsator/tempering_2h_180C/')
+
+    dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                              mesh + '/dante/tempering_2h_180C/')
+
+    geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
+                                                 mesh + '/geometry/')
 
     for i, case_depth in enumerate(case_depths):
         # Plotting test results

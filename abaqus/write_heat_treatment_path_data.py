@@ -43,12 +43,18 @@ def write_root_pickle(data_odb_name, step_name, result_pickle_name, frame_number
         root_path = create_path(path.data, 'longitudinal_path', session)
         stress_tensors = get_stress_tensors_from_path(root_path, session)
         hardness = get_scalar_field_from_path(root_path, session, 'HV')
-        martensite = get_scalar_field_from_path(root_path, session, 'SDV_Q_MARTENSITE')
+        qenched_martensite = get_scalar_field_from_path(root_path, session, 'SDV_Q_MARTENSITE')
+        tempered_martensite = get_scalar_field_from_path(root_path, session, 'SDV_T_MARTENSITE')
+        austenite = get_scalar_field_from_path(root_path, session, 'SDV_AUSTENITE')
+        carbon = get_scalar_field_from_path(root_path, session, 'SDV_CARBON')
 
         data = {'r': np.sqrt(np.sum((path.data - path.data[0, :])**2, 1)),
                 'S': np.dot(np.dot(path.normal, stress_tensors), path.normal),
                 'HV': hardness,
-                'Martensite': martensite}
+                'T-Martensite': tempered_martensite,
+                'Q-Martensite': qenched_martensite,
+                'Austenite': austenite,
+                'Carbon': carbon}
 
         with open(result_pickle_name[:-4] + '_' + path.name + '.pkl', 'wb') as result_pickle_handle:
             pickle.dump(data, result_pickle_handle)
