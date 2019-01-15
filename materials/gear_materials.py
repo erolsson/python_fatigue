@@ -111,7 +111,6 @@ class SS2506MaterialTemplate:
 # SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
 SS2506 = SS2506MaterialTemplate(swa=378, swb=0.175, mb=6.15e6)
 
-
 if __name__ == '__main__':
     # Testing the transformation functions
     # carb = np.linspace(0.002, 0.0012, 10)

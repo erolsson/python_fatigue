@@ -14,8 +14,8 @@
       <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/notched_shear_bending_specimen" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/simple_bending_specimen" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/utmis_notched" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/utmis_smooth" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/UTMIS/utmis_notched" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/UTMIS/utmis_smooth" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/input_file_reader" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/materials" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/multiaxial_fatigue" isTestSource="false" />

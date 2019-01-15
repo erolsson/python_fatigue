@@ -102,7 +102,8 @@ if __name__ == '__main__':
                 data_to_plot = np.vstack((N[:, pf_level].T, sim_forces.T))
             else:
                 force_at_pf = np.interp(pf_val, simulated_pf, sim_forces)
-                data_to_plot = np.vstack((N[sim_forces > force_at_pf, pf_level].T, sim_forces[sim_forces > force_at_pf].T))
+                data_to_plot = np.vstack((N[sim_forces > force_at_pf, pf_level].T,
+                                          sim_forces[sim_forces > force_at_pf].T))
                 data_to_plot = np.hstack((np.array([[1E7, np.exp(SS2506.ne)],
                                                     [force_at_pf, force_at_pf]]),
                                           data_to_plot))
