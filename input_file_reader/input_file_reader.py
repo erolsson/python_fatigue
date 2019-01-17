@@ -19,14 +19,14 @@ class InputFileReader:
                 if line.startswith('*'):
                     key_word_line = line.split(',')
                     key_word = (key_word_line[0][1:]).lower().rstrip()   # Convert to lower case and remove newlines etc
-                    key_word_data = key_word_line[1:]
+                    key_word_data = [word.strip() for word in key_word_line[1:]]
                 else:  # We have a data_row
                     data = line.split(',')
                     data = [item.rstrip() for item in data]
                     if key_word == 'node':
                         nodes.append(data)
                     elif key_word == 'element':
-                        element_type = key_word_data[0][4:].rstrip()
+                        element_type = key_word_data[0][5:].rstrip()
                         if element_type not in elements:
                             elements[element_type] = []
                         elements[element_type].append(data)
