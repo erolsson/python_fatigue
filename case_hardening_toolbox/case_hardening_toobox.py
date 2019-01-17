@@ -379,8 +379,17 @@ class CaseHardeningToolbox:
                                              interaction_property=self.hot_air_interaction_property,
                                              kinematic_mode=-2,
                                              output_frequency=1)
-        step_lines.insert(4, '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
+
         self.thermal_file_lines += step_lines
+        step_lines.insert(4, '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
+        step_lines = self._mechanical_step_data(step_name='Add carbon',
+                                                step_description='Import carbon content from mass diffusion simulation',
+                                                step_time=1.0,
+                                                kinematic_mode=-2,
+                                                output_frequency=1)
+
+        step_lines[6] = '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod'
+        self.mechanical_file_lines += step_lines
         self.thermal_step_counter += 1
 
     def _add_transfer_step(self):
