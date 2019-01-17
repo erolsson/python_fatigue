@@ -1,9 +1,9 @@
 from math import pi
-import numpy as np
+
 
 distance = 32.15
 d = 50 - distance/2 - 5
-sa = 525
+sa = 500
 R = 0.1
 
 I = 4.*10.**3./12. + 6.*4.**3./12. + 2*(3.**4.*(pi/8 - 8./9./pi) + pi*3**2/2*(5-0.576*3)**2)

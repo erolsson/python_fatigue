@@ -35,6 +35,7 @@
       <sourceFolder url="file://$MODULE_DIR$/venv/Lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/venv/local" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/weakest_link" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/UTMIS" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv/Include" />
       <excludeFolder url="file://$MODULE_DIR$/venv/Lib" />
