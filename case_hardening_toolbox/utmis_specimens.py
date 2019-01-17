@@ -1,5 +1,6 @@
 from collections import namedtuple
 import os
+import shutil
 
 from case_hardening_toobox import CaseHardeningToolbox
 from case_hardening_toobox import write_geometry_files_for_dante
@@ -17,8 +18,11 @@ simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930.
 current_directory = os.getcwd()
 for specimen_name in ['utmis_smooth', 'utmis_notched']:
     simulation_directory = specimen_name + '/'
-    write_geometry_files_for_dante('../fatigue_specimens/' + specimen_name + '/' + specimen_name + '.inc',
+    write_geometry_files_for_dante('../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc',
                                    simulation_directory, specimen_name, str_to_remove_from_set_names='Specimen_')
+
+    shutil.copyfile('data_files/diffusivity_2506.inc', simulation_directory + '/diffusivity_2506.inc')
+    shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')
     for simulation in simulations:
 
         toolbox_writer = CaseHardeningToolbox(name=specimen_name,

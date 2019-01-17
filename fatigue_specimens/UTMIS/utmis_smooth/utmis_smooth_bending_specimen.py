@@ -19,8 +19,8 @@ except ImportError:
     raise
 
 
-class NotchedBendingSpecimenClass:
-    def __init__(self, t=1.2, loadX=15, analysisType='Mechanical'):
+class SmoothBendingSpecimenClass:
+    def __init__(self, t=1.2, load_position_x=15, analysisType='Mechanical'):
         self.length = float(90)
         self.R = float(30.)
         self.R1 = float(5.5)
@@ -28,7 +28,7 @@ class NotchedBendingSpecimenClass:
         self.height = float(11.)
         self.thickness = float(4.)
         self.case_mesh_thickness = float(t)
-        self.loadX = float(loadX)
+        self.load_position_x = float(load_position_x)
         self.my_part_inner = None
         self.my_part_outer = None
         self.fatigue_part = None
@@ -99,7 +99,7 @@ class NotchedBendingSpecimenClass:
                                                     cells=self.fatigue_part.cells)
 
         datum_plane_vertical5 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE,
-                                                                             offset=self.loadX)
+                                                                             offset=self.load_position_x)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical5.id],
                                                     cells=self.fatigue_part.cells)
 
@@ -166,7 +166,7 @@ class NotchedBendingSpecimenClass:
         # Edges in the hardness gradient
         # y-coord key, data x-coords
         xy = {self.notch_height/2 - self.case_mesh_thickness/2:   [0.],
-              self.height/2 - self.case_mesh_thickness/2:         [self.x, self.loadX, self.length/2 - self.R1],
+              self.height/2 - self.case_mesh_thickness/2:         [self.x, self.load_position_x, self.length / 2 - self.R1],
               0.:                                                 [self.length/2 - self.case_mesh_thickness/2]}
 
         z_coordinates = [0, self.thickness/2]
@@ -186,7 +186,7 @@ class NotchedBendingSpecimenClass:
 
         # Edges in the z-direction
         z = self.thickness/4
-        x_coordinates = [0, self.x, self.loadX, self.length/2 - self.R1]
+        x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         y_coordinates = [self.notch_height/2, self.height/2, self.height/2, self.height/2]
         edges = []
         for i, x in enumerate(x_coordinates):
@@ -221,7 +221,7 @@ class NotchedBendingSpecimenClass:
                                   number=n)
 
         # Mid section
-        x_coordinates = [self.loadX + (self.length / 2 - self.R1) / 2, (self.x + self.loadX) / 2]
+        x_coordinates = [self.load_position_x + (self.length / 2 - self.R1) / 2, (self.x + self.load_position_x) / 2]
         y_coordinates = [0, self.height/2 - self.case_mesh_thickness, self.height/2]
         z_coordinates = [0, self.thickness/2]
         edges = []
@@ -234,7 +234,7 @@ class NotchedBendingSpecimenClass:
                             size=size_length_direction)
 
         # Vertical edges
-        x_coordinates = [0, self.x, self.loadX, self.length / 2 - self.R1]
+        x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         z_coordinates = [0, self.thickness/2]
         y = (self.height/2 - self.case_mesh_thickness)/2
         edges = []
@@ -385,7 +385,7 @@ class NotchedBendingSpecimenClass:
 
 
 if __name__ == "__main__":
-    m = NotchedBendingSpecimenClass()
+    m = SmoothBendingSpecimenClass()
     m.mesh(analysis_type='Mechanical')
     m.mechanical_material_assignment()
     m.write_file('utmis_smooth.inc')
