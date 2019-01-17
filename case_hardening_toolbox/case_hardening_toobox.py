@@ -1,5 +1,6 @@
 from collections import namedtuple
 import os
+import shutil
 
 from input_file_reader.input_file_reader import InputFileReader
 from planetary_gear.carbon.diffusitivity import write_diffusion_file
@@ -342,7 +343,7 @@ class CaseHardeningToolbox:
                 '**']
 
     def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5):
-        return ['*STEP, NAME=' + step_name + ' Transfer, AMP=STEP, inc=10000',
+        return ['*STEP, NAME=' + step_name + ', AMP=STEP, inc=10000',
                 '\t' + step_description,
                 '\t*STATIC',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-05,  1000.',
@@ -594,3 +595,4 @@ if __name__ == '__main__':
         os.chdir(current_directory)
 
     write_diffusion_file(simulation_directory + 'diffusivity_2506.inc')
+    shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')
