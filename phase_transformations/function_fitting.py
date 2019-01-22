@@ -15,15 +15,15 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 carbon_levels = np.array([0.002, 0.0036, 0.0052, 0.0065])
 
 # Fitting the heat expansion
-plt.figure(0)
+fig = plt.figure(0)
 thermal_expansion = 0*carbon_levels
 for i, carbon_level in enumerate(carbon_levels):
     data_point = np.genfromtxt('heat_expansion_' + str(carbon_level).replace('.', '_'), delimiter=',')
     thermal_expansion[i] = (data_point[1, 1] - data_point[0, 1])/(data_point[1, 0] - data_point[0, 0])
 
-plt.plot(carbon_levels, thermal_expansion, 's', ms=12)
+plt.plot(carbon_levels, thermal_expansion, 's', ms=12, label='KTH Thesis')
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
-plt.plot(0.008, 1.17e-5, 's', ms=12)
+plt.plot(0.008, 1.17e-5, 's', ms=12, label='JMAT PRO')
 plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
 
 
@@ -36,22 +36,25 @@ b2 = -a2/(a1 + a2*c0)
 f = 0*carbon
 f[carbon <= c0] = a1 + a2*carbon[carbon <= c0]
 f[carbon > c0] = b1*np.exp(-b2*(carbon[carbon > c0] - c0))
-plt.plot(carbon, f)
+# plt.plot(carbon, f)
 
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*200 + 2*1.4e-9*carbon*100*200 + 3*1.091e-12*200**2
-plt.plot(carbon, f)
+plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
 
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e-12*20**2
-plt.plot(carbon, f)
+plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
-f = 1.3e-5 - 4.3e-6*carbon*100
-plt.plot(carbon, f)
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO')
 
-plt.plot(carbon, 1.3e-5*(1-carbon/0.01))
-
+fig.set_size_inches(12., 6., forward=True)
+ax = plt.subplot(111)
+box = ax.get_position()
+ax.set_position([0.15, 0.12, 0.57, box.height])
+legend = ax.legend(numpoints=1, loc='upper left', bbox_to_anchor=(1., 1.035))
+plt.gca().add_artist(legend)
 plt.xlabel('Carbon')
-plt.ylabel('Heat Expansion')
-
+plt.ylabel(r'Heat Expansion [$\mathrm{K}^{-1}$]')
+plt.ylim(0, 0.000015)
 
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
