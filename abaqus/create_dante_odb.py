@@ -20,11 +20,12 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
     pickle_files = glob.glob(pickle_directory + '/*.pkl')
     data_dict = {}
     stress_file = [filename for filename in pickle_files if '_S.pkl' in filename][0]
-    prefix = os.path.basename(stress_file)[:-5]
-    print prefix
+    simulation_name = stress_file[-5:]
+    print simulation_name
     for pickle_file in pickle_files:
-
-        with open(pickle_directory + '/' + pickle_file, 'r') as pickle_handle:
+        prefix = pickle_file[len(simulation_name):-4]
+        print prefix
+        with open(pickle_file, 'r') as pickle_handle:
             pickle.load(pickle_handle)
             pickle.load(pickle_handle)
             data_dict[prefix] = pickle.load(pickle_handle)
