@@ -55,6 +55,7 @@ plt.gca().add_artist(legend)
 plt.xlabel('Carbon')
 plt.ylabel(r'Heat Expansion [$\mathrm{K}^{-1}$]')
 plt.ylim(0, 0.000015)
+plt.savefig(r'D:\Meeting Dante 20190122\heat_expansion.png')
 
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
