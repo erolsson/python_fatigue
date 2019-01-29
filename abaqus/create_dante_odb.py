@@ -1,8 +1,10 @@
 from odbAccess import *
 from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
+import glob
 import os
 import pickle
+import re
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
@@ -15,11 +17,13 @@ from materials.hardess_convertion_functions import HRC2HV
 
 
 def create_dante_step(odb_name, pickle_directory, results_step_name):
-    pickle_files = os.listdir(pickle_directory)
+    pickle_files = glob.glob(pickle_directory + '/*.pkl')
     data_dict = {}
+    stress_file = [filename for filename in pickle_files if '_S.pkl' in filename][0]
+    prefix = stress_file[:5]
+    print prefix
     for pickle_file in pickle_files:
-        prefix = pickle_file[len('Toolbox_Mechanical_0_5_quarter_'):]
-        prefix = prefix[:-4]
+
         with open(pickle_directory + '/' + pickle_file, 'r') as pickle_handle:
             pickle.load(pickle_handle)
             pickle.load(pickle_handle)
@@ -57,7 +61,7 @@ def create_dante_step(odb_name, pickle_directory, results_step_name):
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
     base_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/heat_treatment/mesh_1x/fem_results/'
-    base_pickle_directory += 'tempering_2h_180C_20190122/'
+    base_pickle_directory += 'tempering_2h_180C_20190129/'
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
@@ -69,7 +73,7 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_180C.odb_20190122'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_180C.odb_20190129'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
