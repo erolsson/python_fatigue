@@ -1,4 +1,5 @@
 from collections import namedtuple
+import os
 
 import odbAccess
 from visualization import *
@@ -67,6 +68,9 @@ if __name__ == '__main__':
         odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C_20190122.odb'
         pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_20190122/' \
                                   'dante_results_' + cd + '.pkl'
+        pickle_directory = os.path.dirname(pickle_name)
+        if not os.path.isdir(pickle_directory):
+            os.makedirs(pickle_directory)
         write_root_pickle(odb_name, step_name='dante_results_' + str(cd), result_pickle_name=pickle_name)
 
 
