@@ -3,7 +3,6 @@ import os
 
 import odbAccess
 from visualization import *
-import xyPlot
 
 from abaqusConstants import *
 

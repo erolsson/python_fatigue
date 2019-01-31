@@ -2,9 +2,7 @@ from odbAccess import *
 from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import glob
-import os
 import pickle
-import re
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
