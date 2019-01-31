@@ -23,6 +23,9 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     if 'NT11' in scalar_variables:
         scalar_variables.remove('NT11')
 
+    if 'U' in scalar_variables:
+        scalar_variables.remove('U')
+
     if 'S' in scalar_variables:
         scalar_variables.remove('S')
 
