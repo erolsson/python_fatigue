@@ -19,7 +19,7 @@ if __name__ == '__main__':
         os.makedirs(dante_odb_path)
     for specimen in ['smooth', 'notched']:
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen +  \
-                          '/utmis_' + specimen + '_geo.inc'
+                          '/utmis_' + specimen + '.inc'
         nodes, elements = read_nodes_and_elements(input_file_name)
         instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
         odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
