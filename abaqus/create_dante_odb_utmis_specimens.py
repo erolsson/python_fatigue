@@ -28,6 +28,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
 
     data_dict = {}
     for scalar_variable in scalar_variables:
+        print "reading variable", scalar_variable
         data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, last_step_name, -1)
     data_dict['S'] = read_field_from_odb('S', from_odb_name, last_step_name, -1)
 
