@@ -38,12 +38,12 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
 
     stress = data_dict['S']
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=to_odb_name, step_name=results_step_name,
-                       instance_name='tooth_right', frame_number=0,
+                       instance_name='specimen_part', frame_number=0,
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
     hv = HRC2HV(data_dict['SDV_HARDNESS'])
     write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=to_odb_name, step_name=results_step_name,
-                       instance_name='tooth_right', frame_number=0)
+                       instance_name='specimen_part', frame_number=0)
 
 
 if __name__ == '__main__':
