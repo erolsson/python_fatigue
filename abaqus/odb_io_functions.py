@@ -15,7 +15,7 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, element_set_name=None, instance_name=None,
                         coordinate_system=None, rotating_system=False, position=ELEMENT_NODAL,
                         get_position_numbers=False, get_frame_value=False):
-    odb = odbAccess.openOdb(odb_file_name, readOnly=True)
+    odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 
     if instance_name is None:
         element_base = odb.rootAssembly
