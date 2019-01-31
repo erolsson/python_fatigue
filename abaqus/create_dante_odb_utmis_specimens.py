@@ -59,6 +59,6 @@ if __name__ == '__main__':
         odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
-        simulation_odb = '/scratch/users/erik/utmis_' + specimen + '/utmis_' + specimen + '_0_5/Toolbox_Mechanical_' \
-                                                                                          'utmis_' + specimen + '.odb'
+        simulation_odb = '/scratch/users/erik/utmis_' + specimen + '20190130/' \
+            'utmis_' + specimen + '_0_5/Toolbox_Mechanical_utmis_' + specimen + '.odb'
         create_dante_step(simulation_odb, odb_file_name, 'dante_results_0_5')
