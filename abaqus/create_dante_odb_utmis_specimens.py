@@ -16,7 +16,7 @@ from materials.hardess_convertion_functions import HRC2HV
 
 def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     # Inspect the odb to get available data
-    from_odb = openOdb(from_odb_name, readOnly=True)
+    from_odb = openOdb(from_odb_name, readOnly=False)
     last_step = from_odb.steps.items()[-1][1]
     scalar_variables = last_step.frames[-1].fieldOutputs.keys()
     from_odb.close()
