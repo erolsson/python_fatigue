@@ -17,7 +17,7 @@ simulations = [Simulation(CD=0.5, times=[90.], temperatures=[840.], carbon=[0.8]
 
 current_directory = os.getcwd()
 for specimen_name in ['utmis_smooth', 'utmis_notched']:
-    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20180201/')
+    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190201/')
     write_geometry_files_for_dante('../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc',
                                    simulation_directory, specimen_name, str_to_remove_from_set_names='Specimen_')
 
