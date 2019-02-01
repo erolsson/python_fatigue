@@ -12,9 +12,7 @@ from materials.gear_materials import SS2506
 tempering = (180, 7200)
 
 Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
-simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                          tempering=tempering),
-               Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+simulations = [Simulation(CD=0.5, times=[90.], temperatures=[840.], carbon=[0.8],
                           tempering=tempering)]
 
 current_directory = os.getcwd()
