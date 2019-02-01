@@ -1,9 +1,12 @@
+from collections import namedtuple
 import numpy as np
 
 from visualization import *
 import xyPlot
 
 from abaqusConstants import *
+
+Path = namedtuple('Path', ['name', 'data', 'normal'])
 
 
 def create_path(points, path_name, session):
