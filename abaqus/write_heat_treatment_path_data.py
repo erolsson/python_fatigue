@@ -14,7 +14,8 @@ from path_functions import get_stress_tensors_from_path
 from path_functions import get_scalar_field_from_path
 
 
-def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, step_name=None, frame_number=None):
+def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, session=session,
+                                         step_name=None, frame_number=None):
     odb = odbAccess.openOdb(data_odb_name)
 
     session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
@@ -70,11 +71,11 @@ if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
         main_path = '/scratch/users/erik/scania_gear_analysis'
         odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C_20190129.odb'
-        pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_20190129/' \
-                                  'dante_results_' + cd + '.pkl'
-        pickle_directory = os.path.dirname(pickle_name)
+        dante_pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_20190129/' \
+                                        'dante_results_' + cd + '.pkl'
+        pickle_directory = os.path.dirname(dante_pickle_name)
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
-        write_root_pickle(odb_name, step_name='dante_results_' + str(cd), result_pickle_name=pickle_name)
+        write_root_pickle(odb_name, step_name='dante_results_' + str(cd), result_pickle_name=dante_pickle_name)
 
 
