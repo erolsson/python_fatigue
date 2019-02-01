@@ -64,7 +64,8 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 
     for path in paths:
         result_pickle_name = result_pickle_name[:-4] + '_' + path.name + '.pkl'
-        write_case_hardening_data_along_path(data_odb_name, path, result_pickle_name, step_name, frame_number)
+        write_case_hardening_data_along_path(data_odb_name, path, result_pickle_name, session=session,
+                                             step_name, frame_number)
 
 
 if __name__ == '__main__':
