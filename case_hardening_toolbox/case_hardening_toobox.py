@@ -7,6 +7,7 @@ from diffusitivity import write_diffusion_file
 
 from materials.gear_materials import SS2506
 
+
 class CarburizationData:
     def __init__(self, time, temperature, carbon):
         self.time = time
