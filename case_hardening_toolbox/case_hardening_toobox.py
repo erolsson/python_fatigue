@@ -570,11 +570,11 @@ class CaseHardeningToolbox:
                       'cd $PBS_O_WORKDIR',
                       'export LD_PRELOAD=\"\"',
                       'abq=' + self.abaqus_path,
-                      'usersub_dir='+ self.dante_file,
+                      'usersub_dir=' + self.dante_file,
                       'export DANTE_PATH=\'' + self.dante_path + '/DANTEDB3_6\'',
                       '',
                       'sim_name=' + self.name,
-                      'carbon_exp_script=' + self.dante_path + '/carbonFieldExport.py',
+                      'carbon_exp_script=' + self.dante_path + '/python/carbonFieldExport.py',
                       '${abq} j=Toolbox_Carbon_${sim_name} cpus=8 interactive',
                       '${abq} python ${carbon_exp_script} odbFileName=Toolbox_Carbon_${sim_name}.odb '
                       'carbonFileName=Toolbox_Carbon_${sim_name}.nod',
