@@ -14,7 +14,7 @@ from path_functions import get_stress_tensors_from_path
 from path_functions import get_scalar_field_from_path
 
 
-def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, session=session,
+def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, session,
                                          step_name=None, frame_number=None):
     odb = odbAccess.openOdb(data_odb_name)
 
@@ -64,7 +64,7 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 
     for path in paths:
         result_pickle_name = result_pickle_name[:-4] + '_' + path.name + '.pkl'
-        write_case_hardening_data_along_path(data_odb_name, path, result_pickle_name, session=session,
+        write_case_hardening_data_along_path(data_odb_name, path, result_pickle_name, session,
                                              step_name, frame_number)
 
 
