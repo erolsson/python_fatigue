@@ -581,7 +581,7 @@ class CaseHardeningToolbox:
                       '${abq} j=Toolbox_Thermal_${sim_name} cpus=8 interactive user=${usersub_dir}',
                       '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}']
 
-        with open('run_heat_treatment_sim', 'w') as shell_file:
+        with open('run_heat_treatment_sim.sh', 'w') as shell_file:
             for line in file_lines:
                 shell_file.write(line + '\n')
 
