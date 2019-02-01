@@ -5,7 +5,9 @@ import shutil
 from case_hardening_toobox import CaseHardeningToolbox
 from case_hardening_toobox import write_geometry_files_for_dante
 
-from planetary_gear.carbon.diffusitivity import write_diffusion_file
+from diffusitivity import write_diffusion_file
+
+from materials.gear_materials import SS2506
 
 tempering = (180, 7200)
 
@@ -17,12 +19,14 @@ simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930.
 
 current_directory = os.getcwd()
 for specimen_name in ['utmis_smooth', 'utmis_notched']:
-    simulation_directory = specimen_name + '/'
+    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20180201/')
     write_geometry_files_for_dante('../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc',
                                    simulation_directory, specimen_name, str_to_remove_from_set_names='Specimen_')
 
+    bc_file = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '_BC.inc'
     shutil.copyfile('data_files/diffusivity_2506.inc', simulation_directory + '/diffusivity_2506.inc')
     shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')
+    shutil.copyfile(bc_file, simulation_directory + '/' + specimen_name + '_BC.inc')
     for simulation in simulations:
 
         toolbox_writer = CaseHardeningToolbox(name=specimen_name,
@@ -50,5 +54,5 @@ for specimen_name in ['utmis_smooth', 'utmis_notched']:
         toolbox_writer.write_files()
         os.chdir(current_directory)
 
-    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc')
+    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc', SS2506)
 

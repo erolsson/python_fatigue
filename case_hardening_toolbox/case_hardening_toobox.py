@@ -3,8 +3,9 @@ import os
 import shutil
 
 from input_file_reader.input_file_reader import InputFileReader
-from planetary_gear.carbon.diffusitivity import write_diffusion_file
+from diffusitivity import write_diffusion_file
 
+from materials.gear_materials import SS2506
 
 class CarburizationData:
     def __init__(self, time, temperature, carbon):
@@ -61,6 +62,14 @@ class CaseHardeningToolbox:
 
         self.total_time = 0.
         self.thermal_step_counter = 1
+
+        self.dante_file = '/scratch/users/erik/Dante/Abaqus_Link/DANTE_Library/dante3_7f_pr1/abq2018_linux/' \
+                          'dante3_7f_pr1-std.o'
+        self.abaqus_path = '/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher'
+        self.dante_path = '/scratch/users/erik/Dante/'
+
+        self.write_env_file = True
+        self.write_run_file = True
 
     def _init_carbon_file_lines(self):
         return ['**',
@@ -536,6 +545,46 @@ class CaseHardeningToolbox:
                     inp_file.write(line + '\n')
                 inp_file.write('**EOF')
 
+        if self.write_env_file:
+            self._write_env_file()
+
+        if self.write_run_file:
+            self._write_run_file()
+
+    def _write_env_file(self):
+        file_lines = ['# Settings for dante',
+                      'usub_lib_dir=\'' + os.path.dirname(self.dante_file) + '\'',
+                      '',
+                      '# MPI Configuration',
+                      'mp_mode = MPI']
+
+        with open('abaqus_v6.env', 'w') as env_file:
+            for line in file_lines:
+                env_file.write(line + '\n')
+
+    def _write_run_file(self):
+        file_lines = ['#!/bin/bash',
+                      '#PBS -V',
+                      '#PBS -z',
+                      '#PBS -l select=1:ncpus=8',
+                      'cd $PBS_O_WORKDIR',
+                      'export LD_PRELOAD=\"\"',
+                      'abq=' + self.abaqus_path,
+                      'usersub_dir='+ self.dante_file,
+                      'export DANTE_PATH=\'' + self.dante_path + '/DANTEDB3_6\'',
+                      '',
+                      'sim_name=' + self.name,
+                      'carbon_exp_script=' + self.dante_path + '/carbonFieldExport.py',
+                      '${abq} j=Toolbox_Carbon_${sim_name} cpus=8 interactive',
+                      '${abq} python ${carbon_exp_script} odbFileName=Toolbox_Carbon_${sim_name}.odb '
+                      'carbonFileName=Toolbox_Carbon_${sim_name}.nod',
+                      '${abq} j=Toolbox_Thermal_${sim_name} cpus=8 interactive user=${usersub_dir}',
+                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}']
+
+        with open('run_heat_treatment_sim', 'w') as shell_file:
+            for line in file_lines:
+                shell_file.write(line + '\n')
+
 
 def write_geometry_files_for_dante(geometry_data_file, directory_to_write, dante_include_file_name,
                                    str_to_remove_from_set_names=''):
@@ -604,5 +653,5 @@ if __name__ == '__main__':
         toolbox_writer.write_files()
         os.chdir(current_directory)
 
-    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc')
+    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc', SS2506)
     shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')

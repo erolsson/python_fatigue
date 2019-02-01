@@ -1,21 +1,28 @@
 import numpy as np
 
 
-def LeeChesterTyne(temp, carbon):
-    C = 100*carbon
-    D0 = 0.146-0.036*C*(1-1.075*0.6)+0.97*-0.0315+0.2*0.0509+0.36*-0.0085+0.7*0.3031+0.27*-0.0520
-    E0 = 144.3-15.0*C+0.37*C**2+0.97*-4.3663+0.2*4.0507+0.36*-1.2407+0.7*12.1266+0.27*6.7886+0.6*7.7260
+def lee_chester_tyne(temp, carbon, material):
+    carbon = 100*carbon
+    mn = material.composition.get('Mn', 0)
+    cr = material.composition.get('Cr', 0)
+    si = material.composition.get('Si', 0)
+    ni = material.composition.get('Ni', 0)
+    mo = material.composition.get('Mo', 0)
+    al = material.composition.get('Al', 0)
+
+    D0 = 0.146-0.036*carbon*(1-1.075*cr)+mn*-0.0315+si*0.0509+ni*-0.0085+mo*0.3031+al*-0.0520
+    E0 = 144.3-15.0*carbon+0.37*carbon**2+mn*-4.3663+si*4.0507+ni*-1.2407+mo*12.1266+al*6.7886+cr*7.7260
     return D0*np.exp(-E0/8.314E-3/(temp+273))*100
 
 
-def write_diffusion_file(filename):
+def write_diffusion_file(filename, material):
     file_lines = []
     carbon = np.arange(0.002, 0.012, 0.0005)
     temperature = np.arange(750, 1150, 10)
 
     for temp in temperature:
         for carb in carbon:
-            file_lines.append('\t' + str(LeeChesterTyne(temp, carb)) + ', ' + str(carb) + ', ' + str(temp))
+            file_lines.append('\t' + str(lee_chester_tyne(temp, carb, material)) + ', ' + str(carb) + ', ' + str(temp))
 
     with open(filename, 'w') as diffusion_file:
         for line in file_lines:
@@ -50,7 +57,7 @@ if __name__ == '__main__':
             plt.plot(sub_data[:, 2], sub_data[:, 0])
 
             if i == 1:
-                plt.plot(T, LeeChesterTyne(T, carbon_level), '--')
+                plt.plot(T, lee_chester_tyne(T, carbon_level), '--')
 
     # writing the file with diffusion data
 

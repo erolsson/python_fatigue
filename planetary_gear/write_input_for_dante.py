@@ -6,7 +6,7 @@ from input_file_reader.input_file_functions import write_geom_include_file
 from gear_input_file_functions import create_quarter_model
 from gear_input_file_functions import write_sets_file
 
-from carbon.diffusitivity import write_diffusion_file
+from diffusitivity import write_diffusion_file
 
 
 def write_input_files(sim_data, simulation_directory):
