@@ -12,12 +12,12 @@ from materials.gear_materials import SS2506
 tempering = (180, 7200)
 
 Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
-simulations = [Simulation(CD=0.5, times=[150.], temperatures=[840.], carbon=[0.75],
+simulations = [Simulation(CD=0.5, times=[180.], temperatures=[840.], carbon=[0.75],
                           tempering=tempering)]
 
 current_directory = os.getcwd()
 for specimen_name in ['utmis_smooth', 'utmis_notched']:
-    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190202/')
+    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190203/')
     write_geometry_files_for_dante('../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc',
                                    simulation_directory, specimen_name, str_to_remove_from_set_names='Specimen_')
 
