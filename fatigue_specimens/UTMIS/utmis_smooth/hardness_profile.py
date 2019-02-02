@@ -23,8 +23,6 @@ simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_spe
 with open(simulation_pickle, 'r') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 
-print dante_data
-
-plt.plot(dante_data['r'], dante_data['HV'])
+plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1])
 
 plt.show()
