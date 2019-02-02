@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     if not os.path.isdir(dante_odb_path):
         os.makedirs(dante_odb_path)
-    for specimen in ['smooth', 'notched']:
+    for specimen in ['smooth']:
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen +  \
                           '/utmis_' + specimen + '.inc'
         nodes, elements = read_nodes_and_elements(input_file_name)
