@@ -25,4 +25,7 @@ with open(simulation_pickle, 'r') as pickle_handle:
 
 plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1])
 
+plt.figure(2)
+plt.plot(dante_data['r'][:-1], dante_data['S'][:-1])
+
 plt.show()
