@@ -15,6 +15,13 @@ def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_n
     field_vars = ['HV']
     dante_dict = {}
 
+    if instance_name is None:
+        odb = odbAccess.openOdb(odb_file_name, readOnly=True)
+        instance_names = odb.rootAssembly.instances.keys()
+        if len(instance_names) == 1:
+            instance_name = instance_names[0]
+        else:
+            raise ValueError('odb has multiple instances, please specify an instance')
     for var in field_vars:
         dante_dict[var] = read_field_from_odb(var, odb_file_name, step_name, frame_number=0,
                                               element_set_name=fatigue_set_name, instance_name=instance_name)
