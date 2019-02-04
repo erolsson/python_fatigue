@@ -1,4 +1,4 @@
-with open('fatigue_volume_nodes_notched.inc', 'w') as inc_file:
+with open('fatigue_volume_elements_notched.inc', 'w') as inc_file:
     counter = 0
     file_string = ''
     for label in range(29321, 68520+1):
