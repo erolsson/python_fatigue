@@ -1,6 +1,6 @@
 import os
 
-from odbAccess import *
+import odbAccess
 
 import pickle
 
