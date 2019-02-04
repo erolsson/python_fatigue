@@ -11,15 +11,15 @@ from odb_io_functions import cylindrical_system_z
 from write_nodal_coordinates import get_list_from_set_file
 
 
-def write_pickle_for_case_depth(odb_file_name, case_depth, pickle_file_name, fatigue_set_name, tooth_half='left'):
+def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_name=None, instance_name=None):
     field_vars = ['HV']
     dante_dict = {}
-    step_name = 'dante_results_' + str(case_depth).replace('.', '_')
+
     for var in field_vars:
         dante_dict[var] = read_field_from_odb(var, odb_file_name, step_name, frame_number=0,
-                                              element_set_name=fatigue_set_name, instance_name='tooth_' + tooth_half)
+                                              element_set_name=fatigue_set_name, instance_name=instance_name)
     residual_stress = read_field_from_odb('S', odb_file_name, step_name, frame_number=0,
-                                          element_set_name=fatigue_set_name,  instance_name='tooth_' + tooth_half,
+                                          element_set_name=fatigue_set_name,  instance_name=instance_name,
                                           coordinate_system=cylindrical_system_z)
 
     dante_dict['S'] = residual_stress
@@ -45,5 +45,6 @@ if __name__ == '__main__':
 
         for cd in [0.5, 0.8, 1.1, 1.4]:
             pickle_name = pickle_directory + 'data_' + str(cd).replace('.', '_') + '_' + part + '.pkl'
-            write_pickle_for_case_depth(dante_odb_filename, cd, pickle_name, 'tooth_root_volume_elements',
-                                        tooth_half=part)
+            step = 'dante_results_' + str(cd).replace('.', '_')
+            write_dante_pickle(dante_odb_filename, step, pickle_name, 'tooth_root_volume_elements',
+                               instance_name='tooth_' + part)
