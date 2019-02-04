@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
         element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
                                                 element_set_name + '_' + specimen + '.inc')
+        print element_labels
         dante_odb_filename = dante_odb_path + 'utmis_' + specimen + '.odb'
         add_element_set(dante_odb_filename, element_set_name, element_labels)
         if not os.path.isdir(pickle_directory):
