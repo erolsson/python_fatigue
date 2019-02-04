@@ -184,7 +184,7 @@ def add_element_set(odb_file_name, element_set_name, labels, instance_name=None)
         if len(odb.rootAssembly.instances) == 1:
             base = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
         else:
-            raise ValueError("odb has multiple instances, please specify an instance")
+            raise ValueError('odb has multiple instances, please specify an instance')
     if element_set_name not in base.elementSets:
         base.ElementSetFromElementLabels(name=element_set_name, elementLabels=labels)
     odb.save()

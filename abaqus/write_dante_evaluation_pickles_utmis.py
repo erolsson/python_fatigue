@@ -21,4 +21,4 @@ if __name__ == '__main__':
             os.makedirs(pickle_directory)
 
         pickle_name = pickle_directory + 'data_utmis_' + specimen + '.pkl'
-        write_dante_pickle(dante_odb_filename, 'dante_results_0_5', pickle_name, 'tooth_root_volume_elements')
+        write_dante_pickle(dante_odb_filename, 'dante_results_0_5', pickle_name, element_set_name)
