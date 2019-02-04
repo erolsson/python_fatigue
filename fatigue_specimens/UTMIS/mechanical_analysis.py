@@ -21,7 +21,7 @@ except ImportError:
 from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClass
 from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenClass
 
-simulation_directory = r'D:\AForsk2018\UTMIS-specimens'
+simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
 
 
 specimen_name = sys.argv[-1]
