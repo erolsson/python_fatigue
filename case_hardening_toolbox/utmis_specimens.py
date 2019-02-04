@@ -14,7 +14,7 @@ tempering = (180, 7200)
 Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
 simulations = [Simulation(CD=0.5, times=[180.], temperatures=[840.], carbon=[0.75],
                           tempering=tempering)]
-
+#
 current_directory = os.getcwd()
 for specimen_name in ['utmis_smooth', 'utmis_notched']:
     simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190204/')
