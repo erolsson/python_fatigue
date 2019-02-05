@@ -15,8 +15,8 @@ a800 = float(sys.argv[3])
 
 dante_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
 mechanical_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/'
-findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/ + ' \
-                           'a800=' + str(a800) + '/'
+findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/' + \
+                           'a800=' + str(a800).replace('.', '_') + '/'
 
 if not os.path.isdir(findley_pickle_directory):
     os.makedirs(findley_pickle_directory)
