@@ -38,9 +38,9 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
     print len(element_set.elements)
     if frame_number == -1:
         frame_number = len(odb.steps[step_name].frames) - 1
-    field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
+    field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id]..getSubset(position=position)
     print len(field.values)
-    field = field.getSubset(position=position)
+    field = field.getSubset(region=element_set)
     print len(field.values)
     frame_value = odb.steps[step_name].frames[frame_number].frameValue
     if coordinate_system is not None:
