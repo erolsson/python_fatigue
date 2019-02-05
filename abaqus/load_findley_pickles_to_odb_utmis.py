@@ -10,7 +10,10 @@ from odb_io_functions import write_field_to_odb
 from create_odb import create_odb
 from create_odb import OdbInstance
 
+from write_nodal_coordinates import get_list_from_set_file
+
 if __name__ == '__main__':
+    element_set_name = 'fatigue_volume_elements'
     odb_file_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/findley/utmis/')
     findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'
 
@@ -25,10 +28,16 @@ if __name__ == '__main__':
         instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
 
         create_odb(odb_file_name, instances)
+        element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
+                                                element_set_name + '_' + specimen + '.inc')
+        add_element_set(odb_file_name, element_set_name, element_labels)
 
         for R in [0, -1]:
             pickle_filenames = glob.glob(findley_pickle_directory + 'findley_' + specimen + '_R=' + str(int(R)) + '_'
                                          + 's=*.pkl')
-            print pickle_filenames
-            stress_amps = [filename[-7:-4] for filename in pickle_filenames]
-            print stress_amps
+            stress_amps = [filename[-10:-7] for filename in pickle_filenames]
+            for pickle_file, load in zip(pickle_filenames, stress_amps):
+                with open(pickle_file, 'r') as pickle_handle:
+                    findley_stress = pickle.load(pickle_handle)
+                step_name = 'R=' + str(int(R)) + '_' + 'samp=' + str(load) + 'MPa'
+                write_field_to_odb(findley_stress, 'SF', odb_file_name, step_name, element_set_name)
