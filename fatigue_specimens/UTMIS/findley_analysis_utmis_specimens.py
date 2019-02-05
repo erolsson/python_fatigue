@@ -26,8 +26,8 @@ load_levels = {'smooth': {-1.: np.array([760.]),
 
 with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
-print "======== Unit load stress state =========="
 
+print "======== Unit load stress state =========="
 print "The maximum stress in the x-direction is ", np.max(mechanical_data[:, 0]), "MPa"
 print "The minimum stress in the x-direction is ", np.min(mechanical_data[:, 0]), "MPa"
 
