@@ -90,7 +90,7 @@ def write_field_to_odb(field_data, field_id, odb_file_name, step_name, instance_
         step = odb.steps[step_name]
 
     if instance_name is None:
-        instance = odb.rootAssembly.instances.items()[0]
+        instance = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
     else:
         instance = odb.rootAssembly.instances[instance_name]
 
