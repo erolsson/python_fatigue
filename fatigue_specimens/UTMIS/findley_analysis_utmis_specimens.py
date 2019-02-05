@@ -26,6 +26,10 @@ load_levels = {'smooth': {-1.: np.array([760.]),
 
 with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
+print "======== Unit load stress state =========="
+
+print "The maximum stress in the x-direction is ", np.max(mechanical_data[:, 0]), "MPa"
+print "The minimum stress in the x-direction is ", np.min(mechanical_data[:, 0]), "MPa"
 
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
@@ -33,15 +37,20 @@ n = dante_data['HV'].shape[0]
 
 for amplitude_stress in load_levels[specimen][R]:
     mean_stress = amplitude_stress*(1+R)/(1-R)
+
+    print "======== Mechanical stress state =========="
     print "sa =", amplitude_stress, "sm=", mean_stress
 
     max_stress = (mean_stress + amplitude_stress)*mechanical_data
     min_stress = (mean_stress - amplitude_stress)*mechanical_data
 
+    print "The maximum stress in the x-direction is ", np.max(max_stress[:, 0]), "MPa"
+    print "The minimum stress in the x-direction is ", np.min(min_stress[:, 0]), "MPa"
+
     stress_history = np.zeros((2, n, 6))
     stress_history[0, :, :] = min_stress + dante_data['S']
     stress_history[1, :, :] = max_stress + dante_data['S']
-
+    print "======== Combined stress state =========="
     print "The maximum stress in the x-direction is ", np.max(stress_history[1, :, 0]), "MPa"
     print "The minimum stress in the x-direction is ", np.min(stress_history[0, :, 0]), "MPa"
     steel_data = SteelData(HV=dante_data['HV'])
