@@ -27,7 +27,7 @@ if __name__ == '__main__':
         odb = odbAccess.openOdb(mechanical_odb_filename, readOnly=False)
         step_name = odb.steps.keys()[-1]
         odb.close()
-        stress = read_field_from_odb('S', mechanical_odb_filename, step_name, frame_number=0,
+        stress = read_field_from_odb('S', mechanical_odb_filename, step_name, frame_number=-1,
                                      element_set_name=element_set_name, instance_name='PART')
 
         print "The stress matrix has shape ", stress.shape, "for specimen", specimen
