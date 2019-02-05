@@ -24,10 +24,10 @@ load_levels = {'smooth': {-1.: np.array([760.]),
                'notched': {-1.: np.array([439.]),
                            0.0: np.array([237.])}}
 
-with open(dante_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
+with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
 
-with open(mechanical_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
+with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 n = dante_data['HV'].shape[0]
 
