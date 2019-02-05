@@ -26,8 +26,8 @@ if __name__ == '__main__':
         odb = odbAccess.openOdb(mechanical_odb_filename, readOnly=False)
         step_name = odb.steps.keys()[-1]
         odb.close()
-        stress = read_field_from_odb('S', mechanical_odb_filename, element_set_name, step_name, 0,
-                                     instance_name='PART')
+        stress = read_field_from_odb('S', mechanical_odb_filename, step_name, frame_number=0,
+                                     element_set_name=element_set_name, instance_name='PART')
 
         pickle_file_name = pickle_directory + 'unit_load_' + specimen + '.pkl'
         with open(pickle_file_name, 'w') as pickle_handle:
