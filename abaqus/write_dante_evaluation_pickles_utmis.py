@@ -2,6 +2,7 @@ import os
 from odb_io_functions import add_element_set
 
 from write_dante_evaluation_pickles_gear import write_dante_pickle
+from input_file_reader.input_file_reader import InputFileReader
 
 from write_nodal_coordinates import get_list_from_set_file
 
@@ -22,3 +23,10 @@ if __name__ == '__main__':
 
         pickle_name = pickle_directory + 'data_utmis_' + specimen + '.pkl'
         write_dante_pickle(dante_odb_filename, 'dante_results_0_5', pickle_name, element_set_name)
+
+        # Writes the nodal cooordnates
+        input_file_reader = InputFileReader()
+        input_file_reader.read_input_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' + 'utmis_' +
+                                          specimen + 'inc')
+
+        print input_file_reader.nodal_data.shape

@@ -31,17 +31,12 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
             element_base.ElementSet(name='ALL_ELEMENTS', elements=elements)
         element_set = element_base.elementSets['ALL_ELEMENTS']
     else:
-        print element_set_name
         element_set = element_base.elementSets[element_set_name]
 
-    print element_set
-    print len(element_set.elements)
     if frame_number == -1:
         frame_number = len(odb.steps[step_name].frames) - 1
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(position=position)
-    print len(field.values)
     field = field.getSubset(region=element_set)
-    print len(field.values)
     frame_value = odb.steps[step_name].frames[frame_number].frameValue
     if coordinate_system is not None:
         if coordinate_system.name not in odb.rootAssembly.datumCsyses:
@@ -63,7 +58,6 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
     # ToDo: raise exception if field is empty
     n1 = len(field)
     n2 = 1 if type(field[0].data) is float else len(field[0].data)
-    print "shape of the data is", n1, n2
     data = np.zeros((n1, n2))
     node_labels = []
     element_labels = []
