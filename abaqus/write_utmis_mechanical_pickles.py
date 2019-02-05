@@ -29,6 +29,7 @@ if __name__ == '__main__':
         stress = read_field_from_odb('S', mechanical_odb_filename, step_name, frame_number=0,
                                      element_set_name=element_set_name, instance_name='PART')
 
+        print "The stress matrix has shape ", stress.shape, "for specimen", specimen
         pickle_file_name = pickle_directory + 'unit_load_' + specimen + '.pkl'
         with open(pickle_file_name, 'w') as pickle_handle:
             pickle.dump(stress, pickle_handle)
