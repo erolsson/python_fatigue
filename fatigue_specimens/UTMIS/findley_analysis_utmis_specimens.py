@@ -11,10 +11,12 @@ from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 
 specimen = sys.argv[1]
 R = float(sys.argv[2])
+a800 = float(sys.argv[3])
 
 dante_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
 mechanical_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/'
-findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'
+findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/ + ' \
+                           'a800=' + str(a800) + '/'
 
 if not os.path.isdir(findley_pickle_directory):
     os.makedirs(findley_pickle_directory)
@@ -53,9 +55,12 @@ for amplitude_stress in load_levels[specimen][R]:
     print "======== Combined stress state =========="
     print "The maximum stress in the x-direction is ", np.max(stress_history[1, :, 0]), "MPa"
     print "The minimum stress in the x-direction is ", np.min(stress_history[0, :, 0]), "MPa"
-    steel_data = SteelData(HV=dante_data['HV'])
+    HV = dante_data['HV']
+    b = (a800 - 0.3)/(800-450)
+    a = a800 - b*800
 
-    findley_k = SS2506.findley_k(steel_data)
+    print "The findley parameter coefficients are a={} and b={}".format(a, b)
+    findley_k = a + b*HV
     print "The maximum value of the findley parameter is", np.max(findley_k), "and the minimum is", np.min(findley_k)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=80000,
                                     num_workers=8, chunk_size=1000, search_grid=10)
