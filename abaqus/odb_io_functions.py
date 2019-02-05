@@ -35,6 +35,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
         element_set = element_base.elementSets[element_set_name]
 
     print element_set
+    print len(element_set.elements)
     if frame_number == -1:
         frame_number = len(odb.steps[step_name].frames) - 1
     field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(region=element_set)
