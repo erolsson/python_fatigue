@@ -40,4 +40,4 @@ if __name__ == '__main__':
                 with open(pickle_file, 'r') as pickle_handle:
                     findley_stress = pickle.load(pickle_handle)
                 step_name = 'R=' + str(int(R)) + '_' + 'samp=' + str(load) + 'MPa'
-                write_field_to_odb(findley_stress, 'SF', odb_file_name, step_name, element_set_name)
+                write_field_to_odb(findley_stress, 'SF', odb_file_name, step_name, set_name=element_set_name)
