@@ -41,9 +41,13 @@ for amplitude_stress in load_levels[specimen][R]:
     stress_history = np.zeros((2, n, 6))
     stress_history[0, :, :] = min_stress + dante_data['S']
     stress_history[1, :, :] = max_stress + dante_data['S']
+
+    print "The maximum stress in the x-direction is ", np.max(stress_history[1, :, 0]), "MPa"
+    print "The minimum stress in the x-direction is ", np.min(stress_history[0, :, 0]), "MPa"
     steel_data = SteelData(HV=dante_data['HV'])
 
     findley_k = SS2506.findley_k(steel_data)
+    print "The maximum value of the findley parameter is", np.max(findley_k), "and the minimum is", np.min(findley_k)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=80000,
                                     num_workers=8, chunk_size=1000, search_grid=10)
 
