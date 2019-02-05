@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
         element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
                                                 element_set_name + '_' + specimen + '.inc')
-        add_element_set(mechanical_odb_filename, element_set_name, element_labels)
+        add_element_set(mechanical_odb_filename, element_set_name, element_labels, instance_name='PART')
 
         odb = odbAccess.openOdb(mechanical_odb_filename, readOnly=False)
         step_name = odb.rootAssembly.steps.keys()[-1]
