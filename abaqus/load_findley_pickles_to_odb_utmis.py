@@ -14,8 +14,6 @@ if __name__ == '__main__':
     odb_file_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/findley/utmis/')
     findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'
 
-
-
     if not os.path.isdir(odb_file_directory):
         os.makedirs(odb_file_directory)
 
