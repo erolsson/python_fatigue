@@ -50,7 +50,7 @@ for amplitude_stress in load_levels[specimen][R]:
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
-        findley_pickle_directory = '/sratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'\
+        findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'\
                                    + 'a800=' + str(a800).replace('.', '_') + '/'
 
         if not os.path.isdir(findley_pickle_directory):
