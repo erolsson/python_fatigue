@@ -4,9 +4,6 @@ import sys
 import pickle
 import numpy as np
 
-from materials.gear_materials import SS2506
-from materials.gear_materials import SteelData
-
 from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 
 specimen = sys.argv[1]
