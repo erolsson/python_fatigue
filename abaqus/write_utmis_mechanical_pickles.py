@@ -10,7 +10,7 @@ from write_nodal_coordinates import get_list_from_set_file
 
 if __name__ == '__main__':
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/'
-    element_set_name = 'tooth_root_volume_elements'
+    element_set_name = 'fatigue_volume_elements'
     odb_directory = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
 
     if not os.path.isdir(pickle_directory):
