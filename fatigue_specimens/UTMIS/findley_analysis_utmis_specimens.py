@@ -49,7 +49,7 @@ for amplitude_stress in load_levels[specimen][R]:
 
     findley_stress = findley_data[:, 2]
     print "Maximum Findley stress", np.max(findley_stress), 'MPa'
-    findley_pickle_name = 'findley_' + specimen + 'R=' + str(int(R)) + '_' + 's=' + str(int(amplitude_stress)) + \
+    findley_pickle_name = 'findley_' + specimen + '_R=' + str(int(R)) + '_' + 's=' + str(int(amplitude_stress)) + \
                           'MPa.pkl'
     with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
         pickle.dump(findley_stress, pickle_handle)
