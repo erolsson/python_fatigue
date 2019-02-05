@@ -24,7 +24,8 @@ if __name__ == '__main__':
         add_element_set(mechanical_odb_filename, element_set_name, element_labels, instance_name='PART')
 
         odb = odbAccess.openOdb(mechanical_odb_filename, readOnly=False)
-        step_name = odb.rootAssembly.steps.keys()[-1]
+        step_name = odb.steps.keys()[-1]
+        odb.close()
         stress = read_field_from_odb('S', mechanical_odb_filename, element_set_name, step_name, 0,
                                      instance_name='PART')
 
