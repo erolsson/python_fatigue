@@ -46,7 +46,7 @@ for amplitude_stress in load_levels[specimen][R]:
     print "======== Combined stress state =========="
     print "The maximum stress in the x-direction is ", np.max(stress_history[1, :, 0]), "MPa"
     print "The minimum stress in the x-direction is ", np.min(stress_history[0, :, 0]), "MPa"
-    for a800 in np.arange(0.7, 0.8, 0.05):
+    for a800 in np.arange(0.65, 0.8, 0.05):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
