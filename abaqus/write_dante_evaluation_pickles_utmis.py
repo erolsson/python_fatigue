@@ -24,9 +24,11 @@ if __name__ == '__main__':
         pickle_name = pickle_directory + 'data_utmis_' + specimen + '.pkl'
         write_dante_pickle(dante_odb_filename, 'dante_results_0_5', pickle_name, element_set_name)
 
-        # Writes the nodal cooordnates
+        # Writes the nodal coordinates
         input_file_reader = InputFileReader()
         input_file_reader.read_input_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' + 'utmis_' +
                                           specimen + 'inc')
 
         print input_file_reader.nodal_data.shape
+        print input_file_reader.nodal_data[0]
+        print input_file_reader.nodal_data[-1]
