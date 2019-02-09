@@ -18,16 +18,15 @@ def read_field_from_odb(field_id, odb_file_name, step_name, frame_number, elemen
     odb = odbAccess.openOdb(odb_file_name, readOnly=False)
 
     if instance_name is None:
-        element_base = odb.rootAssembly
+        if len(odb.rootAssembly.instances) == 1:
+            element_base = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
+        else:
+            raise ValueError('odb has multiple instances, please specify an instance')
     else:
         element_base = odb.rootAssembly.instances[instance_name]
     if element_set_name is None:
         if 'ALL_ELEMENTS' not in element_base.elementSets:
-            if instance_name is None:
-                instances = odb.rootAssembly.instances
-                elements = tuple([instances[i_name].elements for i_name in instances.keys()])
-            else:
-                elements = odb.rootAssembly.instances[instance_name].elements
+            elements = element_base.elements
             element_base.ElementSet(name='ALL_ELEMENTS', elements=elements)
         element_set = element_base.elementSets['ALL_ELEMENTS']
     else:
