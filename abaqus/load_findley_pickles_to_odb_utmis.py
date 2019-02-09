@@ -33,7 +33,6 @@ if __name__ == '__main__':
         add_element_set(odb_file_name, element_set_name, element_labels)
 
         findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
-        print findley_parameter_directories
         findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
                                          for directory in findley_parameter_directories]
         findley_parameters = [directory[5:] for directory in findley_parameter_directories]
