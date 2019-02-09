@@ -20,7 +20,7 @@ if __name__ == '__main__':
     if not os.path.isdir(odb_file_directory):
         os.makedirs(odb_file_directory)
 
-    for specimen in ['smooth']:
+    for specimen in ['notched']:
         odb_file_name = odb_file_directory + 'utmis_' + specimen + '.odb'
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
                           '/utmis_' + specimen + '.inc'
