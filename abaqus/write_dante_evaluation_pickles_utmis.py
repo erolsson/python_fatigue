@@ -27,7 +27,7 @@ if __name__ == '__main__':
         # Writes the nodal coordinates
         input_file_reader = InputFileReader()
         input_file_reader.read_input_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' + 'utmis_' +
-                                          specimen + 'inc')
+                                          specimen + '.inc')
 
         print input_file_reader.nodal_data.shape
         print input_file_reader.nodal_data[0]
