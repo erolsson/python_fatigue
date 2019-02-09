@@ -1,4 +1,7 @@
 import os
+import pickle
+
+import numpy as np
 
 from odb_io_functions import read_field_from_odb
 from odb_io_functions import add_element_set
@@ -36,12 +39,9 @@ if __name__ == '__main__':
         _, node_labels, _ = read_field_from_odb('HV', dante_odb_filename, step_name='dante_results_0_5', frame_number=0,
                                                 element_set_name=element_set_name, get_position_numbers=True)
 
-        for node_label in node_labels[:10]:
-            print  node_label, input_file_reader.nodal_data[node_label-1]
+        nodal_coordinates = np.zeros((len(node_labels), 3))
+        for i, node_label in enumerate(node_labels):
+            nodal_coordinates[i, :] = input_file_reader.nodal_data[node_label-1][1:]
 
-        print node_labels[0]
-        print node_labels[-1]
-
-        print input_file_reader.nodal_data.shape
-        print input_file_reader.nodal_data[0]
-        print input_file_reader.nodal_data[-1]
+        with open(pickle_directory + 'nodal_coordinates_' + specimen + '.pkl') as pickle_handle:
+            pickle.dump(nodal_coordinates, pickle_handle)
