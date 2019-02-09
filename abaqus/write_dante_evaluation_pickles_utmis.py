@@ -47,5 +47,5 @@ if __name__ == '__main__':
         if not os.path.isdir(pickle_directory_geometry):
             os.makedirs(pickle_directory_geometry)
 
-        with open(pickle_directory_geometry + 'nodal_coordinates_' + specimen + '.pkl') as pickle_handle:
+        with open(pickle_directory_geometry + 'nodal_coordinates_' + specimen + '.pkl', 'w') as pickle_handle:
             pickle.dump(nodal_coordinates, pickle_handle)
