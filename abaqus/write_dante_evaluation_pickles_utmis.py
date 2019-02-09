@@ -44,5 +44,8 @@ if __name__ == '__main__':
         for i, node_label in enumerate(node_labels):
             nodal_coordinates[i, :] = input_file_reader.nodal_data[node_label-1][1:]
 
-        with open(pickle_directory + 'nodal_coordinates_' + specimen + '.pkl') as pickle_handle:
+        if not os.path.isdir(pickle_directory_geometry):
+            os.makedirs(pickle_directory_geometry)
+
+        with open(pickle_directory_geometry + 'nodal_coordinates_' + specimen + '.pkl') as pickle_handle:
             pickle.dump(nodal_coordinates, pickle_handle)
