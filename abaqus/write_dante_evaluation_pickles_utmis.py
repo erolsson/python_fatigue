@@ -15,6 +15,7 @@ from write_nodal_coordinates import get_list_from_set_file
 if __name__ == '__main__':
     element_set_name = 'fatigue_volume_elements'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
+    pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/geometry/'
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
 
     for specimen in ['smooth', 'notched']:
