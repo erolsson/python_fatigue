@@ -36,6 +36,9 @@ if __name__ == '__main__':
         _, node_labels, _ = read_field_from_odb('HV', dante_odb_filename, step_name='dante_results_0_5', frame_number=0,
                                                 element_set_name=element_set_name, get_position_numbers=True)
 
+        for node_label in node_labels[:10]:
+            print  node_label, input_file_reader.nodal_data[node_label-1]
+
         print node_labels[0]
         print node_labels[-1]
 
