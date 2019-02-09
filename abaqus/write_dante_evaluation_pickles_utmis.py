@@ -1,4 +1,6 @@
 import os
+
+from odb_io_functions import read_field_from_odb
 from odb_io_functions import add_element_set
 
 from write_dante_evaluation_pickles_gear import write_dante_pickle
@@ -28,6 +30,14 @@ if __name__ == '__main__':
         input_file_reader = InputFileReader()
         input_file_reader.read_input_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' + 'utmis_' +
                                           specimen + '.inc')
+
+        # get the node labels by reading HV
+
+        _, node_labels, _ = read_field_from_odb('HV', dante_odb_filename, step_name='dante_results_0_5', frame_number=0,
+                                                element_set_name=element_set_name)
+
+        print node_labels[0]
+        print node_labels[-1]
 
         print input_file_reader.nodal_data.shape
         print input_file_reader.nodal_data[0]
