@@ -32,6 +32,9 @@ if __name__ == '__main__':
                                                 element_set_name + '_' + specimen + '.inc')
         add_element_set(odb_file_name, element_set_name, element_labels)
 
+        findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
+        print findley_parameter_directories
+        dfsd
         for R in [0, -1]:
             pickle_filenames = glob.glob(findley_pickle_directory + 'findley_' + specimen + '_R=' + str(int(R)) + '_'
                                          + 's=*.pkl')
