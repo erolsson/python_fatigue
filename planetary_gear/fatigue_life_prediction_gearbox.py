@@ -7,8 +7,8 @@ import matplotlib
 
 from materials.gear_materials import SteelData
 
-from weakest_link.weakest_link_gear import FEM_data
-from weakest_link.weakest_link_gear import WeakestLinkEvaluatorGear
+from weakest_link.weakest_link_evaluator import FEM_data
+from weakest_link.weakest_link_evaluator import WeakestLinkEvaluator
 
 from multiprocesser.multiprocesser import multi_processer
 
@@ -48,7 +48,7 @@ def calculate_life(load, cd, size_factor):
                           steel_data=SteelData(HV=hardness),
                           nodal_positions=position)
 
-    wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=size_factor)
+    wl_evaluator = WeakestLinkEvaluator(data_volume=fem_volume, data_area=None, size_factor=size_factor)
     lives = 0*pf_levels
     for it, pf in enumerate(pf_levels):
         lives[it] = wl_evaluator.calculate_life_time(pf=pf, haiback=haiback)

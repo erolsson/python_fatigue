@@ -13,8 +13,8 @@ from planetary_gear.test_results import TestResults
 
 from testing.test_results_functions import plot_test_results
 
-from weakest_link.weakest_link_gear import FEM_data
-from weakest_link.weakest_link_gear import WeakestLinkEvaluatorGear
+from weakest_link.weakest_link_evaluator import FEM_data
+from weakest_link.weakest_link_evaluator import WeakestLinkEvaluator
 
 plt.rc('text', usetex=True)
 plt.rc('font', serif='Computer Modern Roman')
@@ -42,7 +42,7 @@ def calculate_life(load, cd, size_factor):
                           steel_data=steel_data_volume,
                           nodal_positions=position.reshape(n_vol / 8, 8, 3))
 
-    wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=size_factor)
+    wl_evaluator = WeakestLinkEvaluator(data_volume=fem_volume, data_area=None, size_factor=size_factor)
     lives = 0*pf_levels
     for it, pf in enumerate(pf_levels):
         lives[it] = wl_evaluator.calculate_life_time(pf=pf, haiback=haiback)

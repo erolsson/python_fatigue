@@ -11,8 +11,8 @@ from materials.gear_materials import SS2506MaterialTemplate
 
 from multiprocesser.multiprocesser import multi_processer
 
-from weakest_link.weakest_link_gear import WeakestLinkEvaluatorGear
-from weakest_link.weakest_link_gear import FEM_data
+from weakest_link.weakest_link_evaluator import WeakestLinkEvaluator
+from weakest_link.weakest_link_evaluator import FEM_data
 
 
 def calc_pf_for_simulation(cd, load, par):
@@ -33,7 +33,7 @@ def calc_pf_for_simulation(cd, load, par):
                           steel_data=steel_data_volume,
                           nodal_positions=position.reshape(n_vol / 8, 8, 3))
 
-    wl_evaluator = WeakestLinkEvaluatorGear(data_volume=fem_volume, data_area=None, size_factor=4)
+    wl_evaluator = WeakestLinkEvaluator(data_volume=fem_volume, data_area=None, size_factor=4)
     return wl_evaluator.calculate_pf(material=fit_material)
 
 

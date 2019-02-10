@@ -10,7 +10,7 @@ from materials.gear_materials import SS2506
 FEM_data = namedtuple('FEM_data', ['stress', 'steel_data', 'nodal_positions'])
 
 
-class WeakestLinkEvaluatorGear:
+class WeakestLinkEvaluator:
     def __init__(self, data_volume, data_area, size_factor=1):
         self.volume_data = data_volume
         self.area_data = data_area
