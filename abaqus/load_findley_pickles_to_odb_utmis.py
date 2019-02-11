@@ -48,7 +48,7 @@ if __name__ == '__main__':
                     print 'loading pickle file', pickle_file
                     with open(pickle_file, 'r') as pickle_handle:
                         findley_stress = pickle.load(pickle_handle)
-                    step_name = 'a800=' + findley_parameter + '_samp=' + str(load) + 'MPa'
+                    step_name = 'a800=' + findley_parameter
                     write_field_to_odb(findley_stress, 'SF_R=' + str(R), odb_file_name, step_name,
                                        frame_number=0, set_name=element_set_name)
                     print 'Done with step', step_name
