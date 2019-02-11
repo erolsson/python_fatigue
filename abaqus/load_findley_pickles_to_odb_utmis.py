@@ -20,7 +20,7 @@ if __name__ == '__main__':
     if not os.path.isdir(odb_file_directory):
         os.makedirs(odb_file_directory)
 
-    for specimen in ['smooth']:
+    for specimen in ['smooth', 'notched']:
         odb_file_name = odb_file_directory + 'utmis_' + specimen + '.odb'
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
                           '/utmis_' + specimen + '.inc'
@@ -48,6 +48,7 @@ if __name__ == '__main__':
                     print 'loading pickle file', pickle_file
                     with open(pickle_file, 'r') as pickle_handle:
                         findley_stress = pickle.load(pickle_handle)
-                    step_name = 'a800=' + findley_parameter + 'R=' + str(int(R)) + '_' + 'samp=' + str(load) + 'MPa'
-                    write_field_to_odb(findley_stress, 'SF', odb_file_name, step_name, set_name=element_set_name)
+                    step_name = 'a800=' + findley_parameter + '_samp=' + str(load) + 'MPa'
+                    write_field_to_odb(findley_stress, 'SF_R=' + str(R), odb_file_name, step_name,
+                                       set_name=element_set_name)
                     print 'Done with step', step_name
