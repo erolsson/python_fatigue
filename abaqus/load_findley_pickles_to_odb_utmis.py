@@ -37,8 +37,9 @@ if __name__ == '__main__':
                                          for directory in findley_parameter_directories]
         findley_parameters = [directory[5:] for directory in findley_parameter_directories]
         findley_parameters.sort(key=lambda x: float(x.replace('_', '.')))
-        for findley_parameter in findley_parameters:
-            for R in [0, -1]:
+        for R in [0, -1]:
+            for findley_parameter in findley_parameters:
+
                 pickle_filenames = glob.glob(findley_pickle_directory + 'a800=' + findley_parameter + '/findley_' +
                                              specimen + '_R=' + str(int(R)) + '_' + 's=*.pkl')
                 stress_amps = [filename[-10:-7] for filename in pickle_filenames]
