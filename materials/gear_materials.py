@@ -6,11 +6,12 @@ PhaseData = namedtuple('PhaseData', ['Martensite', 'Austenite', 'Bainite', 'Pear
 
 
 class SS2506MaterialTemplate:
-    def __init__(self, swa, swb, mb):
+    def __init__(self, sth_a, sth_b, su, mb):
         self.ne = np.log(1e5)
         self.ns = np.log(0.1)
         self.b = 5.
-        self.sw_par = [swa, swb]
+        self.sth_par = [sth_a, sth_b]
+        self.su = su
         self.m_par = [mb]
 
         self.name = 'SS2506'
@@ -34,11 +35,15 @@ class SS2506MaterialTemplate:
     def findley_k(steel_properties):
         return 0.017 + 8.27E-4*steel_properties.HV
 
+    def weibull_sth(self, steel_properties):
+        return self.sth_par[0] + self.sth_par[1]*steel_properties.HV
+
     def weibull_sw(self, steel_properties):
-        return self.sw_par[0] + self.sw_par[1]*steel_properties.HV
+        return self.su
 
     def weibull_m(self, steel_properties):
-        return self.m_par[0]/steel_properties.HV**2
+        # return self.m_par[0]/steel_properties.HV**2
+        return self.m_par[0]
 
     # Phase transformation data
     def _trans_strain_martensite(self, temperature, carbon):
@@ -112,7 +117,8 @@ class SS2506MaterialTemplate:
 
 
 # SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
-SS2506 = SS2506MaterialTemplate(swa=378, swb=0.175, mb=6.15e6)
+#SS2506 = SS2506MaterialTemplate(swa=378, swb=0.175, mb=6.15e6)
+SS2506 = None
 
 if __name__ == '__main__':
     # Testing the transformation functions

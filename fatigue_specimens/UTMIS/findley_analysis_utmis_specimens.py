@@ -12,10 +12,10 @@ R = float(sys.argv[2])
 dante_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
 mechanical_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/'
 
-load_levels = {'smooth': {-1.: np.array([760.]),
-                          0.0: np.array([424.])},
-               'notched': {-1.: np.array([439.]),
-                           0.0: np.array([237.])}}
+load_levels = {'smooth': {-1.: np.array([737., 774, 820]),
+                          0.0: np.array([425., 440])},
+               'notched': {-1.: np.array([427., 450]),
+                           0.0: np.array([225., 240, 255])}}
 
 with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
@@ -46,7 +46,7 @@ for amplitude_stress in load_levels[specimen][R]:
     print "======== Combined stress state =========="
     print "The maximum stress in the x-direction is ", np.max(stress_history[1, :, 0]), "MPa"
     print "The minimum stress in the x-direction is ", np.min(stress_history[0, :, 0]), "MPa"
-    for a800 in np.arange(0.65, 0.8, 0.05):
+    for a800 in np.arange(1.0, 1.7, 0.1):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='

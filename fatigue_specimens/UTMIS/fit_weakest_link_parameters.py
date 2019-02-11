@@ -23,7 +23,8 @@ def calc_pf_for_simulation(simulation, parameters):
     a800 = parameters[0]
     a1 = parameters[1]
     a2 = 0
-    b = parameters[2]
+    su = parameters[2]
+    b = parameters[3]
 
     idx = np.argsort(np.abs(evaluated_findley_parameters - a800))[:2]
     # Loading Findley pickles for the found values
@@ -48,13 +49,15 @@ def calc_pf_for_simulation(simulation, parameters):
     with open(pickle_directory_geometry + 'nodal_coordinates_' + simulation.specimen + '.pkl') as pickle_handle:
         nodal_positions = pickle.load(pickle_handle)
 
+    findley_stress[nodal_positions[:, 0] > 11.] = 0
+
     steel_data = SteelData(HV=dante_data['HV'].reshape(n/8, 8))
 
     fem_data = FEM_data(stress=findley_stress.reshape(n/8, 8),
                         steel_data=steel_data,
                         nodal_positions=nodal_positions.reshape(n/8, 8, 3))
 
-    fit_material = SS2506MaterialTemplate(a1, a2, b)
+    fit_material = SS2506MaterialTemplate(a1, a2, su, b)
     size_factor = 4
     if simulation.R < 0:
         size_factor = 8
@@ -65,10 +68,11 @@ def calc_pf_for_simulation(simulation, parameters):
 def residual(parameters, *data):
     simulation_list, = data
     job_list = [(calc_pf_for_simulation, (sim, parameters), {}) for sim in simulation_list]
-    pf_wl = multi_processer(job_list, timeout=100, delay=0)
-    r = np.sum((np.array(pf_wl) - 0.5) ** 2)
-    print parameters, pf_wl, r
-    return r
+    pf_wl = np.array(multi_processer(job_list, timeout=100, delay=0))
+    r = (pf_wl - 0.5) ** 2
+    r[abs(pf_wl - 0.5) < 0.15] = 0
+    print parameters, pf_wl, np.sum(r)
+    return np.sum(r)
 
 
 if __name__ == '__main__':
@@ -83,7 +87,7 @@ if __name__ == '__main__':
     evaluated_findley_parameters = [float(parameter.replace('_', '.')) for parameter in evaluated_findley_parameters]
     evaluated_findley_parameters = np.array(sorted(evaluated_findley_parameters))
 
-    par = [1.1, 1300, 1e6]
+    par = np.array([1.2, 1000, 1000, 20])
 
     simulations = [Simulation(specimen='smooth', R=-1., stress=760.),
                    Simulation(specimen='smooth', R=0., stress=424.),
