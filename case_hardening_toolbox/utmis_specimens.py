@@ -101,5 +101,6 @@ for simulation in simulations:
     toolbox_writer.write_files()
     os.chdir(current_directory)
 
+print material
 write_diffusion_file(filename=include_file_directory + diffusion_file_name,
                      material=material)
