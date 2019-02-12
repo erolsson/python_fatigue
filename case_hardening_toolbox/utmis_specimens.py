@@ -50,7 +50,7 @@ include_file_name = specimen_name
 interaction_property_file = 'data_files/interaction_properties.inc'
 
 # Name of the diffusion file, will be created in include_file_directory
-diffusion_file_name = 'diffusivity'
+diffusion_file_name = 'diffusivity.inc'
 
 # Material, needs a python dict with material composition to generate the diffusion file
 material = SS2506
