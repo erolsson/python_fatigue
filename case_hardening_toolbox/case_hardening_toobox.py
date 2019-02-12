@@ -30,12 +30,12 @@ class QuenchingData:
 
 
 class CaseHardeningToolbox:
-    def __init__(self, name, include_file_name):
+    def __init__(self, name, include_file_name, include_file_directory):
         """
         :param name:
         :param include_file_name:
         """
-        self.include_file_directory = ''
+        self._include_file_directory = include_file_directory + '/'
 
         self.name = name
         self.include_file_name = include_file_name
@@ -90,10 +90,10 @@ class CaseHardeningToolbox:
                 '** Load required include files',
                 '**',
                 '**   Load geometry',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + 'Toolbox_Carbon_' +
+                '*INCLUDE, INPUT = ' + self._include_file_directory + '/Toolbox_Carbon_' +
                 self.include_file_name + '_geo.inc',
                 '** Load geometry set definitions',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_sets.inc',
+                '*INCLUDE, INPUT = ' + self._include_file_directory + self.include_file_name + '_sets.inc',
                 '**',
                 '** ----------------------------------------------------------------',
                 '**',
@@ -110,7 +110,7 @@ class CaseHardeningToolbox:
                 '\t*Density',
                 '\t\t7.83e-06,',
                 '\t*Diffusivity',
-                '\t\t*INCLUDE, INPUT = ' + self.include_file_directory + self.diffusion_file,
+                '\t\t*INCLUDE, INPUT = ' + self._include_file_directory + self.diffusion_file,
                 '\t*Solubility',
                 '\t\t1.0',
                 '**',
@@ -135,10 +135,10 @@ class CaseHardeningToolbox:
                 '** Load required include files',
                 '**',
                 '**   Load geometry',
-                '*INCLUDE, INPUT = ' + self.include_file_directory +
+                '*INCLUDE, INPUT = ' + self._include_file_directory +
                 'Toolbox_Thermal_' + self.include_file_name + '_geo.inc',
                 '** Load geometry set definitions',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_sets.inc',
+                '*INCLUDE, INPUT = ' + self._include_file_directory + self.include_file_name + '_sets.inc',
                 '**',
                 '** ----------------------------------------------------------------',
                 '**',
@@ -169,7 +169,7 @@ class CaseHardeningToolbox:
                 '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                 '**',
                 '** ----------------------------------------------------------------',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.interaction_property_file,
+                '*INCLUDE, INPUT = ' + self._include_file_directory + self.interaction_property_file,
                 '** ----------------------------------------------------------------',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
@@ -198,10 +198,10 @@ class CaseHardeningToolbox:
                 '** Load required include files',
                 '**',
                 '**   Load geometry',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + 'Toolbox_Mechanical_'
+                '*INCLUDE, INPUT = ' + self._include_file_directory + 'Toolbox_Mechanical_'
                 + self.include_file_name + '_geo.inc',
                 '** Load geometry set definitions',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_sets.inc',
+                '*INCLUDE, INPUT = ' + self._include_file_directory + self.include_file_name + '_sets.inc',
                 '**',
                 '** ----------------------------------------------------------------',
                 '**',
@@ -244,7 +244,7 @@ class CaseHardeningToolbox:
                 '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
                 '\tALL_NODES , -8',
                 '**',
-                '*INCLUDE, INPUT = ' + self.include_file_directory + self.include_file_name + '_BC.inc']
+                '*INCLUDE, INPUT = ' + self._include_file_directory + self.include_file_name + '_BC.inc']
 
     def _write_carburization_step(self, step_name, t1, t2, carbon):
         self.carbon_file_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
@@ -635,7 +635,7 @@ if __name__ == '__main__':
     for simulation in simulations:
         toolbox_writer = CaseHardeningToolbox(name=str(simulation.CD).replace('.', '_') + '_quarter',
                                               include_file_name='VBC_quarter')
-        toolbox_writer.include_file_directory = '../'
+        toolbox_writer._include_file_directory = '../'
         toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
         toolbox_writer.interaction_property_file = 'interaction_properties.inc'
         toolbox_writer.heating_data.carbon = 0.5

@@ -72,11 +72,10 @@ shutil.copyfile(bc_file, include_file_directory + '/' + include_file_name + '_BC
 shutil.copyfile(interaction_property_file, include_file_directory + '/interaction_properties.inc')
 
 for simulation in simulations:
-
+    inc_file_directory = os.path.relpath(include_file_directory, simulation_directory + simulation.simulation_directory)
     toolbox_writer = CaseHardeningToolbox(name=specimen_name,
-                                          include_file_name=specimen_name)
-    toolbox_writer.include_file_directory = os.path.relpath(include_file_directory,
-                                                            simulation_directory + simulation.simulation_directory)
+                                          include_file_name=specimen_name,
+                                          include_file_directory=inc_file_directory)
 
     toolbox_writer.diffusion_file = diffusion_file_name
     toolbox_writer.interaction_property_file = 'interaction_properties.inc'

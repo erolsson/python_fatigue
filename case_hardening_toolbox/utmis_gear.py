@@ -29,7 +29,7 @@ for specimen_name in ['utmis_gear']:
 
         toolbox_writer = CaseHardeningToolbox(name=specimen_name,
                                               include_file_name=specimen_name)
-        toolbox_writer.include_file_directory = '../'
+        toolbox_writer._include_file_directory = '../'
         toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
         toolbox_writer.interaction_property_file = 'interaction_properties.inc'
         toolbox_writer.heating_data.carbon = 0.5
