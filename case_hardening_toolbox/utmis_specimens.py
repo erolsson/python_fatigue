@@ -9,48 +9,97 @@ from diffusitivity import write_diffusion_file
 
 from materials.gear_materials import SS2506
 
-tempering = (180, 7200)
+"""
+    This file can be used as a template for setting up heat treatment simulations. The file creates one directory for 
+    each simulation defined in the list simulations. Common files are placed in the directory include_file_directory 
+    
+    For setting up a simulation an input file is needed given as the first argument to write_geometry_files_for_dante
+    
+    The input file must contain:
+        All needed nodes
+        All needed elements
+        A node set EXPOSED_NODES that are surface nodes in the carburization process
+        An element set EXPOSED_SURFACE that are the elements corresponding to EXPOSED_NODES. These elements are used 
+        for defining a surface corresponding to EXPOSED_NODES
+    
+        Node sets needed for boundary conditions. The boundary conditions should be specified in an own file and is 
+        copied to the include_file_directory on lines 54-55
+"""
 
-Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
-simulations = [Simulation(CD=0.5, times=[180.], temperatures=[840.], carbon=[0.75],
-                          tempering=tempering)]
-#
+Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'temperatures', 'carbon', 'tempering'])
+
+
 current_directory = os.getcwd()
-for specimen_name in ['utmis_smooth', 'utmis_notched']:
-    simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190204/')
-    write_geometry_files_for_dante('../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc',
-                                   simulation_directory, specimen_name, str_to_remove_from_set_names='Specimen_')
+specimen_name = 'utmis_smooth'
+simulations = [Simulation(simulation_directory=specimen_name + '_0_5',
+                          times=[180.], temperatures=[840.], carbon=[0.75], tempering=(180, 720))]
 
-    bc_file = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '_BC.inc'
-    shutil.copyfile('data_files/diffusivity_2506.inc', simulation_directory + '/diffusivity_2506.inc')
-    shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')
-    shutil.copyfile(bc_file, simulation_directory + '/' + specimen_name + '_BC.inc')
-    for simulation in simulations:
+# This is the main directory where all simulation folders will be placed
+simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190204/')
 
-        toolbox_writer = CaseHardeningToolbox(name=specimen_name,
-                                              include_file_name=specimen_name)
-        toolbox_writer.include_file_directory = '../'
-        toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
-        toolbox_writer.interaction_property_file = 'interaction_properties.inc'
-        toolbox_writer.heating_data.carbon = 0.5
-        toolbox_writer.heating_data.time = 90.
-        toolbox_writer.heating_data.temperature = 930.
+# In this directory all common files for all heat treatment simulations will be placed
+include_file_directory = os.path.expanduser('~/' + specimen_name + '_20190204/include_files/')
 
-        toolbox_writer.quenching_data.time = 3600.
-        toolbox_writer.quenching_data.temperature = 120.
+# This file contains all nodes, elements and sets to be further processed by the script
+geometry_file_name = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc'
 
-        toolbox_writer.tempering_data.temperature = simulation.tempering[0]
-        toolbox_writer.tempering_data.time = simulation.tempering[1]
+# All included files will be named after this like include_file_name_geo.inc or include_file_name_sets.inc
+include_file_name = specimen_name
 
-        toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
-                                               carbon_levels=simulation.carbon)
-        directory_name = simulation_directory + '/' + specimen_name + '_' + str(simulation.CD).replace('.', '_')
+# Path to interaction property file, should not be changed
+interaction_property_file = 'data_files/interaction_properties.inc'
 
-        if not os.path.isdir(directory_name):
-            os.makedirs(directory_name)
-        os.chdir(directory_name)
-        toolbox_writer.write_files()
-        os.chdir(current_directory)
+# Name of the diffusion file, will be created in include_file_directory
+diffusion_file_name = 'diffusivity'
 
-    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc', SS2506)
+# Material, needs a python dict with material composition to generate the diffusion file
+material = SS2506
 
+# Dante material name, list of valid dante materials, check dante_path/DANTEDB3_6/STD and dante_path/DANTEDB3_6/USR
+dante_material = 'U925062'
+
+# writes the necessary geometry files and set files to include_file_directory
+write_geometry_files_for_dante(geometry_data_file=geometry_file_name,
+                               directory_to_write=include_file_directory,
+                               dante_include_file_name=include_file_name,
+                               str_to_remove_from_set_names='Specimen_')
+
+# Path to the boundary conditions file, copied to the include_file_directory
+bc_file = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '_BC.inc'
+shutil.copyfile(bc_file, include_file_directory + '/' + include_file_name + '_BC.inc')
+
+# Copying the interaction property file to the include file directory
+shutil.copyfile(interaction_property_file, include_file_directory + '/interaction_properties.inc')
+
+for simulation in simulations:
+
+    toolbox_writer = CaseHardeningToolbox(name=specimen_name,
+                                          include_file_name=specimen_name)
+    toolbox_writer.include_file_directory = os.path.relpath(include_file_directory,
+                                                            simulation_directory + simulation.simulation_directory)
+
+    toolbox_writer.diffusion_file = diffusion_file_name
+    toolbox_writer.interaction_property_file = 'interaction_properties.inc'
+    toolbox_writer.heating_data.carbon = 0.5
+    toolbox_writer.heating_data.time = 90.
+    toolbox_writer.heating_data.temperature = 930.
+
+    toolbox_writer.quenching_data.time = 3600.
+    toolbox_writer.quenching_data.temperature = 120.
+
+    toolbox_writer.tempering_data.temperature = simulation.tempering[0]
+    toolbox_writer.tempering_data.time = simulation.tempering[1]
+    toolbox_writer.material = dante_material
+
+    toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
+                                           carbon_levels=simulation.carbon)
+    directory_name = simulation_directory + '/' + simulation.simulation_directory
+
+    if not os.path.isdir(directory_name):
+        os.makedirs(directory_name)
+    os.chdir(directory_name)
+    toolbox_writer.write_files()
+    os.chdir(current_directory)
+
+write_diffusion_file(filename=include_file_directory + diffusion_file_name,
+                     material=material)

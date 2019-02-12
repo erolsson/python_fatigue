@@ -23,10 +23,10 @@ def calc_pf_for_simulation(simulation, parameters):
     a800 = parameters[0]
     a1 = parameters[1]
     a2 = 0
-    su = parameters[2]
-    b = parameters[3]
+    b = parameters[2]
 
     idx = np.argsort(np.abs(evaluated_findley_parameters - a800))[:2]
+
     # Loading Findley pickles for the found values
     findley_pickle_name = 'findley_' + simulation.specimen + '_R=' + str(int(simulation.R)) + '_s=' + \
                           str(int(simulation.stress)) + 'MPa.pkl'
@@ -57,7 +57,7 @@ def calc_pf_for_simulation(simulation, parameters):
                         steel_data=steel_data,
                         nodal_positions=nodal_positions.reshape(n/8, 8, 3))
 
-    fit_material = SS2506MaterialTemplate(a1, a2, su, b)
+    fit_material = SS2506MaterialTemplate(a1, a2, b)
     size_factor = 4
     if simulation.R < 0:
         size_factor = 8
@@ -70,27 +70,28 @@ def residual(parameters, *data):
     job_list = [(calc_pf_for_simulation, (sim, parameters), {}) for sim in simulation_list]
     pf_wl = np.array(multi_processer(job_list, timeout=100, delay=0))
     r = (pf_wl - 0.5) ** 2
-    r[abs(pf_wl - 0.5) < 0.15] = 0
+    # r[abs(pf_wl - 0.5) < 0.15] = 0
     print parameters, pf_wl, np.sum(r)
     return np.sum(r)
 
 
-if __name__ == '__main__':
-    findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
-    dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data'
-                                                '/dante/')
-    pickle_directory_geometry = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
-    findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
-    findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
-                                     for directory in findley_parameter_directories]
-    evaluated_findley_parameters = [directory[5:] for directory in findley_parameter_directories]
-    evaluated_findley_parameters = [float(parameter.replace('_', '.')) for parameter in evaluated_findley_parameters]
-    evaluated_findley_parameters = np.array(sorted(evaluated_findley_parameters))
+findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
+dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data'
+                                            '/dante/')
+pickle_directory_geometry = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
+findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
+findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
+                                 for directory in findley_parameter_directories]
+evaluated_findley_parameters = [directory[5:] for directory in findley_parameter_directories]
+evaluated_findley_parameters = [float(parameter.replace('_', '.')) for parameter in evaluated_findley_parameters]
+evaluated_findley_parameters = np.array(sorted(evaluated_findley_parameters))
 
-    par = np.array([1.2, 1000, 1000, 20])
+if __name__ == '__main__':
+
+    par = np.array([1.9, 1260, 8.18])
 
     simulations = [Simulation(specimen='smooth', R=-1., stress=760.),
-                   Simulation(specimen='smooth', R=0., stress=424.),
+                   #Simulation(specimen='smooth', R=0., stress=424.),
                    Simulation(specimen='notched', R=-1., stress=439.),
                    Simulation(specimen='notched', R=0., stress=237.)]
 

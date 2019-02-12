@@ -5,9 +5,11 @@ import shutil
 from case_hardening_toobox import CaseHardeningToolbox
 from case_hardening_toobox import write_geometry_files_for_dante
 
-tempering = (180, 7200)
+tempering = (180, 7200)  # Tempering temperature and time
 
 Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
+
+# Simulations to generate files for
 simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
                           tempering=tempering),
                Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),

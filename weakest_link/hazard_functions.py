@@ -6,18 +6,12 @@ _k = 200
 
 
 def _weibull_fatigue_limit(stress, steel_properties, material):
-    stress[stress < material.weibull_sth(steel_properties)] = 0.
+    stress[stress < 0] = 0.
     return (stress/material.weibull_sw(steel_properties))**material.weibull_m(steel_properties)
 
 
-def _sadek_v_star(stress, steel_properties, material):
-    field = 0*stress
-    stress[stress > material.sadek_sth] = 1.
-    return material.sadek_q(steel_properties)
-
-
 def _weibull_life_limit(stress, cycles, steel_properties, material):
-    stress[stress < material.weibull_sth] = 0.
+    stress[stress < 0] = 0.
     if np.log(cycles) > material.ne:
         return _weibull_fatigue_limit(stress, steel_properties, material)
     # m = (material.ne - material.ns)/(np.log(cycles)-material.ns)*material.weibull_m(steel_properties)
@@ -44,8 +38,6 @@ def _weibull_life_haiback(stress, cycles, steel_properties, material):
 weibull = Models(fatigue_limit=_weibull_fatigue_limit,
                  fatigue_life=_weibull_life_limit,
                  haiback=_weibull_life_haiback)
-
-sadek = Models(fatigue_limit=_sadek_v_star, fatigue_life=None, haiback=None)
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt

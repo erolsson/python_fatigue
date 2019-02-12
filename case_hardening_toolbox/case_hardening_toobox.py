@@ -31,6 +31,10 @@ class QuenchingData:
 
 class CaseHardeningToolbox:
     def __init__(self, name, include_file_name):
+        """
+        :param name:
+        :param include_file_name:
+        """
         self.include_file_directory = ''
 
         self.name = name

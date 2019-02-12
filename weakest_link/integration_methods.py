@@ -13,7 +13,6 @@ def gauss_integration_3d(function_values, xyz):
                       e.N(gp[1], gp[0], gp[0]), e.N(gp[1], gp[0], gp[1]),
                       e.N(gp[1], gp[1], gp[0]), e.N(gp[1], gp[1], gp[1])])
 
-    print n_vec
     d_vec = np.array([e.d(gp[0], gp[0], gp[0]), e.d(gp[0], gp[0], gp[1]),
                       e.d(gp[0], gp[1], gp[0]), e.d(gp[0], gp[1], gp[1]),
                       e.d(gp[1], gp[0], gp[0]), e.d(gp[1], gp[0], gp[1]),
