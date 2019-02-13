@@ -77,7 +77,7 @@ def residual(parameters, *data):
     print 'r_vec =', np.array_repr(r).replace('\n', '')
     print 'R =', np.sqrt(np.sum(r))/10
     return np.sum(r)
-
+sasd
 
 findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data'
