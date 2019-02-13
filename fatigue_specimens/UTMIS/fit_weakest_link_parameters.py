@@ -5,7 +5,7 @@ import pickle
 from collections import namedtuple
 
 import numpy as np
-from scipy.optimize import fmin
+from scipy.optimize import minimize
 
 from materials.gear_materials import SteelData
 from materials.gear_materials import SS2506MaterialTemplate
@@ -16,14 +16,14 @@ from weakest_link.weakest_link_evaluator import WeakestLinkEvaluator
 from weakest_link.weakest_link_evaluator import FEM_data
 
 
-Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress'])
+Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'pf_exp'])
 
 
 def calc_pf_for_simulation(simulation, parameters):
-    a800 = parameters[0]
-    a1 = parameters[1]
+    a800 = 0.8 + parameters[0]*(1.8 - 1)
+    a1 = 500 + parameters[1]*(2000 - 0.)
     a2 = 0
-    b = parameters[2]
+    b = 3e6 + parameters[2]*(2e7 - 1e6)
 
     idx = np.argsort(np.abs(evaluated_findley_parameters - a800))[:2]
 
@@ -67,11 +67,15 @@ def calc_pf_for_simulation(simulation, parameters):
 
 def residual(parameters, *data):
     simulation_list, = data
-    job_list = [(calc_pf_for_simulation, (sim, parameters), {}) for sim in simulation_list]
+    job_list = [(calc_pf_for_simulation, (simulation, parameters), {}) for simulation in simulation_list]
     pf_wl = np.array(multi_processer(job_list, timeout=100, delay=0))
-    r = (pf_wl - 0.5) ** 2
-    # r[abs(pf_wl - 0.5) < 0.15] = 0
-    print parameters, pf_wl, np.sum(r)
+    r = (pf_wl - experimental_pf) ** 2
+    r[abs(pf_wl - experimental_pf) < 0.1] = 0
+    print '============================================================================================================'
+    print 'parameters =', parameters
+    print 'pf_experimental =', np.array_repr(pf_wl).replace('\n', '')
+    print 'r_vec =', np.array_repr(r).replace('\n', '')
+    print 'R =', np.sqrt(np.sum(r))/10
     return np.sum(r)
 
 
@@ -88,12 +92,19 @@ evaluated_findley_parameters = np.array(sorted(evaluated_findley_parameters))
 
 if __name__ == '__main__':
 
-    par = np.array([1.9, 1260, 8.18])
+    par = np.array([0.5, 0.3, 0.5])
 
-    simulations = [Simulation(specimen='smooth', R=-1., stress=760.),
-                   #Simulation(specimen='smooth', R=0., stress=424.),
-                   Simulation(specimen='notched', R=-1., stress=439.),
-                   Simulation(specimen='notched', R=0., stress=237.)]
+    simulations = [Simulation(specimen='smooth', R=-1., stress=737., pf_exp=0.25),
+                   Simulation(specimen='smooth', R=-1., stress=774., pf_exp=0.67),
+                   Simulation(specimen='smooth', R=-1., stress=820., pf_exp=0.75),
+                   Simulation(specimen='smooth', R=0., stress=425., pf_exp=0.50),
+                   Simulation(specimen='smooth', R=0., stress=440., pf_exp=0.67),
+                   Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
+                   Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
+                   Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
+                   Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
+                   Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
 
-    print fmin(residual, par, (simulations,))
-
+    experimental_pf = np.array([sim.pf_exp for sim in simulations])
+    print minimize(residual, par, (simulations,), method='L-BFGS-B',
+                   bounds=((0, 1), (0, 1), (0, 1)), options={'eps': 0.3})
