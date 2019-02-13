@@ -75,7 +75,7 @@ def residual(parameters, *data):
     print 'parameters:\t\t', parameters
     print 'pf_experimental:\t', ' '.join(np.array_repr(pf_wl).replace('\n', '').replace('\r', '').split())
     print 'r_vec:\t\t\t', ' '.join(np.array_repr(r).replace('\n', '').replace('\r', '').split())
-    print 'R:\t\t\t\t', np.sqrt(np.sum(r))/10
+    print 'R:\t\t\t', np.sqrt(np.sum(r))/10
     return np.sum(r)
 
 
