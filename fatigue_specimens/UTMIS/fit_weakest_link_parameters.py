@@ -72,10 +72,10 @@ def residual(parameters, *data):
     r = (pf_wl - experimental_pf) ** 2
     r[abs(pf_wl - experimental_pf) < 0.1] = 0
     print '============================================================================================================'
-    print 'parameters =', parameters
-    print 'pf_experimental =', ' '.join(np.array_repr(pf_wl).replace('\n', '').replace('\r', '').split())
-    print 'r_vec =', ' '.join(np.array_repr(r).replace('\n', '').replace('\r', '').split())
-    print 'R =', np.sqrt(np.sum(r))/10
+    print 'parameters:\t\t', parameters
+    print 'pf_experimental:\t', ' '.join(np.array_repr(pf_wl).replace('\n', '').replace('\r', '').split())
+    print 'r_vec:\t\t\t', ' '.join(np.array_repr(r).replace('\n', '').replace('\r', '').split())
+    print 'R:\t\t\t\t', np.sqrt(np.sum(r))/10
     return np.sum(r)
 
 
