@@ -30,12 +30,12 @@ if __name__ == '__main__':
                    Simulation(specimen='smooth', R=-1., stress=774., pf_exp=0.67),
                    Simulation(specimen='smooth', R=-1., stress=820., pf_exp=0.75),
                    Simulation(specimen='smooth', R=0., stress=425., pf_exp=0.50),
-                   Simulation(specimen='smooth', R=0., stress=440., pf_exp=0.67),
-                   Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
-                   Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
-                   Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
-                   Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
-                   Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
+                   Simulation(specimen='smooth', R=0., stress=440., pf_exp=0.67)]
+                   #Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
+                   #Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
+                   #Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
+                   #Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
+                   #Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
     experimental_pf = np.array([sim.pf_exp for sim in simulations])
     n_su = 20
     n_b = 20
