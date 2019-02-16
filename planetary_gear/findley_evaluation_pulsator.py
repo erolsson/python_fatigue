@@ -14,13 +14,13 @@ cd = float(sys.argv[1])
 
 residual_stress_multiplier = 1.     # This should be removed later
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                            mesh + '/dante_tempering_2h_180C/')
+                                            mesh + '/dante_tempering_2h_180C_20190129/')
 
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/pulsator_stresses/')
 
 findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                              mesh + '/findley_tempering_2h_180C/pulsator/')
+                                              mesh + '/findley_tempering_2h_180C_a800=1_6/pulsator/')
 
 with open(dante_pickle_directory + 'data_' + str(cd).replace('.', '_') + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
