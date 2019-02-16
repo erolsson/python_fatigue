@@ -72,10 +72,12 @@ if __name__ == '__main__':
         ind_min = np.unravel_index(np.argmin(r, axis=None), r.shape)
 
         plt.contourf(SU, B, r)
-        plt.text(SU[ind_min], B[ind_min], r'\textbf{x}  $r=' + str(r[ind_min]) + '$', horizontalalignment='left')
+        plt.text(SU[ind_min], B[ind_min], r'\textbf{x}', horizontalalignment='left')
         plt.text(1.1*su[0], 0.9*b[-1], r'$\sigma_u=' + str(SU[ind_min]) + '$ MPa',
                  horizontalalignment='left')
         plt.text(1.1*su[0], 0.8*b[-1], r'$b=' + str(B[ind_min]) + '$',
+                 horizontalalignment='left')
+        plt.text(1.1 * su[0], 0.8 * b[-1], r'$r=' + str(r[ind_min]) + '$',
                  horizontalalignment='left')
         plt.xlabel(r'$\sigma_u$ [MPa]')
         plt.ylabel(r'$b$ [-]')
