@@ -77,7 +77,7 @@ if __name__ == '__main__':
                  horizontalalignment='left')
         plt.text(1.1*su[0], 0.8*b[-1], r'$b=' + str(B[ind_min]) + '$',
                  horizontalalignment='left')
-        plt.text(1.1 * su[0], 0.8 * b[-1], r'$r=' + str(r[ind_min]) + '$',
+        plt.text(1.1*su[0], 0.7*b[-1], r'$r=' + str(r[ind_min]) + '$',
                  horizontalalignment='left')
         plt.xlabel(r'$\sigma_u$ [MPa]')
         plt.ylabel(r'$b$ [-]')
