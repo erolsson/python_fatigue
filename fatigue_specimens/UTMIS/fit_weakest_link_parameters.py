@@ -3,6 +3,7 @@ import os
 import pickle
 
 from collections import namedtuple
+from collections import OrderedDict
 
 import numpy as np
 from scipy.optimize import minimize
@@ -15,6 +16,11 @@ from multiprocesser.multiprocesser import multi_processer
 from weakest_link.weakest_link_evaluator import WeakestLinkEvaluator
 from weakest_link.weakest_link_evaluator import FEM_data
 
+from weakest_link_functions import dante_data
+from weakest_link_functions import evaluated_findley_parameters
+from weakest_link_functions import findley_data
+from weakest_link_functions import geometry_data
+
 
 Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'pf_exp'])
 
@@ -26,32 +32,22 @@ def calc_pf_for_simulation(simulation, parameters):
     b = 3e6 + parameters[2]*(2e7 - 1e6)
 
     idx = np.argsort(np.abs(evaluated_findley_parameters - a800))[:2]
+    a800_levels = evaluated_findley_parameters[idx]
 
     # Loading Findley pickles for the found values
-    findley_pickle_name = 'findley_' + simulation.specimen + '_R=' + str(int(simulation.R)) + '_s=' + \
-                          str(int(simulation.stress)) + 'MPa.pkl'
-    with open(findley_pickle_directory + 'a800=' + str(evaluated_findley_parameters[idx[0]]).replace('.', '_') + '/' +
-              findley_pickle_name) as pickle_handle:
-        findley_stress1 = pickle.load(pickle_handle)
-
-    with open(findley_pickle_directory + 'a800=' + str(evaluated_findley_parameters[idx[1]]).replace('.', '_') + '/' +
-              findley_pickle_name) as pickle_handle:
-        findley_stress2 = pickle.load(pickle_handle)
+    findley_stress1 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[0]]
+    findley_stress2 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[1]]
 
     da = evaluated_findley_parameters[idx[1]] - evaluated_findley_parameters[idx[0]]
     ds = findley_stress2 - findley_stress1
     findley_stress = findley_stress1 + ds/da*(a800 - evaluated_findley_parameters[idx[0]])
     n = findley_stress.shape[0]
 
-    with open(dante_pickle_directory + 'data_utmis_' + simulation.specimen + '.pkl') as pickle_handle:
-        dante_data = pickle.load(pickle_handle)
-
-    with open(pickle_directory_geometry + 'nodal_coordinates_' + simulation.specimen + '.pkl') as pickle_handle:
-        nodal_positions = pickle.load(pickle_handle)
+    nodal_positions = geometry_data[simulation.specimen]
 
     findley_stress[nodal_positions[:, 0] > 11.] = 0
 
-    steel_data = SteelData(HV=dante_data['HV'].reshape(n/8, 8))
+    steel_data = SteelData(HV=dante_data[simulation.specimen]['HV'].reshape(n/8, 8))
 
     fem_data = FEM_data(stress=findley_stress.reshape(n/8, 8),
                         steel_data=steel_data,
@@ -79,19 +75,7 @@ def residual(parameters, *data):
     return np.sum(r)
 
 
-findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
-dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data'
-                                            '/dante/')
-pickle_directory_geometry = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
-findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
-findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
-                                 for directory in findley_parameter_directories]
-evaluated_findley_parameters = [directory[5:] for directory in findley_parameter_directories]
-evaluated_findley_parameters = [float(parameter.replace('_', '.')) for parameter in evaluated_findley_parameters]
-evaluated_findley_parameters = np.array(sorted(evaluated_findley_parameters))
-
 if __name__ == '__main__':
-
     par = np.array([0.5, 0.3, 0.5])
 
     simulations = [Simulation(specimen='smooth', R=-1., stress=737., pf_exp=0.25),
