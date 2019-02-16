@@ -37,7 +37,6 @@ def likelihood_function(parameters, simulation_list):
 
         likelihood -= np.log(pf)*simulation.failures
         likelihood -= np.log(1 - pf)*simulation.run_outs
-    print likelihood
     return likelihood
 
 
