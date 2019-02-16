@@ -56,7 +56,7 @@ if __name__ == '__main__':
     n_b = 20
 
     su = np.linspace(500, 1500, n_su)
-    b = np.linspace(10, 50, n_b)
+    b = np.linspace(5, 20, n_b)
 
     SU, B = np.meshgrid(su, b)
 
