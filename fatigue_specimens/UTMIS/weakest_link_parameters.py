@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib as mlt
-mlt.use('agg')
+mlt.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.style
 
