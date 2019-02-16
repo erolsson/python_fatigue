@@ -32,7 +32,7 @@ class SS2506MaterialTemplate:
 
     @staticmethod
     def findley_k(steel_properties):
-        return 0.017 + 8.27E-4*steel_properties.HV
+        return -1.37143 + 0.0037143*steel_properties.HV
 
     def weibull_sw(self, steel_properties):
         return self.sw_par[0] + self.sw_par[1]*steel_properties.HV
