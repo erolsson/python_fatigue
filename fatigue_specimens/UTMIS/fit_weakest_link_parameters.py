@@ -81,7 +81,7 @@ if __name__ == '__main__':
                    Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
                    Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
                    Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
-                   Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
+                   #Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
                    Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
 
     experimental_pf = np.array([sim.pf_exp for sim in simulations])
