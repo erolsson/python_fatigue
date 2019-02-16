@@ -22,6 +22,9 @@ mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles
 findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                               mesh + '/findley_tempering_2h_180C_a800=1_6/pulsator/')
 
+if not os.path.isdir(findley_pickle_directory):
+    os.makedirs(findley_pickle_directory)
+
 with open(dante_pickle_directory + 'data_' + str(cd).replace('.', '_') + '_left.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 
