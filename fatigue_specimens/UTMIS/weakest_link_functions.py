@@ -1,3 +1,4 @@
+from collections import namedtuple
 from collections import OrderedDict
 
 import glob
@@ -5,6 +6,9 @@ import os
 import pickle
 
 import numpy as np
+
+
+Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'failures', 'run_outs'])
 
 
 def _get_evaluated_findley_parameters():

@@ -15,9 +15,7 @@ from weakest_link_functions import dante_data
 from weakest_link_functions import evaluated_findley_parameters
 from weakest_link_functions import findley_data
 from weakest_link_functions import geometry_data
-
-
-Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'pf_exp'])
+from weakest_link_functions import Simulation
 
 
 def calc_pf_for_simulation(simulation, parameters):
@@ -81,7 +79,7 @@ if __name__ == '__main__':
                    Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
                    Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
                    Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
-                   #Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
+                   Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
                    Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
 
     experimental_pf = np.array([sim.pf_exp for sim in simulations])
