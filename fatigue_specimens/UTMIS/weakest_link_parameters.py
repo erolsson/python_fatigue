@@ -53,7 +53,7 @@ if __name__ == '__main__':
         for b_val in b_norm:
             for su_val in su_norm:
                 job_list.append([residual, ((findley_parameter, su_val, b_val), simulations), {}])
-        r_list = multi_processer(jobs=job_list, timeout=1000, delay=0.)
+        r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=8)
         r = np.array(r_list).reshape((n_b, n_su))
 
         ind_min = np.unravel_index(np.argmin(r, axis=None), r.shape)
