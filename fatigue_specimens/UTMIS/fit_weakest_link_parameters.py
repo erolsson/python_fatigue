@@ -21,10 +21,10 @@ Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'pf_exp'])
 
 
 def calc_pf_for_simulation(simulation, parameters):
-    a800 = 0.8 + parameters[0]*(1.8 - 1)
-    a1 = 500 + parameters[1]*(2000 - 0.)
+    a800 = parameters[0]
+    a1 = parameters[1]
     a2 = 0
-    b = 3e6 + parameters[2]*(2e7 - 1e6)
+    b = parameters[2]
 
     idx = np.argsort(np.abs(evaluated_findley_parameters - a800))[:2]
     a800_levels = evaluated_findley_parameters[idx]

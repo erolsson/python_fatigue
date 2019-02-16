@@ -42,16 +42,14 @@ if __name__ == '__main__':
 
     su = np.linspace(500, 1500, n_su)
     b = np.linspace(10, 50, n_b)
-    su_norm = (su - su[0])/(su[-1] - su[0])
-    b_norm = (b - b[0]) / (b[-1] - b[0])
 
     SU, B = np.meshgrid(su, b)
 
     for fig, findley_parameter in enumerate(evaluated_findley_parameters):
         plt.figure(fig)
         job_list = []
-        for b_val in b_norm:
-            for su_val in su_norm:
+        for b_val in b:
+            for su_val in su:
                 job_list.append([residual, ((findley_parameter, su_val, b_val), simulations), {}])
         r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=8)
         r = np.array(r_list).reshape((n_b, n_su))
