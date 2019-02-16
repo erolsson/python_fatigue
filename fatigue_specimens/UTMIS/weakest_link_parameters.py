@@ -41,7 +41,7 @@ if __name__ == '__main__':
     n_b = 20
 
     su = np.linspace(500, 1500, n_su)
-    b = np.linspace(1e6, 2e7, n_b)
+    b = np.linspace(1e6, 5e7, n_b)
     su_norm = (su - su[0])/(su[-1] - su[0])
     b_norm = (b - b[0]) / (b[-1] - b[0])
 
