@@ -32,9 +32,6 @@ for i in range(3):
     distance_to_monitor_node[:, i] -= interesting_point[i]
 monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 
-print "======== Unit load stress state =========="
-print "The stress at interesting point in the x-direction is ", mechanical_data[monitor_node_idx, 0], "MPa"
-
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 n = dante_data['HV'].shape[0]
