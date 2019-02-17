@@ -47,7 +47,7 @@ if __name__ == '__main__':
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
                        + mesh + '/dante_tempering_2h_180C_20190129/'
 
-    pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_ ' \
+    pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
                                 + mesh + '/geometry/'
 
     element_labels = get_list_from_set_file('../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
