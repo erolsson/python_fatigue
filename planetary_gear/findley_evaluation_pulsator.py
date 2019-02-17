@@ -85,7 +85,7 @@ for load in loads:
                                         num_workers=8, chunk_size=300, search_grid=10)
 
         findley_stress = findley_data[:, 2]
-        print "The Findley stress at interesting point is ", findley_stress[interesting_point], 'MPa'
+        print "The Findley stress at interesting point is ", findley_stress[monitor_node_idx], 'MPa'
         findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + \
                               'kN.pkl'
         with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
