@@ -1,4 +1,5 @@
 import os
+
 import pickle
 
 import numpy as np
@@ -6,11 +7,11 @@ import numpy as np
 from odb_io_functions import read_field_from_odb
 from odb_io_functions import add_element_set
 
-from write_dante_evaluation_pickles_gear import write_dante_pickle
 from input_file_reader.input_file_reader import InputFileReader
 
 from write_nodal_coordinates import get_list_from_set_file
 
+from write_dante_evaluation_pickles_gear import write_dante_pickle
 
 if __name__ == '__main__':
     element_set_name = 'fatigue_volume_elements'

@@ -50,7 +50,7 @@ def residual(par, *data):
 if __name__ == '__main__':
     mesh = '1x'
     findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                                mesh + '/findley_tempering_2h_180C_a800=1_0/pulsator/')
+                                                mesh + '/findley_tempering_2h_180C_a800=1_2/pulsator/')
 
     dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                               mesh + '/dante_tempering_2h_180C_20190129/')
@@ -59,9 +59,9 @@ if __name__ == '__main__':
                                                  mesh + '/geometry/')
 
     SimulationsToProcess = namedtuple('SimulationsToProcess', ['cd', 'load', 'pf_experimental'])
-    simulations = [SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
-                   SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.5),
-                   SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
+    simulations = [SimulationsToProcess(cd=0.5, load=30., pf_experimental=0.25),
+                   SimulationsToProcess(cd=0.5, load=31., pf_experimental=0.5),
+                   SimulationsToProcess(cd=0.5, load=32., pf_experimental=0.75),
 
                    SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
                    SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.50),

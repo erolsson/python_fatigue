@@ -11,7 +11,8 @@ from odb_io_functions import cylindrical_system_z
 from write_nodal_coordinates import get_list_from_set_file
 
 
-def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_name=None, instance_name=None):
+def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_name=None, instance_name=None,
+                       coordinate_system=None):
     field_vars = ['HV']
     dante_dict = {}
 
@@ -27,7 +28,7 @@ def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_n
                                               element_set_name=fatigue_set_name, instance_name=instance_name)
     residual_stress = read_field_from_odb('S', odb_file_name, step_name, frame_number=0,
                                           element_set_name=fatigue_set_name,  instance_name=instance_name,
-                                          coordinate_system=cylindrical_system_z)
+                                          coordinate_system=coordinate_system)
 
     dante_dict['S'] = residual_stress
     with open(pickle_file_name, 'w') as pickle_handle:
@@ -54,4 +55,4 @@ if __name__ == '__main__':
             pickle_name = pickle_directory + 'data_' + str(cd).replace('.', '_') + '_' + part + '.pkl'
             step = 'dante_results_' + str(cd).replace('.', '_')
             write_dante_pickle(dante_odb_filename, step, pickle_name, 'tooth_root_volume_elements',
-                               instance_name='tooth_' + part)
+                               instance_name='tooth_' + part, coordinate_system=cylindrical_system_z)
