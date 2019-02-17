@@ -55,7 +55,7 @@ for a800 in [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]:
 
         findley_k = a + b * HV
         findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
-                                        num_workers=1, chunk_size=300, search_grid=10)
+                                        num_workers=8, chunk_size=300, search_grid=10)
 
         findley_stress = findley_data[:, 2]
         print "Maximum Findley stress", np.max(findley_stress), 'MPa'
