@@ -17,7 +17,7 @@ from weakest_link.weakest_link_evaluator import FEM_data
 
 def calc_pf_for_simulation(cd, load, par):
 
-    fit_material = SS2506MaterialTemplate(par[0], 0, 6.4e6)
+    fit_material = SS2506MaterialTemplate(par[0], 0, par[1])
     findley_file_name = '/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
@@ -50,10 +50,10 @@ def residual(par, *data):
 if __name__ == '__main__':
     mesh = '1x'
     findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                                mesh + '/findley/pulsator/tempering_2h_180C/')
+                                                mesh + '/findley_tempering_2h_180C_a800=1_0/pulsator/')
 
     dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                              mesh + '/dante/tempering_2h_180C/')
+                                              mesh + '/dante_tempering_2h_180C_20190129/')
 
     geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/geometry/')
@@ -63,16 +63,16 @@ if __name__ == '__main__':
                    SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.5),
                    SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
 
-                   # SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
-                   # SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.50),
-                   # SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
+                   SimulationsToProcess(cd=0.8, load=31., pf_experimental=0.25),
+                   SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.50),
+                   SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.75),
 
-                   # SimulationsToProcess(cd=1.1, load=33., pf_experimental=0.25),
-                   # SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
-                   # SimulationsToProcess(cd=1.1, load=35., pf_experimental=0.75),
+                   SimulationsToProcess(cd=1.1, load=33., pf_experimental=0.25),
+                   SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
+                   SimulationsToProcess(cd=1.1, load=35., pf_experimental=0.75),
 
                    SimulationsToProcess(cd=1.4, load=34., pf_experimental=0.20),
                    SimulationsToProcess(cd=1.4, load=35., pf_experimental=0.5),
                    SimulationsToProcess(cd=1.4, load=36., pf_experimental=0.8)]
 
-    print fmin(residual, [500], tuple(simulations))
+    print fmin(residual, [1500, 6.4e6], tuple(simulations))

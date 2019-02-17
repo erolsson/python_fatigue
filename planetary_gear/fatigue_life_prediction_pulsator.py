@@ -61,10 +61,10 @@ if __name__ == '__main__':
     test_directory = os.path.expanduser('~/scania_gear_analysis/experimental_data/pulsator_testing/')
     mesh = '1x'
     findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                                mesh + '/findley/pulsator/tempering_2h_180C/')
+                                                mesh + '/findley_tempering_2h_180C_a800=1_0/pulsator//')
 
     dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                              mesh + '/dante/tempering_2h_180C/')
+                                              mesh + '/dante_tempering_2h_180C_20190129/')
 
     geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/geometry/')

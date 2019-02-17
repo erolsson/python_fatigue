@@ -4,9 +4,6 @@ import sys
 import pickle
 import numpy as np
 
-from materials.gear_materials import SS2506
-from materials.gear_materials import SteelData
-
 from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 
 mesh = '1x'
@@ -32,7 +29,7 @@ stress_history = np.zeros((2, n, 6))
 
 for a800 in [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]:
     findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                                  mesh + '/findley_tempering_2h_180C_a800=' +
+                                                  mesh + '/test_findley_tempering_2h_180C_a800=' +
                                                   str(a800).replace('.', '_') + '/pulsator/')
 
     if not os.path.isdir(findley_pickle_directory):
@@ -58,10 +55,11 @@ for a800 in [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]:
 
         findley_k = a + b * HV
         findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=8000,
-                                        num_workers=8, chunk_size=300, search_grid=10)
+                                        num_workers=1, chunk_size=300, search_grid=10)
 
         findley_stress = findley_data[:, 2]
         print "Maximum Findley stress", np.max(findley_stress), 'MPa'
-        findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
+        findley_pickle_name = 'findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + \
+                              'kN.pkl'
         with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
             pickle.dump(findley_stress, pickle_handle)

@@ -172,7 +172,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
         #     Search Space
 
     phi_space = 90
-    theta_space = 360
+    theta_space = 180
 
     #     Get shape of stress matrix
     loadsteps, points, no_stress_components = stress_matrix.shape
@@ -186,7 +186,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
     # Loop over all planes 
     first_run = True  # The first time, do not compare just store data
     for theta in range(0, theta_space + search_grid, search_grid):
-        for phi in range(0, phi_space + search_grid, search_grid):
+        for phi in range(-phi_space, phi_space + search_grid, search_grid):
 
             # Compute the transformation matrix for the considered plane
             q = get_transform_matrix(theta, phi)
@@ -195,7 +195,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
             # For the currently considered planed, evaluate sigma_n, tau_1, tau_2, 
             # Delta_tau, F for every node for the load history (time domain)
             for node_s_hist_vector in np.rollaxis(stress_matrix, 1):  # Loop over the stress history for a specific node
-
+                print node_s_hist_vector
                 # Compute shear stress and normal stresses for the load history
                 s_prim = np.dot(node_s_hist_vector, q.T)
                 # Evaluate the smallest enclosing circle to get the shear stress amplitude 
@@ -204,9 +204,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
 
                 # Evaluate the largest normal stress on the plane for the load history
                 max_sigma_n = s_prim[:, 0].max()
-                if mod is True:
-                    s_min = np.max([0, s_prim[:, 0].min()])
-                    max_sigma_n = (s_prim[:, 0].max() + (s_prim[:, 0].max() - s_min)) / 2
+
                 # Store result if the are larger than the current value (except for first plane, then just store data)
                 if first_run:
                     findley_vec[j, :] = theta, phi, max_sigma_n, max_tau_amplitude, (max_tau_amplitude +
@@ -227,6 +225,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
                     #    findley_vec[j,3] = max_tau_amplitude
 
                 j += 1
+
             if first_run:
                 first_run = False
 
