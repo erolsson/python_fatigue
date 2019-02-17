@@ -9,6 +9,8 @@ from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 specimen = sys.argv[1]
 R = float(sys.argv[2])
 
+interesting_point = np.array([0., 2.5, 0])
+
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/')
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/')
 geometry_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
@@ -26,12 +28,12 @@ with open(geometry_pickle_directory + 'nodal_coordinates_' + specimen + '.pkl') 
 
 
 distance_to_monitor_node = 0*nodal_coordinates + nodal_coordinates
-distance_to_monitor_node[:, 1] -= 2.5
+for i in range(3):
+    distance_to_monitor_node[:, i] -= interesting_point[i]
 monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 
 print "======== Unit load stress state =========="
-print "The maximum stress in the x-direction is ", mechanical_data[monitor_node_idx, 0], "MPa"
-print "The minimum stress in the x-direction is ", mechanical_data[monitor_node_idx, 0], "MPa"
+print "The stress at interesting point in the x-direction is ", mechanical_data[monitor_node_idx, 0], "MPa"
 
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
@@ -46,15 +48,16 @@ for amplitude_stress in load_levels[specimen][R]:
     max_stress = (mean_stress + amplitude_stress)*mechanical_data
     min_stress = (mean_stress - amplitude_stress)*mechanical_data
 
-    print "The maximum stress in the x-direction is ", max_stress[monitor_node_idx, 0], "MPa"
-    print "The minimum stress in the x-direction is ", min_stress[monitor_node_idx, 0], "MPa"
+    print "The mechanical stress at interesting point in the x-direction is ", max_stress[monitor_node_idx, 0], "MPa"
 
     stress_history = np.zeros((2, n, 6))
     stress_history[0, :, :] = min_stress + dante_data['S']
     stress_history[1, :, :] = max_stress + dante_data['S']
     print "======== Combined stress state =========="
-    print "The maximum stress in the x-direction is ", stress_history[1, monitor_node_idx, 0], "MPa"
-    print "The minimum stress in the x-direction is ", stress_history[0, monitor_node_idx, 0], "MPa"
+    print "The maximum stress at interesting point in the x-direction is ", stress_history[1, monitor_node_idx, 0], \
+        "MPa"
+    print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
+        "MPa"
     for a800 in np.arange(0.6, 1.7, 0.1):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
