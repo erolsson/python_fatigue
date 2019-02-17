@@ -195,7 +195,6 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
             # For the currently considered planed, evaluate sigma_n, tau_1, tau_2, 
             # Delta_tau, F for every node for the load history (time domain)
             for node_s_hist_vector in np.rollaxis(stress_matrix, 1):  # Loop over the stress history for a specific node
-                print node_s_hist_vector
                 # Compute shear stress and normal stresses for the load history
                 s_prim = np.dot(node_s_hist_vector, q.T)
                 # Evaluate the smallest enclosing circle to get the shear stress amplitude 
