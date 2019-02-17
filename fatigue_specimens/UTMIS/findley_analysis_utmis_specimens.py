@@ -77,7 +77,7 @@ for amplitude_stress in load_levels[specimen][R]:
                                         num_workers=8, chunk_size=1000, search_grid=10)
 
         findley_stress = findley_data[:, 2]
-        print "Findley stress at monitor node", findley_stress[monitor_node_idx], 'MPa'
+        print "Findley stress at interesting point", findley_stress[monitor_node_idx], 'MPa'
         findley_pickle_name = 'findley_' + specimen + '_R=' + str(int(R)) + '_' + 's=' + str(int(amplitude_stress)) + \
                               'MPa.pkl'
         with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
