@@ -70,7 +70,7 @@ def residual(parameters, *data):
 
 
 if __name__ == '__main__':
-    par = np.array([0.8, 800, 12.])
+    par = np.array([0.8, 800, 6.4e6])
 
     simulations = [Simulation(specimen='smooth', R=-1., stress=737., failures=1, run_outs=4),
                    Simulation(specimen='smooth', R=-1., stress=774., failures=4, run_outs=2),
