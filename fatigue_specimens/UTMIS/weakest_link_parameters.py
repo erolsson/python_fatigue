@@ -52,6 +52,7 @@ if __name__ == '__main__':
                    Simulation(specimen='notched', R=0., stress=240., failures=2, run_outs=4),
                    Simulation(specimen='notched', R=0., stress=255., failures=4, run_outs=0)]
     experimental_pf = np.array([float(sim.failures)/(sim.failures + sim.run_outs) for sim in simulations])
+    print experimental_pf
     n_su = 20
     n_b = 20
 
