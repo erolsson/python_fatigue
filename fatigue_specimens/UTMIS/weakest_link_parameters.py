@@ -60,13 +60,13 @@ if __name__ == '__main__':
 
     SU, B = np.meshgrid(su, b)
 
-    for fig, findley_parameter in enumerate(evaluated_findley_parameters):
+    for fig, findley_parameter in enumerate([1.3]):
         plt.figure(fig)
         job_list = []
         for b_val in b:
             for su_val in su:
                 job_list.append([likelihood_function, ((findley_parameter, su_val, b_val), simulations), {}])
-        r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=8)
+        r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=16)
         r = np.array(r_list).reshape((n_b, n_su))
 
         ind_min = np.unravel_index(np.argmin(r, axis=None), r.shape)

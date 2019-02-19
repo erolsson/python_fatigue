@@ -19,16 +19,16 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/'
-                                            'root_data/tempering_2h_180C')
+                                            'root_data/tempering_2h_180C_20190129')
 residual_stress_multiplier = 1.
 pulsator_loads = np.array([30., 35., 40.])
 
 
 PulsatorTest = namedtuple('PulsatorTest', ['case_depth', 'fatigue_limit', 'color'])
-pulsator_tests = [PulsatorTest(case_depth=0.5, fatigue_limit=30.5, color='b'),
-                  PulsatorTest(case_depth=0.8, fatigue_limit=31.5, color='r'),
-                  PulsatorTest(case_depth=1.1, fatigue_limit=34., color='g'),
-                  PulsatorTest(case_depth=1.4, fatigue_limit=35.4, color='k')]
+pulsator_tests = [PulsatorTest(case_depth=0.5, fatigue_limit=30.8, color='b'),
+                  PulsatorTest(case_depth=0.8, fatigue_limit=31.8, color='r'),
+                  PulsatorTest(case_depth=1.1, fatigue_limit=34, color='g'),
+                  PulsatorTest(case_depth=1.4, fatigue_limit=34.7, color='k')]
 
 with open(os.path.expanduser('~/scania_gear_analysis/pickles/pulsator/tooth_root_stresses_neg.pkl')) as data_pickle:
     stress_data = pickle.load(data_pickle)
@@ -39,16 +39,19 @@ for pulsator_test in pulsator_tests:
               str(pulsator_test.case_depth).replace('.', '_') + '_root.pkl') as pickle_handle:
         root_data = pickle.load(pickle_handle)
     residual_stress = root_data['S'][0]*residual_stress_multiplier
+    print residual_stress
     hardness = root_data['HV'][0]
 
     f1, f2 = tuple(np.sort(pulsator_loads[np.argsort(np.abs(pulsator_loads - pulsator_test.fatigue_limit))][0:2]))
     stresses = stress_data[f1] + (stress_data[f2] - stress_data[f1])/(f2 - f1)*(pulsator_test.fatigue_limit - f1)
     stresses += residual_stress
     stress_amplitude = (max(stresses) - min(stresses))/2
+    print stress_amplitude
     stress_mean = (max(stresses) + min(stresses))/2
 
+
     kw = hardness/1000
-    kf = SS2506.findley_k(SteelData(HV=hardness))
+    kf = 0.5
 
     winderlich_stress = stress_amplitude + kw*stress_mean
     findley_stress = 0.5*(kf*(stress_amplitude+stress_mean) +
@@ -61,7 +64,15 @@ for pulsator_test in pulsator_tests:
     plt.figure(1)
     plt.plot(stress_mean, stress_amplitude, pulsator_test.color + 'o', ms=12)
 
+    k = 1.3
+    sF = 500*(k + np.sqrt(1+k**2))/2
+    print 'sF =', sF
+    sm = np.linspace(100, 145, 100)
+    sa = 2*(-k*sF + np.sqrt(sF**2 + k**2*sF**2 - k*sF*sm))
 
+    plt.plot(sm, sa)
+
+"""
 torques = np.array([1000., 1200., 1400.])
 simulated_torques = np.array([0, 1000, 1200, 1400])
 stress_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_stresses/')
@@ -73,7 +84,6 @@ for cd, color in zip([0.8, 1.1], ['r', 'g']):
     hardness = root_data['HV'][0]
     kw = hardness / 1000
     kf = SS2506.findley_k(SteelData(HV=hardness))
-    print kf
     for torque in torques:
         f1, f2 = tuple(np.sort(simulated_torques[np.argsort(np.abs(simulated_torques - torque))][0:2]))
         for name in ['pos', 'neg']:
@@ -88,9 +98,7 @@ for cd, color in zip([0.8, 1.1], ['r', 'g']):
             stress_amplitude = (max(stress_history) - min(stress_history))/2
             stress_mean = (max(stress_history) + min(stress_history))/2
 
-            print stress_amplitude, stress_mean
             winderlich_stress = stress_amplitude + kw*stress_mean
-            print kw
             findley_stress = 0.5*(kf*(stress_amplitude+stress_mean) +
                                   np.sqrt(stress_amplitude**2 + kf**2*(stress_amplitude+stress_mean)**2))
 
@@ -100,7 +108,7 @@ for cd, color in zip([0.8, 1.1], ['r', 'g']):
 
             plt.figure(1)
             plt.plot(stress_mean, stress_amplitude, color + 'o', ms=12)
-
+"""
 
 plt.figure(0)
 plt.xlabel('Mean stress [MPa]')
