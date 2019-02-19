@@ -61,6 +61,7 @@ if __name__ == '__main__':
     SU, B = np.meshgrid(su, b)
 
     for fig, findley_parameter in enumerate(evaluated_findley_parameters):
+        print 'Analyzing parameter a800 =', findley_parameter
         plt.figure(fig)
         job_list = []
         for b_val in b:
