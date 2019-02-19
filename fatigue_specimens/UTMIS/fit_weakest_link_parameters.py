@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import fmin
 
 from materials.gear_materials import SteelData
 from materials.gear_materials import SS2506MaterialTemplate
@@ -69,19 +69,17 @@ def residual(parameters, *data):
 
 
 if __name__ == '__main__':
-    par = np.array([0.5, 0.3, 0.5])
+    par = np.array([0.8, 800, 6.4e6])
 
-    simulations = [Simulation(specimen='smooth', R=-1., stress=737., pf_exp=0.25),
-                   Simulation(specimen='smooth', R=-1., stress=774., pf_exp=0.67),
-                   Simulation(specimen='smooth', R=-1., stress=820., pf_exp=0.75),
-                   Simulation(specimen='smooth', R=0., stress=425., pf_exp=0.50),
-                   Simulation(specimen='smooth', R=0., stress=440., pf_exp=0.67),
-                   Simulation(specimen='notched', R=-1., stress=427., pf_exp=0.33),
-                   Simulation(specimen='notched', R=-1., stress=450., pf_exp=0.50),
-                   Simulation(specimen='notched', R=0., stress=225., pf_exp=0.40),
-                   Simulation(specimen='notched', R=0., stress=240., pf_exp=0.20),
-                   Simulation(specimen='notched', R=0., stress=255., pf_exp=0.90)]
-
-    experimental_pf = np.array([sim.pf_exp for sim in simulations])
-    print minimize(residual, par, (simulations,), method='L-BFGS-B',
-                   bounds=((0, 1), (0, 1), (0, 1)), options={'eps': 0.3})
+    simulations = [Simulation(specimen='smooth', R=-1., stress=737., failures=1, run_outs=4),
+                   Simulation(specimen='smooth', R=-1., stress=774., failures=4, run_outs=2),
+                   Simulation(specimen='smooth', R=-1., stress=820., failures=3, run_outs=1),
+                   Simulation(specimen='smooth', R=0., stress=425., failures=2, run_outs=3),
+                   Simulation(specimen='smooth', R=0., stress=440., failures=4, run_outs=2),
+                   Simulation(specimen='notched', R=-1., stress=427., failures=2, run_outs=4),
+                   Simulation(specimen='notched', R=-1., stress=450., failures=5, run_outs=3),
+                   Simulation(specimen='notched', R=0., stress=225., failures=2, run_outs=3),
+                   Simulation(specimen='notched', R=0., stress=240., failures=2, run_outs=4),
+                   Simulation(specimen='notched', R=0., stress=255., failures=4, run_outs=0)]
+    experimental_pf = np.array([float(sim.failures) / (sim.failures + sim.run_outs) for sim in simulations])
+    print fmin(residual, par, (simulations,))

@@ -55,7 +55,7 @@ for amplitude_stress in load_levels[specimen][R]:
         "MPa"
     print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
         "MPa"
-    for a800 in np.arange(0.6, 1.7, 0.1):
+    for a800 in np.arange(1.7, 2.5, 0.1):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
