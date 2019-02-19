@@ -34,6 +34,7 @@ def calc_pf_for_simulation(simulation, parameters):
     da = evaluated_findley_parameters[idx[1]] - evaluated_findley_parameters[idx[0]]
     ds = findley_stress2 - findley_stress1
     findley_stress = findley_stress1 + ds/da*(a800 - evaluated_findley_parameters[idx[0]])
+    print findley_stress
     n = findley_stress.shape[0]
 
     nodal_positions = geometry_data[simulation.specimen]
