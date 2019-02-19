@@ -21,23 +21,24 @@ if __name__ == '__main__':
         os.makedirs(odb_file_directory)
 
     for specimen in ['smooth', 'notched']:
-        odb_file_name = odb_file_directory + 'utmis_' + specimen + '.odb'
-        input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
-                          '/utmis_' + specimen + '.inc'
-        nodes, elements = read_nodes_and_elements(input_file_name)
-        instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
-
-        create_odb(odb_file_name, instances)
-        element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
-                                                element_set_name + '_' + specimen + '.inc')
-        add_element_set(odb_file_name, element_set_name, element_labels)
-
-        findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
-        findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
-                                         for directory in findley_parameter_directories]
-        findley_parameters = [directory[5:] for directory in findley_parameter_directories]
-        findley_parameters.sort(key=lambda x: float(x.replace('_', '.')))
         for R in [0, -1]:
+            odb_file_name = odb_file_directory + 'utmis_' + specimen + '_R=' + str(R) + '.odb'
+            input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
+                              '/utmis_' + specimen + '.inc'
+            nodes, elements = read_nodes_and_elements(input_file_name)
+            instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
+
+            create_odb(odb_file_name, instances)
+            element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
+                                                    element_set_name + '_' + specimen + '.inc')
+            add_element_set(odb_file_name, element_set_name, element_labels)
+
+            findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
+            findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
+                                             for directory in findley_parameter_directories]
+            findley_parameters = [directory[5:] for directory in findley_parameter_directories]
+            findley_parameters.sort(key=lambda x: float(x.replace('_', '.')))
+
             for findley_parameter in findley_parameters:
 
                 pickle_filenames = glob.glob(findley_pickle_directory + 'a800=' + findley_parameter + '/findley_' +

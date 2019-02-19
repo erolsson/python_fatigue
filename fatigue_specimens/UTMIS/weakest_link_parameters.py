@@ -66,7 +66,7 @@ if __name__ == '__main__':
         job_list = []
         for b_val in b:
             for su_val in su:
-                job_list.append([likelihood_function, ((findley_parameter, su_val, b_val), simulations), {}])
+                job_list.append([residual, ((findley_parameter, su_val, b_val), simulations), {}])
         r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=8)
         r = np.array(r_list).reshape((n_b, n_su))
 
@@ -84,4 +84,4 @@ if __name__ == '__main__':
         plt.ylabel(r'$b$ [-]')
         plt.colorbar()
 
-        plt.savefig('likelihood_a800=' + str(findley_parameter).replace('.', '_') + '.png')
+        plt.savefig('residual_a800=' + str(findley_parameter).replace('.', '_') + '.png')
