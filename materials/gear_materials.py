@@ -39,7 +39,8 @@ class SS2506MaterialTemplate:
         return self.sw_par[0]
 
     def weibull_m(self, steel_properties):
-        return self.m_par[0]/steel_properties.HV**2
+        # return self.m_par[0]/steel_properties.HV**2
+        return self.m_par[0]
 
     # Phase transformation data
     def _trans_strain_martensite(self, temperature, carbon):
