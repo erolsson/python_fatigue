@@ -58,6 +58,8 @@ for load in loads:
     print "Pamp = 35 kN :", max_stresses[35][monitor_node_idx]
     print "Pamp = 40 kN :", max_stresses[40][monitor_node_idx]
 
+    dasdas
+
     min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
     max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
 
