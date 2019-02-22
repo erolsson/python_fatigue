@@ -30,15 +30,15 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 
 current_directory = os.getcwd()
-specimen_name = 'utmis_smooth'
+specimen_name = 'utmis_notched'
 simulations = [Simulation(simulation_directory=specimen_name + '_0_5',
                           times=[180.], temperatures=[840.], carbon=[0.75], tempering=(180, 7200))]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190204/')
+simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190222/')
 
 # In this directory all common files for all heat treatment simulations will be placed
-include_file_directory = os.path.expanduser('~/' + specimen_name + '_20190204/include_files/')
+include_file_directory = os.path.expanduser('~/' + specimen_name + '_20190222/include_files/')
 
 # This file contains all nodes, elements and sets to be further processed by the script
 geometry_file_name = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc'
