@@ -65,8 +65,8 @@ for load in loads:
     stress_history[1, :, :] = max_stress + dante_data['S']
 
     print '========================================================================================================'
-    print 'The minimum stress in the q-direction at interesting point is ', stress_history[0, monitor_node_idx, 1]
-    print 'The maximum stress in the q-direction at interesting point is ', stress_history[1, monitor_node_idx, 1]
+    print 'The minimum stress at interesting point is ', stress_history[0, monitor_node_idx, :]
+    print 'The maximum stress at interesting point is ', stress_history[1, monitor_node_idx, :]
     print '========================================================================================================'
     for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
