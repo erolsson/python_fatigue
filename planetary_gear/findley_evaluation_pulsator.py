@@ -70,7 +70,7 @@ for load in loads:
     print '========================================================================================================'
     for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
-                                                      'mesh_' + mesh + '/test_findley_tempering_2h_180C_a800=' +
+                                                      'mesh_' + mesh + '/findley_tempering_2h_180C_a800=' +
                                                       str(a800).replace('.', '_') + '/pulsator/')
 
         if not os.path.isdir(findley_pickle_directory):
