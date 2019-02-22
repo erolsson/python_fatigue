@@ -35,6 +35,8 @@ def write_dante_pickle(odb_file_name, step_name, pickle_file_name, fatigue_set_n
                                           coordinate_system=coordinate_system)
 
     dante_dict['S'] = residual_stress
+    print "Writing data for step", step
+    print "Residual stress tensor at interesting node is", residual_stress[110, :]
     with open(pickle_file_name, 'w') as pickle_handle:
         pickle.dump(dante_dict, pickle_handle)
 
