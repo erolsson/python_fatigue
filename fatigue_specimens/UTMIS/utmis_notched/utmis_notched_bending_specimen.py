@@ -212,7 +212,7 @@ class NotchedBendingSpecimenClass:
                             end1Edges=edges1,
                             end2Edges=edges2,
                             number=nr,
-                            ratio=4,
+                            ratio=10,
                             constraint=FIXED)
 
         # Edges in the z-direction
