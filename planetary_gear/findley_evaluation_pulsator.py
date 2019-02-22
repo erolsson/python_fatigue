@@ -68,7 +68,7 @@ for load in loads:
     print 'The minimum stress in the q-direction at interesting point is ', stress_history[0, monitor_node_idx, 1]
     print 'The maximum stress in the q-direction at interesting point is ', stress_history[1, monitor_node_idx, 1]
     print '========================================================================================================'
-    for a800 in np.arange(0.6, 1.7, 0.1):
+    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
                                                       'mesh_' + mesh + '/test_findley_tempering_2h_180C_a800=' +
                                                       str(a800).replace('.', '_') + '/pulsator/')
