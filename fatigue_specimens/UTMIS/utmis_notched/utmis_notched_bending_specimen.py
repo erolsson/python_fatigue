@@ -269,7 +269,7 @@ class NotchedBendingSpecimenClass:
         # Vertical edges
         x_coordinates = [0, self.x, self.x2, self.x3, self.load_position_x, self.length / 2 - self.R1]
         z_coordinates = [0, self.thickness/2]
-        y = (self.height/2 - self.case_mesh_thickness)/2
+        y = (0.001*self.height)/2
         edges = []
         for x in x_coordinates:
             for z in z_coordinates:
