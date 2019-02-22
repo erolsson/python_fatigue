@@ -22,6 +22,7 @@ def calc_pf_for_simulation(cd, load, par):
     with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
     max_idx = np.argmax(stress)
+    print np.min(stress)
     print stress[110], max_idx
     n_vol = stress.shape[0]
     with open(dante_data_directory + '/data_' + str(cd).replace('.', '_') + '_left.pkl') as dante_pickle:
