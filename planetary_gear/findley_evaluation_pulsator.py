@@ -84,7 +84,7 @@ for load in loads:
         a = a800 - b * 800
 
         findley_k = a + b * HV
-        findley_data = evaluate_findley(combined_stress=stress_history[:, monitor_node_idx: monitor_node_idx+1, :],
+        findley_data = evaluate_findley(combined_stress=stress_history,
                                         a_cp=findley_k,
                                         worker_run_out_time=8000,
                                         num_workers=8, chunk_size=300, search_grid=10)
