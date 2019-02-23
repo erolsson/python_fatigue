@@ -77,6 +77,7 @@ for amplitude_stress in load_levels[specimen][R]:
         findley_k = a + b*HV
         print "The maximum value of the findley parameter is", np.max(findley_k), "and the minimum is", \
             np.min(findley_k)
+        asdsad
         findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=80000,
                                         num_workers=8, chunk_size=1000, search_grid=10)
 
