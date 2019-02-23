@@ -36,7 +36,8 @@ monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 print "Coordinates of interesting point is", nodal_coordinates[monitor_node_idx], 'and has index', monitor_node_idx
 
 print '========================================================================================================='
-print 'The residual stress in the q-direction at interesting point is ', dante_data['S'][monitor_node_idx, 1]
+print 'The residual stress at interesting point is: '
+print dante_data['S'][monitor_node_idx, :]
 print '========================================================================================================='
 
 
