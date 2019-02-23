@@ -32,6 +32,9 @@ for i in range(3):
     distance_to_monitor_node[:, i] -= interesting_point[i]
 monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 
+
+print "The monitor node has coordinates", nodal_coordinates[monitor_node_idx]
+print "The stress in mechanical odb at interesting point is", mechanical_data[monitor_node_idx]
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 n = dante_data['HV'].shape[0]
@@ -55,7 +58,7 @@ for amplitude_stress in load_levels[specimen][R]:
         "MPa"
     print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
         "MPa"
-    for a800 in np.arange(1.7, 2.5, 0.1):
+    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
