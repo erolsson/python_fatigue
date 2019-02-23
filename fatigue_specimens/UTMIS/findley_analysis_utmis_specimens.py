@@ -35,6 +35,7 @@ monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 
 print "The monitor node has coordinates", nodal_coordinates[monitor_node_idx]
 print "The stress in mechanical odb at interesting point is", mechanical_data[monitor_node_idx]
+print np.max(mechanical_data[:, 0])
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 n = dante_data['HV'].shape[0]
