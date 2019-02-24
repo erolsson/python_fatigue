@@ -16,7 +16,7 @@ if __name__ == '__main__':
     if not os.path.isdir(pickle_directory):
         os.makedirs(pickle_directory)
 
-    for specimen in ['smooth', 'notched']:
+    for specimen in ['smooth']:
         mechanical_odb_filename = odb_directory + 'unit_load_' + specimen + '.odb'
 
         element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + specimen + '/' +
