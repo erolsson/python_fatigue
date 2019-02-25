@@ -21,9 +21,6 @@ def calc_pf_for_simulation(cd, load, par):
     findley_file_name = '/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
-    max_idx = np.argmax(stress)
-    print np.min(stress)
-    print stress[110], max_idx
     n_vol = stress.shape[0]
     with open(dante_data_directory + '/data_' + str(cd).replace('.', '_') + '_left.pkl') as dante_pickle:
         dante_data = pickle.load(dante_pickle)
@@ -32,7 +29,6 @@ def calc_pf_for_simulation(cd, load, par):
     with open(geometry_data_directory + '/nodal_coordinates_tooth_left.pkl') as position_pickle:
         position = pickle.load(position_pickle)
 
-    print position[max_idx]
     fem_volume = FEM_data(stress=stress.reshape(n_vol / 8, 8),
                           steel_data=steel_data_volume,
                           nodal_positions=position.reshape(n_vol / 8, 8, 3))
