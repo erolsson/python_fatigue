@@ -4,10 +4,8 @@ mlt.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.style
 
-from fit_weakest_link_parameters import calc_pf_for_simulation
-
-from weakest_link_functions import evaluated_findley_parameters
 from weakest_link_functions import Simulation
+from weakest_link_functions import likelihood_function
 
 from multiprocesser.multiprocesser import multi_processer
 
@@ -18,26 +16,6 @@ plt.rcParams.update({'font.size': 20})
 plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
-
-
-def residual(parameters, simulation_list):
-    pf_sim = np.array([calc_pf_for_simulation(simulation, parameters) for simulation in simulation_list])
-    return np.sum((pf_sim - experimental_pf)**2)
-
-
-def likelihood_function(parameters, simulation_list):
-    likelihood = 0
-    for simulation in simulation_list:
-        tol = 1e-6
-        pf = calc_pf_for_simulation(simulation, parameters)
-        if pf > 1 - tol:
-            pf = 1 - tol
-        if pf < tol:
-            pf = tol
-
-        likelihood -= np.log(pf)*simulation.failures
-        likelihood -= np.log(1 - pf)*simulation.run_outs
-    return likelihood
 
 
 if __name__ == '__main__':

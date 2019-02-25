@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 import shutil
+import sys
 
 from case_hardening_toobox import CaseHardeningToolbox
 from case_hardening_toobox import write_geometry_files_for_dante
@@ -26,19 +27,21 @@ from materials.gear_materials import SS2506
         copied to the include_file_directory on lines 54-55
 """
 
+specimen_type = sys.argv[-1]
+
 Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'temperatures', 'carbon', 'tempering'])
 
 
 current_directory = os.getcwd()
-specimen_name = 'utmis_smooth'
+specimen_name = 'utmis_' + specimen_type
 simulations = [Simulation(simulation_directory=specimen_name + '_0_5',
-                          times=[180.], temperatures=[840.], carbon=[0.75], tempering=(180, 7200))]
+                          times=[180.], temperatures=[840.], carbon=[0.75], tempering=(200, 7200))]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/' + specimen_name + '_20190222/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
-include_file_directory = os.path.expanduser('~/' + specimen_name + '_20190222/include_files/')
+include_file_directory = simulation_directory + 'include_files/'
 
 # This file contains all nodes, elements and sets to be further processed by the script
 geometry_file_name = '../fatigue_specimens/UTMIS/' + specimen_name + '/' + specimen_name + '.inc'
@@ -85,6 +88,8 @@ for simulation in simulations:
 
     toolbox_writer.quenching_data.time = 3600.
     toolbox_writer.quenching_data.temperature = 120.
+
+    toolbox_writer.cooldown_data.temperature = 80
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]

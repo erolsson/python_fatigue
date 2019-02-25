@@ -15,7 +15,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 experimental_data = np.genfromtxt('hardness_profile', delimiter=',')
-plt.plot(experimental_data[:, 0], experimental_data[:, 1])
+plt.plot(experimental_data[:, 0], experimental_data[:, 1], 'b', lw=2)
 
 simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
                                        'utmis_smooth_dante_path.pkl')
@@ -23,7 +23,7 @@ simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_spe
 with open(simulation_pickle, 'r') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 
-plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1])
+plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], '--r', lw=2)
 
 plt.figure(2)
 plt.plot(dante_data['r'][:-1], dante_data['S'][:-1])

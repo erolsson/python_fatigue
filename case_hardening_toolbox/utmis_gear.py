@@ -14,10 +14,10 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 current_directory = os.getcwd()
 specimen_name = 'utmis_gear'
 simulations = [Simulation(simulation_directory=specimen_name + '_0_5',
-                          times=[180.], temperatures=[840.], carbon=[0.75], tempering=(180, 7200))]
+                          times=[180.], temperatures=[840.], carbon=[0.75], tempering=(200, 7200))]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
