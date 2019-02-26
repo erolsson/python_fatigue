@@ -9,7 +9,7 @@ from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 mesh = '1x'
 cd = float(sys.argv[1])
 
-interesting_point = np.array([-5.2078, 32.8787, 0.0])
+interesting_point = np.array([-4.40, 33.288, 0.0])
 
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                             mesh + '/dante_tempering_2h_180C_20190129/')
@@ -33,17 +33,17 @@ distance_to_monitor_node = 0*nodal_coordinates + nodal_coordinates
 for i in range(3):
     distance_to_monitor_node[:, i] -= interesting_point[i]
 monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
-
+print "Coordinates of interesting point is", nodal_coordinates[monitor_node_idx], 'and has index', monitor_node_idx
 
 print '========================================================================================================='
-print 'The residual stress in the q-direction at interesting point is ', dante_data['S'][monitor_node_idx, 1]
+print 'The residual stress at interesting point is: '
+print dante_data['S'][monitor_node_idx, :]
 print '========================================================================================================='
 
 
 loads = np.arange(30, 41, 1.)
 n = dante_data.values()[0].shape[0]
 stress_history = np.zeros((2, n, 6))
-
 
 for load in loads:
     print '========================================================================================================'
@@ -54,18 +54,24 @@ for load in loads:
 
     min_stresses = mechanical_data['min_load']
     max_stresses = mechanical_data['max_load']
+    print "Max mechanical stress at interesting point"
+    print "Pamp = 30 kN :", max_stresses[30][monitor_node_idx]
+    print "Pamp = 35 kN :", max_stresses[35][monitor_node_idx]
+    print "Pamp = 40 kN :", max_stresses[40][monitor_node_idx]
+
     min_stress = min_stresses[f1] + (min_stresses[f2] - min_stresses[f1])/(f2 - f1)*(load-f1)
     max_stress = max_stresses[f1] + (max_stresses[f2] - max_stresses[f1])/(f2 - f1)*(load-f1)
 
     stress_history[0, :, :] = min_stress + dante_data['S']
     stress_history[1, :, :] = max_stress + dante_data['S']
 
-    print 'The minimum stress in the q-direction at interesting point is ', stress_history[0, monitor_node_idx, 1]
-    print 'The maximum stress in the q-direction at interesting point is ', stress_history[1, monitor_node_idx, 1]
     print '========================================================================================================'
-    for a800 in np.arange(0.6, 1.7, 0.1):
+    print 'The minimum stress at interesting point is ', stress_history[0, monitor_node_idx, :]
+    print 'The maximum stress at interesting point is ', stress_history[1, monitor_node_idx, :]
+    print '========================================================================================================'
+    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/'
-                                                      'mesh_' + mesh + '/test_findley_tempering_2h_180C_a800=' +
+                                                      'mesh_' + mesh + '/findley_tempering_2h_180C_a800=' +
                                                       str(a800).replace('.', '_') + '/pulsator/')
 
         if not os.path.isdir(findley_pickle_directory):

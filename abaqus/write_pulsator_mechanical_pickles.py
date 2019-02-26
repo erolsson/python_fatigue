@@ -27,10 +27,10 @@ if __name__ == '__main__':
     pulsator_odb.close()
     stress_dict = {'min_load': {}, 'max_load': {}}
     for step_name in step_names:
-        min_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 0,
-                                       instance_name='tooth_left')
-        max_load = read_field_from_odb('S', pulsator_odb_filename, element_set_name, step_name, 1,
-                                       instance_name='tooth_left')
+        min_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 0,
+                                       element_set_name=element_set_name, instance_name='tooth_left')
+        max_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 1,
+                                       element_set_name=element_set_name, instance_name='tooth_left')
 
         load = float(step_name[5:9].replace('_', '.'))
         stress_dict['min_load'][load] = min_load

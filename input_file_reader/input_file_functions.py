@@ -47,27 +47,28 @@ def get_elements_from_nodes(node_labels, all_elements):
     return np.array(element_data, dtype=int)
 
 
+def write_set_rows(data_to_write, file_lines):
+    data_line = ''
+    counter = 0
+    for item in data_to_write:
+        data_line += str(int(item)) + ', '
+        counter += 1
+        if counter == 16 or item == data_to_write[-1]:
+            file_lines.append(data_line[:-2])
+            counter = 0
+            data_line = ''
+
+
 def write_sets(node_sets, element_sets):
     file_lines = ['** Include file for sets in a quarter model of a planetary gear for dante sim']
 
-    def write_set_rows(data_to_write):
-        data_line = ''
-        counter = 0
-        for item in data_to_write:
-            data_line += str(int(item)) + ', '
-            counter += 1
-            if counter == 16 or item == data_to_write[-1]:
-                file_lines.append(data_line[:-2])
-                counter = 0
-                data_line = ''
-
     for key, data in element_sets.iteritems():
         file_lines.append('*Elset, elset=' + key)
-        write_set_rows(data)
+        write_set_rows(data, file_lines)
 
     for key, data in node_sets.iteritems():
         file_lines.append('*Nset, nset=' + key)
-        write_set_rows(data)
+        write_set_rows(data, file_lines)
     return file_lines
 
 

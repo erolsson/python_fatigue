@@ -14,7 +14,7 @@ from_step = sys.argv[-3]
 from_frame = int(sys.argv[-2])
 to_step = sys.argv[-1]
 
-stress_data = read_field_from_odb('S', from_odb_name, 'GEARELEMS', from_step, from_frame,
+stress_data = read_field_from_odb('S', from_odb_name, from_step, from_frame, element_set_name='GEARELEMS',
                                   instance_name='EVAL_TOOTH_1', coordinate_system=cylindrical_system_z)
 
 write_field_to_odb(stress_data, 'S', to_odb_name, to_step, instance_name='tooth_left',
