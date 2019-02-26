@@ -36,7 +36,7 @@ class InputFileReader:
                             self.set_data[key_word][set_name] = []
                         self.set_data[key_word][set_name] += [int(label) for label in data if label]
 
-        self.nodal_data = np.zeros((len(nodes), 4))
+        self.nodal_data = np.zeros((len(nodes), len(nodes[0])))
 
         for i, node in enumerate(nodes):
             self.nodal_data[i, :] = node
