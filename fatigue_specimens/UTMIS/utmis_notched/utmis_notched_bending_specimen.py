@@ -139,7 +139,7 @@ class NotchedBendingSpecimenClass:
             part = self.fatigue_part
         
         nr = 25
-        nd = 2
+        nd = 20
         nx1 = 20      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
         n_fillet = 2  # filletRadius
