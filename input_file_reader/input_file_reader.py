@@ -45,9 +45,7 @@ class InputFileReader:
             self.elements[element_type] = np.array(data, dtype=int)
 
     def write_geom_include_file(self, filename, simulation_type='Mechanical'):
-        element_type_prefix = 'D'
-        if simulation_type == 'Mechanical':
-            element_type_prefix = ''
+
 
         file_lines = ['*NODE, NSET=ALL_NODES']
         for node in self.nodal_data:
@@ -56,7 +54,12 @@ class InputFileReader:
                 node_string = ', ' + node_string + str(n_data)
             file_lines.append(node_string)
         for element_type, element_data in self.elements.iteritems():
-            file_lines.append('*ELEMENT, TYPE=' + element_type_prefix + element_type + ', ELSET=ALL_ELEMENTS', )
+            if simulation_type != 'Mechanical':
+                if element_type[1] == 'P':
+                    e_type = 'DC2D' + element_type[-1]
+                else:
+                    e_type = 'DC3D' + element_type[-1]
+            file_lines.append('*ELEMENT, TYPE=' + e_type + ', ELSET=ALL_ELEMENTS', )
             for element in element_data:
                 element_string = [str(e) for e in element]
                 element_string = ', '.join(element_string)
