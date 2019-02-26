@@ -49,6 +49,7 @@ class InputFileReader:
         for node in self.nodal_data:
             node_string = '\t' + str(int(node[0]))
             for n_data in node[1:]:
+                print node_string
                 node_string = ', ' + node_string + str(n_data)
             file_lines.append(node_string)
         for element_type, element_data in self.elements.iteritems():
