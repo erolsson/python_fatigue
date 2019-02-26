@@ -47,7 +47,7 @@ class InputFileReader:
     def write_geom_include_file(self, filename, simulation_type='Mechanical'):
         file_lines = ['*NODE, NSET=ALL_NODES']
         for node in self.nodal_data:
-            node_string = '\t' + str(int(node[0]))
+            node_string = '\t' + str(int(node[0])) + ', '
             for n_data in node[1:]:
                 node_string = node_string + str(n_data) + ', '
             file_lines.append(node_string[:-2])
