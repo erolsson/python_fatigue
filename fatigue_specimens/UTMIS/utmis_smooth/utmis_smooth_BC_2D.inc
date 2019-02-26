@@ -1,0 +1,4 @@
+*boundary
+	XSYM_NODES, XSYMM
+	YSYM_NODES, YSYMM
+**EOF
