@@ -335,7 +335,7 @@ class CaseHardeningToolbox:
         return ['*STEP,NAME=' + step_name + ' , INC=10000',
                 '\t' + step_description,
                 '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
-                '\t\t0.01,  ' + str(step_time) + ', 1e-05,  1000.',
+                '\t\t0.01,  ' + str(step_time) + ', 1e-09,  1000.',
                 '\t*FIELD, OP=NEW, VAR = 2',
                 '\t\tAll_Nodes, ' + str(kinematic_mode),
                 '\t*SFILM, OP=NEW',
