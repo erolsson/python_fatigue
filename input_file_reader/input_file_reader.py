@@ -52,6 +52,7 @@ class InputFileReader:
                 node_string = ', ' + node_string + str(n_data)
             file_lines.append(node_string)
         for element_type, element_data in self.elements.iteritems():
+            e_type = element_type
             if simulation_type != 'Mechanical':
                 if element_type[1] == 'P':
                     e_type = 'DC2D' + element_type[-1]
