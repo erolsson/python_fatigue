@@ -51,10 +51,10 @@ class InputFileReader:
 
         file_lines = ['*NODE, NSET=ALL_NODES']
         for node in self.nodal_data:
-            node_string = '\t'
-            for n_data in node:
-                node_string = node_string + str(n_data) + ', '
-            file_lines.append(node_string[:-2])
+            node_string = '\t' + str(int(node[0]))
+            for n_data in node[1:]:
+                node_string = ', ' + node_string + str(n_data)
+            file_lines.append(node_string)
         for element_type, element_data in self.elements.iteritems():
             file_lines.append('*ELEMENT, TYPE=' + element_type_prefix + element_type + ', ELSET=ALL_ELEMENTS', )
             for element in element_data:
