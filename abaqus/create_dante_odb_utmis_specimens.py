@@ -64,5 +64,5 @@ if __name__ == '__main__':
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
         simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + '_tempering_2h_200C/' \
-            'utmis_' + specimen + '_270min/Toolbox_Mechanical_utmis_' + specimen + '.odb'
+            'utmis_' + specimen + '_270_min/Toolbox_Mechanical_utmis_' + specimen + '.odb'
         create_dante_step(simulation_odb, odb_file_name, 'dante_results_0_5')
