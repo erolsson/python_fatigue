@@ -38,7 +38,7 @@ simulations = [Simulation(simulation_directory=specimen_name + '_270_min',
                           times=[270], temperatures=[840.], carbon=[0.75], tempering=(180, 7200))]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_180C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
