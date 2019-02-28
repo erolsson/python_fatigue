@@ -23,9 +23,15 @@ simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_spe
 with open(simulation_pickle, 'r') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 
-plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], '--r', lw=2)
+for carb in [0.75, 0.8]:
+    for temp in [180, 200]:
+        simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
+                                               'utmis_smoothdante_path_tempering_2h_' + str(temp) + '_' +
+                                               str(carb).replace('.', '_') + 'C' + '.pkl')
 
-plt.figure(2)
-plt.plot(dante_data['r'][:-1], dante_data['S'][:-1])
+    label = 'Temp ' + str(temp) + 'C=' + str(carb)
+
+    plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], lw=2, label=label)
+
 
 plt.show()
