@@ -56,6 +56,8 @@ class InputFileReader:
             if simulation_type != 'Mechanical':
                 if element_type[1] == 'P':
                     e_type = 'DC2D' + element_type[-1]
+                elif element_type[1] == 'A':
+                    e_type = 'DCAX' + element_type[-1]
                 else:
                     e_type = 'DC3D' + element_type[-1]
             file_lines.append('*ELEMENT, TYPE=' + e_type + ', ELSET=ALL_ELEMENTS', )
