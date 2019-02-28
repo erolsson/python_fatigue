@@ -38,7 +38,7 @@ if __name__ == '__main__':
             s_res = dante_data['S'][0]
 
             plt.plot([s_res, s_res+250*1.89], [440*1.89, 250*1.89], '-rx', ms=12)
-            #fig += 1
+            fig += 1
 
             plt.text(0, 400, label)
 
