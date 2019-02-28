@@ -24,10 +24,10 @@ if __name__ == '__main__':
             with open(simulation_pickle, 'r') as pickle_handle:
                 dante_data = pickle.load(pickle_handle)
 
-            s_res = dante_data['S'][0]
+            s_res_smooth = dante_data['S'][0]
             label = 'Temp ' + str(temp) + 'C=' + str(carb)
 
-            plt.plot([s_res, s_res+430*1.03], [760*1.03, 430*1.03], '-gx', ms=12)
+            plt.plot([s_res_smooth, s_res_smooth+430*1.03], [760*1.03, 430*1.03], '-gx', ms=12)
 
             simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
                                                    'utmis_notcheddante_path_tempering_2h_' + str(temp) + '_' +
@@ -35,11 +35,11 @@ if __name__ == '__main__':
             with open(simulation_pickle, 'r') as pickle_handle:
                 dante_data = pickle.load(pickle_handle)
 
-            s_res = dante_data['S'][0]
+            s_res_notched = dante_data['S'][0]
 
-            plt.plot([s_res, s_res+250*1.89], [440*1.89, 250*1.89], '-rx', ms=12)
+            plt.plot([s_res_notched, s_res_notched+250*1.89], [440*1.89, 250*1.89], '-rx', ms=12)
             fig += 1
-
+            print s_res_smooth, s_res_notched
             plt.text(0, 400, label)
 
     plt.show()
