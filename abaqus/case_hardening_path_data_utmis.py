@@ -21,7 +21,7 @@ if __name__ == '__main__':
         odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
         for carb in [0.75, 0.8]:
             for temp in [180, 200]:
-                pickle_name = 'utmis_' + specimen + 'dante_path_tempering_2h_' + str(temp) + '_' + \
+                pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_path_tempering_2h_' + str(temp) + '_' + \
                               str(carb).replace('.', '_') + 'C' + '.pkl'
                 step_name = 'dante_results_tempering_2h_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C'
                 write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,

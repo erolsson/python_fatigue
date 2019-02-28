@@ -17,21 +17,18 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 experimental_data = np.genfromtxt('hardness_profile', delimiter=',')
 plt.plot(experimental_data[:, 0], experimental_data[:, 1], 'b', lw=2)
 
-simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
-                                       'utmis_smooth_dante_path.pkl')
-
-with open(simulation_pickle, 'r') as pickle_handle:
-    dante_data = pickle.load(pickle_handle)
 
 for carb in [0.75, 0.8]:
     for temp in [180, 200]:
         simulation_pickle = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
-                                               'utmis_smoothdante_path_tempering_2h_' + str(temp) + '_' +
+                                               'dante/utmis_smoothdante_path_tempering_2h_' + str(temp) + '_' +
                                                str(carb).replace('.', '_') + 'C' + '.pkl')
+        with open(simulation_pickle, 'r') as pickle_handle:
+            dante_data = pickle.load(pickle_handle)
 
-    label = 'Temp ' + str(temp) + 'C=' + str(carb)
+        label = 'Temp ' + str(temp) + 'C=' + str(carb)
 
-    plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], lw=2, label=label)
+        plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], '--', lw=2, label=label)
 
 
 plt.show()
