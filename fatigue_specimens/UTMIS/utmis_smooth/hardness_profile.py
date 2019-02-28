@@ -30,5 +30,5 @@ for carb in [0.75, 0.8]:
 
         plt.plot(dante_data['r'][:-1], dante_data['HV'][:-1], '--', lw=2, label=label)
 
-
+plt.legend(loc='best')
 plt.show()
