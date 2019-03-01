@@ -1,6 +1,7 @@
 import os
 import pickle
 
+import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.style
@@ -14,6 +15,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 if __name__ == '__main__':
+    sm = np.linspace(-400, 200, 1000)
     fig = 0
     for carb in [0.75, 0.8]:
         for temp in [180, 200]:
@@ -40,6 +42,13 @@ if __name__ == '__main__':
             plt.plot([s_res_notched, s_res_notched+250*1.89], [440*1.89, 250*1.89], '-rx', ms=12)
             fig += 1
             print s_res_smooth, s_res_notched
+
+            k = 1.3
+            sF = 580 * (k + np.sqrt(1 + k ** 2)) / 2
+
+            sa = 2 * (-k * sF + np.sqrt(sF ** 2 + k ** 2 * sF ** 2 - k * sF * sm))
+            plt.plot(sm, sa)
+
             plt.text(0, 400, label)
 
     plt.show()
