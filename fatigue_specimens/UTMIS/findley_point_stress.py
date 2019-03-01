@@ -45,7 +45,13 @@ if __name__ == '__main__':
 
             k = 1.3
             sF = 580 * (k + np.sqrt(1 + k ** 2)) / 2
+            print sF
+            sa = 2 * (-k * sF + np.sqrt(sF ** 2 + k ** 2 * sF ** 2 - k * sF * sm))
+            plt.plot(sm, sa)
 
+            k = 1.3
+            sF = 560 * (k + np.sqrt(1 + k ** 2)) / 2
+            print sF
             sa = 2 * (-k * sF + np.sqrt(sF ** 2 + k ** 2 * sF ** 2 - k * sF * sm))
             plt.plot(sm, sa)
 

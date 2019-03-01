@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 
 from weakest_link_functions import Simulation
-from weakest_link_functions import likelihood_function
+from weakest_link_functions import likelihood_function_plot
 
 from multiprocesser.multiprocesser import multi_processer
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
         job_list = []
         for b_val in b:
             for su_val in su:
-                job_list.append([likelihood_function, ((findley_parameter, su_val, b_val), simulations), {}])
+                job_list.append([likelihood_function_plot, ((findley_parameter, su_val, b_val), simulations), {}])
         r_list = multi_processer(jobs=job_list, timeout=1000, delay=0., cpus=16)
         r = np.array(r_list).reshape((n_b, n_su))
 
@@ -62,3 +62,4 @@ if __name__ == '__main__':
         plt.colorbar()
 
         plt.savefig('likelihood_a800=' + str(findley_parameter).replace('.', '_') + '.png')
+    plt.show()

@@ -18,9 +18,16 @@ from weakest_link.weakest_link_evaluator import FEM_data
 Simulation = namedtuple('Simulation', ['specimen', 'R', 'stress', 'failures', 'run_outs'])
 
 
+_tempering = 200
+_carbon = 0.8
+_findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley'
+                                               '_tempering_2h_' + str(_tempering) + '_' +
+                                               str(_carbon).replace('.', '_') + 'C/')
+
+
 def _get_evaluated_findley_parameters():
-    findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
-    findley_parameter_directories = glob.glob(findley_pickle_directory + 'a800=*/')
+
+    findley_parameter_directories = glob.glob(_findley_pickle_directory + 'a800=*/')
     findley_parameter_directories = [os.path.normpath(directory).split(os.sep)[-1]
                                      for directory in findley_parameter_directories]
     _evaluated_findley_parameters = [directory[5:] for directory in findley_parameter_directories]
@@ -29,15 +36,14 @@ def _get_evaluated_findley_parameters():
 
 
 def _get_findley_data():
-    findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/')
     _findley_data = {'smooth': {0: {}, -1: {}},
                      'notched': {0: {}, -1: {}}}
-
+    factor = {'smooth': 1., 'notched': 1.}
     _evaluated_findley_parameters = _get_evaluated_findley_parameters()
     for findley_parameter in _evaluated_findley_parameters:
         for specimen, specimen_data in _findley_data.iteritems():
             for load_ratio, load_ratio_data in specimen_data.iteritems():
-                file_string = findley_pickle_directory + 'a800=' + str(findley_parameter).replace('.', '_') + \
+                file_string = _findley_pickle_directory + 'a800=' + str(findley_parameter).replace('.', '_') + \
                                   '/findley_' + specimen + '_R=' + str(load_ratio) + '_s=*MPa.pkl'
                 files = glob.glob(file_string)
                 for filename in files:
@@ -45,18 +51,20 @@ def _get_findley_data():
                     if stress not in load_ratio_data:
                         load_ratio_data[stress] = OrderedDict()
                     with open(filename) as pickle_handle:
-                        load_ratio_data[stress][findley_parameter] = pickle.load(pickle_handle)
 
+                        load_ratio_data[stress][findley_parameter] = pickle.load(pickle_handle)*factor[specimen]
     return _findley_data
 
 
 def _get_dante_data():
     dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data'
-                                                '/dante/')
+                                                '/dante_tempering_2h_' + str(_tempering) + '_' +
+                                                str(_carbon).replace('.', '_') + 'C/')
     data = {}
     for specimen in ['smooth', 'notched']:
         with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
             data[specimen] = pickle.load(pickle_handle)
+
     return data
 
 
@@ -79,18 +87,21 @@ def calc_pf_for_simulation(simulation, parameters):
     a800_levels = evaluated_findley_parameters[idx]
 
     # Loading Findley pickles for the found values
-    findley_stress1 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[0]]
-    findley_stress2 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[1]]
+    if a800 not in findley_data[simulation.specimen][simulation.R][simulation.stress]:
+        findley_stress1 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[0]]
+        findley_stress2 = findley_data[simulation.specimen][simulation.R][simulation.stress][a800_levels[1]]
 
-    da = evaluated_findley_parameters[idx[1]] - evaluated_findley_parameters[idx[0]]
-    ds = findley_stress2 - findley_stress1
-    findley_stress = findley_stress1 + ds/da*(a800 - evaluated_findley_parameters[idx[0]])
+        da = evaluated_findley_parameters[idx[1]] - evaluated_findley_parameters[idx[0]]
+        ds = findley_stress2 - findley_stress1
+        findley_stress = findley_stress1 + ds / da * (a800 - evaluated_findley_parameters[idx[0]])
+    else:
+        findley_stress = findley_data[simulation.specimen][simulation.R][simulation.stress][a800]
     n = findley_stress.shape[0]
 
     nodal_positions = geometry_data[simulation.specimen]
 
     findley_stress[nodal_positions[:, 0] > 11.] = 0
-
+    print np.max(findley_stress)
     steel_data = SteelData(HV=dante_data[simulation.specimen]['HV'].reshape(n/8, 8))
 
     fem_data = FEM_data(stress=findley_stress.reshape(n/8, 8),
