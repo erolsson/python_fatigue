@@ -13,7 +13,7 @@ interesting_point = np.array([0., 2.5, 0])
 carbon = 0.8
 tempering = 200
 
-dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
+dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
                                             'dante_tempering_2h_' + str(tempering) + '_' +
                                             str(carbon).replace('.', '_') + 'C/')
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/')
