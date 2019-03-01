@@ -18,7 +18,7 @@ except ImportError:
     print " ERROR: This script require Abaqus CAE to run"
     raise
 
-from utmis_smooth.utmis_smooth_bending_specimen_2D import SmoothBendingSpecimenClass
+from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClass
 from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenClass
 
 simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
