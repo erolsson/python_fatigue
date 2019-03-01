@@ -10,8 +10,12 @@ specimen = sys.argv[1]
 R = float(sys.argv[2])
 
 interesting_point = np.array([0., 2.5, 0])
+carbon = 0.8
+tempering = 200
 
-dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/')
+dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
+                                            'dante_tempering_2h_' + str(tempering) + '_' +
+                                            str(carbon).replace('.', '_') + 'C/')
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/')
 geometry_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
 
@@ -59,7 +63,8 @@ for amplitude_stress in load_levels[specimen][R]:
         "MPa"
     print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
         "MPa"
-    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
+    # for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
+    for a800 in np.array([1.3]):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='

@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     element_set_name = 'fatigue_volume_elements'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/' \
-                       'dante_tempering_2h_' + str(tempering) + '_' + str(carbon).replace('.', '_') + 'C'
+                       'dante_tempering_2h_' + str(tempering) + '_' + str(carbon).replace('.', '_') + 'C/'
     pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/geometry/'
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
 
