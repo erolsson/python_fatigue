@@ -14,8 +14,14 @@ from write_nodal_coordinates import get_list_from_set_file
 from write_dante_evaluation_pickles_gear import write_dante_pickle
 
 if __name__ == '__main__':
+    carbon = 0.8
+    tempering = 200
+
+    step_name = 'dante_results_tempering_2h_' + str(tempering) + '_' + str(carbon).replace('.', '_') + 'C'
+
     element_set_name = 'fatigue_volume_elements'
-    pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/dante/'
+    pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/' \
+                       'dante_tempering_2h_' + str(tempering) + '_' + str(carbon).replace('.', '_') + 'C'
     pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/geometry/'
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
 
@@ -29,7 +35,7 @@ if __name__ == '__main__':
             os.makedirs(pickle_directory)
 
         pickle_name = pickle_directory + 'data_utmis_' + specimen + '.pkl'
-        write_dante_pickle(dante_odb_filename, 'dante_results_0_5', pickle_name, element_set_name)
+        write_dante_pickle(dante_odb_filename, step_name, pickle_name, element_set_name)
 
         # Writes the nodal coordinates
         input_file_reader = InputFileReader()
@@ -38,7 +44,7 @@ if __name__ == '__main__':
 
         # get the node labels by reading HV
 
-        _, node_labels, _ = read_field_from_odb('HV', dante_odb_filename, step_name='dante_results_0_5', frame_number=0,
+        _, node_labels, _ = read_field_from_odb('HV', dante_odb_filename, step_name=step_name, frame_number=0,
                                                 element_set_name=element_set_name, get_position_numbers=True)
 
         nodal_coordinates = np.zeros((len(node_labels), 3))
