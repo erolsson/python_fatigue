@@ -47,6 +47,7 @@ if __name__ == '__main__':
                 pickle_filenames = glob.glob(findley_pickle_directory + 'a800=' + findley_parameter + '/findley_' +
                                              specimen + '_R=' + str(int(R)) + '_' + 's=*.pkl')
                 stress_amps = [filename[-10:-7] for filename in pickle_filenames]
+                stress_amps.sort()
                 for pickle_file, load in zip(pickle_filenames, stress_amps):
 
                     print 'loading pickle file', pickle_file
