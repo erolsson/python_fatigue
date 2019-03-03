@@ -178,7 +178,7 @@ class SmoothBendingSpecimenClass:
 
         z_line = 1.3
         if flip:
-            z_line = self.case_mesh_thickness/2 - 1.3
+            z_line = self.thickness/2 - 1.3
         z_coordinates = [0, z_line, self.thickness/2]
         edges = []
         for y, x_coordinates in xy.iteritems():
