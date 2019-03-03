@@ -11,7 +11,7 @@ try:
     import interaction
     from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
     from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
-    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE
+    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE, XYPLANE
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
@@ -103,6 +103,11 @@ class SmoothBendingSpecimenClass:
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical5.id],
                                                     cells=self.fatigue_part.cells)
 
+        datum_plane_vertical6 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE,
+                                                                             offset=1.3)
+        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical6.id],
+                                                    cells=self.fatigue_part.cells)
+
         return self.fatigue_part
 
     def mesh(self, part=None, flip=False, analysis_type='ThermalDiffusion'):
@@ -110,11 +115,10 @@ class SmoothBendingSpecimenClass:
             part = self.fatigue_part
         
         nr = 25
-        nd = 20
         nx1 = 40      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
         n_fillet = 2  # filletRadius
-        n_height = 30
+        n_height = 15
         size_length_direction = 2
         n_radius = 10
 
@@ -165,11 +169,11 @@ class SmoothBendingSpecimenClass:
         
         # Edges in the hardness gradient
         # y-coord key, data x-coords
-        xy = {self.notch_height/2 - self.case_mesh_thickness/2:   [0.],
-              self.height/2 - self.case_mesh_thickness/2:         [self.x, self.load_position_x, self.length / 2 - self.R1],
-              0.:                                                 [self.length/2 - self.case_mesh_thickness/2]}
+        xy = {self.notch_height/2 - self.case_mesh_thickness/2: [0.],
+              self.height/2 - self.case_mesh_thickness/2:       [self.x, self.load_position_x, self.length / 2 - self.R1],
+              0.:                                               [self.length/2 - self.case_mesh_thickness/2]}
 
-        z_coordinates = [0, self.thickness/2]
+        z_coordinates = [0, 1.3, self.thickness/2]
         edges = []
         for y, x_coordinates in xy.iteritems():
             for x in x_coordinates:
@@ -185,7 +189,7 @@ class SmoothBendingSpecimenClass:
                             constraint=FIXED)
 
         # Edges in the z-direction
-        z = self.thickness/4
+        z = 1.9
         x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         y_coordinates = [self.notch_height/2, self.height/2, self.height/2, self.height/2]
         edges = []
@@ -194,7 +198,7 @@ class SmoothBendingSpecimenClass:
             edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
             edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
 
-        edges.append(part.edges.findAt((self.length/2, 0, self.thickness/4)))
+        edges.append(part.edges.findAt((self.length/2, 0, 1.9)))
         edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
 
         if flip is True:
@@ -202,9 +206,24 @@ class SmoothBendingSpecimenClass:
         part.seedEdgeByBias(biasMethod=SINGLE, 
                             end1Edges=edges1,
                             end2Edges=edges2,
-                            number=nd,
-                            ratio=4,
+                            number=25,
+                            ratio=20,
                             constraint=FIXED)
+
+        z = 0.1
+        x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
+        y_coordinates = [self.notch_height / 2, self.height / 2, self.height / 2, self.height / 2]
+        edges = []
+        for i, x in enumerate(x_coordinates):
+            edges.append(part.edges.findAt((x, 0, z)))
+            edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
+            edges.append(part.edges.findAt((x, y_coordinates[i], z)))
+
+        edges.append(part.edges.findAt((self.length / 2, 0, 0.01)))
+
+        part.seedEdgeByNumber(number=5,
+                              edges=edges,
+                              constraint=FIXED)
 
         # Seeding the notch
         num = [nx1, nx2, n_fillet]
@@ -212,7 +231,7 @@ class SmoothBendingSpecimenClass:
         y_coordinates = [self.notch_height / 2 + self.R*(1 - cos(15*pi/180))]
         for x, y, n in zip(x_coordinates, y_coordinates, num):
             edges = []
-            for z in [0, self.thickness/2]:
+            for z in z_coordinates:
                 edges.append(part.edges.findAt((x, 0,                            z)))
                 edges.append(part.edges.findAt((x, y - self.case_mesh_thickness, z)))
                 edges.append(part.edges.findAt((x, y,                            z)))
@@ -223,7 +242,6 @@ class SmoothBendingSpecimenClass:
         # Mid section
         x_coordinates = [self.load_position_x + (self.length / 2 - self.R1) / 2, (self.x + self.load_position_x) / 2]
         y_coordinates = [0, self.height/2 - self.case_mesh_thickness, self.height/2]
-        z_coordinates = [0, self.thickness/2]
         edges = []
         for x in x_coordinates:
             for y in y_coordinates:
@@ -238,18 +256,16 @@ class SmoothBendingSpecimenClass:
         z_coordinates = [0, self.thickness/2]
         y = 0.001*self.height/2
         edges = []
-        for x in x_coordinates:
-            for z in z_coordinates:
+        for z in z_coordinates:
+            for x in x_coordinates:
                 edges.append(part.edges.findAt((x, y, z)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, 0)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, self.thickness/2)))
+            edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, z)))
         part.seedEdgeByNumber(edges=edges,
                               number=n_height)
 
         # Outermost radius
         x0 = self.length / 2 - self.R1
         radius = [self.R1, self.R1 - self.case_mesh_thickness]
-        z_coordinates = [0, self.thickness/2]
         edges = []
         
         for r in radius:
