@@ -97,11 +97,11 @@ def calc_pf_for_simulation(simulation, parameters):
     else:
         findley_stress = findley_data[simulation.specimen][simulation.R][simulation.stress][a800]
     n = findley_stress.shape[0]
-
     nodal_positions = geometry_data[simulation.specimen]
-
     findley_stress[nodal_positions[:, 0] > 11.] = 0
-    print np.max(findley_stress)
+    print "The maximum findley stress for", simulation.specimen, "with load ratio", simulation.R, "and stress level",\
+        simulation.stress, "is", np.max(findley_stress), 'MPa'
+
     steel_data = SteelData(HV=dante_data[simulation.specimen]['HV'].reshape(n/8, 8))
 
     fem_data = FEM_data(stress=findley_stress.reshape(n/8, 8),

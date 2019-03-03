@@ -19,10 +19,16 @@ dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmi
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/')
 geometry_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
 
-load_levels = {'smooth': {-1.: np.array([737., 774, 820]),
-                          0.0: np.array([425., 440])},
-               'notched': {-1.: np.array([427., 450]),
-                           0.0: np.array([225., 240, 255])}}
+# load_levels = {'smooth': {-1.: np.array([737., 774, 820]),
+#                          0.0: np.array([425., 440])},
+#               'notched': {-1.: np.array([427., 450]),
+#                           0.0: np.array([225., 240, 255])}}
+
+load_levels = {'smooth': {-1.:  np.array([720, 740, 760, 780, 800, 820, 840]),
+                          0.0:  np.array([380, 400, 420, 440, 460, 480, 500])},
+               'notched': {-1.: np.array([380, 400, 420, 440, 460, 480, 500]),
+                           0.0: np.array([200, 220, 240, 260, 280, 300, 310])}}
+
 
 with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
     mechanical_data = pickle.load(pickle_handle)
