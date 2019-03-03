@@ -237,7 +237,7 @@ class NotchedBendingSpecimenClass:
             edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
             edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
 
-        edges.append(part.edges.findAt((self.length / 2, 0, self.thickness/4)))
+        edges.append(part.edges.findAt((self.length / 2, 0, z)))
         edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
 
         if flip is True:
@@ -261,7 +261,7 @@ class NotchedBendingSpecimenClass:
             edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
             edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
 
-        edges.append(part.edges.findAt((self.length / 2, 0, self.thickness/4)))
+        edges.append(part.edges.findAt((self.length / 2, 0, z)))
 
         part.seedEdgeByNumber(edges=edges,
                               number=5,
