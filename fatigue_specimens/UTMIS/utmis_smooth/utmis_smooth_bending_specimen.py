@@ -121,7 +121,7 @@ class SmoothBendingSpecimenClass:
         nx1 = 40      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
         n_fillet = 2  # filletRadius
-        n_height = 15
+        n_height = 10
         size_length_direction = 2
         n_radius = 10
 
@@ -271,7 +271,8 @@ class SmoothBendingSpecimenClass:
                 edges.append(part.edges.findAt((x, y, z)))
             edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, z)))
         part.seedEdgeByNumber(edges=edges,
-                              number=n_height)
+                              number=n_height,
+                              constraint=FIXED)
 
         # Outermost radius
         x0 = self.length / 2 - self.R1
