@@ -134,7 +134,7 @@ class NotchedBendingSpecimenClass:
 
         offset = 1.3
         if flip:
-            offset = self.case_mesh_thickness/2 - 1.3
+            offset = self.thickness/2 - 1.3
         datum_plane_vertical6 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE,
                                                                              offset=offset)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical6.id],
