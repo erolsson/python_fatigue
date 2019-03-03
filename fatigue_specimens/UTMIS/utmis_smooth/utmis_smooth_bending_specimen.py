@@ -52,7 +52,7 @@ class SmoothBendingSpecimenClass:
 
         self.make_part()
 
-    def make_part(self, part_name='fatiguePart', flip=1.3):
+    def make_part(self, part_name='fatiguePart', flip=False):
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
