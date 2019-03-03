@@ -26,7 +26,7 @@ if __name__ == '__main__':
             with open(simulation_pickle, 'r') as pickle_handle:
                 dante_data = pickle.load(pickle_handle)
 
-            s_res_smooth = dante_data['S'][0]
+            s_res_smooth = dante_data['S'][0]*0
             label = 'Temp ' + str(temp) + 'C=' + str(carb)
 
             plt.plot([s_res_smooth, s_res_smooth+430*1.03], [760*1.03, 430*1.03], '-gx', ms=12)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
             with open(simulation_pickle, 'r') as pickle_handle:
                 dante_data = pickle.load(pickle_handle)
 
-            s_res_notched = dante_data['S'][0]
+            s_res_notched = dante_data['S'][0]*0
 
             plt.plot([s_res_notched, s_res_notched+250*1.89], [440*1.89, 250*1.89], '-rx', ms=12)
             fig += 1

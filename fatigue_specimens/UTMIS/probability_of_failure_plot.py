@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     k = 1.3
     su = 750.
-    m = 25
+    m = 15
 
     experiments = [Simulation(specimen='smooth', R=-1., stress=737., failures=1, run_outs=4),
                    Simulation(specimen='smooth', R=-1., stress=774., failures=4, run_outs=2),
