@@ -34,7 +34,7 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-simulations = [Simulation(simulation_directory=specimen_name + '_oil60_0_8C',
+simulations = [Simulation(simulation_directory=specimen_name + '_oil60_0_8C/',
                           times=[270], temperatures=[840.], carbon=[0.8], tempering=(200, 7200))]
 
 # This is the main directory where all simulation folders will be placed
