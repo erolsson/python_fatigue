@@ -98,9 +98,19 @@ def calc_pf_for_simulation(simulation, parameters):
         findley_stress = findley_data[simulation.specimen][simulation.R][simulation.stress][a800]
     n = findley_stress.shape[0]
     nodal_positions = geometry_data[simulation.specimen]
+    interesting_point = np.array([0., 2.5, 0])
+    distance_to_monitor_node = 0 * nodal_positions + nodal_positions
+    for i in range(3):
+        distance_to_monitor_node[:, i] -= interesting_point[i]
+    monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
+
     findley_stress[nodal_positions[:, 0] > 11.] = 0
+    findley_stress[nodal_positions[:, 2] > 1.] = 0
+    print np.max(nodal_positions[:, 0])
+    max_idx = np.argmax(findley_stress)
     print "The maximum findley stress for", simulation.specimen, "with load ratio", simulation.R, "and stress level",\
-        simulation.stress, "is", np.max(findley_stress), 'MPa'
+        simulation.stress, "is", findley_stress[max_idx], 'MPa and occurs at point', nodal_positions[max_idx]
+    print '\tThe findley stress at interesting point is', findley_stress[monitor_node_idx], "MPa"
 
     steel_data = SteelData(HV=dante_data[simulation.specimen]['HV'].reshape(n/8, 8))
 
