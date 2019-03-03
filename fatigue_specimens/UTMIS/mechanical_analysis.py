@@ -31,7 +31,7 @@ spec = specimen_types[specimen_name]()
 spec.modelDB.setValues(noPartsInputFile=OFF)
 spec.mesh(analysis_type='Mechanical')
 part1 = spec.fatigue_part
-part2 = spec.make_part(part_name='mirror')
+part2 = spec.make_part(part_name='mirror', flip=True)
 spec.mesh(part=part2, flip=True, analysis_type='Mechanical')
 
 mat = spec.modelDB.Material('Steel')
