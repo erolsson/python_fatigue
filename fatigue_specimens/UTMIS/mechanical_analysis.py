@@ -67,7 +67,7 @@ spec.modelDB.Coupling(name='Coupling loadNode',
                       controlPoint=spec.load_node,
                       surface=Load_region,
                       influenceRadius=WHOLE_SURFACE,
-                      couplingType=KINEMATIC)
+                      couplingType=DISTRIBUTING)
 
 support_nodes = instance_2.sets['Exposed_Nodes'].nodes.getByBoundingBox(xMin=0.999*(spec.length/2-spec.R1),
                                                                         xMax=1.001*(spec.length/2-spec.R1),
