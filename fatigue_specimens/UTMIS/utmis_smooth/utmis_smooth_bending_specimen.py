@@ -176,7 +176,10 @@ class SmoothBendingSpecimenClass:
               self.height/2 - self.case_mesh_thickness/2:       [self.x, self.load_position_x, self.length / 2 - self.R1],
               0.:                                               [self.length/2 - self.case_mesh_thickness/2]}
 
-        z_coordinates = [0, 1.3, self.thickness/2]
+        z_line = 1.3
+        if flip:
+            z_line = self.case_mesh_thickness/2 - 1.3
+        z_coordinates = [0, z_line, self.thickness/2]
         edges = []
         for y, x_coordinates in xy.iteritems():
             for x in x_coordinates:
@@ -193,6 +196,8 @@ class SmoothBendingSpecimenClass:
 
         # Edges in the z-direction
         z = 1.9
+        if flip:
+            z = 0.1
         x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         y_coordinates = [self.notch_height/2, self.height/2, self.height/2, self.height/2]
         edges = []
@@ -214,6 +219,8 @@ class SmoothBendingSpecimenClass:
                             constraint=FIXED)
 
         z = 0.1
+        if flip:
+            z = 1.9
         x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         y_coordinates = [self.notch_height / 2, self.height / 2, self.height / 2, self.height / 2]
         edges = []
