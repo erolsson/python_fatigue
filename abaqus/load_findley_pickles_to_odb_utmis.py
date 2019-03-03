@@ -48,7 +48,7 @@ if __name__ == '__main__':
                                              specimen + '_R=' + str(int(R)) + '_' + 's=*.pkl')
                 stress_amps = [filename[-10:-7] for filename in pickle_filenames]
                 stress_amps = sorted(stress_amps)
-                pickle_filenames = sorted(pickle_filenames, key=lambda x: x[-7:-4])
+                pickle_filenames = sorted(pickle_filenames, key=lambda x: x[-10:-7])
                 for pickle_file, load in zip(pickle_filenames, stress_amps):
 
                     print 'loading pickle file', pickle_file
