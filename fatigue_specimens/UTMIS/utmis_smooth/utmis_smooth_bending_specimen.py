@@ -20,7 +20,7 @@ except ImportError:
 
 
 class SmoothBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=15, analysisType='Mechanical'):
+    def __init__(self, t=1.2, load_position_x=15):
         self.length = float(90)
         self.R = float(30.)
         self.R1 = float(5.5)
@@ -52,7 +52,7 @@ class SmoothBendingSpecimenClass:
 
         self.make_part()
 
-    def make_part(self, part_name='fatiguePart'):
+    def make_part(self, part_name='fatiguePart', flip=1.3):
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
@@ -103,8 +103,11 @@ class SmoothBendingSpecimenClass:
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical5.id],
                                                     cells=self.fatigue_part.cells)
 
+        offset = 1.3
+        if flip:
+            offset = self.case_mesh_thickness/2 - 1.3
         datum_plane_vertical6 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE,
-                                                                             offset=1.3)
+                                                                             offset=offset)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical6.id],
                                                     cells=self.fatigue_part.cells)
 
