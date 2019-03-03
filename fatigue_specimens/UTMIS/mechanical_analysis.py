@@ -12,7 +12,7 @@ try:
     import regionToolset
     from abaqus import backwardCompatibility
 
-    from abaqusConstants import OFF, ON, THREE_D, DISCRETE_RIGID_SURFACE, WHOLE_SURFACE, DISTRIBUTING
+    from abaqusConstants import OFF, ON, THREE_D, DISCRETE_RIGID_SURFACE, WHOLE_SURFACE, DISTRIBUTING, KINEMATIC
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
     print " ERROR: This script require Abaqus CAE to run"
@@ -67,7 +67,7 @@ spec.modelDB.Coupling(name='Coupling loadNode',
                       controlPoint=spec.load_node,
                       surface=Load_region,
                       influenceRadius=WHOLE_SURFACE,
-                      couplingType=DISTRIBUTING)
+                      couplingType=KINEMATIC)
 
 support_nodes = instance_2.sets['Exposed_Nodes'].nodes.getByBoundingBox(xMin=0.999*(spec.length/2-spec.R1),
                                                                         xMax=1.001*(spec.length/2-spec.R1),
@@ -81,7 +81,7 @@ spec.modelDB.DisplacementBC(name='support',
                             u2=0.0)
 
 x_symmetry_region = regionToolset.Region(nodes=instance_1.sets['XSym_Nodes'].nodes +
-                                               instance_2.sets['XSym_Nodes'].nodes)
+                                         instance_2.sets['XSym_Nodes'].nodes)
 spec.modelDB.DisplacementBC(name='XSym',
                             createStepName='Initial',
                             region=x_symmetry_region,
@@ -122,5 +122,3 @@ job = mdb.Job(name='unit_load_' + specimen_name,
               numDomains=7)
 job.submit()
 job.waitForCompletion()
-
-
