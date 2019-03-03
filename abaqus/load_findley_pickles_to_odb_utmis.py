@@ -13,9 +13,12 @@ from create_odb import OdbInstance
 from write_nodal_coordinates import get_list_from_set_file
 
 if __name__ == '__main__':
+    tempering = 200
+    carbon = 0.8
     element_set_name = 'fatigue_volume_elements'
     odb_file_directory = os.path.expanduser('~/scania_gear_analysis/odb_files/findley/utmis/')
-    findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/findley/'
+    findley_pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/stresses/' \
+                               'findley_tempering_2h_' + str(tempering) + '_' + str(carbon).replace('.', '_') + 'C/'
 
     if not os.path.isdir(odb_file_directory):
         os.makedirs(odb_file_directory)
