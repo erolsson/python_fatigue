@@ -74,6 +74,15 @@ spec.modelDB.Coupling(name='Coupling loadNode',
                       ur2=OFF,
                       ur3=OFF)
 
+spec.modelDB.DisplacementBC(name='load_node',
+                            createStepName='Initial',
+                            region=spec.load_node,
+                            u1=0.0,
+                            u3=0.0,
+                            ur1=0.,
+                            ur2=0,
+                            ur3=0)
+
 support_nodes = instance_2.sets['Exposed_Nodes'].nodes.getByBoundingBox(xMin=0.999*(spec.length/2-spec.R1),
                                                                         xMax=1.001*(spec.length/2-spec.R1),
                                                                         yMax=-0.999*spec.height/2)
