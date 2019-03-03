@@ -22,8 +22,8 @@ if __name__ == '__main__':
     colors = {-1: 'b', 0: 'r'}
 
     k = 1.3
-    su = 900.
-    m = 12
+    su = 750.
+    m = 25
 
     experiments = [Simulation(specimen='smooth', R=-1., stress=737., failures=1, run_outs=4),
                    Simulation(specimen='smooth', R=-1., stress=774., failures=4, run_outs=2),
