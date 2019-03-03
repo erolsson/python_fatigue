@@ -54,7 +54,7 @@ class NotchedBendingSpecimenClass:
 
         self.make_part()
 
-    def make_part(self, part_name='fatiguePart', flip=False):
+    def make_part(self, part_name='fatiguePart', flip=False, analysis_type='ThermalDiffusion'):
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
@@ -447,6 +447,6 @@ class NotchedBendingSpecimenClass:
 
 if __name__ == "__main__":
     m = NotchedBendingSpecimenClass()
-    m.mesh()
+    m.mesh(analysis_type='Mechanical')
     m.mechanical_material_assignment()
     m.write_file('utmis_notched.inc')
