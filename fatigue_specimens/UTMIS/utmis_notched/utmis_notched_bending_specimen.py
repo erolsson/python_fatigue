@@ -52,7 +52,7 @@ class NotchedBendingSpecimenClass:
         self.x = self.R * sqrt(3) / 2
         self.y = self.notch_height / 2 + self.R / 2
 
-        self.make_part(flip=True)
+        self.make_part()
 
     def make_part(self, part_name='fatiguePart', flip=False):
 
@@ -142,7 +142,7 @@ class NotchedBendingSpecimenClass:
 
         return self.fatigue_part
 
-    def mesh(self, part=None, flip=True, analysis_type='ThermalDiffusion'):
+    def mesh(self, part=None, flip=False, analysis_type='ThermalDiffusion'):
         if part is None:
             part = self.fatigue_part
         
