@@ -18,11 +18,10 @@ if __name__ == '__main__':
     if not os.path.isdir(pickle_directory):
         os.makedirs(pickle_directory)
     for specimen in ['smooth', 'notched']:
-        odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
-        for carb in [0.75, 0.8]:
-            for temp in [180, 200]:
-                pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_path_tempering_2h_' + str(temp) + '_' + \
-                              str(carb).replace('.', '_') + 'C' + '.pkl'
-                step_name = 'dante_results_tempering_2h_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C'
-                write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,
-                                                     session=session)
+        odb_file_name = dante_odb_path + 'utmis_' + specimen + '_oil60.odb'
+        for carb, temp in [(0.75, 180), (0.8, 180), (0.8, 200)]:
+            pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_path_tempering_2h_' + str(temp) + '_' + \
+                          str(carb).replace('.', '_') + 'C' + '.pkl'
+            step_name = 'dante_results_tempering_2h_oil60_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C'
+            write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,
+                                                 session=session)
