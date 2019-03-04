@@ -62,10 +62,9 @@ if __name__ == '__main__':
         instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
         odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
-        for carb in [0.75, 0.8]:
-            for temp in [180, 200]:
-                simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + \
-                                 '_tempering_2h_' + str(temp) + 'C/' 'utmis_' + specimen + '_270_min_' + \
-                                 str(carb).replace('.', '_') + 'C/Toolbox_Mechanical_utmis_' + specimen + '.odb'
-                create_dante_step(simulation_odb, odb_file_name,
-                                  'dante_results_tempering_2h_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C')
+        for carb, temp in [(0.75, 180), (0.8, 180), (0.8, 200)]:
+            simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + \
+                             '_tempering_2h_' + str(temp) + 'C/' 'utmis_' + specimen + '_oil60_' + \
+                             str(carb).replace('.', '_') + 'C/Toolbox_Mechanical_utmis_' + specimen + '.odb'
+            create_dante_step(simulation_odb, odb_file_name,
+                              'dante_results_tempering_2h_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C')
