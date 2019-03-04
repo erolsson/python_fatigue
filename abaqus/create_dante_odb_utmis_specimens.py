@@ -60,7 +60,7 @@ if __name__ == '__main__':
                           '/utmis_' + specimen + '.inc'
         nodes, elements = read_nodes_and_elements(input_file_name)
         instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
-        odb_file_name = dante_odb_path + 'utmis_' + specimen + '.odb'
+        odb_file_name = dante_odb_path + 'utmis_' + specimen + '_oil60.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
         for carb, temp in [(0.75, 180), (0.8, 180), (0.8, 200)]:
             simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + \
