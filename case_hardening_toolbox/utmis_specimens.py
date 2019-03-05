@@ -34,8 +34,8 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-simulations = [Simulation(simulation_directory=specimen_name + '_270_min_0_8C',
-                          times=[270], temperatures=[840.], carbon=[0.8], tempering=(200, 7200))]
+simulations = [Simulation(simulation_directory=specimen_name + '_oil60_0_75/',
+                          times=[270], temperatures=[840.], carbon=[0.75], tempering=(200, 7200))]
 
 # This is the main directory where all simulation folders will be placed
 simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
@@ -87,9 +87,9 @@ for simulation in simulations:
     toolbox_writer.heating_data.temperature = 930.
 
     toolbox_writer.quenching_data.time = 3600.
-    toolbox_writer.quenching_data.temperature = 120.
+    toolbox_writer.quenching_data.temperature = 60.
 
-    toolbox_writer.cooldown_data.temperature = 80
+    toolbox_writer.cooldown_data.temperature = 60
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
