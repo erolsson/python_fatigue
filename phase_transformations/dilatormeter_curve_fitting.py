@@ -33,29 +33,30 @@ def heat_expanion_martensite(par, c, t):
     return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
 
 
-def fraction_martensite(a, ms_temp, t):
+def fraction_martensite(par, t, c):
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
+    ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
     martensite[t < ms_temp] = 1 - np.exp(-a*(ms_temp - t[t < ms_temp]))
     return martensite
 
 
-def transformation_strain(par, a, c, t):
-    ms_temp = SS2506.ms_temperature(c/100) - 273.15
-    martensite = fraction_martensite(a, ms_temp, t)
+def transformation_strain(par, c, t):
+    martensite = fraction_martensite(par, t, c)
     austenite = 1 - martensite
     expansion_austenite = SS2506.transformation_strain.Austenite(t, c/100)
-    return austenite*expansion_austenite + martensite*expansion_martensite(par[4:], c, t)
+    return austenite*expansion_austenite + martensite*expansion_martensite(par[2:], c, t)
 
 
 def residual(par, *data):
     r = 0
-    for i, data_set in enumerate(data[0]):
+    for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
         e = e[t < ms_temp]
         t = t[t < ms_temp]
-        model_e = transformation_strain(par, par[i], exp.carbon, t)
-        r += np.sum((e - model_e)**2)/len(e)*1e6
+        model_e = transformation_strain(par, exp.carbon, t)
+        r += np.sum((e - model_e)**2)
     return r
 
 
@@ -86,26 +87,27 @@ if __name__ == '__main__':
         data_sets.append((experiment, temp, strain))
 
     parameters = fmin(residual,
-                      [0.05, 0.04, 0.03, 0.02,
+                      [0.03, 0.01,
                        -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
     print parameters
 
     temperature = np.linspace(0, 1000)
+    experiments.append(Experiment(carbon=0.8, color='y'))
     for i, experiment in enumerate(experiments):
-        strain = transformation_strain(parameters, parameters[i], experiment.carbon, temperature)
+        strain = transformation_strain(parameters, experiment.carbon, temperature)
         plt.figure(0)
         plt.plot(temperature, strain, '--' + experiment.color, lw=2)
 
         plt.figure(1)
         ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15
-        mart = fraction_martensite(parameters[i], ms, temperature)
+        mart = fraction_martensite(parameters, temperature, experiment.carbon)
         plt.plot(temperature, mart, experiment.color, lw=2)
 
     plt.figure(2)
     carbon = np.linspace(0, 1.2, 100)
     for temperature in [0, 200, 400]:
-        plt.plot(carbon, heat_expanion_martensite(parameters[4:], carbon, temperature))
+        plt.plot(carbon, heat_expanion_martensite(parameters[2:], carbon, temperature))
 
     plt.figure(3)
     plt.show()
