@@ -15,7 +15,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 
 if __name__ == '__main__':
     mesh = '1x'
-    simulation_directory = 'dante_quarter_1x/'
+    simulation_directory = '~/scania_gear_analysis/VBC_gear/dante_quarter_1x/'
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Mechanical',
                             filename=include_file_directory + '/Toolbox_Mechanical_VBC_quarter_geo.inc')
 
-    bc_file = '../planetary_gear/input_files/planet_gear/planetGear_BC.inc'
+    bc_file = '../planetary_gear/input_files/gear_models/planet_gear/planetGear_BC.inc'
     shutil.copyfile(bc_file, include_file_directory + '/' + 'VBC_quarter_BC.inc')
 
     current_directory = os.getcwd()
