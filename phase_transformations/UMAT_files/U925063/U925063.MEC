@@ -177,7 +177,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.8% -----------------------------------                   line 177
  0.8                                                                                line 178
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 179
-   5.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
+   45.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 181
    150.0,   200.0                                                                   line 182
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 183
