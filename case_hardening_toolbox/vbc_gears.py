@@ -29,7 +29,6 @@ if __name__ == '__main__':
     element_label_mapping = {}
     for i, element in enumerate(quarter_elements, 1):
         element_label_mapping[element[0]] = i
-        element[0] = i
 
     monitor_node = {'1x': 60674, '2x': 143035, '3x': 276030}
     write_sets_file(filename=include_file_directory + '/VBC_quarter_sets.inc',
@@ -39,6 +38,9 @@ if __name__ == '__main__':
                     element_data=quarter_elements,
                     monitor_node=monitor_node[mesh],
                     element_label_mapping=element_label_mapping)
+
+    for i, element in enumerate(quarter_elements, 1):
+        element[0] = i
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename=include_file_directory + '/Toolbox_Carbon_VBC_quarter_geo.inc')
