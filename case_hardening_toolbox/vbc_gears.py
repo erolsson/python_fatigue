@@ -89,5 +89,5 @@ if __name__ == '__main__':
         toolbox_writer.write_files()
         os.chdir(current_directory)
 
-    write_diffusion_file(include_file_directory + 'diffusivity_2506.inc', SS2506)
+    write_diffusion_file(include_file_directory + '/diffusivity_2506.inc', SS2506)
     shutil.copyfile('data_files/interaction_properties.inc', include_file_directory + '/interaction_properties.inc')
