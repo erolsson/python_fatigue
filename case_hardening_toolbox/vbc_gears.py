@@ -26,13 +26,19 @@ if __name__ == '__main__':
     quarter_nodes, quarter_elements = create_quarter_model('../planetary_gear/input_files/gear_models/planet_gear/mesh_'
                                                            + mesh + '/mesh_planet.inc')
 
+    element_label_mapping = {}
+    for i, element in enumerate(quarter_elements, 1):
+        element_label_mapping[element[0]] = i
+        element[0] = i
+
     monitor_node = {'1x': 60674, '2x': 143035, '3x': 276030}
     write_sets_file(filename=include_file_directory + '/VBC_quarter_sets.inc',
                     full_model_sets_file='../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh +
                                          '/planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
-                    monitor_node=monitor_node[mesh])
+                    monitor_node=monitor_node[mesh],
+                    element_label_mapping=element_label_mapping)
 
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Carbon',
                             filename=include_file_directory + '/Toolbox_Carbon_VBC_quarter_geo.inc')
