@@ -15,7 +15,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 
 if __name__ == '__main__':
     mesh = '1x'
-    simulation_directory = '~/scania_gear_analysis/VBC_gear/dante_quarter_1x/'
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear/dante_quarter_1x/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
