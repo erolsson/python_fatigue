@@ -38,7 +38,8 @@ simulations = [Simulation(simulation_directory=specimen_name + '_oil60_0_75/',
                           times=[270], temperatures=[840.], carbon=[0.75], tempering=(200, 7200))]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/U25063/' + specimen_name +
+                                          '_tempering_2h_200C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
@@ -59,7 +60,7 @@ diffusion_file_name = 'diffusivity.inc'
 material = SS2506
 
 # Dante material name, list of valid dante materials, check dante_path/DANTEDB3_6/STD and dante_path/DANTEDB3_6/USR
-dante_material = 'U925062'
+dante_material = 'U925063'
 
 # writes the necessary geometry files and set files to include_file_directory
 write_geometry_files_for_dante(geometry_data_file=geometry_file_name,
