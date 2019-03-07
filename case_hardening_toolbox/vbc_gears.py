@@ -16,19 +16,20 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = 'dante_quarter_1x/'
-    include_file_directory = simulation_directory + 'include_files/'
+    include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
         os.makedirs(include_file_directory)
 
     # writes the necessary geometry files and set files to include_file_directory
 
-    quarter_nodes, quarter_elements = create_quarter_model('input_files/gear_models/planet_gear/mesh' + mesh +
-                                                           '/mesh_planet.inc')
+    quarter_nodes, quarter_elements = create_quarter_model('../planetary_gear/input_files/gear_models/planet_gear/mesh_'
+                                                           + mesh + '/mesh_planet.inc')
 
-    monitor_node = {'_1x': 60674, '_2x': 143035, '_3x': 276030}
+    monitor_node = {'1x': 60674, '2x': 143035, '3x': 276030}
     write_sets_file(filename=include_file_directory + '/VBC_quarter_sets.inc',
-                    full_model_sets_file='input_files/gear_models/planet_gear/mesh' + mesh + '/planet_sets.inc',
+                    full_model_sets_file='../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh +
+                                         '/planet_sets.inc',
                     nodal_data=quarter_nodes,
                     element_data=quarter_elements,
                     monitor_node=monitor_node[mesh])
@@ -39,6 +40,9 @@ if __name__ == '__main__':
                             filename=include_file_directory + '/Toolbox_Thermal_VBC_quarter_geo.inc')
     write_geom_include_file(quarter_nodes, quarter_elements, simulation_type='Mechanical',
                             filename=include_file_directory + '/Toolbox_Mechanical_VBC_quarter_geo.inc')
+
+    bc_file = '../planetary_gear/input_files/planet_gear/planetGear_BC.inc'
+    shutil.copyfile(bc_file, include_file_directory + '/' + 'VBC_quarter_BC.inc')
 
     current_directory = os.getcwd()
     tempering = (180, 7200)
@@ -55,7 +59,8 @@ if __name__ == '__main__':
 
     for simulation in simulations:
         inc_file_directory = os.path.relpath(include_file_directory,
-                                             simulation_directory + 'CD=' + str(simulation.CD).replace('.', '_' + '/'))
+                                             simulation_directory + 'VBC_fatigue_' +
+                                             str(simulation.CD).replace('.', '_'))
         toolbox_writer = CaseHardeningToolbox(name=str(simulation.CD).replace('.', '_') + '_quarter',
                                               include_file_name='VBC_quarter',
                                               include_file_directory=inc_file_directory)
