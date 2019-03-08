@@ -97,9 +97,9 @@ for simulation in simulations:
     toolbox_writer.heating_data.temperature = 930.
 
     toolbox_writer.quenching_data.time = 3600.
-    toolbox_writer.quenching_data.temperature = 60.
+    toolbox_writer.quenching_data.temperature = 120.
 
-    toolbox_writer.cooldown_data.temperature = 60
+    toolbox_writer.cooldown_data.temperature = 80
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
