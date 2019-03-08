@@ -34,8 +34,17 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-simulations = [Simulation(simulation_directory=specimen_name + 'two_stage',
-                          times=[120., 30.], temperatures=[930., 840], carbon=[1.1, 0.8], tempering=(180, 7200))]
+times = [120, 30]
+temps = [930., 840]
+carbon_levels = [1.1, 0.8]
+
+name = ''
+
+for t, T, c in zip(times, temps, carbon_levels):
+    name += str(t) + 'min' + str(T) + 'C' + str(c).replace('.', '_') + 'wtC'
+
+simulations = [Simulation(simulation_directory=specimen_name + name,
+                          times=times, temperatures=temps, carbon=carbon_levels, tempering=(180, 7200))]
 
 # This is the main directory where all simulation folders will be placed
 simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/U25063/' + specimen_name +
