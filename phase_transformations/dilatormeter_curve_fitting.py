@@ -90,7 +90,6 @@ if __name__ == '__main__':
                       [0.03, 0.01,
                        -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
-    print parameters
 
     temperature = np.linspace(0, 1000)
     experiments.append(Experiment(carbon=0.8, color='y'))
@@ -109,5 +108,11 @@ if __name__ == '__main__':
     for temperature in [0, 200, 400]:
         plt.plot(carbon, heat_expanion_martensite(parameters[2:], carbon, temperature))
 
-    plt.figure(3)
+    for carbon in [0.2, 0.5, 0.8]:
+        print '-------- Carbon,', carbon, '% -----------------'
+        print "\tMs temperature:\t", SS2506.ms_temperature(carbon/100) - 273.15
+        print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], np.array([parameters[0], parameters[1], 0.016]))
+
+    print "Expansion parameters of Martensite is"
+    print parameters[2:]
     plt.show()

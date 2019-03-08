@@ -1,11 +1,6 @@
-from collections import namedtuple
 import os
-import shutil
 
 from input_file_reader.input_file_reader import InputFileReader
-from diffusitivity import write_diffusion_file
-
-from materials.gear_materials import SS2506
 
 
 class CarburizationData:
@@ -618,49 +613,3 @@ def write_geometry_files_for_dante(geometry_data_file, directory_to_write, dante
     input_file_reader.write_sets_file(directory_to_write + dante_include_file_name + '_sets.inc',
                                       str_to_remove_from_setname=str_to_remove_from_set_names,
                                       surfaces_from_element_sets=surfaces)
-
-
-if __name__ == '__main__':
-    mesh = '1x'
-    simulation_directory = 'dante_quarter_1x/'
-    current_directory = os.getcwd()
-    tempering = (180, 7200)
-
-    Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
-    simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=tempering),
-                   Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=tempering),
-                   Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=tempering),
-                   Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
-                              tempering=tempering)]
-
-    for simulation in simulations:
-        toolbox_writer = CaseHardeningToolbox(name=str(simulation.CD).replace('.', '_') + '_quarter',
-                                              include_file_name='VBC_quarter')
-        toolbox_writer._include_file_directory = '../'
-        toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
-        toolbox_writer.interaction_property_file = 'interaction_properties.inc'
-        toolbox_writer.heating_data.carbon = 0.5
-        toolbox_writer.heating_data.time = 90.
-        toolbox_writer.heating_data.temperature = 930.
-
-        toolbox_writer.quenching_data.time = 3600.
-        toolbox_writer.quenching_data.temperature = 120.
-
-        toolbox_writer.tempering_data.temperature = simulation.tempering[0]
-        toolbox_writer.tempering_data.time = simulation.tempering[1]
-
-        toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
-                                               carbon_levels=simulation.carbon)
-        directory_name = simulation_directory + '/VBC_fatigue_' + str(simulation.CD).replace('.', '_')
-
-        if not os.path.isdir(directory_name):
-            os.makedirs(directory_name)
-        os.chdir(directory_name)
-        toolbox_writer.write_files()
-        os.chdir(current_directory)
-
-    write_diffusion_file(simulation_directory + 'diffusivity_2506.inc', SS2506)
-    shutil.copyfile('data_files/interaction_properties.inc', simulation_directory + '/interaction_properties.inc')
