@@ -18,28 +18,25 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
+    #par[5:] = 0
+
     m1, m2, m3, m4, m5, m6, m7, m8 = par
-    # m6 = 0
-    # m7 = 0
-    # m8 = 0
     return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
 
 
 def heat_expanion_martensite(par, c, t):
+    # par[5:] = 0
     m1, m2, m3, m4, m5, m6, m7, m8 = par
-    # m6 = 0
-    # m7 = 0
-    # m8 = 0
     return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
 
 
 def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
-
-    par[2] = 0.011
+    par[2] = 0.01724
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
+
     martensite[t < ms_temp] = 1 - np.exp(-a*(ms_temp - t[t < ms_temp]))
     return martensite
 
@@ -91,7 +88,7 @@ if __name__ == '__main__':
         data_sets.append((experiment, temp, strain))
 
     parameters = fmin(residual,
-                      [0.04, 0.02, 0.01,
+                      [0.04, 0.02, 0.015,
                        -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
