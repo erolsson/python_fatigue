@@ -34,7 +34,10 @@ def heat_expanion_martensite(par, c, t):
 
 
 def fraction_martensite(par, t, c):
-    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
+    # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
+
+    par[2] = 0.011
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
     martensite[t < ms_temp] = 1 - np.exp(-a*(ms_temp - t[t < ms_temp]))
@@ -45,11 +48,12 @@ def transformation_strain(par, c, t):
     martensite = fraction_martensite(par, t, c)
     austenite = 1 - martensite
     expansion_austenite = SS2506.transformation_strain.Austenite(t, c/100)
-    return austenite*expansion_austenite + martensite*expansion_martensite(par[2:], c, t)
+    return austenite*expansion_austenite + martensite*expansion_martensite(par[3:], c, t)
 
 
 def residual(par, *data):
     r = 0
+
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -87,7 +91,7 @@ if __name__ == '__main__':
         data_sets.append((experiment, temp, strain))
 
     parameters = fmin(residual,
-                      [0.03, 0.01,
+                      [0.04, 0.02, 0.01,
                        -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
@@ -106,13 +110,13 @@ if __name__ == '__main__':
     plt.figure(2)
     carbon = np.linspace(0, 1.2, 100)
     for temperature in [0, 200, 400]:
-        plt.plot(carbon, heat_expanion_martensite(parameters[2:], carbon, temperature))
+        plt.plot(carbon, heat_expanion_martensite(parameters[3:], carbon, temperature))
 
     for carbon in [0.2, 0.5, 0.8]:
         print '-------- Carbon,', carbon, '% -----------------'
         print "\tMs temperature:\t", SS2506.ms_temperature(carbon/100) - 273.15
-        print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], np.array([parameters[0], parameters[1], 0.016]))
+        print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], parameters[0:3])
 
     print "Expansion parameters of Martensite is"
-    print parameters[2:]
+    print parameters[3:]
     plt.show()
