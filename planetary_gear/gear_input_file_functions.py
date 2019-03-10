@@ -117,7 +117,7 @@ def write_gear_assembly(gears, assembly_name):
 
 def create_quarter_model(full_model_file):
     nodal_data, elements = read_nodes_and_elements(full_model_file)
-    # Only using nodes on positive z and positive z
+    # Only using nodes on positive z and positive x
     nodal_data = nodal_data[nodal_data[:, 1] >= -1e-5, :]
     nodal_data = nodal_data[nodal_data[:, 3] >= -1e-5, :]
 
