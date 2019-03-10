@@ -491,6 +491,7 @@ class CaseHardeningToolbox:
                                                                  step_time=self.tempering_data.time,
                                                                  kinematic_mode=-3,
                                                                  output_frequency=10)
+        self.thermal_step_counter += 1
 
     def _add_cooldown2_step(self):
         step_name = 'Cooldown_2'
@@ -510,6 +511,8 @@ class CaseHardeningToolbox:
                                                                  step_time=3600,
                                                                  kinematic_mode=1,
                                                                  output_frequency=10)
+
+        self.thermal_step_counter += 1
 
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
