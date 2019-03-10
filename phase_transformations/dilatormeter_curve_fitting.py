@@ -34,7 +34,7 @@ def heat_expanion_martensite(par, c, t):
 
 
 def fraction_martensite(par, t, c):
-    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([0.04, 0.0266, 0.01742]))
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
     martensite[t < ms_temp] = 1 - np.exp(-a*(ms_temp - t[t < ms_temp]))
@@ -62,7 +62,7 @@ def residual(par, *data):
 
 if __name__ == '__main__':
     Experiment = namedtuple('Experiment', ['carbon', 'color'])
-    experiments = [Experiment(carbon=0.2, color='k'),
+    experiments = [#Experiment(carbon=0.2, color='k'),
                    Experiment(carbon=0.36, color='b'),
                    Experiment(carbon=0.52, color='m'),
                    Experiment(carbon=0.65, color='r')]

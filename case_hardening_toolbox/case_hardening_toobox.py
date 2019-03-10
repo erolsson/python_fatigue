@@ -355,11 +355,12 @@ class CaseHardeningToolbox:
                 '*END STEP',
                 '**']
 
-    def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5):
+    def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5,
+                              max_increment=1000.):
         return ['*STEP, NAME=' + step_name + ', AMP=STEP, inc=10000',
                 '\t' + step_description,
                 '\t*STATIC',
-                '\t\t0.01,  ' + str(step_time) + ', 1e-05,  1000.',
+                '\t\t0.01,  ' + str(step_time) + ', 1e-05,  ' + str(max_increment),
                 '\t*FIELD, OP=NEW, VAR=2',
                 '\t\tAll_Nodes,  ' + str(kinematic_mode),
                 '\t*TEMPERATURE, FILE=Toolbox_Thermal_' + self.name + '.odb, BSTEP = ' +
@@ -490,7 +491,8 @@ class CaseHardeningToolbox:
                                                                  step_description=step_description,
                                                                  step_time=self.tempering_data.time,
                                                                  kinematic_mode=-3,
-                                                                 output_frequency=10)
+                                                                 output_frequency=1,
+                                                                 max_increment=100)
 
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
