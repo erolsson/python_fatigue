@@ -113,10 +113,10 @@ U925063         ! matnam must be UPPERCASE                                      
   -0.001676, 0.0010908, 1.287e-5,    0.000000,  2.252e-9, 0.00000                   line 110
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
- -1.069e-3, 4.433e-4, 5.775e-3, 9.5523e-6, -5.819e-6, 2.856e-9, 1.994e-9, 2.046e-12 line 116
+ -4.516e-3, 1.689e-2, -1.152e-2, 1.81e-5, -2.537e-5, 0.000,  0.0000,  0.0000        line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
- -1.069e-3, 4.433e-4, 5.775e-3, 9.5523e-6, -5.819e-6, 2.856e-9, 1.994e-9, 2.046e-12 line 119
+ -4.516e-3, 1.689e-2, -1.152e-2, 1.81e-5, -2.537e-5, 0.000,  0.0000,  0.0000        line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122
