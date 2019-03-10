@@ -36,7 +36,7 @@ def heat_expanion_martensite(par, c, t):
 def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     # par[0] = 0.04
-    # par[1] = 0.0267 cvgd
+    # par[1] = 0.0267 cvgd dsfs
     par[2] = np.abs(par[2])
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
