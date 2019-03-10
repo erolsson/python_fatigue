@@ -37,7 +37,7 @@ specimen_name = 'utmis_' + specimen_type
 times = [180, 30]
 temps = [930, 840]
 carbon_levels = [1.1, 0.8]
-tempering = (180, 7200)
+tempering = (200, 7200)
 
 name = ''
 
@@ -49,7 +49,7 @@ simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
 
 # This is the main directory where all simulation folders will be placed
 simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/U25063/' + specimen_name +
-                                          '_tempering_2h_' + str(tempering) + '_cooldown_90C/')
+                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_90C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
