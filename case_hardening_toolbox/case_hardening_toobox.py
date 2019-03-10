@@ -492,7 +492,29 @@ class CaseHardeningToolbox:
                                                                  step_time=self.tempering_data.time,
                                                                  kinematic_mode=-3,
                                                                  output_frequency=1,
-                                                                 max_increment=100)
+                                                                 max_increment=50)
+        self.thermal_step_counter += 1
+
+    def _add_cooldown2_step(self):
+        step_name = 'Cooldown_2'
+        step_description = 'Cool down to room temperature'
+        interaction_property = self.cool_air_interaction_property
+
+        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
+                                                           step_description=step_description,
+                                                           step_time=3600,
+                                                           surface_temperature=self.initial_temperature,
+                                                           interaction_property=interaction_property,
+                                                           kinematic_mode=1,
+                                                           output_frequency=5)
+
+        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
+                                                                 step_description=step_description,
+                                                                 step_time=3600,
+                                                                 kinematic_mode=1,
+                                                                 output_frequency=1)
+
+        self.thermal_step_counter += 1
 
     def write_files(self):
         self.carbon_file_lines = self._init_carbon_file_lines()
@@ -543,6 +565,8 @@ class CaseHardeningToolbox:
 
         if self.tempering_data.time is not None and self.tempering_data.time > 0:
             self._add_tempering_step()
+
+        self._add_cooldown2_step()
 
         for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
                                [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):

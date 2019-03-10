@@ -21,22 +21,18 @@ for i, carbon_level in enumerate(carbon_levels):
     data_point = np.genfromtxt('heat_expansion_' + str(carbon_level).replace('.', '_'), delimiter=',')
     thermal_expansion[i] = (data_point[1, 1] - data_point[0, 1])/(data_point[1, 0] - data_point[0, 0])
 
+thermal_expansion = np.array([1.2678425108258802e-05,
+                              9.683202737506953e-06,
+                              4.559703619264866e-06,
+                              1.92910537738129e-06])
+
 plt.plot(carbon_levels, thermal_expansion, 's', ms=12, label='KTH Thesis')
+par = np.polyfit(carbon_levels[0:3], thermal_expansion[0:3], 1)
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
+print par
 plt.plot(0.008, 1.17e-5, 's', ms=12, label='JMAT PRO')
 plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
 
-
-# Trying an linear - exponential function
-c0 = 0.0065
-a1 = 1.6369e-5
-a2 = - 2.1344e-3
-b1 = a1 + a2*c0
-b2 = -a2/(a1 + a2*c0)
-f = 0*carbon
-f[carbon <= c0] = a1 + a2*carbon[carbon <= c0]
-f[carbon > c0] = b1*np.exp(-b2*(carbon[carbon > c0] - c0))
-# plt.plot(carbon, f)
 
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*200 + 2*1.4e-9*carbon*100*200 + 3*1.091e-12*200**2
 plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
@@ -45,6 +41,8 @@ f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e
 plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
 plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO')
+plt.plot(carbon, par[1] + par[0]*carbon, label='Dante EO')
+
 
 fig.set_size_inches(12., 6., forward=True)
 ax = plt.subplot(111)

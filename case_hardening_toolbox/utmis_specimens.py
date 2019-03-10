@@ -37,6 +37,7 @@ specimen_name = 'utmis_' + specimen_type
 times = [180, 30]
 temps = [930, 840]
 carbon_levels = [1.1, 0.8]
+tempering = (200, 7200)
 
 name = ''
 
@@ -44,11 +45,11 @@ for t, T, c in zip(times, temps, carbon_levels):
     name += str(t) + 'min' + str(T) + 'C' + str(c).replace('.', '') + 'wtC'
 
 simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
-                          times=times, temperatures=temps, carbon=carbon_levels, tempering=(180, 7200))]
+                          times=times, temperatures=temps, carbon=carbon_levels, tempering=tempering)]
 
 # This is the main directory where all simulation folders will be placed
 simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/U25063/' + specimen_name +
-                                          '_tempering_2h_180C/')
+                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_90C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
@@ -99,7 +100,7 @@ for simulation in simulations:
     toolbox_writer.quenching_data.time = 3600.
     toolbox_writer.quenching_data.temperature = 120.
 
-    toolbox_writer.cooldown_data.temperature = 80
+    toolbox_writer.cooldown_data.temperature = 90
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]

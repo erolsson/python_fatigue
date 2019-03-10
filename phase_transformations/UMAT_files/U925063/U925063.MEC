@@ -98,7 +98,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  CTE and Transformation Strain                                                   line 98
 **--Austenite:  a1+a2*C+a3*T                                                        line 99
 **    a1       a2         a3                                                        line 100
-  -0.01141, 0.0033041, 2.4e-5                                                       line 101
+  -0.01141, 0.0038, 2.4e-5                                                          line 101
 **--Ferrite:   m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->F)     line 102
 **    m1        m2        m3          m4         m5        m6                       line 103
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
@@ -113,10 +113,10 @@ U925063         ! matnam must be UPPERCASE                                      
   -0.001676, 0.0010908, 1.287e-5,    0.000000,  2.252e-9, 0.00000                   line 110
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
-  -2.569e-3,  6.949e-3,    0.,    1.3e-5, -1.3e-5,  0.,     0.,      0.             line 116
+ -4.516e-3, 1.689e-2, -1.152e-2, 1.81e-5, -2.537e-5, 0.000,  0.0000,  0.0000        line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
-  -2.569e-3,  6.949e-3,    0.,    1.3e-5, -1.3e-5,  0.,     0.,      0.             line 119
+ -4.516e-3, 1.689e-2, -1.152e-2, 1.81e-5, -2.537e-5, 0.000,  0.0000,  0.0000        line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122
@@ -141,7 +141,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.2% -----------------------------------                   line 141
  0.2                                                                                line 142
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 143
-   22.0,       22.0,     27.0,      47.0,    50.0,    47.0                          line 144
+   22.0,       22.0,     27.0,      47.0,    43.0,    40.0                          line 144
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 145
    150.0,   200.0                                                                   line 146
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 147
