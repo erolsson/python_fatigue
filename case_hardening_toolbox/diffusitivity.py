@@ -1,5 +1,7 @@
 import numpy as np
 
+from materials.gear_materials import SS2506
+
 
 def lee_chester_tyne(temp, carbon, material):
     carbon = 100*carbon
@@ -38,28 +40,19 @@ if __name__ == '__main__':
     plt.rc('text', usetex=True)
     plt.rc('font', serif='Computer Modern Roman')
     plt.rcParams.update({'font.size': 20})
-    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}", r"\usepackage{gensymb}"]
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
-    diffusion = []
+    carbon_levels = np.array([0.2, 0.4, 0.6, 0.8, 1.0, 1.2])/100
+    temperature = np.linspace(800, 1000, 1000)
+    for carbon_level in carbon_levels:
+        plt.plot(temperature, lee_chester_tyne(temperature, carbon_level, SS2506), lw=2,
+                 label=str(carbon_level*100) + r' wt\% C')
 
-    for i, data_file in enumerate(['M4_old', 'scaled_085']):
-        data = np.genfromtxt('diffusitivity/' + data_file + '.txt', delimiter=',')
-        diffusion.append(data[:, 0])
-        carbon_levels = np.unique(data[:, 1])
-        print carbon_levels
-        for carbon_level in carbon_levels:
-            plt.figure(i)
-            sub_data = data[data[:, 1] == carbon_level]
-            D = sub_data[:, 0]
-            T = sub_data[:, 2]
-            plt.plot(sub_data[:, 2], sub_data[:, 0])
-
-            if i == 1:
-                plt.plot(T, lee_chester_tyne(T, carbon_level), '--')
-
-    # writing the file with diffusion data
-
-
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'Diffusivity [$\mathrm{mm}^2$/s]')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig('diffusivity_2506.png')
     plt.show()

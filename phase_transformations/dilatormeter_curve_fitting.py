@@ -12,7 +12,7 @@ matplotlib.style.use('classic')
 plt.rc('text', usetex=True)
 plt.rc('font', serif='Computer Modern Roman')
 plt.rcParams.update({'font.size': 20})
-plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}", r"\usepackage{gensymb}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
@@ -70,14 +70,26 @@ def residual(par, *data):
     return r
 
 
+def bainite_residual(par, *data):
+    par[3] = 0
+    a, b, c, d = par
+    r = 0
+    for data_set in data[0]:
+        exp, t, e = data_set
+        model_e = a + b*t + c*exp.carbon + d*exp.carbon*t
+        r += np.sum((e - model_e)**2)/len(t)
+    return r*1e9
+
+
 if __name__ == '__main__':
-    Experiment = namedtuple('Experiment', ['carbon', 'color', 'included', 'mf'])
-    experiments = [Experiment(carbon=0.2, color='k', included=True, mf=200),
-                   Experiment(carbon=0.36, color='b', included=True, mf=90),
-                   Experiment(carbon=0.52, color='m', included=True, mf=40),
-                   Experiment(carbon=0.65, color='r', included=True, mf=-20)]
+    Experiment = namedtuple('Experiment', ['carbon', 'color', 'included_martensite', 'included_bainite', 'mf'])
+    experiments = [Experiment(carbon=0.2, color='k', included_martensite=True, included_bainite=True, mf=200),
+                   Experiment(carbon=0.36, color='b', included_martensite=True, included_bainite=False, mf=90),
+                   Experiment(carbon=0.52, color='m', included_martensite=True, included_bainite=False, mf=40),
+                   Experiment(carbon=0.65, color='r', included_martensite=True, included_bainite=True, mf=-20)]
 
     data_sets = []
+    bainite_data_sets = []
 
     for experiment in experiments:
         exp_data = np.genfromtxt('data_tehler/expansion_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
@@ -97,17 +109,32 @@ if __name__ == '__main__':
         plt.plot(ms, SS2506.transformation_strain.Austenite(ms, experiment.carbon / 100),
                  'x' + experiment.color, ms=12, mew=2)
 
-        if experiment.included:
+        if experiment.included_martensite:
             data_sets.append((experiment, temp, strain))
+
+        plt.figure(3)
+        exp_data = np.genfromtxt('data_tehler/bainite_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
+        temp = exp_data[:, 0] - 273.15
+        strain = exp_data[:, 1] + SS2506.transformation_strain.Austenite(temp, experiment.carbon/100)
+        plt.plot(temp, strain, '-x' + experiment.color, lw=2)
+
+        plt.plot(temperature, SS2506.transformation_strain.Bainite(temperature, experiment.carbon/100),
+                 ':' + experiment.color, lw=2)
+
+        if experiment.included_bainite:
+            bainite_data_sets.append([experiment, temp, strain])
 
     parameters = fmin(residual,
                       [0.04, 0.02, 0.015,
                        -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
-    temperature = np.linspace(0, 1000)
-    experiments.append(Experiment(carbon=0.8, color='y', included=True, mf=-91))
+    bainite_parameters = fmin(bainite_residual, [-2e-5, 4e-6, 2e-5, 1e-5], (bainite_data_sets,))
+    print bainite_parameters
+
+    experiments.append(Experiment(carbon=0.8, color='y', included_martensite=True, included_bainite=True, mf=-91))
     for i, experiment in enumerate(experiments):
+        temperature = np.linspace(0, 400, 1000)
         strain = transformation_strain(parameters, experiment.carbon, temperature)
         plt.figure(0)
         plt.plot(temperature, strain, '--' + experiment.color, lw=2)
@@ -115,7 +142,25 @@ if __name__ == '__main__':
         plt.figure(1)
         ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15
         mart = fraction_martensite(parameters, temperature, experiment.carbon)
-        plt.plot(temperature, mart, experiment.color, lw=2)
+        label = str(experiment.carbon) + r' wt. \%C'
+        if experiment.carbon > 0.7:
+            label += '\nExtrapolated'
+        plt.plot(temperature, mart, experiment.color, lw=2, label=label)
+
+        plt.figure(3)
+        temperature = np.linspace(0, 600, 1000)
+        bainite_strain = bainite_parameters[0] + bainite_parameters[1]*temperature + \
+            bainite_parameters[2]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
+
+        plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
+
+    plt.figure(1)
+    plt.xlim(0, 400)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'Fraction Martensite [-]')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig('martensite_transformation.png')
 
     plt.figure(2)
     carbon = np.linspace(0, 1.2, 100)

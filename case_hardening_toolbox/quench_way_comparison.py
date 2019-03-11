@@ -27,10 +27,8 @@ oil_data = [[float(word.strip()) for word in line] for line in oil_data]
 oil_data = np.array(oil_data)
 
 plt.plot(oil_data[:, 1], oil_data[:, 0], 'k', lw=2)
-
-data = np.genfromtxt('data_files/quenchway_B_120', delimiter=',')
-plt.plot(data[:, 0], data[:, 1]/1e6)
-
-for line in data:
-    print '{:0.8f}, \t{:0.1f}'.format(line[1]/1e6, line[0])
+plt.xlabel(r'Temperature [ $\degree$C]')
+plt.ylabel(r'Heat Transfer Coefficient [W/$\mathrm{mm}^2$]')
+plt.tight_layout()
+plt.savefig('QenchwayB.png')
 plt.show()
