@@ -275,10 +275,10 @@ class CaseHardeningToolbox:
         self.thermal_file_lines.append('\t\tEXPOSED_SURFACE, F, 1.000000, ' + self.furnace_interaction_property)
         self.thermal_file_lines.append('\t*MONITOR, NODE = MONITOR_NODE, DOF=11, FREQ=1')
         self.thermal_file_lines.append('\t*RESTART, WRITE, FREQ=1000')
-        self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=200')
+        self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=1')
         self.thermal_file_lines.append('\t\t*ELEMENT OUTPUT')
         self.thermal_file_lines.append('\t\t\tSDV1, SDV21, SDV34, SDV47, SDV60, SDV73, SDV86, HFL')
-        self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=10')
+        self.thermal_file_lines.append('\t*OUTPUT, FIELD, FREQ=1')
         self.thermal_file_lines.append('\t\t*NODE OUTPUT')
         self.thermal_file_lines.append('\t\t\tNT')
         self.thermal_file_lines.append('\t*EL FILE, FREQUENCY=0')
@@ -462,7 +462,7 @@ class CaseHardeningToolbox:
                                                            surface_temperature=self.cooldown_data.temperature,
                                                            interaction_property=interaction_property,
                                                            kinematic_mode=-2,
-                                                           output_frequency=5)
+                                                           output_frequency=1)
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
@@ -485,7 +485,7 @@ class CaseHardeningToolbox:
                                                            surface_temperature=self.tempering_data.temperature,
                                                            interaction_property=interaction_property,
                                                            kinematic_mode=-3,
-                                                           output_frequency=5)
+                                                           output_frequency=1)
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
@@ -506,7 +506,7 @@ class CaseHardeningToolbox:
                                                            surface_temperature=self.initial_temperature,
                                                            interaction_property=interaction_property,
                                                            kinematic_mode=1,
-                                                           output_frequency=5)
+                                                           output_frequency=1)
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
