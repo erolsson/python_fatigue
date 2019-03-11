@@ -449,26 +449,25 @@ class CaseHardeningToolbox:
 
         self.thermal_step_counter += 1
 
-    def _add_cooldown_step(self):
-        step_name = 'Cooldown_1'
-        step_description = 'Cooling before tempering'
+    def _add_cooldown_step(self, step_name, kinematic_mode, time, temperature):
+        step_description = 'Cooling'
         interaction_property = self.cool_air_interaction_property
         if self.cooldown_data.interaction_property_name is not None:
             interaction_property = self.cooldown_data.interaction_property_name
 
         self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
                                                            step_description=step_description,
-                                                           step_time=self.cooldown_data.time,
-                                                           surface_temperature=self.cooldown_data.temperature,
+                                                           step_time=time,
+                                                           surface_temperature=temperature,
                                                            interaction_property=interaction_property,
-                                                           kinematic_mode=-2,
+                                                           kinematic_mode=kinematic_mode,
                                                            output_frequency=1)
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
-                                                                 step_time=self.cooldown_data.time,
-                                                                 kinematic_mode=-2,
-                                                                 output_frequency=10)
+                                                                 step_time=time,
+                                                                 kinematic_mode=kinematic_mode,
+                                                                 output_frequency=1)
 
         self.thermal_step_counter += 1
 
@@ -493,27 +492,6 @@ class CaseHardeningToolbox:
                                                                  kinematic_mode=-3,
                                                                  output_frequency=1,
                                                                  max_increment=50)
-        self.thermal_step_counter += 1
-
-    def _add_cooldown2_step(self):
-        step_name = 'Cooldown_2'
-        step_description = 'Cool down to room temperature'
-        interaction_property = self.cool_air_interaction_property
-
-        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
-                                                           step_description=step_description,
-                                                           step_time=3600,
-                                                           surface_temperature=self.initial_temperature,
-                                                           interaction_property=interaction_property,
-                                                           kinematic_mode=1,
-                                                           output_frequency=1)
-
-        self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
-                                                                 step_description=step_description,
-                                                                 step_time=3600,
-                                                                 kinematic_mode=1,
-                                                                 output_frequency=1)
-
         self.thermal_step_counter += 1
 
     def write_files(self):
@@ -561,12 +539,13 @@ class CaseHardeningToolbox:
             self._add_quenching_step()
 
         if self.cooldown_data.time is not None and self.cooldown_data.time > 0.:
-            self._add_cooldown_step()
+            self._add_cooldown_step('Cooldown_1', kinematic_mode=-2, time=600, temperature=80)
+            self._add_cooldown_step('Cooldown_2', kinematic_mode=1, time=600, temperature=self.initial_temperature)
 
         if self.tempering_data.time is not None and self.tempering_data.time > 0:
             self._add_tempering_step()
 
-        self._add_cooldown2_step()
+        self._add_cooldown_step('Cooldown_3', kinematic_mode=1, time=3600, temperature=self.initial_temperature)
 
         for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
                                [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):
