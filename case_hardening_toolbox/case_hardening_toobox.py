@@ -445,7 +445,7 @@ class CaseHardeningToolbox:
                                                                  step_description=step_description,
                                                                  step_time=self.quenching_data.time,
                                                                  kinematic_mode=-2,
-                                                                 output_frequency=10)
+                                                                 output_frequency=1)
 
         self.thermal_step_counter += 1
 
