@@ -21,6 +21,7 @@ def expansion_martensite(par, c, t):
     par[5:] = 0
     par[4] = -1.872011e-5
     par[3] = 1.2678425e-5 - par[4] * 0.2
+
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
 
@@ -36,8 +37,8 @@ def heat_expanion_martensite(par, c, t):
 
 def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
-    # par[0] = 0.04
-    # par[1] = 0.0267 cvgd dsfs
+    par = np.abs(par)
+    # par[0] = 0.05
     par[2] = 0.017
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
@@ -56,7 +57,7 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-
+    par[2] = 0.017
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -97,7 +98,8 @@ if __name__ == '__main__':
         temp = exp_data[:, 0] - 273.15
         strain = exp_data[:, 1] / 10000
         plt.figure(0)
-        plt.plot(temp, strain, '-x' + experiment.color, lw=2)
+        label = 'Exp.' if experiment.carbon == 0.2 else None
+        plt.plot(temp, strain, '-x' + experiment.color, lw=2, label=label)
 
         temperature = np.linspace(temp[-1], temp[0], 1000)
         plt.plot(temperature, SS2506.transformation_strain.Austenite(temperature, experiment.carbon/100),
@@ -127,7 +129,7 @@ if __name__ == '__main__':
 
     parameters = fmin(residual,
                       [0.04, 0.02, 0.015,
-                       -0.009882, -0.0003061, 0.01430, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
+                       -0.009882, -0.01, 0.01, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
     bainite_parameters = fmin(bainite_residual, [-2e-5, 4e-6, 2e-5, 1e-5], (bainite_data_sets,))
@@ -138,7 +140,8 @@ if __name__ == '__main__':
         temperature = np.linspace(0, 400, 1000)
         strain = transformation_strain(parameters, experiment.carbon, temperature)
         plt.figure(0)
-        plt.plot(temperature, strain, '--' + experiment.color, lw=2)
+        label = 'Model' if experiment.carbon == 0.2 else None
+        plt.plot(temperature, strain, '--' + experiment.color, lw=2, label=label)
 
         plt.figure(1)
         ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15
@@ -154,6 +157,15 @@ if __name__ == '__main__':
             bainite_parameters[2]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
+
+    plt.figure(0)
+    plt.xlim(0, 800)
+    plt.ylim(-0.005, 0.01)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'Strain [-]')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig('dilatometer_sim.png')
 
     plt.figure(1)
     plt.xlim(0, 400)

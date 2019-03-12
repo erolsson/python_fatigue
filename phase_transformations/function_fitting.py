@@ -40,9 +40,8 @@ plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e-12*20**2
 plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
-plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO')
-plt.plot(carbon, par[1] + par[0]*carbon, label='Dante EO')
-
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO 1st')
+plt.plot(carbon, 1.6422e-5 - carbon/0.01*1.872e-5, label='Dante EO 2nd')
 
 fig.set_size_inches(12., 6., forward=True)
 ax = plt.subplot(111)
@@ -53,7 +52,7 @@ plt.gca().add_artist(legend)
 plt.xlabel('Carbon')
 plt.ylabel(r'Heat Expansion [$\mathrm{K}^{-1}$]')
 plt.ylim(0, 0.000015)
-plt.savefig(r'D:\Meeting Dante 20190122\heat_expansion.png')
+plt.savefig(r'heat_expansion.png')
 
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
