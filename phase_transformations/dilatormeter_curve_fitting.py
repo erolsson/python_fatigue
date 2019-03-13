@@ -95,6 +95,7 @@ if __name__ == '__main__':
     for experiment in experiments:
         exp_data = np.genfromtxt('data_tehler/expansion_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
         temp = exp_data[:, 0] - 273.15
+        e0 = SS2506.transformation_strain.Austenite(0, experiment.carbon/100)
         strain = exp_data[:, 1] / 10000
         plt.figure(0)
         label = 'Exp.' if experiment.carbon == 0.2 else None
@@ -102,6 +103,9 @@ if __name__ == '__main__':
 
         temperature = np.linspace(temp[-1], temp[0], 1000)
         plt.plot(temperature, SS2506.transformation_strain.Austenite(temperature, experiment.carbon/100),
+                 ':' + experiment.color)
+
+        plt.plot(temperature, SS2506.transformation_strain.Martensite(temperature, experiment.carbon/100),
                  ':' + experiment.color)
 
         if experiment.mf > temp[-1]:
