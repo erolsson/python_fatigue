@@ -39,7 +39,6 @@ def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     par = np.abs(par)
     # par[0] = 0.05
-    par[2] = 0.017
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
@@ -57,7 +56,7 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = 0.017
+    par[2] = -np.log(0.12)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
