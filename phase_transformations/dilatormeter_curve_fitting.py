@@ -180,6 +180,8 @@ if __name__ == '__main__':
     for temperature in [20., 200.]:
         plt.plot(carbon, heat_expanion_martensite(parameters[3:], carbon, temperature))
 
+    plt.ylim(0, 15e-6)
+
     for carbon in [0.2, 0.5, 0.8]:
         print '-------- Carbon,', carbon, '% -----------------'
         print "\tMs temperature:\t", SS2506.ms_temperature(carbon/100) - 273.15
