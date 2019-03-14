@@ -77,7 +77,7 @@ def bainite_residual(par, *data):
     r = 0
     for data_set in data[0]:
         exp, t, e = data_set
-        model_e = a + b*t + c*exp.carbon + d*exp.carbon*t
+        model_e = a + c*t + b*exp.carbon + d*exp.carbon*t
         r += np.sum((e - model_e)**2)/len(t)
     return r*1e9
 
@@ -156,8 +156,8 @@ if __name__ == '__main__':
 
         plt.figure(3)
         temperature = np.linspace(0, 600, 1000)
-        bainite_strain = bainite_parameters[0] + bainite_parameters[1]*temperature + \
-            bainite_parameters[2]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
+        bainite_strain = bainite_parameters[0] + bainite_parameters[2]*temperature + \
+            bainite_parameters[1]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 
