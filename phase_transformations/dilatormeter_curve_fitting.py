@@ -18,7 +18,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
-    par[5:] = 0
+    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4] * 0.2
 
@@ -27,7 +27,7 @@ def expansion_martensite(par, c, t):
 
 
 def heat_expanion_martensite(par, c, t):
-    par[5:] = 0
+    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4]*0.2
 
