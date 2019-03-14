@@ -18,18 +18,18 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
-    # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
-    # par[3] = 1.2678425e-5 - par[4] * 0.2
+    par[5:] = 0
+    par[4] = (4.559703619264866e-06 - 1.2678425108258802e-05)/(0.52 - 0.2)
+    par[3] = 1.2678425e-5 - par[4] * 0.2
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
 
 
 def heat_expanion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
-    # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
-    # par[3] = 1.2678425e-5 - par[4]*0.2
+    par[5:] = 0
+    par[4] = (4.559703619264866e-06 - 1.2678425108258802e-05)/(0.52 - 0.2)
+    par[3] = 1.2678425e-5 - par[4]*0.2
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
@@ -56,7 +56,7 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.10)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    par[2] = -np.log(0.12)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -77,7 +77,7 @@ def bainite_residual(par, *data):
     r = 0
     for data_set in data[0]:
         exp, t, e = data_set
-        model_e = a + c*t + b*exp.carbon + d*exp.carbon*t
+        model_e = a + b*t + c*exp.carbon + d*exp.carbon*t
         r += np.sum((e - model_e)**2)/len(t)
     return r*1e9
 
@@ -156,8 +156,8 @@ if __name__ == '__main__':
 
         plt.figure(3)
         temperature = np.linspace(0, 600, 1000)
-        bainite_strain = bainite_parameters[0] + bainite_parameters[2]*temperature + \
-            bainite_parameters[1]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
+        bainite_strain = bainite_parameters[0] + bainite_parameters[1]*temperature + \
+            bainite_parameters[2]*experiment.carbon + bainite_parameters[3]*experiment.carbon*temperature
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 

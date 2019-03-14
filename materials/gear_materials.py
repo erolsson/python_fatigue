@@ -53,7 +53,7 @@ class SS2506MaterialTemplate:
     def _thermal_exp_martensite(temperature, carbon):
         temperature = temperature + 273.15
         _, c = np.meshgrid(temperature, carbon)
-        a = 1.3e-5*(1-c/0.01)
+        a = 1.6369e-5 - 2.1344e-3*carbon
         return np.squeeze(a)
 
     @staticmethod

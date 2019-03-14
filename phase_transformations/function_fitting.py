@@ -41,7 +41,7 @@ f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e
 plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
 plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO 1st')
-plt.plot(carbon, 1.6422e-5 - carbon/0.01*1.872e-5, label='Dante EO 2nd')
+plt.plot(carbon, 1.5214e-5 - 1.2678e-5*carbon/0.01, label='Dante EO 2nd')
 
 fig.set_size_inches(12., 6., forward=True)
 ax = plt.subplot(111)
