@@ -540,7 +540,7 @@ class CaseHardeningToolbox:
 
         if self.cooldown_data.time is not None and self.cooldown_data.time > 0.:
             self._add_cooldown_step('Cooldown_1', kinematic_mode=-2, time=600, temperature=80)
-            self._add_cooldown_step('Cooldown_2', kinematic_mode=1, time=600, temperature=self.initial_temperature)
+#            self._add_cooldown_step('Cooldown_2', kinematic_mode=1, time=600, temperature=self.initial_temperature)
 
         if self.tempering_data.time is not None and self.tempering_data.time > 0:
             self._add_tempering_step()

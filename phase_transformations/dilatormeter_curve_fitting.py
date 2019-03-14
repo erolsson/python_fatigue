@@ -38,7 +38,6 @@ def heat_expanion_martensite(par, c, t):
 def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     par = np.abs(par)
-    # par[0] = 0.05
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
@@ -56,11 +55,11 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.10)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    par[2] = 0.011
+    par[2] = -np.log(0.2)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
-        ms_temp*0.75
         e = e[t < ms_temp]
         t = t[t < ms_temp]
         t_interp = np.linspace(t[-1], ms_temp, 1000)
@@ -82,7 +81,18 @@ def bainite_residual(par, *data):
     return r*1e9
 
 
+def austenite_residual(par, *data):
+    a, b, c = par
+    r = 0
+    for data_set in data[0]:
+        exp, t, e = data_set
+        model_e = a + c*t + b*exp.carbon
+        r += np.sum((e - model_e) ** 2) / len(t)
+    return r * 1e9
+
+
 if __name__ == '__main__':
+
     Experiment = namedtuple('Experiment', ['carbon', 'color', 'included_martensite', 'included_bainite', 'mf'])
     experiments = [Experiment(carbon=0.2, color='k', included_martensite=True, included_bainite=True, mf=200),
                    Experiment(carbon=0.36, color='b', included_martensite=True, included_bainite=False, mf=90),
@@ -91,6 +101,7 @@ if __name__ == '__main__':
 
     data_sets = []
     bainite_data_sets = []
+    austenite_data_sets = []
 
     for experiment in experiments:
         exp_data = np.genfromtxt('data_tehler/expansion_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
@@ -118,6 +129,8 @@ if __name__ == '__main__':
         if experiment.included_martensite:
             data_sets.append((experiment, temp, strain))
 
+        austenite_data_sets.append((experiment, temp[temp > ms*1.5], strain[temp > ms*1.5]))
+
         plt.figure(3)
         exp_data = np.genfromtxt('data_tehler/bainite_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
         temp = exp_data[:, 0] - 273.15
@@ -135,16 +148,22 @@ if __name__ == '__main__':
                        -0.009882, -0.01, 0.01, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
-    bainite_parameters = fmin(bainite_residual, [-2e-5, 4e-6, 2e-5, 1e-5], (bainite_data_sets,))
+    bainite_parameters = fmin(bainite_residual, [-1.44e-3, 1.893e-3, 1.323e-5, 0.000000], (bainite_data_sets,))
     print bainite_parameters
+
+    austenite_parameters = fmin(austenite_residual, [-0.01141, 0.0038, 2.4e-5], (austenite_data_sets,))
+    print austenite_parameters
 
     experiments.append(Experiment(carbon=0.8, color='y', included_martensite=True, included_bainite=True, mf=-91))
     for i, experiment in enumerate(experiments):
-        temperature = np.linspace(0, 400, 1000)
+        temperature = np.linspace(0, 1000, 1000)
         strain = transformation_strain(parameters, experiment.carbon, temperature)
         plt.figure(0)
         label = 'Model' if experiment.carbon == 0.2 else None
         plt.plot(temperature, strain, '--' + experiment.color, lw=2, label=label)
+        austenite_strain = austenite_parameters[0] + austenite_parameters[1]*experiment.carbon + \
+            austenite_parameters[2]*temperature
+        plt.plot(temperature, austenite_strain, '--' + experiment.color, lw=2, label=label)
 
         plt.figure(1)
         ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15

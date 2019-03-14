@@ -58,9 +58,9 @@ class SS2506MaterialTemplate:
 
     @staticmethod
     def _trans_strain_austenite(temperature, carbon):
-        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
-        e = t*2.4e-5 - 0.017961 + 0.38*c
+
+        e = -1.12383004e-02 + t*2.36206735e-05 + 3.96905007e-01*c
         return np.squeeze(e)
 
     @staticmethod
