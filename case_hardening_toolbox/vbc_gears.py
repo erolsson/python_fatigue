@@ -67,6 +67,7 @@ if __name__ == '__main__':
                               tempering=tempering)]
 
     for simulation in simulations:
+        # Un
         inc_file_directory = os.path.relpath(include_file_directory,
                                              simulation_directory + 'VBC_fatigue_' +
                                              str(simulation.CD).replace('.', '_'))
