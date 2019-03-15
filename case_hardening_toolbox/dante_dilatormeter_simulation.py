@@ -18,7 +18,7 @@ class DilatometerSimulation:
         self.end_temperature = float(end_temperature)
         self.quench_time = float(self.start_temperature - self.end_temperature)/self.cooling_rate
 
-        self.run_file_name = 'run_dilatormeter.sh'
+        self.run_file_name = 'run_dilatometer.sh'
 
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory)
@@ -247,7 +247,7 @@ class DilatometerSimulation:
         os.chdir(self.directory)
         process = Popen(r'chmod u+x ' + self.run_file_name)
         process.wait()
-        process = Popen(r'./' + self.run_file_name)
+        process = Popen(self.run_file_name)
         process.wait()
 
 
