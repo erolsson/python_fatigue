@@ -189,7 +189,7 @@ class DilatometerSimulation:
                       '\t4, 3, 3',
                       '\t5, 1, 2',
                       '\t6, 2, 2',
-                      '\t7, 1, 1',
+                      '\t8, 1, 1',
                       '*STEP,NAME=quench , INC=10000',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
