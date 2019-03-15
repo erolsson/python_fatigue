@@ -1,4 +1,5 @@
 import os
+from subprocess import Popen
 
 
 class DilatometerSimulation:
@@ -16,6 +17,8 @@ class DilatometerSimulation:
         self.cooling_rate = float(cooling_rate)
         self.end_temperature = float(end_temperature)
         self.quench_time = float(self.start_temperature - self.end_temperature)/self.cooling_rate
+
+        self.run_file_name = 'run_dilatormeter.sh'
 
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory)
@@ -221,9 +224,29 @@ class DilatometerSimulation:
                 inp_file.write(line + '\n')
             inp_file.write('**EOF')
 
+    def _write_run_file(self):
+        file_lines = ['export LD_PRELOAD=""',
+                      'abq=/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher',
+                      'usersub_dir=/scratch/users/erik/Dante/Abaqus_Link/DANTE_Library/dante3_7f_pr1/'
+                      'abq2018_linux/dante3_7f_pr1-std.o',
+                      'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
+                      'sim_name='self.name,
+                      '${abq} j=Toolbox_Thermal_${sim_name} interactive cpus=8 user=${usersub_dir}'
+                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}'
+]
+        with open(self.directory + '/' + self.run_file_name, 'w') as run_file:
+            for line in file_lines:
+                run_file.write(line + '\n')
+
     def run(self):
         self._write_thermal_file()
         self._write_mechanical_file()
+        self._write_run_file()
+
+        current_directory = os.getcwd()
+        os.chdir(self.directory)
+        process = Popen(r'./' + self.run_file_name)
+        process.wait()
 
 
 if __name__ == '__main__':
