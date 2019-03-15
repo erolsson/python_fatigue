@@ -234,7 +234,8 @@ class DilatometerSimulation:
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
                       '${abq} j=Toolbox_Thermal_${sim_name} interactive cpus=8 user=${usersub_dir}',
-                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}']
+                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}',
+                      '${abq} python ../dilatometer_post_processing.py ' + self.name]
 
         with open(self.directory + '/' + self.run_file_name, 'w') as run_file:
             for line in file_lines:
@@ -262,11 +263,7 @@ class DilatometerSimulation:
         os.chdir(self.directory)
         process = Popen(r'chmod u+x ' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
-        process = Popen(r'./' + self.run_file_name, cwd=os.getcwd())
-        process.wait()
-        os.chdir(current_directory)
-        process = Popen('abq2018 python dilatometer_post_processing.py ' + self.directory + '/' + self.name,
-                        cwd=os.getcwd(), shell=True)
+        process = Popen(r'./' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
 
 
