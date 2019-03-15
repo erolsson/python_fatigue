@@ -192,6 +192,7 @@ class DilatometerSimulation:
                       '\t6, 2, 2',
                       '\t7, 1, 1',
                       '*STEP,NAME=quench , INC=10000',
+                      '\t*STATIC',
                       '\t\t0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/100),
                       '\t Quenching a dilatometer experiment',
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
