@@ -230,7 +230,7 @@ class DilatometerSimulation:
                       'usersub_dir=/scratch/users/erik/Dante/Abaqus_Link/DANTE_Library/dante3_7f_pr1/'
                       'abq2018_linux/dante3_7f_pr1-std.o',
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
-                      'sim_name='self.name,
+                      'sim_name=' + self.name,
                       '${abq} j=Toolbox_Thermal_${sim_name} interactive cpus=8 user=${usersub_dir}'
                       '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}'
 ]
