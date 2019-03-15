@@ -248,7 +248,7 @@ class DilatometerSimulation:
                       '# MPI Configuration',
                       'mp_mode = MPI']
 
-        with open(self.directory + 'abaqus_v6.env', 'w') as env_file:
+        with open(self.directory + '/abaqus_v6.env', 'w') as env_file:
             for line in file_lines:
                 env_file.write(line + '\n')
 
