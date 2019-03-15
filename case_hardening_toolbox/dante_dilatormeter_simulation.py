@@ -96,7 +96,7 @@ class DilatometerSimulation:
                       '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
                       '\t\t20, 30, 9, 16, 10, 4, 12, 20',
                       '\t*Boundary, amplitude=amp',
-                      '\t\tall_nodes, ' + str(self.start_temperature),
+                      '\t\tall_nodes, 1, ' + str(self.start_temperature),
                       '\t*RESTART, WRITE, FREQ=1000',
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT',
