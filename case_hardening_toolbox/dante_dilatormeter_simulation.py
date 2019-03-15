@@ -175,7 +175,7 @@ class DilatometerSimulation:
                       '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                       '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                       '\t*User Material, constants=8, type=MECHANICAL',
-                      '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
+                      '\t\t2, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                       '*Amplitude, name=amp',
                       '\t0., 1.',
                       '\t' + str(self.quench_time) + ', ' + str(self.end_temperature / self.start_temperature),
