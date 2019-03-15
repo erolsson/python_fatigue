@@ -289,7 +289,7 @@ if __name__ == '__main__':
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
-    for carbon_level, color in zip([0.2], ['k']):
+    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter')
         simulation_data = dilatometer.run()
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
