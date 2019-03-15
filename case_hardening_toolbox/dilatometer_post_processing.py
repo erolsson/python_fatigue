@@ -8,7 +8,7 @@ import numpy as np
 
 name = sys.argv[-1]
 odb = odbAccess.openOdb('Toolbox_Mechanical_' + name + '.odb')
-frames = odb.steps['step'].frames
+frames = odb.steps['quench'].frames
 data = np.zeros((len(frames), 3))  # Time, temp, U3
 
 for i in range(0, len(frames)):
