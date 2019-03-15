@@ -245,9 +245,9 @@ class DilatometerSimulation:
 
         current_directory = os.getcwd()
         os.chdir(self.directory)
-        process = Popen(r'chmod u+x ' + self.run_file_name)
+        process = Popen(r'chmod u+x ' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
-        process = Popen(self.run_file_name)
+        process = Popen(self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
 
 
