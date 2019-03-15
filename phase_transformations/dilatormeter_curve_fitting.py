@@ -18,18 +18,20 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
+    #par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4] * 0.2
+    par[5:] = 0
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
 
 
 def heat_expanion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
+    #par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4]*0.2
+    par[5:] = 0
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
