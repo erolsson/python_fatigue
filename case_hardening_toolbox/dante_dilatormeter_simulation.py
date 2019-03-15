@@ -8,7 +8,7 @@ import numpy as np
 
 class DilatometerSimulation:
     def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=750, end_temperature=20,
-                 cooling_rate=50):
+                 cooling_rate=50.):
         self.carbon = float(carbon)
         self.material = material
         self.directory = os.path.expanduser(directory)
@@ -290,7 +290,8 @@ if __name__ == '__main__':
                       'monospace': ['Computer Modern Typewriter']})
 
     for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
-        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter')
+        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter',
+                                            cooling_rate=1.)
         simulation_data = dilatometer.run()
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
 
