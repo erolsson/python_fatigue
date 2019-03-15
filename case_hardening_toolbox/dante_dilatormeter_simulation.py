@@ -88,7 +88,7 @@ class DilatometerSimulation:
                       '\tALL_NODES , -8',
                       '**',
                       '*STEP,NAME=quench , INC=10000',
-                      '\t Quebching a dilatometer experiment'
+                      '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                       '\t\t0.01,  ' + str(self.quench_time) + ', 1e-09,  1000.',
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
