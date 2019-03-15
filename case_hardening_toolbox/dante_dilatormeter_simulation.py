@@ -265,7 +265,8 @@ class DilatometerSimulation:
         process = Popen(r'./' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
         os.chdir(current_directory)
-        process = Popen('abq2018 python dilatometer_post_processing.py ' + self.directory + '/' + self.name)
+        process = Popen('abq2018 python dilatometer_post_processing.py ' + self.directory + '/' + self.name,
+                        cwd=os.getcwd(), shell=True)
         process.wait()
 
 
