@@ -19,6 +19,8 @@ class DilatometerSimulation:
         self.quench_time = float(self.start_temperature - self.end_temperature)/self.cooling_rate
 
         self.run_file_name = 'run_dilatometer.sh'
+        self.dante_file = '/scratch/users/erik/Dante/Abaqus_Link/DANTE_Library/dante3_7f_pr1/abq2018_linux/' \
+                          'dante3_7f_pr1-std.o'
 
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory)
@@ -232,15 +234,28 @@ class DilatometerSimulation:
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
                       '${abq} j=Toolbox_Thermal_${sim_name} interactive cpus=8 user=${usersub_dir}'
-                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}'
-]
+                      '${abq} j=Toolbox_Mechanical_${sim_name} cpus=8 interactive user=${usersub_dir}']
+
         with open(self.directory + '/' + self.run_file_name, 'w') as run_file:
             for line in file_lines:
                 run_file.write(line + '\n')
 
+    def _write_env_file(self):
+        file_lines = ['# Settings for dante',
+                      'usub_lib_dir=\'' + os.path.dirname(self.dante_file) + '\'',
+                      '',
+                      'ask_delete = OFF'
+                      '# MPI Configuration',
+                      'mp_mode = MPI']
+
+        with open(self.directory + 'abaqus_v6.env', 'w') as env_file:
+            for line in file_lines:
+                env_file.write(line + '\n')
+
     def run(self):
         self._write_thermal_file()
         self._write_mechanical_file()
+        self._write_env_file()
         self._write_run_file()
 
         current_directory = os.getcwd()

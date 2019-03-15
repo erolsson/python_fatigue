@@ -564,6 +564,7 @@ class CaseHardeningToolbox:
         file_lines = ['# Settings for dante',
                       'usub_lib_dir=\'' + os.path.dirname(self.dante_file) + '\'',
                       '',
+                      'ask_delete = OFF'
                       '# MPI Configuration',
                       'mp_mode = MPI']
 
