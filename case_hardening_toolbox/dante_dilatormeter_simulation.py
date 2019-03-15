@@ -94,7 +94,7 @@ class DilatometerSimulation:
                       '\tALL_NODES , ' + str(self.carbon/100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
-                      '\tALL_NODES , -8',
+                      '\tALL_NODES , -2',
                       '**',
                       '*STEP,NAME=quench , INC=10000',
                       '\t Quenching a dilatometer experiment',
@@ -188,7 +188,7 @@ class DilatometerSimulation:
                       '\tALL_NODES , ' + str(self.carbon / 100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
-                      '\tALL_NODES , -8',
+                      '\tALL_NODES , -2',
                       '**',
                       '*Boundary',
                       '\t1, 1, 3',
@@ -303,5 +303,9 @@ if __name__ == '__main__':
         e0 = np.interp(dilatometer.start_temperature, np.flip(temp), np.flip(strain))
         strain -= e0
         plt.plot(temp, strain, color, lw=2)
+
+    dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter')
+    simulation_data = dilatometer.run()
+    plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
 
     plt.show()
