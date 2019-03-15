@@ -90,7 +90,7 @@ class DilatometerSimulation:
                       '*STEP,NAME=quench , INC=10000',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
-                      '\t\tt0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/100),
+                      '\t\t0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/100),
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
                       '\t\t 6,',
                       '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
