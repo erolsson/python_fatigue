@@ -295,7 +295,7 @@ if __name__ == '__main__':
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
 
         experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
-                                          str(carbon_level).replace('.', '_'))
+                                          str(carbon_level).replace('.', '_'), delimiter=',')
 
         temp = experimental_data[:, 0] - 273.15
         strain = experimental_data[:, 1] / 10000
