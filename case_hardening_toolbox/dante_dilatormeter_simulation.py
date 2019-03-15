@@ -263,6 +263,7 @@ class DilatometerSimulation:
         self._write_env_file()
         self._write_run_file()
 
+        current_directory = os.getcwd()
         os.chdir(self.directory)
         process = Popen(r'chmod u+x ' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
@@ -271,6 +272,8 @@ class DilatometerSimulation:
 
         with open('data_' + self.name + '.pkl', 'r') as data_pickle:
             data = pickle.load(data_pickle)
+        os.chdir(current_directory)
+
         return data
 
 
