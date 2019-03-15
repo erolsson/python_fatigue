@@ -62,6 +62,7 @@ def residual(par, *data):
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
+        # ms_temp *= 0.5
         e = e[t < ms_temp]
         t = t[t < ms_temp]
         t_interp = np.linspace(t[-1], ms_temp, 1000)
