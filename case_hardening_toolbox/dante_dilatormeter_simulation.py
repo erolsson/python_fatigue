@@ -1,4 +1,6 @@
 import os
+import pickle
+
 from subprocess import Popen
 
 
@@ -259,14 +261,32 @@ class DilatometerSimulation:
         self._write_env_file()
         self._write_run_file()
 
-        current_directory = os.getcwd()
         os.chdir(self.directory)
         process = Popen(r'chmod u+x ' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
         process = Popen(r'./' + self.run_file_name, cwd=os.getcwd(), shell=True)
         process.wait()
 
+        with open('data_' + self.name + '.pkl', 'r') as data_pickle:
+            data = pickle.load(data_pickle)
+        return data
+
 
 if __name__ == '__main__':
-    dilatometer = DilatometerSimulation(carbon=0.2, material='U925063', directory='dilatormeter')
-    dilatometer.run()
+    import matplotlib
+    import matplotlib.pyplot as plt
+
+    matplotlib.style.use('classic')
+    plt.rc('text', usetex=True)
+    plt.rc('font', serif='Computer Modern Roman')
+    plt.rcParams.update({'font.size': 20})
+    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+    plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
+                      'monospace': ['Computer Modern Typewriter']})
+
+    for carbon_level, color in zip([0.2], ['k']):
+        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter')
+        data = dilatometer.run()
+        plt.plot(data[:, 1], data[:, 2], '--' + color, lw=2)
+
+    plt.show()
