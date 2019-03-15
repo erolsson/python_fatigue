@@ -43,7 +43,7 @@ class DilatometerSimulation:
                       '\t6, \t 1., 0., 1.',
                       '\t7, \t 1., 1., 1.',
                       '\t8, \t 0., 1., 1.',
-                      '*Element, type=all_elements',
+                      '*Element, type=DC3D8, elset=all_elements',
                       '\t1, 1, 2, 3, 4, 5, 6, 7, 8',
                       '**',
                       '** ----------------------------------------------------------------',
@@ -123,5 +123,5 @@ class DilatometerSimulation:
 
 
 if __name__ == '__main__':
-    dilatometer = DilatometerSimulation(carbon=0.2, material='U925063')
+    dilatometer = DilatometerSimulation(carbon=0.2, material='U925063', directory='dilatormeter')
     dilatometer.run()
