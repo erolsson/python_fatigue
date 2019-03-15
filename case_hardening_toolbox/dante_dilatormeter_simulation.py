@@ -3,9 +3,11 @@ import pickle
 
 from subprocess import Popen
 
+import numpy as np
+
 
 class DilatometerSimulation:
-    def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=800, end_temperature=20,
+    def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=750, end_temperature=20,
                  cooling_rate=50):
         self.carbon = float(carbon)
         self.material = material
@@ -286,7 +288,17 @@ if __name__ == '__main__':
 
     for carbon_level, color in zip([0.2], ['k']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter')
-        data = dilatometer.run()
-        plt.plot(data[:, 1], data[:, 2], '--' + color, lw=2)
+        simulation_data = dilatometer.run()
+        plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
+
+        experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
+                                          str(carbon_level).replace('.', '_'))
+
+        temp = experimental_data[:, 0] - 273.15
+        strain = experimental_data[:, 1] / 10000
+
+        e0 = np.interp(dilatometer.start_temperature, np.flip(temp), np.flip(strain))
+        strain -= e0
+        plt.plot(temp, strain, color, lw=2)
 
     plt.show()
