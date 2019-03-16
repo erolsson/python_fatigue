@@ -279,7 +279,7 @@ class DilatometerSimulation:
                       '\t*STATIC',
                       '\t\t0.01,  1., 1e-05,  1.',
                       '\t*FIELD, VAR = 2',
-                      '\t\tall_nodes, -2',
+                      '\t\tall_nodes, 0',
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
                       '\t\t6,',
                       '\t*Temperature',
