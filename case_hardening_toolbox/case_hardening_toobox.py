@@ -306,7 +306,7 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t** Add output variables')
         self.mechanical_file_lines.append('\t*RESTART, WRITE, FREQ = 1000')
         self.mechanical_file_lines.append('\t*MONITOR, NODE = MONITOR_NODE, DOF = 1, FREQ = 1')
-        self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
+        self.mechanical_file_lines.appen + str(self.quench_time/500)d('\t*OUTPUT, FIELD, FREQ = 10')
         self.mechanical_file_lines.append('\t\t*ELEMENT OUTPUT, directions = YES')
         self.mechanical_file_lines.append('\t\t\tS, E')
         self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
