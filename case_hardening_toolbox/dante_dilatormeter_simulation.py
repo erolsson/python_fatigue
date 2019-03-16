@@ -91,7 +91,7 @@ class DilatometerSimulation:
                       '**',
                       '** Set initial carbon content',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
-                      '\tALL_NODES, ' + str(self.carbon),
+                      '\tALL_NODES, ' + str(self.carbon/100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
                       '\tALL_NODES , -2',
