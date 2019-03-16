@@ -229,7 +229,7 @@ class CaseHardeningToolbox:
                 '**',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
-                '\tALL_NODES , ' + str(self.initial_temperature),
+                '\tALL_NODES , ' + str(840.),
                 '**',
                 '** Set initial carbon content',
                 '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
