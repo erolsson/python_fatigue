@@ -375,7 +375,7 @@ class CaseHardeningToolbox:
                 '\t*MONITOR, NODE=MONITOR_NODE, DOF=1, FREQ=1',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
                 '\t\t*ELEMENT OUTPUT, directions=YES',
-                '\t\t\tS', 'E',
+                '\t\t\tS, E',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
                 '\t\t*ELEMENT OUTPUT',
                 '\t\t\tSDV1,SDV2,SDV5,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99',
