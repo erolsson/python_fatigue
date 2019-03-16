@@ -130,7 +130,7 @@ class DilatometerSimulation:
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                       '\t\t0.01,  1., 1e-05,  1.',
                       '\t*FIELD, OP = NEW, VAR = 1'
-                      '\t\t, all_nodes, ' + str(carbon_level/100),
+                      '\t\tall_nodes, ' + str(carbon_level/100),
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
                       '\t\t 6,',
                       '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
