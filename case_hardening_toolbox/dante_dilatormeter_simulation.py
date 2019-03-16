@@ -278,9 +278,9 @@ class DilatometerSimulation:
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
                       '\t\t0.01,  1., 1e-05,  1.',
-                      '\t*FIELD, OP = NEW, VAR = 2',
-                      '\t\tall_nodes, 0',
-                      '\t*FIELD, OP = NEW, VAR = 1',
+                      '\t*FIELD, OP = MOD, VAR = 2',
+                      '\t\tall_nodes, -2',
+                      '\t*FIELD, VAR = 1',
                       '\t\tall_nodes, ' + str(self.carbon/100),
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
                       '\t\t6,',
@@ -386,7 +386,8 @@ if __name__ == '__main__':
                       'monospace': ['Computer Modern Typewriter']})
 
     cooling = 30.
-    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
+    # for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
+    for carbon_level, color in zip([0.36], ['b']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter',
                                             cooling_rate=cooling)
         simulation_data = dilatometer.run()
