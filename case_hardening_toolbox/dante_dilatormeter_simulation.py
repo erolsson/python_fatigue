@@ -124,7 +124,7 @@ class DilatometerSimulation:
                       '\t\t*EL PRINT, FREQ=0',
                       '\t\t*NODE PRINT, FREQ=0',
                       '*END STEP',
-                      '**'
+                      '**',
                       '*STEP,NAME=add_carbon , INC=10000',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
@@ -149,7 +149,7 @@ class DilatometerSimulation:
                       '\t\t*EL PRINT, FREQ=0',
                       '\t\t*NODE PRINT, FREQ=0',
                       '*END STEP',
-                      '**'
+                      '**',
                       '*STEP,NAME=quench , INC=10000',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
