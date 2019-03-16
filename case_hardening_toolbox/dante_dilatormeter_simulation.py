@@ -284,6 +284,8 @@ class DilatometerSimulation:
                       '\t\tall_nodes, ' + str(self.carbon/100),
                       '\t*Temperature',
                       '\t\tall_nodes, ' + str(self.start_temperature),
+                      '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
+                      '\t\t5e-3, 1e-4, ',
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT',
                       '\t*OUTPUT, FIELD, FREQ=1',
