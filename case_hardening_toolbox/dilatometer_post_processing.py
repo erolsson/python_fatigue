@@ -16,14 +16,15 @@ data = np.zeros((total_frames, 3))  # Time, temp, U3
 
 for step_name in step_names:
     frames = odb.steps[step_name].frames
+    j = 0
     for i in range(0, len(frames)):
         frame = frames[i]
         U = frame.fieldOutputs['U'].values[6]
         NT = frame.fieldOutputs['NT11'].values[6]
-        data[i, 0] = frame.frameValue
-        data[i, 2] = U.data[2]
-        data[i, 1] = NT.data
-
+        data[j, 0] = frame.frameValue
+        data[j, 2] = U.data[2]
+        data[j, 1] = NT.data
+        j += 1
 pickleHandle = open('data_' + name + '.pkl', 'wb')
 pickle.dump(data, pickleHandle)
 pickleHandle.close()
