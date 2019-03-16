@@ -7,7 +7,7 @@ import numpy as np
 
 
 class DilatometerSimulation:
-    def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=750, end_temperature=20,
+    def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=930, end_temperature=20,
                  cooling_rate=50., heating_rate=20., holding_time=600.):
         self.carbon = float(carbon)
         self.material = material
@@ -271,12 +271,6 @@ class DilatometerSimulation:
                       '\t\t0.01,  ' + str(self.heating_time + self.holding_time) + ', 1e-05,  10',
                       '\t*FIELD, OP = NEW, VAR = 2',
                       '\t\tall_nodes, 3',
-                      '\t*CONTROLS, PARAMETERS=LINE SEARCH',
-                      '\t\t 6,',
-                      '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
-                      '\t\t20, 30',
-                      '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
-                      '\t\t0.05,0.05',
                       '\t*Temperature, amplitude=heating',
                       '\t\tall_nodes, ' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
@@ -295,17 +289,11 @@ class DilatometerSimulation:
                       '*STEP,NAME=add_carbon , INC=10000, AMP=RAMP',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
-                      '\t\t0.01,  1., 1e-05,  1.',
+                      '\t\t0.01,  1., 1e-05,  0.05',
                       '\t*FIELD, OP = NEW, VAR = 2',
                       '\t\tall_nodes, -2',
                       '\t*FIELD, OP = NEW, VAR = 1',
                       '\t\tall_nodes, ' + str(self.carbon/100),
-                      '\t*CONTROLS, PARAMETERS=LINE SEARCH',
-                      '\t\t 6,',
-                      '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
-                      '\t\t20, 30',
-                      '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
-                      '\t\t0.05,0.05',
                       '\t*Temperature',
                       '\t\tall_nodes, ' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
@@ -327,12 +315,6 @@ class DilatometerSimulation:
                       '\t\t0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/500),
                       '\t*FIELD, OP = NEW, VAR = 2',
                       '\t\tall_nodes, -2',
-                      '\t*CONTROLS, PARAMETERS=LINE SEARCH',
-                      '\t\t 6,',
-                      '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
-                      '\t\t20, 30',
-                      '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
-                      '\t\t0.05,0.05',
                       '\t*Temperature, amplitude=amp',
                       '\t\tall_nodes, ' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
