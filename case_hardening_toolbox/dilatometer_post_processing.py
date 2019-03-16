@@ -14,9 +14,9 @@ for step_name in step_names:
     total_frames += len(odb.steps[step_name].frames)
 data = np.zeros((total_frames, 3))  # Time, temp, U3
 
+j = 0
 for step_name in step_names:
     frames = odb.steps[step_name].frames
-    j = 0
     for i in range(0, len(frames)):
         frame = frames[i]
         U = frame.fieldOutputs['U'].values[6]
