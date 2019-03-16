@@ -280,7 +280,7 @@ class DilatometerSimulation:
                       '\t\t0.01,  1., 1e-05,  1.',
                       '\t*FIELD, OP = NEW, VAR = 2',
                       '\t\tall_nodes, -2',
-                      '\t*FIELD, OP = NEW, VAR = 1, amp=carbon',
+                      '\t*FIELD, OP = NEW, VAR = 1',
                       '\t\tall_nodes, ' + str(self.carbon/100),
                       '\t*Temperature',
                       '\t\tall_nodes, ' + str(self.start_temperature),
