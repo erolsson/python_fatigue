@@ -81,7 +81,7 @@ class DilatometerSimulation:
                       '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                       '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                       '\t*User Material, constants=8, type=THERMAL',
-                      '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
+                      '\t\t7.83e-06, 0, 0.00, 0.50, 0.50, 0.00, 0.00, 0.00',
                       '** Set initial temperature',
                       '*Amplitude, name=amp',
                       '\t0., 1.',
@@ -176,7 +176,7 @@ class DilatometerSimulation:
                       '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                       '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                       '\t*User Material, constants=8, type=MECHANICAL',
-                      '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
+                      '\t\t1, 0, 0.00, 0.50, 0.50, 0.00, 0.00, 0.00',
                       '*Amplitude, name=amp',
                       '\t0., 1.',
                       '\t' + str(self.quench_time) + ', ' + str(self.end_temperature / self.start_temperature),
@@ -290,9 +290,10 @@ if __name__ == '__main__':
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
+    cooling = 30.
     for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter',
-                                            cooling_rate=30.)
+                                            cooling_rate=cooling)
         simulation_data = dilatometer.run()
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
 
@@ -306,7 +307,7 @@ if __name__ == '__main__':
         strain -= e0
         plt.plot(temp, strain, color, lw=2)
 
-    dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter')
+    dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
     simulation_data = dilatometer.run()
     plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
 
