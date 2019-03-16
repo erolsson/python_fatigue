@@ -12,7 +12,7 @@ step_names = odb.steps.keys()
 total_frames = 0
 for step_name in step_names:
     total_frames += len(odb.steps[step_name].frames)
-data = np.zeros((len(total_frames), 3))  # Time, temp, U3
+data = np.zeros((total_frames, 3))  # Time, temp, U3
 
 for step_name in step_names:
     frames = odb.steps[step_name].frames
