@@ -325,8 +325,8 @@ class CaseHardeningToolbox:
 
     @staticmethod
     def _thermal_step_data(step_name, step_description, step_time, surface_temperature, interaction_property,
-                           kinematic_mode, output_frequency=5, step_amp='AMP'):
-        return ['*STEP,NAME=' + step_name + ' , INC=10000 AMP=' + step_amp,
+                           kinematic_mode, output_frequency=5, step_amp='STEP'):
+        return ['*STEP,NAME=' + step_name + ' , INC=10000, AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-09,  1000.',
@@ -355,8 +355,8 @@ class CaseHardeningToolbox:
                 '**']
 
     def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5,
-                              max_increment=1000., step_amp='AMP'):
-        return ['*STEP, NAME=' + step_name + ', inc=10000 AMP=' + step_amp,
+                              max_increment=1000., step_amp='STEP'):
+        return ['*STEP, NAME=' + step_name + ', inc=10000, AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*STATIC',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-05,  ' + str(max_increment),
