@@ -399,8 +399,8 @@ if __name__ == '__main__':
 
         plt.plot(temp, strain, color, lw=2)
 
-    dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
-    simulation_data = dilatometer.run()
-    plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
+    #dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
+    #simulation_data = dilatometer.run()
+    #plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
 
     plt.show()
