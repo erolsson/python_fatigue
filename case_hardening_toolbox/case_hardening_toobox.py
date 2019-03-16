@@ -288,7 +288,7 @@ class CaseHardeningToolbox:
         self.thermal_file_lines.append('\t*NODE PRINT, FREQ=0')
         self.thermal_file_lines.append('*END STEP')
         self.thermal_file_lines.append('**')
-        """
+
         self.mechanical_file_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
         self.mechanical_file_lines.append('\tMechanical simulation')
         self.mechanical_file_lines.append('\t*STATIC')
@@ -306,7 +306,7 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t** Add output variables')
         self.mechanical_file_lines.append('\t*RESTART, WRITE, FREQ = 1000')
         self.mechanical_file_lines.append('\t*MONITOR, NODE = MONITOR_NODE, DOF = 1, FREQ = 1')
-        self.mechanical_file_lines.appen + str(self.quench_time/500)d('\t*OUTPUT, FIELD, FREQ = 10')
+        self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
         self.mechanical_file_lines.append('\t\t*ELEMENT OUTPUT, directions = YES')
         self.mechanical_file_lines.append('\t\t\tS, E')
         self.mechanical_file_lines.append('\t*OUTPUT, FIELD, FREQ = 10')
@@ -317,7 +317,6 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t\t\tNT, U')
         self.mechanical_file_lines.append('*END  STEP')
         self.mechanical_file_lines.append('**')
-        """
         self.thermal_step_counter += 1
 
     def add_carburization_steps(self, times, temperatures, carbon_levels):
@@ -326,8 +325,8 @@ class CaseHardeningToolbox:
 
     @staticmethod
     def _thermal_step_data(step_name, step_description, step_time, surface_temperature, interaction_property,
-                           kinematic_mode, output_frequency=5):
-        return ['*STEP,NAME=' + step_name + ' , INC=10000',
+                           kinematic_mode, output_frequency=5, step_amp='AMP'):
+        return ['*STEP,NAME=' + step_name + ' , INC=10000 AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-09,  1000.',
@@ -356,8 +355,8 @@ class CaseHardeningToolbox:
                 '**']
 
     def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5,
-                              max_increment=1000.):
-        return ['*STEP, NAME=' + step_name + ', AMP=STEP, inc=10000',
+                              max_increment=1000., step_amp='AMP'):
+        return ['*STEP, NAME=' + step_name + ', inc=10000 AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*STATIC',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-05,  ' + str(max_increment),
@@ -394,6 +393,7 @@ class CaseHardeningToolbox:
                                              kinematic_mode=-2,
                                              output_frequency=1)
 
+        step_lines
         step_lines.insert(4, '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
         self.thermal_file_lines += step_lines
 
