@@ -396,8 +396,6 @@ if __name__ == '__main__':
         temp = experimental_data[:, 0] - 273.15
         strain = experimental_data[:, 1] / 10000
 
-        e0 = np.interp(dilatometer.start_temperature, np.flip(temp), np.flip(strain))
-        strain -= e0
         plt.plot(temp, strain, color, lw=2)
 
     dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
