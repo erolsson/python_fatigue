@@ -274,7 +274,7 @@ class DilatometerSimulation:
                       '\t\t\tNT,U',
                       '*END STEP',
                       '**',
-                      '*STEP,NAME=add_carbon , INC=10000, AMP=STEP',
+                      '*STEP,NAME=add_carbon , INC=10000, AMP=RAMP',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
                       '\t\t0.01,  1., 1e-05,  1.',
