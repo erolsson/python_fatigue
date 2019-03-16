@@ -292,7 +292,7 @@ if __name__ == '__main__':
 
     for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter',
-                                            cooling_rate=1.)
+                                            cooling_rate=30.)
         simulation_data = dilatometer.run()
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
 
