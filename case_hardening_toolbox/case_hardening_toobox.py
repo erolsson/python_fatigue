@@ -229,7 +229,7 @@ class CaseHardeningToolbox:
                 '**',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
-                '\tALL_NODES , ' + str(self.initial_temperature),
+                '\tALL_NODES , ' + str(840.),
                 '**',
                 '** Set initial carbon content',
                 '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
@@ -288,7 +288,7 @@ class CaseHardeningToolbox:
         self.thermal_file_lines.append('\t*NODE PRINT, FREQ=0')
         self.thermal_file_lines.append('*END STEP')
         self.thermal_file_lines.append('**')
-
+        """
         self.mechanical_file_lines.append('*STEP,NAME=' + step_name + ', INC=10000')
         self.mechanical_file_lines.append('\tMechanical simulation')
         self.mechanical_file_lines.append('\t*STATIC')
@@ -317,7 +317,7 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t\t\tNT, U')
         self.mechanical_file_lines.append('*END  STEP')
         self.mechanical_file_lines.append('**')
-
+        """
         self.thermal_step_counter += 1
 
     def add_carburization_steps(self, times, temperatures, carbon_levels):
