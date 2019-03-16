@@ -408,8 +408,7 @@ if __name__ == '__main__':
                       'monospace': ['Computer Modern Typewriter']})
 
     cooling = 30.
-    # for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
-    for carbon_level, color in zip([0.36], ['b']):
+    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925063', directory='dilatormeter',
                                             cooling_rate=cooling)
         simulation_data = dilatometer.run()
@@ -423,8 +422,8 @@ if __name__ == '__main__':
 
         plt.plot(temp, strain, color, lw=2)
 
-    #dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
-    #simulation_data = dilatometer.run()
-    #plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
+    dilatometer = DilatometerSimulation(carbon=0.8, material='U925063', directory='dilatormeter', cooling_rate=cooling)
+    simulation_data = dilatometer.run()
+    plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
 
     plt.show()
