@@ -331,8 +331,8 @@ class DilatometerSimulation:
                       'abq2018_linux/dante3_7f_pr1-std.o',
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
-                      '${abq} j=Toolbox_Thermal_${sim_name} interactive user=${usersub_dir}',
-                      '${abq} j=Toolbox_Mechanical_${sim_name} interactive user=${usersub_dir}',
+                      '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
+                      '${abq} j=Toolbox_Mechanical_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} python ../dilatometer_post_processing.py ' + self.name]
 
         with open(self.directory + '/' + self.run_file_name, 'w') as run_file:
