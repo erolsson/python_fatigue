@@ -241,7 +241,7 @@ class DilatometerSimulation:
                       '\tALL_NODES , ' + str(0.2 / 100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
-                      '\tALL_NODES , 3',
+                      '\tALL_NODES , -8',
                       '**',
                       '*Boundary',
                       '\t1, 1, 3',
@@ -278,8 +278,6 @@ class DilatometerSimulation:
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
                       '\t\t0.01,  1., 1e-05,  1.',
-                      '\t*FIELD, OP = MOD, VAR = 2',
-                      '\t\tall_nodes, -2',
                       '\t*FIELD, VAR = 1',
                       '\t\tall_nodes, ' + str(self.carbon/100),
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
@@ -333,7 +331,7 @@ class DilatometerSimulation:
                       'abq2018_linux/dante3_7f_pr1-std.o',
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
-                      '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
+                      # '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} j=Toolbox_Mechanical_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} python ../dilatometer_post_processing.py ' + self.name]
 
