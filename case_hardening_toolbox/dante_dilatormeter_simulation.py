@@ -310,7 +310,7 @@ class DilatometerSimulation:
                       '\t\t*NODE OUTPUT',
                       '\t\t\tNT,U',
                       '*END STEP',
-                      '**'                      
+                      '**',
                       '*STEP,NAME=quench , INC=10000',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
