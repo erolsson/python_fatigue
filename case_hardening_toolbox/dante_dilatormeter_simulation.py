@@ -21,7 +21,7 @@ class DilatometerSimulation:
         self.cooling_rate = float(cooling_rate)
         self.end_temperature = float(end_temperature)
         self.quench_time = float(self.start_temperature - self.end_temperature)/self.cooling_rate
-        self.heating_time = float(self.end_temperature - 20)/heating_rate
+        self.heating_time = float(self.start_temperature - 20)/heating_rate
         self.holding_time = float(holding_time)
 
         self.run_file_name = 'run_dilatometer.sh'
@@ -129,7 +129,7 @@ class DilatometerSimulation:
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                       '\t\t0.01,  1., 1e-05,  1.',
-                      '\t*FIELD, OP = NEW, VAR = 1'
+                      '\t*FIELD, OP = NEW, VAR = 1',
                       '\t\tall_nodes, ' + str(carbon_level/100),
                       '\t*CONTROLS, PARAMETERS=LINE SEARCH',
                       '\t\t 6,',
