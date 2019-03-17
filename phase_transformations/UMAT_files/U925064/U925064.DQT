@@ -1,6 +1,6 @@
 ** SS2506 Kinetics Data by Erik Olsson 14/12/2018
 DEC2015        ! model implementation date : use UPPERCASE
-U925063        ! matnam must be UPPERCASE
+U925064        ! matnam must be UPPERCASE
   1            ! itprdb=1, require tempering data; otherwise no.
   1            ! iheat=1, require heating data; otherwise no.
 ** stress effect on martensitic transformation
