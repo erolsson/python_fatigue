@@ -8,7 +8,7 @@ import numpy as np
 
 name = sys.argv[-1]
 odb = odbAccess.openOdb('Toolbox_Mechanical_' + name + '.odb')
-step_names = ['heating', 'add_carbon', 'quench']
+step_names = ['quench']
 total_frames = 0
 for step_name in step_names:
     total_frames += len(odb.steps[step_name].frames)
