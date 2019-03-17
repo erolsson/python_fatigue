@@ -241,7 +241,7 @@ class DilatometerSimulation:
                       '\tALL_NODES , ' + str(self.carbon/100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
-                      '\tALL_NODES , -8',
+                      '\tALL_NODES , -2',
                       '**',
                       '*Boundary',
                       '\t1, 1, 3',
