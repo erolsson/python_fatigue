@@ -405,7 +405,7 @@ if __name__ == '__main__':
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
-    cooling = 200.
+    cooling = 1000.
     for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925064', directory='dilatormeter',
                                             cooling_rate=cooling)
