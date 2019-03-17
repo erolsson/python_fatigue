@@ -58,7 +58,7 @@ def transformation_strain(par, c, t):
 def residual(par, *data):
     r = 0
     par[2] = 0.011
-    par[2] = -np.log(0.1)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    par[2] = -np.log(0.2)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -213,5 +213,7 @@ if __name__ == '__main__':
         print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], parameters[0:3])
 
     print "Expansion parameters of Martensite is"
+    parameters[3] -= austenite_parameters[0]
+    parameters[4] -= austenite_parameters[1]
     print parameters[3:]
     plt.show()

@@ -16,7 +16,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U92504_200C_65C_cool/')
+                                              '/U92504_200C_20C_cool/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -67,7 +67,6 @@ if __name__ == '__main__':
                               tempering=tempering)]
 
     for simulation in simulations:
-        # Un
         inc_file_directory = os.path.relpath(include_file_directory,
                                              simulation_directory + 'VBC_fatigue_' +
                                              str(simulation.CD).replace('.', '_'))
@@ -84,7 +83,7 @@ if __name__ == '__main__':
         toolbox_writer.quenching_data.time = 3600.
         toolbox_writer.quenching_data.temperature = 120.
 
-        toolbox_writer.cooldown_data.temperature = 65
+        toolbox_writer.cooldown_data.temperature = 20
         toolbox_writer.cooldown_data.time = 3600
 
         toolbox_writer.material = 'U925064'
