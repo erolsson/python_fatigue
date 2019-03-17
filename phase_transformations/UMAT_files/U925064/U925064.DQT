@@ -4,7 +4,7 @@ U925064        ! matnam must be UPPERCASE
   1            ! itprdb=1, require tempering data; otherwise no.
   1            ! iheat=1, require heating data; otherwise no.
 ** stress effect on martensitic transformation
- 0.000000E-02   !stress effect on martensite transformation
+ 6.500000E-02   !stress effect on martensite transformation
 ** Total number of kinetic data sets with different chemistry
  3
 # Chemical composition of data set NO. 1  (8620)
@@ -15,7 +15,7 @@ U925064        ! matnam must be UPPERCASE
 3.4403E-02              !mobility
 0.0                         !alpha
 0.0                         !beta
- 2.000000E-01               !epsilon_m
+ 0.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                      !1 Lower T Bound  T1
  740.0                      !2 Upper T Bound  T2
