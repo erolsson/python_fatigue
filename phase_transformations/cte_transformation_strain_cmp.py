@@ -16,7 +16,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 
-umat_filename = 'UMAT_files/U925062/U925063.MEC'
+umat_filename = 'UMAT_files/U925062/U925062.MEC'
 
 
 def get_parameters_from_mech_file(mec_file):
@@ -71,7 +71,7 @@ for carbon, color in zip(carbon_levels, color_codes):
 
     plt.plot(temperature, e_trans, color, lw=2)
 
-parameters = get_parameters_from_mech_file('UMAT_files/U925062/U925063.MEC.BAK')
+parameters = get_parameters_from_mech_file('UMAT_files/U925062/U925062.MEC.BAK')
 for carbon, color in zip(carbon_levels, color_codes):
     e_trans = cte_model(temperature, carbon*100, parameters, 'Martensite') - \
               cte_model(temperature, carbon*100, parameters, 'Austenite')
