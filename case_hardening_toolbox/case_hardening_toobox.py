@@ -505,8 +505,6 @@ class CaseHardeningToolbox:
                 total_time += carb_step.time
             line_set.append('**')
 
-        # Add the add carbon step to the thermal input file
-        self._add_add_carbon_step()
         # Add a heating step
         if self.heating_data.time is not None:
             self._write_carburization_step('Heating', self.total_time, self.total_time + self.heating_data.time*60,
@@ -519,6 +517,9 @@ class CaseHardeningToolbox:
             self._write_carburization_step(step_name, self.total_time, self.total_time + carburization_step.time,
                                            carburization_step.carbon)
             self.total_time += carburization_step.time
+
+        # Add the add carbon step to the mechanical input file
+        self._add_add_carbon_step()
 
         # Add step for transfer from oven to quench bath
         if self.transfer_data.time is not None and self.transfer_data.time > 0.:
