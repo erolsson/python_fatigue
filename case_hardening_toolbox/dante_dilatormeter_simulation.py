@@ -308,7 +308,7 @@ if __name__ == '__main__':
             strain = experimental_data[:, 1] / 10000
 
             exp_e_0 = np.interp(750, np.flip(temp), np.flip(strain))
-            sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 2]))
+            sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 3]))
 
             strain -= (exp_e_0 - sim_e_0)
             plt.plot(temp, strain, color, lw=2)
@@ -317,7 +317,7 @@ if __name__ == '__main__':
         plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
         plt.plot(mechanical_data[:, 1], mechanical_data[:, 2], '--' + color, lw=2)
 
-    plt.figure(1)
+    plt.figure(0)
     plt.xlabel(r'Temperature [ $\degree$C]')
     plt.ylabel(r'strain [-]')
 
