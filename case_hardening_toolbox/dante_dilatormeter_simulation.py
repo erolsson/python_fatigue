@@ -83,7 +83,7 @@ class DilatometerSimulation:
                       '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                       '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                       '\t*User Material, constants=8, type=THERMAL',
-                      '\t\t7.83e-06, 0, 0.50, 0.50, 0.00, 0.00, 0.00, 0.00',
+                      '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                       '** Set initial temperature',
                       '*Amplitude, name=amp',
                       '\t0., 1.',
