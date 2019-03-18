@@ -407,7 +407,7 @@ if __name__ == '__main__':
 
     cooling = 1000.
     for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
-        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U86XX', directory='dilatormeter',
+        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U25062', directory='dilatormeter',
                                             cooling_rate=cooling)
         simulation_data = dilatometer.run()
         plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
@@ -420,7 +420,7 @@ if __name__ == '__main__':
 
         plt.plot(temp, strain, color, lw=2)
 
-    dilatometer = DilatometerSimulation(carbon=0.8, material='U86XX', directory='dilatormeter', cooling_rate=cooling)
+    dilatometer = DilatometerSimulation(carbon=0.8, material='U25062', directory='dilatormeter', cooling_rate=cooling)
     simulation_data = dilatometer.run()
     plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
 
