@@ -27,7 +27,8 @@ class QuenchingData:
 class CaseHardeningToolbox:
     def __init__(self, name, include_file_name, include_file_directory):
         """
-        :param name:
+        :param name:  All input files will get the name Toolbox_Simulation_name.inp
+                      where simulation is 'Carbon',
         :param include_file_name:
         """
         self._include_file_directory = include_file_directory + '/'
