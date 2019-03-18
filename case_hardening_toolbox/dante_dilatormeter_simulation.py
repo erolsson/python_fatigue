@@ -307,6 +307,10 @@ if __name__ == '__main__':
             temp = experimental_data[:, 0] - 273.15
             strain = experimental_data[:, 1] / 10000
 
+            exp_e_0 = np.interp(750, np.flip(temp), np.flip(strain))
+            sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 2]))
+
+            strain -= (exp_e_0 - sim_e_0)
             plt.plot(temp, strain, color, lw=2)
 
         plt.figure(1)
