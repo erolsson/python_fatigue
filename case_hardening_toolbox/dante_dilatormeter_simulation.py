@@ -286,7 +286,7 @@ if __name__ == '__main__':
     plt.rc('text', usetex=True)
     plt.rc('font', serif='Computer Modern Roman')
     plt.rcParams.update({'font.size': 20})
-    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}", r"\usepackage{gensymb}"]
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
@@ -316,5 +316,13 @@ if __name__ == '__main__':
         plt.figure(1)
         plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
         plt.plot(mechanical_data[:, 1], mechanical_data[:, 2], '--' + color, lw=2)
+
+    plt.figure(1)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'strain [-]')
+
+    plt.figure(1)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'Fraction Martensite [-]')
 
     plt.show()
