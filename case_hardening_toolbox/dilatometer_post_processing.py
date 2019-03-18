@@ -23,7 +23,7 @@ for model in data_dict.keys():
         for i in range(0, len(frames)):
             frame = frames[i]
             data[j, 0] = frame.frameValue
-            for k, var in enumerate(data_dict[model]['vars']):
+            for k, var in enumerate(data_dict[model]['vars'], 1):
                 field = frame.fieldOutputs[var].values[6].data
                 if var == 'U':
                     field = field[2]
