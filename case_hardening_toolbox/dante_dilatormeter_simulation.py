@@ -353,7 +353,7 @@ class DilatometerSimulation:
                       'abq2018_linux/dante3_7f_pr1-std.o',
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
-                      # '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
+                      '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} j=Toolbox_Mechanical_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} python ../dilatometer_post_processing.py ' + self.name]
 
@@ -406,22 +406,26 @@ if __name__ == '__main__':
                       'monospace': ['Computer Modern Typewriter']})
 
     cooling = 1000.
-    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
+    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65, 0.8], ['k', 'b', 'm', 'r', 'y']):
         dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925062', directory='dilatormeter',
                                             cooling_rate=cooling)
         simulation_data = dilatometer.run()
-        plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
+        mechanical_data = simulation_data['Mechanical']['data']
+        thermal_data = simulation_data['Thermal']['data']
+        plt.figure(0)
+        plt.plot(mechanical_data[:, 1], mechanical_data[:, 3], '--' + color, lw=2)
 
-        experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
-                                          str(carbon_level).replace('.', '_'), delimiter=',')
+        if carbon_level < 0.8:
+            experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
+                                              str(carbon_level).replace('.', '_'), delimiter=',')
 
-        temp = experimental_data[:, 0] - 273.15
-        strain = experimental_data[:, 1] / 10000
+            temp = experimental_data[:, 0] - 273.15
+            strain = experimental_data[:, 1] / 10000
 
-        plt.plot(temp, strain, color, lw=2)
+            plt.plot(temp, strain, color, lw=2)
 
-    dilatometer = DilatometerSimulation(carbon=0.8, material='U925062', directory='dilatormeter', cooling_rate=cooling)
-    simulation_data = dilatometer.run()
-    plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
+        plt.figure(1)
+        plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
+        plt.plot(mechanical_data[:, 1], mechanical_data[:, 2], '--' + color, lw=2)
 
     plt.show()
