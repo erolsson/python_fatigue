@@ -161,7 +161,7 @@ class CaseHardeningToolbox:
                 '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                 '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                 '\t*User Material, constants=8, type=THERMAL',
-                '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
+                '\t\t7.83e-06, 0, 0.50, 0.50, 0.00, 0.00, 0.00, 0.00',
                 '**',
                 '** ----------------------------------------------------------------',
                 '*INCLUDE, INPUT = ' + self._include_file_directory + self.interaction_property_file,
@@ -225,11 +225,11 @@ class CaseHardeningToolbox:
                 '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                 '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                 '\t*User Material, constants=8, type=MECHANICAL',
-                '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
+                '\t\t1, 0, 0.50, 0.50, 0.00, 0.00, 0.00, 0.00',
                 '**',
                 '** Set initial temperature',
                 '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
-                '\tALL_NODES , ' + str(840.),
+                '\tALL_NODES , ' + str(20.),
                 '**',
                 '** Set initial carbon content',
                 '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
@@ -317,7 +317,6 @@ class CaseHardeningToolbox:
         self.mechanical_file_lines.append('\t\t\tNT, U')
         self.mechanical_file_lines.append('*END  STEP')
         self.mechanical_file_lines.append('**')
-
         self.thermal_step_counter += 1
 
     def add_carburization_steps(self, times, temperatures, carbon_levels):
@@ -326,8 +325,8 @@ class CaseHardeningToolbox:
 
     @staticmethod
     def _thermal_step_data(step_name, step_description, step_time, surface_temperature, interaction_property,
-                           kinematic_mode, output_frequency=5):
-        return ['*STEP,NAME=' + step_name + ' , INC=10000',
+                           kinematic_mode, output_frequency=5, step_amp='STEP'):
+        return ['*STEP,NAME=' + step_name + ' , INC=10000, AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-09,  1000.',
@@ -356,8 +355,8 @@ class CaseHardeningToolbox:
                 '**']
 
     def _mechanical_step_data(self, step_name, step_description, step_time, kinematic_mode, output_frequency=5,
-                              max_increment=1000.):
-        return ['*STEP, NAME=' + step_name + ', AMP=STEP, inc=10000',
+                              max_increment=1000., step_amp='STEP'):
+        return ['*STEP, NAME=' + step_name + ', inc=10000, AMP=' + step_amp,
                 '\t' + step_description,
                 '\t*STATIC',
                 '\t\t0.01,  ' + str(step_time) + ', 1e-05,  ' + str(max_increment),
@@ -375,7 +374,7 @@ class CaseHardeningToolbox:
                 '\t*MONITOR, NODE=MONITOR_NODE, DOF=1, FREQ=1',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
                 '\t\t*ELEMENT OUTPUT, directions=YES',
-                '\t\t\tS', 'E',
+                '\t\t\tS, E',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
                 '\t\t*ELEMENT OUTPUT',
                 '\t\t\tSDV1,SDV2,SDV5,SDV21,SDV34,SDV47,SDV60,SDV73,SDV86,SDV99',
@@ -386,26 +385,14 @@ class CaseHardeningToolbox:
                 '**']
 
     def _add_add_carbon_step(self):
-        step_lines = self._thermal_step_data(step_name='Add carbon',
-                                             step_description='Import carbon content from mass diffusion simulation',
-                                             step_time=1.0,
-                                             surface_temperature=self.carburization_steps[-1].temperature,
-                                             interaction_property=self.hot_air_interaction_property,
-                                             kinematic_mode=-2,
-                                             output_frequency=1)
-
-        step_lines.insert(4, '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
-        self.thermal_file_lines += step_lines
-
         step_lines = self._mechanical_step_data(step_name='Add carbon',
                                                 step_description='Import carbon content from mass diffusion simulation',
                                                 step_time=1.0,
-                                                kinematic_mode=-2,
-                                                output_frequency=1)
+                                                kinematic_mode=-8,
+                                                output_frequency=1, step_amp='RAMP')
 
-        step_lines[6] = '\t*FIELD, OP=NEW, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod'
+        step_lines[6] = '\t*FIELD, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod'
         self.mechanical_file_lines += step_lines
-        self.thermal_step_counter += 1
 
     def _add_transfer_step(self):
         step_name = 'Transfer'
@@ -414,20 +401,23 @@ class CaseHardeningToolbox:
         if self.transfer_data.interaction_property_name is not None:
             interaction_property = self.transfer_data.interaction_property_name
 
-        self.thermal_file_lines += self._thermal_step_data(step_name=step_name,
-                                                           step_description=step_description,
-                                                           step_time=self.transfer_data.time,
-                                                           surface_temperature=self.transfer_data.temperature,
-                                                           interaction_property=interaction_property,
-                                                           kinematic_mode=-2,
-                                                           output_frequency=1)
+        step_lines = self._thermal_step_data(step_name=step_name,
+                                             step_description=step_description,
+                                             step_time=self.transfer_data.time,
+                                             surface_temperature=self.transfer_data.temperature,
+                                             interaction_property=interaction_property,
+                                             kinematic_mode=-8,
+                                             output_frequency=1)
+
+        step_lines.insert(4, '\t*FIELD, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
+
+        self.thermal_file_lines += step_lines
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
                                                                  step_time=self.transfer_data.time,
-                                                                 kinematic_mode=-2,
+                                                                 kinematic_mode=-8,
                                                                  output_frequency=10)
-
         self.thermal_step_counter += 1
 
     def _add_quenching_step(self):
@@ -438,13 +428,13 @@ class CaseHardeningToolbox:
                                                            step_time=self.quenching_data.time,
                                                            surface_temperature=self.quenching_data.temperature,
                                                            interaction_property=self.quenching_data.oil_name,
-                                                           kinematic_mode=-2,
+                                                           kinematic_mode=-8,
                                                            output_frequency=1)
 
         self.mechanical_file_lines += self._mechanical_step_data(step_name=step_name,
                                                                  step_description=step_description,
                                                                  step_time=self.quenching_data.time,
-                                                                 kinematic_mode=-2,
+                                                                 kinematic_mode=-8,
                                                                  output_frequency=1)
 
         self.thermal_step_counter += 1
@@ -528,7 +518,7 @@ class CaseHardeningToolbox:
                                            carburization_step.carbon)
             self.total_time += carburization_step.time
 
-        # Add the add carbon step to the thermal input file
+        # Add the add carbon step to the mechanical input file
         self._add_add_carbon_step()
 
         # Add step for transfer from oven to quench bath
@@ -539,8 +529,10 @@ class CaseHardeningToolbox:
             self._add_quenching_step()
 
         if self.cooldown_data.time is not None and self.cooldown_data.time > 0.:
-            self._add_cooldown_step('Cooldown_1', kinematic_mode=-2, time=self.cooldown_data.time,
+            self._add_cooldown_step('Cooldown_1', kinematic_mode=-8, time=self.cooldown_data.time,
                                     temperature=self.cooldown_data.temperature)
+            self._add_cooldown_step('Cooldown_2', kinematic_mode=1, time=self.cooldown_data.time,
+                                    temperature=20)
 
         if self.tempering_data.time is not None and self.tempering_data.time > 0:
             self._add_tempering_step()
@@ -564,6 +556,7 @@ class CaseHardeningToolbox:
         file_lines = ['# Settings for dante',
                       'usub_lib_dir=\'' + os.path.dirname(self.dante_file) + '\'',
                       '',
+                      'ask_delete = OFF'
                       '# MPI Configuration',
                       'mp_mode = MPI']
 
