@@ -83,7 +83,7 @@ class DilatometerSimulation:
                       '\t\t86, Q_MARTENSITE, VOLUME FRACTION of QUENCHED MARTENSITE',
                       '\t\t99, T_MARTENSITE, VOLUME FRACTION of TEMPERED MARTENSITE',
                       '\t*User Material, constants=8, type=THERMAL',
-                      '\t\t7.83e-06, 0, 0.50, 0.50, 0.00, 0.00, 0.00, 0.00',
+                      '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                       '** Set initial temperature',
                       '*Amplitude, name=amp',
                       '\t0., 1.',
@@ -93,21 +93,19 @@ class DilatometerSimulation:
                       '\t' + str(self.heating_time) + ', 1.',
                       '\t' + str(self.heating_time + self.holding_time) + ', 1.',
                       '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
-                      '\tALL_NODES, 20.',
+                      '\tALL_NODES, ' + str(self.start_temperature),
                       '**',
                       '** Set initial carbon content',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
-                      '\tALL_NODES, ' + str(0.2/100),
+                      '\tALL_NODES, ' + str(self.carbon/100),
                       '**',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=2',
-                      '\tALL_NODES , 3',
+                      '\tALL_NODES , -2',
                       '**',
                       '*STEP,NAME=quench , INC=10000, AMP=STEP',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
                       '\t\t1e-5,  ' + str(self.quench_time) + ', 1e-09,  ' + str(self.quench_time/500),
-                      '\t*FIELD, OP = NEW, VAR = 2',
-                      '\t\tall_nodes, -2',
                       '\t*Boundary, amplitude=amp',
                       '\t\tall_nodes, 11, 11,' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
@@ -213,8 +211,7 @@ class DilatometerSimulation:
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
                       '\t\t0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/500),
-                      '\t*Temperature, amplitude=amp',
-                      '\t\tall_nodes, ' + str(self.start_temperature),
+                      '\t*Temperature, file=Toolbox_Thermal_' + self.name + '.odb, BSTEP=1,  ESTEP=1',
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT',
                       '\t*OUTPUT, FIELD, FREQ=1',
@@ -241,7 +238,7 @@ class DilatometerSimulation:
                       'abq2018_linux/dante3_7f_pr1-std.o',
                       'export DANTE_PATH=\'/scratch/users/erik/Dante//DANTEDB3_6\'',
                       'sim_name=' + self.name,
-                      # '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
+                      '${abq} j=Toolbox_Thermal_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} j=Toolbox_Mechanical_${sim_name} interactive double user=${usersub_dir}',
                       '${abq} python ../dilatometer_post_processing.py ' + self.name]
 
@@ -289,27 +286,43 @@ if __name__ == '__main__':
     plt.rc('text', usetex=True)
     plt.rc('font', serif='Computer Modern Roman')
     plt.rcParams.update({'font.size': 20})
-    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}", r"\usepackage{gensymb}"]
     plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                       'monospace': ['Computer Modern Typewriter']})
 
     cooling = 1000.
-    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65], ['k', 'b', 'm', 'r']):
-        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U86XX', directory='dilatormeter',
+    for carbon_level, color in zip([0.2, 0.36, 0.52, 0.65, 0.8], ['k', 'b', 'm', 'r', 'y']):
+        dilatometer = DilatometerSimulation(carbon=carbon_level, material='U925064', directory='dilatormeter',
                                             cooling_rate=cooling)
         simulation_data = dilatometer.run()
-        plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--' + color, lw=2)
+        mechanical_data = simulation_data['Mechanical']['data']
+        thermal_data = simulation_data['Thermal']['data']
+        plt.figure(0)
+        plt.plot(mechanical_data[:, 1], mechanical_data[:, 3], '--' + color, lw=2)
 
-        experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
-                                          str(carbon_level).replace('.', '_'), delimiter=',')
+        if carbon_level < 0.8:
+            experimental_data = np.genfromtxt('../phase_transformations/data_tehler/expansion_' +
+                                              str(carbon_level).replace('.', '_'), delimiter=',')
 
-        temp = experimental_data[:, 0] - 273.15
-        strain = experimental_data[:, 1] / 10000
+            temp = experimental_data[:, 0] - 273.15
+            strain = experimental_data[:, 1] / 10000
 
-        plt.plot(temp, strain, color, lw=2)
+            exp_e_0 = np.interp(750, np.flip(temp), np.flip(strain))
+            sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 3]))
 
-    dilatometer = DilatometerSimulation(carbon=0.8, material='U86XX', directory='dilatormeter', cooling_rate=cooling)
-    simulation_data = dilatometer.run()
-    plt.plot(simulation_data[:, 1], simulation_data[:, 2], '--y', lw=2)
+            strain -= (exp_e_0 - sim_e_0)
+            plt.plot(temp, strain, color, lw=2)
+
+        plt.figure(1)
+        plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
+        plt.plot(mechanical_data[:, 1], mechanical_data[:, 2], '--' + color, lw=2)
+
+    plt.figure(0)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'strain [-]')
+
+    plt.figure(1)
+    plt.xlabel(r'Temperature [ $\degree$C]')
+    plt.ylabel(r'Fraction Martensite [-]')
 
     plt.show()

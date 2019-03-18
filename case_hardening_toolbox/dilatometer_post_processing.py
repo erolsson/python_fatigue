@@ -7,25 +7,31 @@ import numpy as np
 
 
 name = sys.argv[-1]
-odb = odbAccess.openOdb('Toolbox_Mechanical_' + name + '.odb')
 step_names = ['quench']
-total_frames = 0
-for step_name in step_names:
-    total_frames += len(odb.steps[step_name].frames)
-data = np.zeros((total_frames, 3))  # Time, temp, U3
 
-j = 0
-for step_name in step_names:
-    frames = odb.steps[step_name].frames
-    for i in range(0, len(frames)):
-        frame = frames[i]
-        U = frame.fieldOutputs['U'].values[6]
-        NT = frame.fieldOutputs['NT11'].values[6]
-        data[j, 0] = frame.frameValue
-        data[j, 2] = U.data[2]
-        data[j, 1] = NT.data
-        j += 1
+data_dict = {'Thermal': {'vars': ['NT11', 'SDV_Q_MARTENSITE']},
+             'Mechanical': {'vars': ['NT11', 'SDV_Q_MARTENSITE', 'U']}}
+for model in data_dict.keys():
+    odb = odbAccess.openOdb('Toolbox_' + model + '_' + name + '.odb')
+    total_frames = 0
+    for step_name in step_names:
+        total_frames += len(odb.steps[step_name].frames)
+    data = np.zeros((total_frames, len(data_dict[model]['vars']) + 1))  # Time, temp, U3
+    j = 0
+    for step_name in step_names:
+        frames = odb.steps[step_name].frames
+        for i in range(0, len(frames)):
+            frame = frames[i]
+            data[j, 0] = frame.frameValue
+            for k, var in enumerate(data_dict[model]['vars'], 1):
+                field = frame.fieldOutputs[var].values[6].data
+                if var == 'U':
+                    field = field[2]
+                data[j, k] = field
+            j += 1
+    data_dict[model]['data'] = data
+    odb.close()
 pickleHandle = open('data_' + name + '.pkl', 'wb')
-pickle.dump(data, pickleHandle)
+pickle.dump(data_dict, pickleHandle)
 pickleHandle.close()
-odb.close()
+
