@@ -16,7 +16,7 @@ for model in data_dict.keys():
     total_frames = 0
     for step_name in step_names:
         total_frames += len(odb.steps[step_name].frames)
-    data = np.zeros((total_frames, len(data_dict[model]) + 1))  # Time, temp, U3
+    data = np.zeros((total_frames, len(data_dict[model]['vars']) + 1))  # Time, temp, U3
     j = 0
     for step_name in step_names:
         frames = odb.steps[step_name].frames
