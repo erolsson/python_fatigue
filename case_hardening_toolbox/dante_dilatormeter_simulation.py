@@ -105,7 +105,7 @@ class DilatometerSimulation:
                       '*STEP,NAME=quench , INC=10000, AMP=STEP',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
-                      '\t\t1e-5,  ' + str(self.total_time) + ', 1e-09,  ' + str(self.quench_time/500),
+                      '\t\t1e-5,  ' + str(self.total_time) + ', 1e-09,  ' + str(1.),
                       '\t*Boundary, amplitude=amp',
                       '\t\tall_nodes, 11, 11,' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
