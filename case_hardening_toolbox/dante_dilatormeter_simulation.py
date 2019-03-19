@@ -24,6 +24,8 @@ class DilatometerSimulation:
         self.heating_time = float(self.start_temperature - 20)/heating_rate
         self.holding_time = float(holding_time)
 
+        self.total_time = self.quench_time + self.holding_time + self.heating_time
+
         self.run_file_name = 'run_dilatometer.sh'
         self.dante_file = '/scratch/users/erik/Dante/Abaqus_Link/DANTE_Library/dante3_7f_pr1/abq2018_linux/' \
                           'dante3_7f_pr1-std.o'
@@ -86,12 +88,10 @@ class DilatometerSimulation:
                       '\t\t7.83e-06, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                       '** Set initial temperature',
                       '*Amplitude, name=amp',
-                      '\t0., 1.',
-                      '\t' + str(self.quench_time) + ', ' + str(self.end_temperature/self.start_temperature),
-                      '*Amplitude, name=heating',
-                      '\t0., ' + str(20./self.start_temperature),
-                      '\t' + str(self.heating_time) + ', 1.',
-                      '\t' + str(self.heating_time + self.holding_time) + ', 1.',
+                      '\t0., ' + str(self.end_temperature/self.start_temperature),
+                      '\t' + str(self.holding_time) + ', 1.',
+                      '\t' + str(self.holding_time + self.heating_time) + ', 1.',
+                      '\t' + str(self.total_time) + ', ' + str(self.end_temperature/self.start_temperature),
                       '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
                       '\tALL_NODES, ' + str(self.start_temperature),
                       '**',
@@ -105,7 +105,7 @@ class DilatometerSimulation:
                       '*STEP,NAME=quench , INC=10000, AMP=STEP',
                       '\t Quenching a dilatometer experiment',
                       '\t*HEAT TRANSFER, DELTMX=10.0, END=PERIOD',
-                      '\t\t1e-5,  ' + str(self.quench_time) + ', 1e-09,  ' + str(self.quench_time/500),
+                      '\t\t1e-5,  ' + str(self.total_time) + ', 1e-09,  ' + str(self.quench_time/500),
                       '\t*Boundary, amplitude=amp',
                       '\t\tall_nodes, 11, 11,' + str(self.start_temperature),
                       '\t*OUTPUT, FIELD, FREQ=1',
@@ -180,12 +180,10 @@ class DilatometerSimulation:
                       '\t*User Material, constants=8, type=MECHANICAL',
                       '\t\t1, 0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00',
                       '*Amplitude, name=amp',
-                      '\t0., 1.',
-                      '\t' + str(self.quench_time) + ', ' + str(self.end_temperature / self.start_temperature),
-                      '*Amplitude, name=heating',
-                      '\t0., ' + str(20. / self.start_temperature),
-                      '\t' + str(10) + ', 1.',
-                      '\t' + str(10 + self.holding_time) + ', 1.',
+                      '\t0., ' + str(self.end_temperature/self.start_temperature),
+                      '\t' + str(self.holding_time) + ', 1.',
+                      '\t' + str(self.holding_time + self.heating_time) + ', 1.',
+                      '\t' + str(self.total_time) + ', ' + str(self.end_temperature/self.start_temperature),
                       '** Set initial temperature',
                       '*INITIAL CONDITIONS, TYPE=TEMPERATURE',
                       '\tALL_NODES , ' + str(self.start_temperature),
@@ -210,7 +208,7 @@ class DilatometerSimulation:
                       '*STEP,NAME=quench , INC=10000, AMP=STEP',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
-                      '\t\t0.01,  ' + str(self.quench_time) + ', 1e-05,  ' + str(self.quench_time/500),
+                      '\t\t0.01,  ' + str(self.total_time) + ', 1e-05,  ' + str(self.quench_time/500),
                       '\t*Temperature, file=Toolbox_Thermal_' + self.name + '.odb, BSTEP=1,  ESTEP=1',
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT',
@@ -307,10 +305,10 @@ if __name__ == '__main__':
             temp = experimental_data[:, 0] - 273.15
             strain = experimental_data[:, 1] / 10000
 
-            exp_e_0 = np.interp(750, np.flip(temp), np.flip(strain))
-            sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 3]))
+            # exp_e_0 = np.interp(750, np.flip(temp), np.flip(strain))
+            # sim_e_0 = np.interp(750, np.flip(mechanical_data[:, 1]), np.flip(mechanical_data[:, 3]))
 
-            strain -= (exp_e_0 - sim_e_0)
+            # strain -= (exp_e_0 - sim_e_0)
             plt.plot(temp, strain, color, lw=2)
 
         plt.figure(1)

@@ -98,25 +98,25 @@ U925064         ! matnam must be UPPERCASE                                      
 **  CTE and Transformation Strain                                                   line 98
 **--Austenite:  a1+a2*C+a3*T                                                        line 99
 **    a1       a2         a3                                                        line 100
-   0.0,       0.0,     2.362e-5                                                      line 101
+   -1.1238e-2,  3.969e-3  2.362e-5                                                  line 101
 **--Ferrite:   m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->F)     line 102
 **    m1        m2        m3          m4         m5        m6                       line 103
-  9.967e-3,, -0.00396,   1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
+  -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
 **--Pearlite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->P)     line 105
 **    m1        m2        m3          m4         m5        m6                       line 106
-  9.967e-3,, -0.00396,   1.287e-5,   0.00000,   2.252-9, 0.0000                     line 107
+  -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 107
 **--Upper Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->UB)    line 108
 **    m1        m2        m3          m4         m5        m6                       line 109
-  9.967e-3, -1.906e-3, 1.2854e-5,   0.000000,  0.,      0.00000                     line 110
+  -1.27e-3, 2.0663e-3, 1.2854e-5,   0.000000,  0.,      0.00000                     line 110
 **--Lower Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->LB)    line 111
 **    m1        m2        m3          m4         m5        m6                       line 112
-  9.967e-3, -1.906e-3, 1.2854e-5,   0.000000,  0.,      0.00000                     line 110
+  -1.27e-3, 2.0663e-3, 1.2854e-5,   0.000000,  0.,      0.00000                     line 110
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
- 8.073e-3, 4.82e-3, -6.21e-4, 1.47e-5, -1.575e-5, 3.76e-9, 5.90e-10, -7.76-13       line 116
+ -3.16e-3, 8.792e-3, -6.21e-4, 1.47e-5, -1.575e-5, 3.76e-9, 5.90e-10, -7.76-13      line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
- 8.073e-3, 4.82e-3, -6.21e-4, 1.47e-5, -1.575e-5, 3.76e-9, 5.90e-10, -7.76-13       line 119
+ -3.16e-3, 8.792e-3, -6.21e-4, 1.47e-5, -1.575e-5, 3.76e-9, 5.90e-10, -7.76-13       line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122

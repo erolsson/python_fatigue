@@ -212,12 +212,10 @@ if __name__ == '__main__':
         print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], parameters[0:3])
 
     print "Expansion parameters of Martensite is"
-    parameters[3] -= austenite_parameters[0]
-    parameters[4] -= austenite_parameters[1]
     print parameters[3:]
 
     print "Expansion parameters of Bainite is"
-    bainite_parameters[0] -= austenite_parameters[0]
-    bainite_parameters[1] -= austenite_parameters[1]
     print bainite_parameters
+    print "Expansion parameters for Austenite is"
+    print austenite_parameters
     plt.show()
