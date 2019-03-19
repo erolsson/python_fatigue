@@ -208,7 +208,7 @@ class DilatometerSimulation:
                       '*STEP,NAME=quench , INC=10000, AMP=STEP',
                       '\t Quenching a dilatometer experiment',
                       '\t*STATIC',
-                      '\t\t0.01,  ' + str(self.total_time) + ', 1e-05,  ' + str(self.quench_time/500),
+                      '\t\t0.01,  ' + str(self.total_time) + ', 1e-05,  ' + str(1.),
                       '\t*Temperature, file=Toolbox_Thermal_' + self.name + '.odb, BSTEP=1,  ESTEP=1',
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT',
