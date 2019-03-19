@@ -12,7 +12,7 @@ U925064        ! matnam must be UPPERCASE
    0.70E+1  0.20E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 3.69410000E+02              !Ms
-4.05921E-02              !mobility
+3.540E-02              !mobility
 0.0                         !alpha
 0.0                         !beta
 2.000000E-01               !epsilon_m
@@ -125,7 +125,7 @@ U925064        ! matnam must be UPPERCASE
    0.70E+1  0.50E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 2.74175000E+02              !Ms
-1.16240E-02              !mobility
+1.355E-02                  !mobility
 0.0                         !alpha
 0.0                         !beta
  2.000000E-01               !epsilon_m
@@ -238,7 +238,7 @@ U925064        ! matnam must be UPPERCASE
    0.70E+1  0.80E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 1.78940000E+02              !Ms
-1.110713-02             !mobility
+1.0126-02             !mobility
 0.0                         !alpha
 0.0                         !beta
  2.000000E-01               !epsilon_m
