@@ -131,7 +131,7 @@ if __name__ == '__main__':
         if experiment.included_martensite:
             data_sets.append((experiment, temp, strain))
 
-        austenite_data_sets.append((experiment, temp[temp > ms*1.5], strain[temp > ms*1.5]))
+        austenite_data_sets.append((experiment, temp[temp > 600], strain[temp > 600]))
 
         plt.figure(3)
         exp_data = np.genfromtxt('data_tehler/bainite_' + str(experiment.carbon).replace('.', '_'), delimiter=',')
