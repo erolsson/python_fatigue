@@ -313,7 +313,8 @@ if __name__ == '__main__':
             plt.plot(temp, strain, color, lw=2)
 
         plt.figure(1)
-        plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
+        idx = np.argmax(mechanical_data[:, 1])
+        plt.plot(thermal_data[idx:, 1], thermal_data[idx:, 2], '+' + color, lw=2)
         idx = np.argmax(mechanical_data[:, 1])
         plt.plot(mechanical_data[idx:, 1], mechanical_data[idx:, 2], '--x' + color, lw=2, ms=12, mew=2)
         temperature = np.linspace(0, 400, 100)
