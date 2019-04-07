@@ -77,7 +77,8 @@ data = np.zeros((9, 2))
 data[0:8, :] = np.genfromtxt('ms_temperature', delimiter=',')
 data[8, 0] = 0.008
 data[8, 1] = 176+273.15
-plt.plot(data[:, 0], data[:, 1], 's', ms=12)
-plt.plot(carbon, SS2506.ms_temperature(carbon))
+plt.plot(data[:, 0], data[:, 1] - 273.15, 's', ms=12)
+plt.plot(carbon, SS2506.ms_temperature(carbon) - 273.15)
+plt.plot([0.002, 0.0036, 0.0052, 0.0065, 0.008], [348.532, 317.2, 266.175, 215.2, 164.19], 'o', ms=12)
 
 plt.show()
