@@ -91,6 +91,10 @@ if __name__ == '__main__':
         toolbox_writer.tempering_data.temperature = simulation.tempering[0]
         toolbox_writer.tempering_data.time = simulation.tempering[1]
 
+        toolbox_writer.max_temp_inc = 5.
+        toolbox_writer.max_vf_inc = 0.05
+        toolbox_writer.write_dctrl_file = True
+
         toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                                carbon_levels=simulation.carbon)
         directory_name = simulation_directory + '/VBC_fatigue_' + str(simulation.CD).replace('.', '_')

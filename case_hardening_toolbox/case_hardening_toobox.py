@@ -72,6 +72,11 @@ class CaseHardeningToolbox:
         self.write_env_file = True
         self.write_run_file = True
 
+        self.write_dctrl_file = False
+        self.max_temp_inc = 30
+        self.max_vf_inc = 0.05
+        self.max_carb_inc = 0.0005
+
     def _init_carbon_file_lines(self):
         return ['**',
                 '**',
@@ -553,6 +558,9 @@ class CaseHardeningToolbox:
         if self.write_run_file:
             self._write_run_file()
 
+        if self.write_dctrl_file:
+            self._write_dctrl_file()
+
     def _write_env_file(self):
         file_lines = ['# Settings for dante',
                       'usub_lib_dir=\'' + os.path.dirname(self.dante_file) + '\'',
@@ -587,6 +595,22 @@ class CaseHardeningToolbox:
         with open('run_heat_treatment_sim.sh', 'w') as shell_file:
             for line in file_lines:
                 shell_file.write(line + '\n')
+
+    def _write_dctrl_file(self):
+        file_lines = ['## line1: ADVANCED DANTE CONTROL FILE FOR LIMITING CHANGES OF',
+                      '## line2: TEMPERATURE, VOLUME FRACTION AND CARBON IN ONE INCREMENT',
+                      '## line3: THE FILE FORMAT IS NOT ALLOWED TO CHANGE',
+                      '## line4: maximum temperature change in one increment (default 30.0)',
+                      str(self.max_temp_inc),
+                      '## line6: maximum VF change in one increment (default: 0.20)',
+                      str(self.max_vf_inc),
+                      '## line8: maximum carbon change in one increment (default: 0.0005)',
+                      str(self.max_carb_inc),
+                      '## line10: end of file']
+
+        with open('DCTRL.CTL', 'w') as ctl_file:
+            for line in file_lines:
+                ctl_file.write(line + '\n')
 
 
 def write_geometry_files_for_dante(geometry_data_file, directory_to_write, dante_include_file_name,
