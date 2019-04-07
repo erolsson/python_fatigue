@@ -5,6 +5,8 @@ from subprocess import Popen
 
 import numpy as np
 
+from phase_transformations.dilatormeter_curve_fitting import fraction_martensite
+
 
 class DilatometerSimulation:
     def __init__(self, carbon, material, directory=os.getcwd(), name=None, start_temperature=930, end_temperature=20,
@@ -314,6 +316,11 @@ if __name__ == '__main__':
         plt.figure(1)
         plt.plot(thermal_data[:, 1], thermal_data[:, 2], color, lw=2)
         plt.plot(mechanical_data[:, 1], mechanical_data[:, 2], '--' + color, lw=2)
+        temperature = np.linspace(0, 400, 100)
+        martensite = fraction_martensite([0.04848834747654732, 0.017594409547682134, 0.010126072180911671],
+                                         temperature, carbon_level)
+
+        plt.plot(temperature, martensite, ':' + color, lw=2)
 
     plt.figure(0)
     plt.xlabel(r'Temperature [ $\degree$C]')
