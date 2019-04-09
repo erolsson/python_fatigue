@@ -395,7 +395,7 @@ class CaseHardeningToolbox:
                                                 step_description='Import carbon content from mass diffusion simulation',
                                                 step_time=1.0,
                                                 kinematic_mode=-8,
-                                                output_frequency=1, step_amp='RAMP')
+                                                output_frequency=10, step_amp='RAMP')
 
         step_lines[6] = '\t*FIELD, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod'
         self.mechanical_file_lines += step_lines
@@ -413,7 +413,7 @@ class CaseHardeningToolbox:
                                              surface_temperature=self.transfer_data.temperature,
                                              interaction_property=interaction_property,
                                              kinematic_mode=-8,
-                                             output_frequency=1)
+                                             output_frequency=10)
 
         step_lines.insert(4, '\t*FIELD, VAR=1,  INPUT=Toolbox_Carbon_' + self.name + '.nod')
 
@@ -441,7 +441,7 @@ class CaseHardeningToolbox:
                                                                  step_description=step_description,
                                                                  step_time=self.quenching_data.time,
                                                                  kinematic_mode=-8,
-                                                                 output_frequency=1)
+                                                                 output_frequency=10)
 
         self.thermal_step_counter += 1
 
@@ -463,7 +463,7 @@ class CaseHardeningToolbox:
                                                                  step_description=step_description,
                                                                  step_time=time,
                                                                  kinematic_mode=kinematic_mode,
-                                                                 output_frequency=1)
+                                                                 output_frequency=10)
 
         self.thermal_step_counter += 1
 
@@ -486,7 +486,7 @@ class CaseHardeningToolbox:
                                                                  step_description=step_description,
                                                                  step_time=self.tempering_data.time,
                                                                  kinematic_mode=-3,
-                                                                 output_frequency=1,
+                                                                 output_frequency=10,
                                                                  max_increment=50)
         self.thermal_step_counter += 1
 
