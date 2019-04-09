@@ -116,7 +116,7 @@ U925064         ! matnam must be UPPERCASE                                      
  -3.45e-3, 1.039e-2, -3.80e-3, 1.30e-5, -4.30e-6,  2.90e-9, 1.4e-9, 1.091e-12       line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
- -3.45e-3, 1.039e-2, -3.80e-3,, 1.30e-5, -4.30e-6,  2.90e-9, 1.4e-9, 1.091e-12      line 119
+ -3.45e-3, 1.039e-2, -3.80e-3, 1.30e-5, -4.30e-6,  2.90e-9, 1.4e-9, 1.091e-12      line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122
