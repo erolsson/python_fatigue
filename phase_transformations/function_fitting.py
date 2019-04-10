@@ -60,6 +60,7 @@ data = np.zeros((5, 2))
 data[0:4, :] = np.genfromtxt('koistinen_marburger_a', delimiter=',')
 data[4, 0] = 0.008
 data[4, 1] = -np.log(0.01)/(176+91)   # Point from Erland
+print data[4, 1]
 carbon_levels = data[:, 0]
 
 plt.plot(data[:, 0], data[:, 1], 's', ms=12)
