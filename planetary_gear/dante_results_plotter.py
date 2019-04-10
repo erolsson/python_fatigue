@@ -16,7 +16,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                 'tempering_2h_180C_20190129/')
+                                 'tempering_2h_200C/')
 experimental_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/hardness/')
 Simulation = namedtuple('Simulation', ['cd', 'color', 'sym'])
 simulations = [Simulation(cd=0.5, color='b', sym='o'), Simulation(cd=0.8, color='r', sym='s'),
