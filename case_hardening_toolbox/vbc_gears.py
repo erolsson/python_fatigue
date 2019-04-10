@@ -16,7 +16,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U92504_200C_80C_cool_20190407/')
+                                              '/U92504_180C_80C_cool_20190407/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     shutil.copyfile(bc_file, include_file_directory + '/' + 'VBC_quarter_BC.inc')
 
     current_directory = os.getcwd()
-    tempering = (200, 7200)
+    tempering = (180, 7200)
 
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
     simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
