@@ -25,6 +25,9 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     if 'U' in scalar_variables:
         scalar_variables.remove('U')
 
+    if 'E' in scalar_variables:
+        scalar_variables.remove('E')
+
     if 'S' in scalar_variables:
         scalar_variables.remove('S')
 
@@ -53,10 +56,10 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
     hv = HRC2HV(data_dict['SDV_HARDNESS'])
-    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=odb_name, step_name=results_step_name,
+    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=to_odb_name, step_name=results_step_name,
                        instance_name='tooth_right', frame_number=0)
     hv = flip_node_order(hv, axis='z')
-    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=odb_name, step_name=results_step_name,
+    write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=to_odb_name, step_name=results_step_name,
                        instance_name='tooth_left', frame_number=0)
 
 
