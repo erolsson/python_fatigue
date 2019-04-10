@@ -84,21 +84,21 @@ class MeshClass:
                 self.element_sets[element_set] = [e]
         return e
 
-    def copyNodePlane(self, nodes, axis, distance, nSet):
+    def copy_node_plane(self, nodes, axis, distance, node_set):
         nx, ny = nodes.shape
-        newNodes = np.empty(shape=((nx, ny)), dtype=object)
+        new_nodes = np.empty(shape=(nx, ny), dtype=object)
         for i in range(nx):
             for j in range(ny):
                 if axis == 'x':
-                    newNodes[i, j] = self.create_node(nodes[i, j].x + distance, nodes[i, j].y, nodes[i, j].z,
-                                                      node_set=nSet)
+                    new_nodes[i, j] = self.create_node(nodes[i, j].x + distance, nodes[i, j].y, nodes[i, j].z,
+                                                       node_set=node_set)
                 elif axis == 'y':
-                    newNodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y + distance, nodes[i, j].z,
-                                                      node_set=nSet)
+                    new_nodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y + distance, nodes[i, j].z,
+                                                       node_set=node_set)
                 elif axis == 'z':
-                    newNodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y, nodes[i, j].z + distance,
-                                                      node_set=nSet)
-        return newNodes
+                    new_nodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y, nodes[i, j].z + distance,
+                                                       node_set=node_set)
+        return new_nodes
 
     def createBlock(self, nx, ny, nz, dx, dy, dz, x0=0, y0=0, z0=0,
                     xNeg=None, xPos=None, yNeg=None, yPos=None, zNeg=None, zPos=None, nSet='', eSet=''):
@@ -316,10 +316,10 @@ class MeshClass:
             d = (transitionBlock[0, 0, -1].z - transitionBlock[0, 0, 0].z)/3
             basePlate = transitionBlock[:, :, 0]
             topNodes = transitionBlock[0:4:3, 0:4:3, 3]
-        secondPlate = self.copyNodePlane(basePlate, axis, d, nSet)
-        centerPlate = self.copyNodePlane(basePlate[1:3, 1:3], axis, 3*d/2, nSet)
-        midPlateX = self.copyNodePlane(basePlate[1:3, 0:4:3], axis, 2*d, nSet)
-        midPlateY = self.copyNodePlane(basePlate[0:4:3, 1:3], axis, 2*d, nSet)
+        secondPlate = self.copy_node_plane(basePlate, axis, d, nSet)
+        centerPlate = self.copy_node_plane(basePlate[1:3, 1:3], axis, 3*d/2, nSet)
+        midPlateX = self.copy_node_plane(basePlate[1:3, 0:4:3], axis, 2*d, nSet)
+        midPlateY = self.copy_node_plane(basePlate[0:4:3, 1:3], axis, 2*d, nSet)
 
         # Create the base plate
         nx, ny = basePlate.shape
@@ -371,14 +371,14 @@ class MeshClass:
             axis1, axis2 = 'y', 'z'
             base1 = transitionBlock[:, :, 0]
             base2 = transitionBlock[:, 0, :]
-            centerLine = self.copyNodePlane(transitionBlock[:, 1:2, 0], 'z', d1, nSet)
+            centerLine = self.copy_node_plane(transitionBlock[:, 1:2, 0], 'z', d1, nSet)
         elif axis == 'y':
             d1 = (transitionBlock[-1, 0, 0].x - transitionBlock[0, 0, 0].x)/3
             d2 = (transitionBlock[0, 0, -1].z - transitionBlock[0, 0, 0].z)/3
             axis1, axis2 = 'x', 'z'
             base1 = transitionBlock[0, :, :]
             base2 = transitionBlock[:, :, 0].transpose()
-            centerLine = self.copyNodePlane(transitionBlock[0, :, 1:2], 'x', d1, nSet)
+            centerLine = self.copy_node_plane(transitionBlock[0, :, 1:2], 'x', d1, nSet)
 
         elif axis == 'z':
             axis1, axis2 = 'x', 'y'
@@ -386,17 +386,17 @@ class MeshClass:
             d2 = (transitionBlock[0, -1, 0].y - transitionBlock[0, 0, 0].y)/3
             base1 = transitionBlock[0, :, :].transpose()
             base2 = transitionBlock[:, 0, :].transpose()
-            centerLine = self.copyNodePlane(transitionBlock[1:2, 0, :], 'y', d1, nSet).transpose()
+            centerLine = self.copy_node_plane(transitionBlock[1:2, 0, :], 'y', d1, nSet).transpose()
 
-        mid1 = self.copyNodePlane(base1[:, 1:], axis1, d1, nSet)
-        mid2 = self.copyNodePlane(base2[:, 1:], axis2, d2, nSet)
+        mid1 = self.copy_node_plane(base1[:, 1:], axis1, d1, nSet)
+        mid2 = self.copy_node_plane(base2[:, 1:], axis2, d2, nSet)
 
-        top1 = self.copyNodePlane(base1[1:3, 3:], axis1, 2*d1, nSet)
-        top2 = self.copyNodePlane(base2[1:3, 3:], axis2, 2*d2, nSet)
+        top1 = self.copy_node_plane(base1[1:3, 3:], axis1, 2*d1, nSet)
+        top2 = self.copy_node_plane(base2[1:3, 3:], axis2, 2*d2, nSet)
 
-        center2 = self.copyNodePlane(base1[0:4, 2:], axis1, 2*d1, nSet)
+        center2 = self.copy_node_plane(base1[0:4, 2:], axis1, 2*d1, nSet)
 
-        corner = self.copyNodePlane(base1[0:4:3, 3:], axis1, 3*d1, nSet)
+        corner = self.copy_node_plane(base1[0:4:3, 3:], axis1, 3*d1, nSet)
 
         # create the base plates
         for i in range(1, 4):
@@ -456,7 +456,7 @@ class MeshClass:
             axis1, axis2 = 'y', 'z'
             base1 = transitionBlock[:, 0:2, 0]
             base2 = transitionBlock[:, 0, 0:2]
-            centerLine = self.copyNodePlane(transitionBlock[:, 1:2, 0], 'z', d1, nSet)
+            centerLine = self.copy_node_plane(transitionBlock[:, 1:2, 0], 'z', d1, nSet)
 
         elif axis == 'y':
             d1 = (transitionBlock[1, 0, 0].x - transitionBlock[0, 0, 0].x)
@@ -464,7 +464,7 @@ class MeshClass:
             axis1, axis2 = 'x', 'z'
             base1 = transitionBlock[0, :, 0:2]
             base2 = transitionBlock[0:2, :, 0].transpose()
-            centerLine = self.copyNodePlane(transitionBlock[0, :, 1:2], 'x', d1, nSet)
+            centerLine = self.copy_node_plane(transitionBlock[0, :, 1:2], 'x', d1, nSet)
 
         elif axis == 'z':
             axis1, axis2 = 'x', 'y'
@@ -472,18 +472,18 @@ class MeshClass:
             d2 = (transitionBlock[0, -1, 0].y - transitionBlock[0, 0, 0].y)/3
             base1 = transitionBlock[0, 0:2, :].transpose()
             base2 = transitionBlock[0:2, 0, :].transpose()
-            centerLine = self.copyNodePlane(transitionBlock[1:2, 0, :], 'y', d1, nSet).transpose()
+            centerLine = self.copy_node_plane(transitionBlock[1:2, 0, :], 'y', d1, nSet).transpose()
 
-        mid1 = self.copyNodePlane(base1[1:3, 1:2], axis2, d2, nSet)
-        mid2 = self.copyNodePlane(base2[1:3, 1:2], axis1, d1, nSet)
+        mid1 = self.copy_node_plane(base1[1:3, 1:2], axis2, d2, nSet)
+        mid2 = self.copy_node_plane(base2[1:3, 1:2], axis1, d1, nSet)
 
-        edge1 = self.copyNodePlane(base1[0:4:3, 0:1], axis2, 3*d2, nSet)
-        edge2 = self.copyNodePlane(base1[0:4:3, 0:1], axis1, 3*d1, nSet)
+        edge1 = self.copy_node_plane(base1[0:4:3, 0:1], axis2, 3*d2, nSet)
+        edge2 = self.copy_node_plane(base1[0:4:3, 0:1], axis1, 3*d1, nSet)
 
-        corner = self.copyNodePlane(edge1, axis1, 3*d1, nSet)
+        corner = self.copy_node_plane(edge1, axis1, 3*d1, nSet)
 
-        center2 = self.copyNodePlane(mid2, axis2, 2*d2, nSet)
-        corner = self.copyNodePlane(edge1, axis1, 3*d1, nSet)
+        center2 = self.copy_node_plane(mid2, axis2, 2*d2, nSet)
+        corner = self.copy_node_plane(edge1, axis1, 3*d1, nSet)
         if axis == 'x':
             transitionBlock[0:4:3, -1, -1] = corner[:, 0]
         elif axis == 'y':
@@ -534,8 +534,8 @@ class MeshClass:
             block = np.empty(shape=((4, n2, n3)), dtype=object)
             block[0, :, :] = surf
             dx = abs(block[0, 0, 1].z - block[0, 0, 0].z)*direction
-            block[1, :, :] = self.copyNodePlane(block[0, :, :], 'x', dx, nSet)
-            block[3, ::3, ::3] = self.copyNodePlane(block[0, ::3, ::3], 'x', 3*dx, nSet)
+            block[1, :, :] = self.copy_node_plane(block[0, :, :], 'x', dx, nSet)
+            block[3, ::3, ::3] = self.copy_node_plane(block[0, ::3, ::3], 'x', 3*dx, nSet)
             while i + 3 < n2:
                 j = 0
                 while j + 3 < n3:
@@ -548,7 +548,7 @@ class MeshClass:
             block = np.empty(shape=((n2, 4, n3)), dtype=object)
             block[:, 0, :] = surf
             dy = abs(block[0, 0, 1].z - block[0, 0, 0].z)*direction
-            block[:, 1, :] = self.copyNodePlane(block[:, 0, :], 'y', dy, nSet)
+            block[:, 1, :] = self.copy_node_plane(block[:, 0, :], 'y', dy, nSet)
             for i in range(n2):
                 for j in range(n3):
                     self.createTransitionCell(block[i:i + 4, 0:4, j:j + 4], axis, eSet, nSet)
@@ -557,9 +557,9 @@ class MeshClass:
             block = np.empty(shape=((n2, n3, 4)), dtype=object)
             block[:, :, 0] = surf
             dz = abs(block[1, 0, 0].x - block[0, 0, 0].x)*direction
-            block[:, :, 1] = self.copyNodePlane(block[:, :, 0], 'z', dz, nSet)
+            block[:, :, 1] = self.copy_node_plane(block[:, :, 0], 'z', dz, nSet)
 
-            block[::3, ::3, 3] = self.copyNodePlane(block[::3, ::3, 0], 'z', 3*dz, nSet)
+            block[::3, ::3, 3] = self.copy_node_plane(block[::3, ::3, 0], 'z', 3*dz, nSet)
             while i + 3 < n2:
                 j = 0
                 while j + 3 < n3:
@@ -587,19 +587,19 @@ class MeshClass:
             d = abs(nodeLine[1].x - nodeLine[0].x)
             nodeBlock = np.empty(shape=((n1, 4, 4)), dtype=object)
             nodeBlock[:, 0, 0] = nodeLine
-            nodeBlock[:, 0:1, 1] = self.copyNodePlane(nodeBlock[:, 0:1, 0], 'y', dir1*d, nSet)
-            nodeBlock[:, 1, 0:1] = self.copyNodePlane(nodeBlock[:, 0:1, 0], 'z', dir2*d, nSet)
+            nodeBlock[:, 0:1, 1] = self.copy_node_plane(nodeBlock[:, 0:1, 0], 'y', dir1*d, nSet)
+            nodeBlock[:, 1, 0:1] = self.copy_node_plane(nodeBlock[:, 0:1, 0], 'z', dir2*d, nSet)
             for i in range(0, n1 + 3, 3):
                 self.createTransitionCellCornerOut(nodeBlock[i:i + 4, :, :], 'x', eSet, nSet)
         if axis3 == 'y':
             d = abs(nodeLine[1].y - nodeLine[0].y)
             nodeBlock = np.empty(shape=((4, n1, 4)), dtype=object)
             nodeBlock[0, :, 0] = nodeLine
-            nodeBlock[0:1, :, 1] = self.copyNodePlane(nodeBlock[0:1, :, 0], 'z', dir2*d, nSet)
-            nodeBlock[1, :, 0:1] = self.copyNodePlane(nodeBlock[0, :, 0:1], 'x', dir1*d, nSet)
+            nodeBlock[0:1, :, 1] = self.copy_node_plane(nodeBlock[0:1, :, 0], 'z', dir2*d, nSet)
+            nodeBlock[1, :, 0:1] = self.copy_node_plane(nodeBlock[0, :, 0:1], 'x', dir1*d, nSet)
 
-            nodeBlock[0:1, ::3, -1] = self.copyNodePlane(nodeBlock[0:1, ::3, 0], 'z', 3*dir2*d, nSet)
-            nodeBlock[-1, ::3, 0:1] = self.copyNodePlane(nodeBlock[0, ::3, 0:1], 'x', 3*dir1*d, nSet)
+            nodeBlock[0:1, ::3, -1] = self.copy_node_plane(nodeBlock[0:1, ::3, 0], 'z', 3*dir2*d, nSet)
+            nodeBlock[-1, ::3, 0:1] = self.copy_node_plane(nodeBlock[0, ::3, 0:1], 'x', 3*dir1*d, nSet)
             for i in range(0, n1 - 1, 3):
                 self.createTransitionCellCornerOut(nodeBlock[:, i:i + 4, :], 'y', eSet, nSet)
             nodeLine = nodeBlock[-1, ::3, -1]
@@ -609,8 +609,8 @@ class MeshClass:
             d = abs(nodeLine[1].z - nodeLine[0].z)
             nodeBlock = np.empty(shape=((4, 4, n1)), dtype=object)
             nodeBlock[0, 0, :] = nodeLine
-            nodeBlock[0:1, 1, :] = self.copyNodePlane(nodeBlock[0:1, 0, :], 'x', dir1*d, nSet)
-            nodeBlock[1, 0:1, :] = self.copyNodePlane(nodeBlock[0:1, 0, :], 'y', dir2*d, nSet)
+            nodeBlock[0:1, 1, :] = self.copy_node_plane(nodeBlock[0:1, 0, :], 'x', dir1*d, nSet)
+            nodeBlock[1, 0:1, :] = self.copy_node_plane(nodeBlock[0:1, 0, :], 'y', dir2*d, nSet)
             for i in range(0, n1, 3):
                 self.createTransitionCellCornerOut(nodeBlock[:, :, i:i + 4], 'z', eSet, nSet)
 
@@ -648,7 +648,7 @@ class MeshClass:
             for i in range(1, nx):
                 dx = nodesPlate[i, 0, 0].x - nodesPlate[0, 0, 0].x
 
-                nodesPlate[i, :, :] = self.copyNodePlane(nodesPlate[0, :, :], 'x', dx, nSet)
+                nodesPlate[i, :, :] = self.copy_node_plane(nodesPlate[0, :, :], 'x', dx, nSet)
                 for j in range(1, ny):
                     for k in range(1, nz):
                         eNodes = nodesPlate[i - 1:i + 1, j - 1:j + 1, k - 1:k + 1].flatten().tolist()
@@ -672,9 +672,9 @@ class MeshClass:
             while j + 3 < ny:
                 # creating the 4 upper nodes
                 cornerNodes = nodesPlate[i:i + 4:3, j:j + 4:3, k]
-                nodesPlate[i:(i + 4):3, j:(j + 4):3, k + 3] = self.copyNodePlane(cornerNodes,
+                nodesPlate[i:(i + 4):3, j:(j + 4):3, k + 3] = self.copy_node_plane(cornerNodes,
                                                                                  'z',
-                                                                                 -distance, nSet)
+                                                                                   -distance, nSet)
                 transitionBlock = nodesPlate[i:i + 4, j:j + 4, k:k + 4]
                 self.createTransitionCell(transitionBlock, 'z', eSet=eSet, nSet=nSet)
                 j += 3
@@ -688,9 +688,9 @@ class MeshClass:
             while j + 3 < ny:
                 # creating the 4 upper nodes
                 cornerNodes = nodesPlate[k, j:j + 4:3, i:i + 4:3]
-                nodesPlate[k + 3, j:(j + 4):3, i:(i + 4):3] = self.copyNodePlane(cornerNodes,
+                nodesPlate[k + 3, j:(j + 4):3, i:(i + 4):3] = self.copy_node_plane(cornerNodes,
                                                                                  'x',
-                                                                                 distance, nSet)
+                                                                                   distance, nSet)
                 transitionBlock = nodesPlate[k:k + 4, j:j + 4, i:i + 4]
                 self.createTransitionCell(transitionBlock, 'x', eSet=eSet, nSet=nSet)
                 j += 3
