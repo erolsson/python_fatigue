@@ -1,6 +1,8 @@
-from math import atan2, sqrt
+from math import atan2, sqrt, sin, cos
 
 import numpy as np
+
+xyz_idx = {'x': 0, 'y': 1, 'z': 2}
 
 
 class Node:
@@ -86,124 +88,98 @@ class MeshClass:
 
     def copy_node_plane(self, nodes, axis, distance, node_set):
         nx, ny = nodes.shape
+        axis_idx = xyz_idx[axis]
         new_nodes = np.empty(shape=(nx, ny), dtype=object)
         for i in range(nx):
             for j in range(ny):
-                if axis == 'x':
-                    new_nodes[i, j] = self.create_node(nodes[i, j].x + distance, nodes[i, j].y, nodes[i, j].z,
-                                                       node_set=node_set)
-                elif axis == 'y':
-                    new_nodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y + distance, nodes[i, j].z,
-                                                       node_set=node_set)
-                elif axis == 'z':
-                    new_nodes[i, j] = self.create_node(nodes[i, j].x, nodes[i, j].y, nodes[i, j].z + distance,
-                                                       node_set=node_set)
+                args = [nodes[i, j].x + distance, nodes[i, j].y, nodes[i, j].z]
+                args[axis_idx] += distance
+                new_nodes[i, j] = self.create_node(*args, node_set=node_set)
         return new_nodes
 
-    def createBlock(self, nx, ny, nz, dx, dy, dz, x0=0, y0=0, z0=0,
-                    xNeg=None, xPos=None, yNeg=None, yPos=None, zNeg=None, zPos=None, nSet='', eSet=''):
-        nodesPlate = np.empty(shape=((nx, ny, nz)), dtype=object)
-        elementsPlate = []
+    @staticmethod
+    def _attach_node_plane(nodes_plate, x0=0, y0=0, z0=0,
+                           x_neg=None, y_neg=None, z_neg=None, x_pos=None, y_pos=None, z_pos=None):
+        if x_pos is not None:
+            nodes_plate[-1, :, :] = x_pos
+            x0 = x_pos[0, 0]
+        if x_neg is not None:
+            nodes_plate[0, :, :] = x_neg
+            x0 = x_neg[0, 0]
 
-        if xNeg is not None:
-            nodesPlate[0, :, :] = xNeg
-            ny, nz = xNeg.shape
-            dy = xNeg[1, 0].y - xNeg[0, 0].y
-            dz = xNeg[0, 1].z - xNeg[0, 0].z
-            x0 = xNeg[0, 0].x
+        if y_pos is not None:
+            nodes_plate[:, -1, :] = y_pos
+            y0 = y_pos[0, 0]
+        if y_neg is not None:
+            nodes_plate[:, 0, :] = y_neg
+            y0 = y_neg[0, 0]
 
-        if xPos is not None:
-            nodesPlate[-1, :, :] = xPos
+        if z_pos is not None:
+            nodes_plate[:, :, -1] = z_pos
+            z0 = z_pos[0, 0]
+        if z_neg is not None:
+            nodes_plate[:, :, 0] = z_neg
+            z0 = z_pos[0, 0]
 
-        if yNeg is not None:
-            nodesPlate[:, 0, :] = yNeg
-            nx, nz = yNeg.shape
+        return nodes_plate, x0, y0, z0
 
-            dx = yNeg[1, 0].x - yNeg[0, 0].x
-            dz = yNeg[0, 1].z - yNeg[0, 0].z
-            y0 = yNeg[0, 0].y
+    def create_block(self, nx, ny, nz, dx, dy, dz, x0=0, y0=0, z0=0,
+                     x_neg=None, y_neg=None, z_neg=None, x_pos=None, y_pos=None, z_pos=None,
+                     node_set='', element_set=''):
+        nodes_plate = np.empty(shape=(nx, ny, nz), dtype=object)
+        elements_plate = []
 
-        if zNeg is not None:
-            nodesPlate[:, :, 0] = zNeg
-            nx, ny = zNeg.shape
-
-            dx = zNeg[1, 0].x - zNeg[0, 0].x
-            dy = zNeg[0, 1].y - zNeg[0, 0].y
-            z0 = zNeg[0, 0].z
-
-        for i in range(nx):
-            for j in range(ny):
-                for k in range(nz):
-                    if nodesPlate[i, j, k] is None:
-                        nodesPlate[i, j, k] = self.create_node(i*dx + x0, j*dy + y0, k*dz + z0, node_set=nSet)
-                    if i > 0 and j > 0 and k > 0:
-                        eNodes = [nodesPlate[i - 1, j - 1, k - 1], nodesPlate[i, j - 1, k - 1],
-                                  nodesPlate[i - 1, j - 1, k], nodesPlate[i, j - 1, k],
-                                  nodesPlate[i - 1, j, k - 1], nodesPlate[i, j, k - 1],
-                                  nodesPlate[i - 1, j, k], nodesPlate[i, j, k]]
-                        elementsPlate.append(self.create_element(eNodes, element_set=eSet))
-        return nodesPlate, elementsPlate
-
-    def createBlockAxi(self, nx, ny, nz, dx, dy, dz, x0=0, y0=0, z0=0,
-                       xNeg=None, xPos=None, yNeg=None, yPos=None, zNeg=None, zPos=None, nSet='', eSet=''):
-        nodesPlate = np.empty(shape=((nx, ny, nz)), dtype=object)
-        elementsPlate = []
-
-        if xNeg is not None:
-            nodesPlate[0, :, :] = xNeg
-            ny, nz = xNeg.shape
-            dy = xNeg[1, 0].y - xNeg[0, 0].y
-            dz = xNeg[0, 1].z - xNeg[0, 0].z
-            x0 = xNeg[0, 0].x
-
-        if xPos is not None:
-            nodesPlate[-1, :, :] = xPos
-
-        if yNeg is not None:
-            nodesPlate[:, 0, :] = yNeg
-            nx, nz = yNeg.shape
-
-            dx = yNeg[1, 0].x - yNeg[0, 0].x
-            dz = yNeg[0, 1].z - yNeg[0, 0].z
-            y0 = yNeg[0, 0].y
-
-        if zNeg is not None:
-            nodesPlate[:, :, 0] = zNeg
-            nx, ny = zNeg.shape
-
-            dx = zNeg[1, 0].x - zNeg[0, 0].x
-            dy = zNeg[0, 1].y - zNeg[0, 0].y
-            z0 = zNeg[0, 0].z
+        nodes_plate, x0, y0, z0 = self._attach_node_plane(nodes_plate, x0, y0, z0, x_neg, y_neg, z_neg,
+                                                          x_pos, y_pos, z_pos)
 
         for i in range(nx):
             for j in range(ny):
                 for k in range(nz):
-                    if nodesPlate[i, j, k] is None:
-                        nodesPlate[i, j, k] = self.create_node(i*dx + x0, j*dy + y0, k*dz + z0, node_set=nSet)
+                    if nodes_plate[i, j, k] is None:
+                        nodes_plate[i, j, k] = self.create_node(i*dx + x0, j*dy + y0, k*dz + z0, node_set=node_set)
                     if i > 0 and j > 0 and k > 0:
-                        eNodes = [nodesPlate[i - 1, j - 1, k - 1], nodesPlate[i, j - 1, k - 1],
-                                  nodesPlate[i - 1, j, k - 1], nodesPlate[i, j, k - 1]]
-                        elementsPlate.append(self.create_element(eNodes, element_set=eSet, element_type='CAX4'))
-        return nodesPlate, elementsPlate
+                        e_nodes = [nodes_plate[i - 1, j - 1, k - 1], nodes_plate[i, j - 1, k - 1],
+                                   nodes_plate[i - 1, j - 1, k], nodes_plate[i, j - 1, k],
+                                   nodes_plate[i - 1, j, k - 1], nodes_plate[i, j, k - 1],
+                                   nodes_plate[i - 1, j, k], nodes_plate[i, j, k]]
+                        elements_plate.append(self.create_element(e_nodes, element_set=element_set))
+        return nodes_plate, elements_plate
 
-    def transformSqureToCylinder(self, nodeSet, rotAxis, radialAxis, angle, bias=False, f=1):
-        nodes = self.node_sets[nodeSet]
-        Rmax = 0
-        yMax = 0
-        if bias:
-            for n in nodes:
-                if radialAxis == 'x':
-                    Rmax = max(Rmax, n.x)
-                    yMax = max(yMax, n.y)
-                if radialAxis == 'y':
-                    Rmax = max(Rmax, n.y)
-                if radialAxis == 'z':
-                    Rmax = max(Rmax, n.z)
+    def create_block_axi(self, nx, ny, nz, dx, dy, dz, x0=0, y0=0, z0=0,
+                         x_neg=None, y_neg=None, z_neg=None, x_pos=None, y_pos=None, z_pos=None,
+                         node_set='', element_set=''):
+
+        nodes_plate = np.empty(shape=(nx, ny, nz), dtype=object)
+        elements_plate = []
+
+        nodes_plate, x0, y0, z0 = self._attach_node_plane(nodes_plate, x0, y0, z0, x_neg, y_neg, z_neg,
+                                                          x_pos, y_pos, z_pos)
+
+        for i in range(nx):
+            for j in range(ny):
+                for k in range(nz):
+                    if nodes_plate[i, j, k] is None:
+                        nodes_plate[i, j, k] = self.create_node(i*dx + x0, j*dy + y0, k*dz + z0, node_set=node_set)
+                    if i > 0 and j > 0 and k > 0:
+                        e_nodes = [nodes_plate[i - 1, j - 1, k - 1], nodes_plate[i, j - 1, k - 1],
+                                   nodes_plate[i - 1, j, k - 1], nodes_plate[i, j, k - 1]]
+                        elements_plate.append(self.create_element(e_nodes, element_set=element_set,
+                                                                  element_type='CAX4'))
+        return nodes_plate, elements_plate
+
+    def transform_square_to_cylinder(self, node_set, rotation_axis, angle):
+        nodes = self.node_sets[node_set]
+        r_max = 0
+        for n in nodes:
+            if radial_axis == 'x':
+                r_max = max(r_max, n.x)
+            if radial_axis == 'y':
+                r_max = max(r_max, n.y)
+            if radial_axis == 'z':
+                r_max = max(r_max, n.z)
 
         for n in nodes:
-            if rotAxis == 'z':
-                z = n.z
-            if radialAxis == 'x' and n.x > 0 and n.y > 0:
+            if radial_axis == 'x' and n.x > 0 and n.y > 0:
                 if n.x > n.y:
                     r = n.x
                     q = n.y/n.x*angle/2
@@ -214,7 +190,7 @@ class MeshClass:
                     q = n.x/n.y*angle/2
                     dy = r*cos(q) - n.y
                     dx = r*sin(q) - n.x
-                k = r/Rmax
+                k = r/r_max
                 n.x += dx*k**0.75
                 n.y += dy*k**0.75
 
