@@ -57,8 +57,8 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    # par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
-    par[2] = -np.log(0.01)/(176+91)
+    par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    # par[2] = -np.log(0.01)/(176+91)
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
