@@ -18,7 +18,7 @@ class Node:
 
 class Element:
     def __init__(self, label, nodes, element_type):
-        self.id = label
+        self.label = label
         self.element_type = element_type
 
         if element_type[1] == '3':
@@ -27,13 +27,9 @@ class Element:
             dim = 2
         e_nodes = []
         for i in range(dim - 1):
-            if element_type[3] == '8':
-                plane_nodes = nodes[4*i:4*(i + 1)]
-
-            elif element_type[3] == '6':
-                plane_nodes = nodes[3*i:3*(i + 1)]
-            else:
-                raise NotImplementedError("Mesh class currently doesnt support " + element_type)
+            nodes = sorted(nodes, key=lambda n: n.z)
+            stride = len(nodes)/(dim - 1)
+            plane_nodes = nodes[i*stride:(i+1)*stride]
 
             x0 = sum([node.x for node in plane_nodes])/len(plane_nodes)
             y0 = sum([node.y for node in plane_nodes])/len(plane_nodes)
@@ -65,20 +61,17 @@ class MeshClass:
                 self.node_sets[node_set] = [n]
         return n
 
-    # def coordinates(self):
-    #    return self.x, self.y, self.z
-
     def create_element(self, nodes, element_type='C3D8R', element_set=None, label=None):
         node_list = []
         for n in nodes:
             if isinstance(n, Node):
                 node_list.append(n)
-            if isinstance(n, np.ndarray):
-                while len(n.shape) > 1:
-                    n = n.flatten()
-                n.tolist()
-
-            node_list += n
+            else:
+                if isinstance(n, np.ndarray):
+                    while len(n.shape) > 1:
+                        n = n.flatten()
+                    n = n.tolist()
+                node_list += n
         if label is None:
             e = Element(self.element_counter, node_list, element_type)
         else:
@@ -102,7 +95,7 @@ class MeshClass:
         new_nodes = np.empty(shape=(nx, ny), dtype=object)
         for i in range(nx):
             for j in range(ny):
-                args = [nodes[i, j].x + distance, nodes[i, j].y, nodes[i, j].z]
+                args = [nodes[i, j].x, nodes[i, j].y, nodes[i, j].z]
                 args[axis_idx] += distance
                 new_nodes[i, j] = self.create_node(*args, node_set=node_set)
         return new_nodes
@@ -112,24 +105,24 @@ class MeshClass:
                            x_neg=None, y_neg=None, z_neg=None, x_pos=None, y_pos=None, z_pos=None):
         if x_pos is not None:
             nodes_plate[-1, :, :] = x_pos
-            x0 = x_pos[0, 0]
+            x0 = x_pos[0, 0].x
         if x_neg is not None:
             nodes_plate[0, :, :] = x_neg
-            x0 = x_neg[0, 0]
+            x0 = x_neg[0, 0].x
 
         if y_pos is not None:
             nodes_plate[:, -1, :] = y_pos
-            y0 = y_pos[0, 0]
+            y0 = y_pos[0, 0].y
         if y_neg is not None:
             nodes_plate[:, 0, :] = y_neg
-            y0 = y_neg[0, 0]
+            y0 = y_neg[0, 0].y
 
         if z_pos is not None:
             nodes_plate[:, :, -1] = z_pos
-            z0 = z_pos[0, 0]
+            z0 = z_pos[0, 0].z
         if z_neg is not None:
             nodes_plate[:, :, 0] = z_neg
-            z0 = z_pos[0, 0]
+            z0 = z_pos[0, 0].z
 
         return nodes_plate, x0, y0, z0
 
@@ -279,7 +272,7 @@ class MeshClass:
                 self.create_element(e_nodes, element_set=element_set)
 
         # Create the center element
-        e_nodes = [second_plate[1:3, 1:3] + center_plate]
+        e_nodes = [second_plate[1:3, 1:3], center_plate]
         self.create_element(e_nodes, element_set=element_set)
 
         # Create the side elements in the "+"
@@ -339,6 +332,7 @@ class MeshClass:
 
     def create_transition_cell_corner(self, transition_block, axis, element_set='', node_set=''):
         d1, d2, axis1, axis2, base1, base2, center_line = self._assign_bases_and_axes(axis, transition_block, node_set)
+        print d1, d2, axis1, axis2
 
         mid1 = self.copy_node_plane(base1[:, 1:], axis1, d1, node_set)
         mid2 = self.copy_node_plane(base2[:, 1:], axis2, d2, node_set)
@@ -555,6 +549,7 @@ class MeshClass:
         nx = surf1.shape[0]
         ny = surf1.shape[1]
         nz = surf2.shape[1]
+
         nodes_plate = np.empty(shape=(nx, ny, nz), dtype=object)
         nodes_plate[:, :, 0] = surf1
         nodes_plate[0, :, :] = surf2
@@ -606,10 +601,11 @@ class MeshClass:
                 self.create_transition_cell(transition_block, 'x', element_set=element_set, node_set=node_set)
                 j += 3
             i += 3
-
+        
         surf1 = nodes_plate[3::3, ::3, 3]
         surf2 = nodes_plate[3, ::3, 3::3]
-        return self.create_transition_corner(surf1, surf2, element_set=element_set, node_set=node_set, order=order)
+
+        # return self.create_transition_corner(surf1, surf2, element_set=element_set, node_set=node_set, order=order)
 
     def create_2d_transition(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, element_set='', node_set=''):
         # assume that axis1 is x, 2 is y, z is 3
@@ -722,13 +718,13 @@ class MeshClass:
             node_ids.append(label)
             coords.append([n.x, n.y, n.z])
         e_data = []
-        for eType in self.elements.keys():
+        for element_type in self.elements.keys():
             element_ids = []
             conn = []
-            for e in self.elements[eType]:
-                element_ids.append(e.ID)
-                conn.append([n.ID for n in e.nodes])
-            e_data.append([eType, element_ids, conn])
+            for e in self.elements[element_type]:
+                element_ids.append(e.label)
+                conn.append([n.label for n in e.nodes])
+            e_data.append([element_type, element_ids, conn])
         return [node_ids, coords], e_data
 
     def copy_element_set(self, old_set, new_set, node_set='', axis_order='xyz'):
