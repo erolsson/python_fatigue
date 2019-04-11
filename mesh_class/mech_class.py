@@ -74,7 +74,10 @@ class MeshClass:
             if isinstance(n, Node):
                 node_list.append(n)
             if isinstance(n, np.ndarray):
-                n = n.flatten().tolist()
+                while len(n.shape) > 1:
+                    n = n.flatten()
+                n.tolist()
+
             node_list += n
         if label is None:
             e = Element(self.element_counter, node_list, element_type)
@@ -484,10 +487,10 @@ class MeshClass:
         return self.create_transition_plate(surf, axis, order=order, direction=direction, element_set=element_set,
                                             node_set=node_set)
 
-    def createTransitionCornerOut(self, nodeLine, axes1, axes2, axis3, order=1, eSet='', nSet=''):
-        n1 = nodeLine.shape[0]
+    def create_transition_corner_out(self, node_line, axes1, axes2, axis3, order=1, element_set='', node_set=''):
+        n1 = node_line.shape[0]
         if (n1 - 1)/(3**order) == 0:
-            return nodeLine
+            return node_line
         if len(axes1) == 2:
             dir1, axis1 = -1, axes1[-1]
         else:
@@ -498,84 +501,82 @@ class MeshClass:
             dir2 = 1
 
         if axis3 == 'x':
-            d = abs(nodeLine[1].x - nodeLine[0].x)
-            nodeBlock = np.empty(shape=((n1, 4, 4)), dtype=object)
-            nodeBlock[:, 0, 0] = nodeLine
-            nodeBlock[:, 0:1, 1] = self.copy_node_plane(nodeBlock[:, 0:1, 0], 'y', dir1*d, nSet)
-            nodeBlock[:, 1, 0:1] = self.copy_node_plane(nodeBlock[:, 0:1, 0], 'z', dir2*d, nSet)
+            d = abs(node_line[1].x - node_line[0].x)
+            node_block = np.empty(shape=(n1, 4, 4), dtype=object)
+            node_block[:, 0, 0] = node_line
+            node_block[:, 0:1, 1] = self.copy_node_plane(node_block[:, 0:1, 0], 'y', dir1*d, node_set)
+            node_block[:, 1, 0:1] = self.copy_node_plane(node_block[:, 0:1, 0], 'z', dir2*d, node_set)
             for i in range(0, n1 + 3, 3):
-                self.create_transition_cell_corner_out(nodeBlock[i:i + 4, :, :], 'x', eSet, nSet)
+                self.create_transition_cell_corner_out(node_block[i:i + 4, :, :], 'x', element_set, node_set)
         if axis3 == 'y':
-            d = abs(nodeLine[1].y - nodeLine[0].y)
-            nodeBlock = np.empty(shape=((4, n1, 4)), dtype=object)
-            nodeBlock[0, :, 0] = nodeLine
-            nodeBlock[0:1, :, 1] = self.copy_node_plane(nodeBlock[0:1, :, 0], 'z', dir2*d, nSet)
-            nodeBlock[1, :, 0:1] = self.copy_node_plane(nodeBlock[0, :, 0:1], 'x', dir1*d, nSet)
+            d = abs(node_line[1].y - node_line[0].y)
+            node_block = np.empty(shape=(4, n1, 4), dtype=object)
+            node_block[0, :, 0] = node_line
+            node_block[0:1, :, 1] = self.copy_node_plane(node_block[0:1, :, 0], 'z', dir2*d, node_set)
+            node_block[1, :, 0:1] = self.copy_node_plane(node_block[0, :, 0:1], 'x', dir1*d, node_set)
 
-            nodeBlock[0:1, ::3, -1] = self.copy_node_plane(nodeBlock[0:1, ::3, 0], 'z', 3*dir2*d, nSet)
-            nodeBlock[-1, ::3, 0:1] = self.copy_node_plane(nodeBlock[0, ::3, 0:1], 'x', 3*dir1*d, nSet)
+            node_block[0:1, ::3, -1] = self.copy_node_plane(node_block[0:1, ::3, 0], 'z', 3*dir2*d, node_set)
+            node_block[-1, ::3, 0:1] = self.copy_node_plane(node_block[0, ::3, 0:1], 'x', 3*dir1*d, node_set)
             for i in range(0, n1 - 1, 3):
-                self.create_transition_cell_corner_out(nodeBlock[:, i:i + 4, :], 'y', eSet, nSet)
-            nodeLine = nodeBlock[-1, ::3, -1]
-            return self.createTransitionCornerOut(nodeLine, axes1, axes2, axis3, order, eSet, nSet)
+                self.create_transition_cell_corner_out(node_block[:, i:i + 4, :], 'y', element_set, node_set)
+            node_line = node_block[-1, ::3, -1]
+            return self.create_transition_corner_out(node_line, axes1, axes2, axis3, order, element_set, node_set)
 
         if axis3 == 'z':
-            d = abs(nodeLine[1].z - nodeLine[0].z)
-            nodeBlock = np.empty(shape=((4, 4, n1)), dtype=object)
-            nodeBlock[0, 0, :] = nodeLine
-            nodeBlock[0:1, 1, :] = self.copy_node_plane(nodeBlock[0:1, 0, :], 'x', dir1*d, nSet)
-            nodeBlock[1, 0:1, :] = self.copy_node_plane(nodeBlock[0:1, 0, :], 'y', dir2*d, nSet)
+            d = abs(node_line[1].z - node_line[0].z)
+            node_block = np.empty(shape=(4, 4, n1), dtype=object)
+            node_block[0, 0, :] = node_line
+            node_block[0:1, 1, :] = self.copy_node_plane(node_block[0:1, 0, :], 'x', dir1*d, node_set)
+            node_block[1, 0:1, :] = self.copy_node_plane(node_block[0:1, 0, :], 'y', dir2*d, node_set)
             for i in range(0, n1, 3):
-                self.create_transition_cell_corner_out(nodeBlock[:, :, i:i + 4], 'z', eSet, nSet)
+                self.create_transition_cell_corner_out(node_block[:, :, i:i + 4], 'z', element_set, node_set)
 
-    def createTransitionCornerOut2D(self, node_line_1, node_line_2, eSet='', nSet=''):
+    def create_transition_corner_out_2d(self, node_line_1, node_line_2, element_set='', node_set=''):
 
-        nodeBlock = np.empty(shape=((4, 4, 1)), dtype=object)
-        nodeBlock[0, 0, 0] = node_line_1[0]
-        nodeBlock[1, 0, 0] = node_line_1[1]
-        nodeBlock[3, 0, 0] = node_line_1[2]
+        node_block = np.empty(shape=(4, 4, 1), dtype=object)
+        node_block[0, 0, 0] = node_line_1[0]
+        node_block[1, 0, 0] = node_line_1[1]
+        node_block[3, 0, 0] = node_line_1[2]
 
-        nodeBlock[0, 1, 0] = node_line_2[1]
-        nodeBlock[0, 3, 0] = node_line_2[2]
+        node_block[0, 1, 0] = node_line_2[1]
+        node_block[0, 3, 0] = node_line_2[2]
 
-        nodeBlock[1, 1, 0] = self.create_node(nodeBlock[1, 0, 0].x, nodeBlock[0, 1, 0].y, 0, nSet)
-        nodeBlock[3, 3, 0] = self.create_node(nodeBlock[3, 0, 0].x, nodeBlock[0, 3, 0].y, 0, nSet)
+        node_block[1, 1, 0] = self.create_node(node_block[1, 0, 0].x, node_block[0, 1, 0].y, 0, node_set)
+        node_block[3, 3, 0] = self.create_node(node_block[3, 0, 0].x, node_block[0, 3, 0].y, 0, node_set)
 
-        self.create_element([nodeBlock[0, 0, 0], nodeBlock[0, 1, 0], nodeBlock[1, 0, 0], nodeBlock[1, 1, 0]],
-                            element_set=eSet, element_type='CAX4')
-        self.create_element([nodeBlock[1, 0, 0], nodeBlock[1, 1, 0], nodeBlock[3, 0, 0], nodeBlock[3, 3, 0]],
-                            element_set=eSet, element_type='CAX4')
-        self.create_element([nodeBlock[0, 1, 0], nodeBlock[0, 3, 0], nodeBlock[3, 3, 0], nodeBlock[1, 1, 0]],
-                            element_set=eSet, element_type='CAX4')
+        self.create_element([node_block[0, 0, 0], node_block[0, 1, 0], node_block[1, 0, 0], node_block[1, 1, 0]],
+                            element_set=element_set, element_type='CAX4')
+        self.create_element([node_block[1, 0, 0], node_block[1, 1, 0], node_block[3, 0, 0], node_block[3, 3, 0]],
+                            element_set=element_set, element_type='CAX4')
+        self.create_element([node_block[0, 1, 0], node_block[0, 3, 0], node_block[3, 3, 0], node_block[1, 1, 0]],
+                            element_set=element_set, element_type='CAX4')
 
-    def createTransitionCorner(self, surf1, surf2, eSet='', nSet='', order=1):
+    def create_transition_corner(self, surf1, surf2, element_set='', node_set='', order=1):
         nx = surf1.shape[0]
         ny = surf1.shape[1]
         nz = surf2.shape[1]
-        nodesPlate = np.empty(shape=((nx, ny, nz)), dtype=object)
-        nodesPlate[:, :, 0] = surf1
-        nodesPlate[0, :, :] = surf2
+        nodes_plate = np.empty(shape=(nx, ny, nz), dtype=object)
+        nodes_plate[:, :, 0] = surf1
+        nodes_plate[0, :, :] = surf2
 
         if (nx - 1)/3**order == 0 or (ny - 1)/3**order == 0 or (nz - 1)/3**order == 0:
             for i in range(1, nx):
-                dx = nodesPlate[i, 0, 0].x - nodesPlate[0, 0, 0].x
+                dx = nodes_plate[i, 0, 0].x - nodes_plate[0, 0, 0].x
 
-                nodesPlate[i, :, :] = self.copy_node_plane(nodesPlate[0, :, :], 'x', dx, nSet)
+                nodes_plate[i, :, :] = self.copy_node_plane(nodes_plate[0, :, :], 'x', dx, node_set)
                 for j in range(1, ny):
                     for k in range(1, nz):
-                        eNodes = nodesPlate[i - 1:i + 1, j - 1:j + 1, k - 1:k + 1].flatten().tolist()
-                        self.create_element(eNodes, element_set=eSet)
+                        e_nodes = nodes_plate[i - 1:i + 1, j - 1:j + 1, k - 1:k + 1]
+                        self.create_element(e_nodes, element_set=element_set)
             return
 
-            # Create the first layer in z-direction
+        # Create the first layer in z-direction
+        distance = nodes_plate[3, 0, 0].x - nodes_plate[0, 0, 0].x
         k = 0
-        i = 3
-
-        distance = nodesPlate[3, 0, 0].x - nodesPlate[0, 0, 0].x
         i = 0
         while i + 1 < ny:
-            transitionBlock = nodesPlate[0:4, i:i + 4, 0:4]
-            self.create_transition_cell_corner(transitionBlock, 'y', element_set=eSet)
+            transition_block = nodes_plate[0:4, i:i + 4, 0:4]
+            self.create_transition_cell_corner(transition_block, 'y', element_set=element_set)
             i += 3
 
         i = 3
@@ -583,12 +584,11 @@ class MeshClass:
             j = 0
             while j + 3 < ny:
                 # creating the 4 upper nodes
-                cornerNodes = nodesPlate[i:i + 4:3, j:j + 4:3, k]
-                nodesPlate[i:(i + 4):3, j:(j + 4):3, k + 3] = self.copy_node_plane(cornerNodes,
-                                                                                 'z',
-                                                                                   -distance, nSet)
-                transitionBlock = nodesPlate[i:i + 4, j:j + 4, k:k + 4]
-                self.create_transition_cell(transitionBlock, 'z', element_set=eSet, node_set=nSet)
+                corner_nodes = nodes_plate[i:i + 4:3, j:j + 4:3, k]
+                nodes_plate[i:(i + 4):3, j:(j + 4):3, k + 3] = self.copy_node_plane(corner_nodes, 'z',
+                                                                                    -distance, node_set)
+                transition_block = nodes_plate[i:i + 4, j:j + 4, k:k + 4]
+                self.create_transition_cell(transition_block, 'z', element_set=element_set, node_set=node_set)
                 j += 3
             i += 3
 
@@ -599,32 +599,31 @@ class MeshClass:
             j = 0
             while j + 3 < ny:
                 # creating the 4 upper nodes
-                cornerNodes = nodesPlate[k, j:j + 4:3, i:i + 4:3]
-                nodesPlate[k + 3, j:(j + 4):3, i:(i + 4):3] = self.copy_node_plane(cornerNodes,
-                                                                                 'x',
-                                                                                   distance, nSet)
-                transitionBlock = nodesPlate[k:k + 4, j:j + 4, i:i + 4]
-                self.create_transition_cell(transitionBlock, 'x', element_set=eSet, node_set=nSet)
+                corner_nodes = nodes_plate[k, j:j + 4:3, i:i + 4:3]
+                nodes_plate[k + 3, j:(j + 4):3, i:(i + 4):3] = self.copy_node_plane(corner_nodes, 'x',
+                                                                                    distance, node_set)
+                transition_block = nodes_plate[k:k + 4, j:j + 4, i:i + 4]
+                self.create_transition_cell(transition_block, 'x', element_set=element_set, node_set=node_set)
                 j += 3
             i += 3
 
-        surf1 = nodesPlate[3::3, ::3, 3]
-        surf2 = nodesPlate[3, ::3, 3::3]
-        return self.createTransitionCorner(surf1, surf2, eSet=eSet, nSet=nSet, order=order)
+        surf1 = nodes_plate[3::3, ::3, 3]
+        surf2 = nodes_plate[3, ::3, 3::3]
+        return self.create_transition_corner(surf1, surf2, element_set=element_set, node_set=node_set, order=order)
 
-    def create2DTransition(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, eSet='', nSet=''):
+    def create_2d_transition(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, element_set='', node_set=''):
         # assume that axis1 is x, 2 is y, z is 3
-        nodes = np.empty(shape=((2, 4, 4)), dtype=object)
+        nodes = np.empty(shape=(2, 4, 4), dtype=object)
 
         # creating the base plate
         for i in range(2):
             for j in range(4):
-                nodes[i, j, 0] = self.create_node(d1*i, d2*j, 0, nSet)
-                nodes[i, j, 1] = self.create_node(d1*i, d2*j, d3, nSet)
-            nodes[i, 1, 2] = self.create_node(d1*i, d2, 2*d3, nSet)
-            nodes[i, 2, 2] = self.create_node(d1*i, 2*d2, 2*d3, nSet)
-            nodes[i, 0, 3] = self.create_node(d1*i, 0, 3*d3, nSet)
-            nodes[i, 3, 3] = self.create_node(d1*i, 3*d2, 3*d3, nSet)
+                nodes[i, j, 0] = self.create_node(d1*i, d2*j, 0, node_set)
+                nodes[i, j, 1] = self.create_node(d1*i, d2*j, d3, node_set)
+            nodes[i, 1, 2] = self.create_node(d1*i, d2, 2*d3, node_set)
+            nodes[i, 2, 2] = self.create_node(d1*i, 2*d2, 2*d3, node_set)
+            nodes[i, 0, 3] = self.create_node(d1*i, 0, 3*d3, node_set)
+            nodes[i, 3, 3] = self.create_node(d1*i, 3*d2, 3*d3, node_set)
 
         for i in range(2):
             for j in range(4):
@@ -632,21 +631,10 @@ class MeshClass:
                     if nodes[i, j, k] is not None:
                         n = nodes[i, j, k]
                         x, y, z = n.x, n.y, n.z
-                        if axis1 is not 'x':
-                            if axis1 is 'y':
-                                n.x = y
-                            if axis1 is 'z':
-                                n.x = z
-                        if axis2 is not 'y':
-                            if axis2 is 'x':
-                                n.y = x
-                            if axis2 is 'z':
-                                n.y = z
-                        if axis3 is not 'z':
-                            if axis3 is 'x':
-                                n.z = x
-                            if axis3 is 'y':
-                                n.z = y
+                        setattr(n, axis1, x)
+                        setattr(n, axis2, y)
+                        setattr(n, axis3, z)
+
         for n in nodes.flatten().flatten().flatten():
             if n is not None:
                 n.x += x0
@@ -655,33 +643,36 @@ class MeshClass:
 
         # create the base layer
         for i in range(1, 4):
-            eNodes = nodes[:, i - 1:i + 1, 0:2].flatten().flatten().tolist()
-            self.create_element(eNodes, element_set=eSet)
-        # the center element
-        eNodes = nodes[:, 1:3, 1:3].flatten().flatten().tolist()
-        self.create_element(eNodes, element_set=eSet)
-        # create the corner elements
-        eNodes = nodes[:, 0, 1:4:2].flatten().tolist() + nodes[:, 1, 1:3].flatten().tolist()
-        self.create_element(eNodes, element_set=eSet)
-        eNodes = nodes[:, 3, 1:4:2].flatten().tolist() + nodes[:, 2, 1:3].flatten().tolist()
-        self.create_element(eNodes, element_set=eSet)
-        # create the top element
-        eNodes = nodes[:, 1:3, 2].flatten().flatten().tolist() + nodes[:, 0:4:3, 3].flatten().flatten().tolist()
-        self.create_element(eNodes, element_set=eSet)
+            e_nodes = nodes[:, i - 1:i + 1, 0:2]
+            self.create_element(e_nodes, element_set=element_set)
 
-    def create2DTransitionAxi(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, eSet='', nSet=''):
+        # the center element
+        e_nodes = nodes[:, 1:3, 1:3]
+        self.create_element(e_nodes, element_set=element_set)
+
+        # create the corner elements
+        e_nodes = [nodes[:, 0, 1:4:2], nodes[:, 1, 1:3]]
+        self.create_element(e_nodes, element_set=element_set)
+        e_nodes = [nodes[:, 3, 1:4:2], nodes[:, 2, 1:3]]
+        self.create_element(e_nodes, element_set=element_set)
+
+        # create the top element
+        e_nodes = [nodes[:, 1:3, 2], nodes[:, 0:4:3, 3]]
+        self.create_element(e_nodes, element_set=element_set)
+
+    def create_2d_transition_axi(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, element_set='', node_set=''):
         # assume that axis1 is x, 2 is y, z is 3
-        nodes = np.empty(shape=((1, 4, 4)), dtype=object)
+        nodes = np.empty(shape=(1, 4, 4), dtype=object)
 
         # creating the base plate
         for i in range(1):
             for j in range(4):
-                nodes[i, j, 0] = self.create_node(d1*i, d2*j, 0, nSet)
-                nodes[i, j, 1] = self.create_node(d1*i, d2*j, d3, nSet)
-            nodes[i, 1, 2] = self.create_node(d1*i, d2, 2*d3, nSet)
-            nodes[i, 2, 2] = self.create_node(d1*i, 2*d2, 2*d3, nSet)
-            nodes[i, 0, 3] = self.create_node(d1*i, 0, 3*d3, nSet)
-            nodes[i, 3, 3] = self.create_node(d1*i, 3*d2, 3*d3, nSet)
+                nodes[i, j, 0] = self.create_node(d1*i, d2*j, 0, node_set)
+                nodes[i, j, 1] = self.create_node(d1*i, d2*j, d3, node_set)
+            nodes[i, 1, 2] = self.create_node(d1*i, d2, 2*d3, node_set)
+            nodes[i, 2, 2] = self.create_node(d1*i, 2*d2, 2*d3, node_set)
+            nodes[i, 0, 3] = self.create_node(d1*i, 0, 3*d3, node_set)
+            nodes[i, 3, 3] = self.create_node(d1*i, 3*d2, 3*d3, node_set)
 
         for i in range(1):
             for j in range(4):
@@ -689,21 +680,10 @@ class MeshClass:
                     if nodes[i, j, k] is not None:
                         n = nodes[i, j, k]
                         x, y, z = n.x, n.y, n.z
-                        if axis1 is not 'x':
-                            if axis1 is 'y':
-                                n.x = y
-                            if axis1 is 'z':
-                                n.x = z
-                        if axis2 is not 'y':
-                            if axis2 is 'x':
-                                n.y = x
-                            if axis2 is 'z':
-                                n.y = z
-                        if axis3 is not 'z':
-                            if axis3 is 'x':
-                                n.z = x
-                            if axis3 is 'y':
-                                n.z = y
+                        setattr(n, axis1, x)
+                        setattr(n, axis2, y)
+                        setattr(n, axis3, z)
+
         for n in nodes.flatten().flatten().flatten():
             if n is not None:
                 n.x += x0
@@ -712,106 +692,90 @@ class MeshClass:
 
         # create the base layer
         for i in range(1, 4):
-            eNodes = nodes[:, i - 1:i + 1, 0:2].flatten().flatten().tolist()
-            self.create_element(eNodes, element_set=eSet, element_type='CAX4')
-        # the center element
-        eNodes = nodes[:, 1:3, 1:3].flatten().flatten().tolist()
-        self.create_element(eNodes, element_set=eSet, element_type='CAX4')
-        # create the corner elements
-        eNodes = nodes[:, 0, 1:4:2].flatten().tolist() + nodes[:, 1, 1:3].flatten().tolist()
-        self.create_element(eNodes, element_set=eSet, element_type='CAX4')
-        eNodes = nodes[:, 3, 1:4:2].flatten().tolist() + nodes[:, 2, 1:3].flatten().tolist()
-        self.create_element(eNodes, element_set=eSet, element_type='CAX4')
-        # create the top element
-        eNodes = nodes[:, 1:3, 2].flatten().flatten().tolist() + nodes[:, 0:4:3, 3].flatten().flatten().tolist()
-        self.create_element(eNodes, element_set=eSet, element_type='CAX4')
+            e_nodes = nodes[:, i - 1:i + 1, 0:2]
+            self.create_element(e_nodes, element_set=element_set, element_type='CAX4')
 
-    def noOfElements(self):
+        # the center element
+        e_nodes = nodes[:, 1:3, 1:3]
+        self.create_element(e_nodes, element_set=element_set, element_type='CAX4')
+
+        # create the corner elements
+        e_nodes = [nodes[:, 0, 1:4:2], nodes[:, 1, 1:3]]
+        self.create_element(e_nodes, element_set=element_set, element_type='CAX4')
+        e_nodes = [nodes[:, 3, 1:4:2], nodes[:, 2, 1:3]]
+        self.create_element(e_nodes, element_set=element_set, element_type='CAX4')
+
+        # create the top element
+        e_nodes = [nodes[:, 1:3, 2], nodes[:, 0:4:3, 3]]
+        self.create_element(e_nodes, element_set=element_set, element_type='CAX4')
+
+    def number_of_elements(self):
         return len(self.elements)
 
-    def noOfNodes(self):
+    def number_of_nodes(self):
         return len(self.nodes)
 
-    def listsForPart(self):
-        nIDs = []
+    def lists_for_part(self):
+        node_ids = []
         coords = []
         for label, n in self.nodes.iteritems():
-            nIDs.append(label)
+            node_ids.append(label)
             coords.append([n.x, n.y, n.z])
-        eData = []
+        e_data = []
         for eType in self.elements.keys():
-            eIDs = []
+            element_ids = []
             conn = []
             for e in self.elements[eType]:
-                eIDs.append(e.ID)
+                element_ids.append(e.ID)
                 conn.append([n.ID for n in e.nodes])
-            eData.append([eType, eIDs, conn])
-        return [nIDs, coords], eData
+            e_data.append([eType, element_ids, conn])
+        return [node_ids, coords], e_data
 
-    def copyElementSet(self, oldSet, newSet, nSet='', axisOrder='xyz'):
-        elements = self.element_sets[oldSet]
+    def copy_element_set(self, old_set, new_set, node_set='', axis_order='xyz'):
+        elements = self.element_sets[old_set]
         for e in elements:
-            eNodes = []
+            e_nodes = []
             for n in e.nodes:
-                if axisOrder == 'xyz':
-                    x, y, z = n.x, n.y, n.z
-                if axisOrder == 'yzx':
-                    x, y, z = n.y, n.z, n.x
-                if axisOrder == 'zxy':
-                    x, y, z = n.z, n.x, n.y
+                x, y, z = getattr(n, axis_order[0]), getattr(n, axis_order[1]), getattr(n, axis_order[2])
+                e_nodes.append(self.create_node(x, y, z, node_set))
+            self.create_element(e_nodes, element_type=e.eType, element_set=new_set)
 
-                if axisOrder == 'yxz':
-                    x, y, z = n.y, n.x, n.z
-                if axisOrder == 'xzy':
-                    x, y, z = n.x, n.z, n.y
-                if axisOrder == 'zyx':
-                    x, y, z = n.z, n.y, n.x
-                eNodes.append(self.create_node(x, y, z, nSet))
-            self.create_element(eNodes, element_type=e.eType, element_set=newSet)
-
-    def addToNodeSet(self, nodes, nodeSet):
+    def add_to_node_set(self, nodes, node_set):
         if type(nodes).__module__ is 'numpy':
             while len(nodes.shape) > 1:
                 nodes = nodes.flatten()
-        if not nodeSet in self.node_sets:
-            self.node_sets[nodeSet] = []
+        if node_set not in self.node_sets:
+            self.node_sets[node_set] = []
         for n in nodes:
-            self.node_sets[nodeSet].append(n)
+            self.node_sets[node_set].append(n)
 
-    def getBoundingBox(self, nSet=''):
-        xMin = 1E99
-        xMax = -1E99
-        yMin = 1E99
-        yMax = -1E99
-        zMin = 1E99
-        zMax = -1E99
+    def get_bounding_box(self):
+        x_min = 1E99
+        x_max = -1E99
+        y_min = 1E99
+        y_max = -1E99
+        z_min = 1E99
+        z_max = -1E99
         for _, n in self.nodes.iteritems():
-            xMin = min(xMin, n.x)
-            yMin = min(yMin, n.y)
-            zMin = min(zMin, n.z)
+            x_min = min(x_min, n.x)
+            y_min = min(y_min, n.y)
+            z_min = min(z_min, n.z)
 
-            xMax = max(xMax, n.x)
-            yMax = max(yMax, n.y)
-            zMax = max(zMax, n.z)
-        return xMin, xMax, yMin, yMax, zMin, zMax
+            x_max = max(x_max, n.x)
+            y_max = max(y_max, n.y)
+            z_max = max(z_max, n.z)
+        return x_min, x_max, y_min, y_max, z_min, z_max
 
-    def getNodesByBoundingBox(self, xMin=-1E88, xMax=1E88, yMin=-1E88, yMax=1E88,
-                              zMin=-1E88, zMax=1E88, nSet=''):
+    def get_nodes_by_bounding_box(self, x_min=-1E88, x_max=1E88, y_min=-1E88, y_max=1E88,
+                                  z_min=-1E88, z_max=1E88, node_set=Node):
         nodes = []
-        if nSet == '':
-            nodeList = self.nodes.iteritems()
-            for _, n in nodeList:
-                if n.x >= xMin and n.x <= xMax:
-                    if n.y >= yMin and n.y <= yMax:
-                        if n.z >= zMin and n.z <= zMax:
-                            nodes.append(n)
-
+        if node_set:
+            node_list = self.node_sets[node_set]
         else:
-            nodeList = self.node_sets[nSet]
-            for n in nodeList:
-                if n.x >= xMin and n.x <= xMax:
-                    if n.y >= yMin and n.y <= yMax:
-                        if n.z >= zMin and n.z <= zMax:
-                            nodes.append(n)
-
+            node_list = self.nodes.iteritems()
+        for _, n in node_list:
+            if x_min <= n.x <= x_max:
+                if y_min <= n.y <= y_max:
+                    if z_min <= n.z <= z_max:
+                        nodes.append(n)
         return nodes
