@@ -16,7 +16,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U92504_200C_2h_90C_cool_20190412/')
+                                              '/U92504_200C_2h_90C_cool_20190412_1/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -57,13 +57,13 @@ if __name__ == '__main__':
     tempering = (200, 7200)
 
     Simulation = namedtuple('Simulation', ['CD', 'times', 'temperatures', 'carbon', 'tempering'])
-    simulations = [Simulation(CD=0.5, times=[75., 5., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+    simulations = [Simulation(CD=0.5, times=[75., 5., 30.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
                               tempering=tempering),
-                   Simulation(CD=0.8, times=[135., 30., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                   Simulation(CD=0.8, times=[135., 30., 30.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
                               tempering=tempering),
-                   Simulation(CD=1.1, times=[370., 70., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                   Simulation(CD=1.1, times=[370., 70., 30.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
                               tempering=tempering),
-                   Simulation(CD=1.4, times=[545., 130., 60.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
+                   Simulation(CD=1.4, times=[545., 130., 30.], temperatures=(930., 930., 840.), carbon=(1.1, 0.8, 0.8),
                               tempering=tempering)]
 
     for simulation in simulations:
