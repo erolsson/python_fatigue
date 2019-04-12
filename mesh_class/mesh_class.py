@@ -26,13 +26,15 @@ class Element:
         else:
             dim = 2
         e_nodes = []
+        x0 = sum([node.x for node in nodes])/len(nodes)
+        y0 = sum([node.y for node in nodes])/len(nodes)
+        z0 = sum([node.z for node in nodes])/len(nodes)
+        nodes = sorted(nodes, key=lambda n: atan2(n.z - z0, (n.y - y0)**2 + (n.x - x0)**2))
         for i in range(dim - 1):
-            nodes = sorted(nodes, key=lambda n: n.z)
             stride = len(nodes)/(dim - 1)
             plane_nodes = nodes[i*stride:(i+1)*stride]
-
-            x0 = sum([node.x for node in plane_nodes])/len(plane_nodes)
-            y0 = sum([node.y for node in plane_nodes])/len(plane_nodes)
+            x0 = sum([node.x for node in plane_nodes]) / len(plane_nodes)
+            y0 = sum([node.y for node in plane_nodes]) / len(plane_nodes)
             e_nodes += sorted(plane_nodes, key=lambda n: atan2(n.y - y0, n.x - x0))
         self.nodes = e_nodes
 
@@ -56,9 +58,9 @@ class MeshClass:
         self.nodes[label] = n
         if node_set is not None:
             if node_set in self.node_sets:
-                self.node_sets[node_set].append(n)
+                self.node_sets[node_set].add(n)
             else:
-                self.node_sets[node_set] = [n]
+                self.node_sets[node_set] = {n}
         return n
 
     def create_element(self, nodes, element_type='C3D8R', element_set=None, label=None):
@@ -182,7 +184,7 @@ class MeshClass:
         l_max = 0
         for n in nodes:
             r_max = max(r_max, getattr(n, axis1), getattr(n, axis2))
-            l_max = max(l_max, getattr(n, radial_axis))
+            l_max = max(l_max, getattr(n, axis2))
 
         return axis1, axis2, r_max, l_max
 
@@ -194,17 +196,19 @@ class MeshClass:
         for n in nodes:
             n1 = getattr(n, axis1)
             n2 = getattr(n, axis2)
-            if n1 > n2:
-                n2, n1 = n1, n2
-            r = n1
-            q = n2/n1*angle/2
-            dx = r*cos(q) - n1
-            dy = r*sin(q) - n2
-            k = r/r_max
-            setattr(n, axis1, getattr(n, axis1) + dx*k**f)
-            setattr(n, axis2, getattr(n, axis2) + dy*k**f)
+            if n1 > 0 and n2 > 0:
+                if n1 > n2:
+                    n2, n1 = n1, n2
+                r = n2
+                q = n1/n2*angle/2
+                d2 = r*cos(q) - n2
+                d1 = r*sin(q) - n1
+                k = r/r_max
+                setattr(n, axis1, getattr(n, axis1) + d1*k**f)
+                setattr(n, axis2, getattr(n, axis2) + d2*k**f)
 
     def transform_square_to_sector(self, node_set, rotation_axis, radial_axis, angle):
+        # Todo: Check this one for bugs!!!
         nodes = self.node_sets[node_set]
         axis1, axis2, r_max, _ = self._assign_axes_for_rotation(nodes, rotation_axis, radial_axis)
 
@@ -227,15 +231,13 @@ class MeshClass:
     def sweep_block(self, node_set, rotation_axis, radial_axis, angle):
         nodes = self.node_sets[node_set]
         axis1, axis2, r_max, l_max = self._assign_axes_for_rotation(nodes, rotation_axis, radial_axis)
+        print axis1, axis2, r_max, l_max
 
         for n in nodes:
-            n1 = getattr(n, axis1)
-            n2 = getattr(n, axis2)
+            n1 = getattr(n, axis1)   # Coordinate of node along radial axis
+            n2 = getattr(n, axis2)   # Coordinate of node along other axis
             r = abs(n1)
-            if abs(n2) > 0:
-                q = n2/l_max*angle
-            else:
-                q = pi/2
+            q = n2/l_max*angle
             d1 = r*cos(q) - n1
             d2 = r*sin(q) - n2
 
@@ -332,7 +334,6 @@ class MeshClass:
 
     def create_transition_cell_corner(self, transition_block, axis, element_set='', node_set=''):
         d1, d2, axis1, axis2, base1, base2, center_line = self._assign_bases_and_axes(axis, transition_block, node_set)
-        print d1, d2, axis1, axis2
 
         mid1 = self.copy_node_plane(base1[:, 1:], axis1, d1, node_set)
         mid2 = self.copy_node_plane(base2[:, 1:], axis2, d2, node_set)
@@ -481,18 +482,18 @@ class MeshClass:
         return self.create_transition_plate(surf, axis, order=order, direction=direction, element_set=element_set,
                                             node_set=node_set)
 
-    def create_transition_corner_out(self, node_line, axes1, axes2, axis3, order=1, element_set='', node_set=''):
+    def create_transition_corner_out(self, node_line, axis1, axis2, axis3, order=1, element_set='', node_set=''):
         n1 = node_line.shape[0]
         if (n1 - 1)/(3**order) == 0:
             return node_line
-        if len(axes1) == 2:
-            dir1, axis1 = -1, axes1[-1]
-        else:
-            dir1 = 1
-        if len(axes2) == 2:
-            dir2, axis2 = -1, axes2[-1]
-        else:
-            dir2 = 1
+
+        dir1 = 1
+        dir2 = 1
+
+        if axis1[0] == '-':
+            dir1 = -1
+        if axis2[0] == '-':
+            dir2 = -1
 
         if axis3 == 'x':
             d = abs(node_line[1].x - node_line[0].x)
@@ -502,6 +503,8 @@ class MeshClass:
             node_block[:, 1, 0:1] = self.copy_node_plane(node_block[:, 0:1, 0], 'z', dir2*d, node_set)
             for i in range(0, n1 + 3, 3):
                 self.create_transition_cell_corner_out(node_block[i:i + 4, :, :], 'x', element_set, node_set)
+            node_line = node_block[::3, -1, -1]
+
         if axis3 == 'y':
             d = abs(node_line[1].y - node_line[0].y)
             node_block = np.empty(shape=(4, n1, 4), dtype=object)
@@ -514,7 +517,6 @@ class MeshClass:
             for i in range(0, n1 - 1, 3):
                 self.create_transition_cell_corner_out(node_block[:, i:i + 4, :], 'y', element_set, node_set)
             node_line = node_block[-1, ::3, -1]
-            return self.create_transition_corner_out(node_line, axes1, axes2, axis3, order, element_set, node_set)
 
         if axis3 == 'z':
             d = abs(node_line[1].z - node_line[0].z)
@@ -524,6 +526,8 @@ class MeshClass:
             node_block[1, 0:1, :] = self.copy_node_plane(node_block[0:1, 0, :], 'y', dir2*d, node_set)
             for i in range(0, n1, 3):
                 self.create_transition_cell_corner_out(node_block[:, :, i:i + 4], 'z', element_set, node_set)
+            node_line = node_block[-1, -1, ::3]
+        return self.create_transition_corner_out(node_line, axis1, axis2, axis3, order, element_set, node_set)
 
     def create_transition_corner_out_2d(self, node_line_1, node_line_2, element_set='', node_set=''):
 
@@ -605,7 +609,7 @@ class MeshClass:
         surf1 = nodes_plate[3::3, ::3, 3]
         surf2 = nodes_plate[3, ::3, 3::3]
 
-        # return self.create_transition_corner(surf1, surf2, element_set=element_set, node_set=node_set, order=order)
+        return self.create_transition_corner(surf1, surf2, element_set=element_set, node_set=node_set, order=order)
 
     def create_2d_transition(self, axis1, axis2, axis3, x0, y0, z0, d1, d2, d3, element_set='', node_set=''):
         # assume that axis1 is x, 2 is y, z is 3
@@ -734,16 +738,17 @@ class MeshClass:
             for n in e.nodes:
                 x, y, z = getattr(n, axis_order[0]), getattr(n, axis_order[1]), getattr(n, axis_order[2])
                 e_nodes.append(self.create_node(x, y, z, node_set))
-            self.create_element(e_nodes, element_type=e.eType, element_set=new_set)
+            self.create_element(e_nodes, element_type=e.element_type, element_set=new_set)
 
     def add_to_node_set(self, nodes, node_set):
-        if type(nodes).__module__ is 'numpy':
+        if isinstance(nodes, np.ndarray):
             while len(nodes.shape) > 1:
                 nodes = nodes.flatten()
+
         if node_set not in self.node_sets:
-            self.node_sets[node_set] = []
+            self.node_sets[node_set] = set()
         for n in nodes:
-            self.node_sets[node_set].append(n)
+            self.node_sets[node_set].add(n)
 
     def get_bounding_box(self):
         x_min = 1E99
@@ -763,13 +768,13 @@ class MeshClass:
         return x_min, x_max, y_min, y_max, z_min, z_max
 
     def get_nodes_by_bounding_box(self, x_min=-1E88, x_max=1E88, y_min=-1E88, y_max=1E88,
-                                  z_min=-1E88, z_max=1E88, node_set=Node):
+                                  z_min=-1E88, z_max=1E88, node_set=None):
         nodes = []
         if node_set:
             node_list = self.node_sets[node_set]
         else:
-            node_list = self.nodes.iteritems()
-        for _, n in node_list:
+            node_list = self.nodes.itervalues()
+        for n in node_list:
             if x_min <= n.x <= x_max:
                 if y_min <= n.y <= y_max:
                     if z_min <= n.z <= z_max:
