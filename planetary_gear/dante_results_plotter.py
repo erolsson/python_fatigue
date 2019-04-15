@@ -47,6 +47,9 @@ for i, simulation in enumerate(simulations):
                          label='CHD = ' + str(simulation.cd) + ' mm')
         legend_handles[1 + 2*j].append(leg_h[0])
 
+        plt.figure(5)
+        plt.plot(dante_data['r'], dante_data['Carbon'], '--' + simulation.color, lw=2)
+
 for i in range(2):
     fig = plt.figure(2*i)
     legend_handles[2*i].append(plt.plot([-2, -1], [0, 0], 'w', label=r'$\quad$')[0])
