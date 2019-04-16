@@ -230,8 +230,6 @@ if __name__ == '__main__':
     print 'Ms temp:', km_parameters[2]
     print 'Mobility:', km_parameters[5]
 
-
-
     for jmat_data_set in data_sets:
         for rate, fig in zip([1., 50.], [0., 1]):
             plt.figure(fig)
