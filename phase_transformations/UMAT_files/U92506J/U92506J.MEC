@@ -165,7 +165,7 @@ U92506J         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.6% -----------------------------------                   line 165
  0.6                                                                                line 166
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 167
-   40.0,       28.0,     31.0,      66.0,     64.0,   60.0                          line 168
+   33.0,       28.0,     31.0,      66.0,     64.0,   60.0                          line 168
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 169
    150.0,   200.0                                                                   line 170
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 171
@@ -177,7 +177,7 @@ U92506J         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.8% -----------------------------------                   line 177
  0.8                                                                                line 178
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 179
-   45.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
+   35.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 181
    150.0,   200.0                                                                   line 182
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 183
@@ -189,7 +189,7 @@ U92506J         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 1.0% -----------------------------------                   line 189
  1.0                                                                                line 190
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 191
-   50.0,       32.0,     39.0,      76.0,     74.0,   71.0                          line 192
+   40.0,       32.0,     39.0,      76.0,     74.0,   71.0                          line 192
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 193
    150.0,   180.0                                                                   line 194
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 195
