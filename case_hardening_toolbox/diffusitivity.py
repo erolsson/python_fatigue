@@ -13,7 +13,7 @@ def lee_chester_tyne(temp, carbon, material):
     al = material.composition.get('Al', 0)
 
     D0 = 0.146-0.036*carbon*(1-1.075*cr)+mn*-0.0315+si*0.0509+ni*-0.0085+mo*0.3031+al*-0.0520
-    E0 = 144.3-15.0*carbon+0.37*carbon**2+mn*-4.3663+si*4.0507+ni*-1.2407+mo*12.1266+al*6.7886+cr*7.7260
+    E0 = 144.3-15.0*carbon+0.37*carbon**2+mn*-4.3663+si*4.0507+ni*-1.2407+mo*12.1266+al*-6.7886+cr*7.7260
     return D0*np.exp(-E0/8.314E-3/(temp+273))*100
 
 

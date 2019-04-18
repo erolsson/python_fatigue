@@ -34,8 +34,8 @@ carbon_levels = np.arange(0.2, 1.2, 0.2)/100
 HRC_austenite = np.array([22., 30., 33., 35., 40.])
 HRC_T_martensite1 = np.array([40, 54., 60, 68, 71]) + 1.7
 
-austenite_par = [22.,  30., 33.,  42,  45.]
-martensite_par = [45, 58, 63, 69, 72]
+austenite_par = np.array([22.,  26., 29., 32,  35.])
+martensite_par = [45, 58, 64, 71, 76]
 
 
 def hardness_residual(par, *data):
