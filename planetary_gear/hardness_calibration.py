@@ -34,8 +34,8 @@ carbon_levels = np.arange(0.2, 1.2, 0.2)/100
 HRC_austenite = np.array([22., 30., 33., 35., 40.])
 HRC_T_martensite1 = np.array([40, 54., 60, 68, 71]) + 1.7
 
-austenite_par = np.array([22.,  26., 29., 32,  35.])
-martensite_par = [45, 58, 64, 71, 76]
+austenite_par = np.array([22.,  26., 29., 35,  40.])
+martensite_par = [40, 49, 61, 69, 71]
 
 
 def hardness_residual(par, *data):
@@ -101,6 +101,9 @@ for i, simulation in enumerate(simulations):
         hardness_from_other_phases = simulated_hardness - np.interp(c_sim, carbon_levels, HRC_austenite)*au_sim - \
             np.interp(c_sim, carbon_levels, HRC_T_martensite1)*mart_sim
 
+        print hardness_from_other_phases/(1 - au_sim - mart_sim)
+
+        # hardness_from_other_phases = 40*(1 - au_sim - mart_sim)
         data_set = HV2HRC(exp_data), c_sim, au_sim, mart_sim, hardness_from_other_phases
         data_sets.append(data_set)
 
@@ -110,10 +113,9 @@ for i, simulation in enumerate(simulations):
         simulated_hardness = HV2HRC(dante_data['HV'])
         plt.figure(j)
 
-        print (simulated_hardness - np.interp(c_sim, carbon_levels, HRC_austenite) * au_sim) - \
-            np.interp(c_sim, carbon_levels, HRC_T_martensite1)*mart_sim
         hardness_from_other_phases = simulated_hardness - np.interp(c_sim, carbon_levels, HRC_austenite) * au_sim - \
             np.interp(c_sim, carbon_levels, HRC_T_martensite1) * mart_sim
+        # hardness_from_other_phases = 38*(1 - au_sim - mart_sim)
         plt.plot(dante_data['r'], HRC2HV(hardness_from_other_phases), simulation.color)
         new_hrc_aust = np.interp(c_sim, carbon_levels, austenite_par)*au_sim
         new_hrc_mart = np.interp(c_sim, carbon_levels, martensite_par)*mart_sim
