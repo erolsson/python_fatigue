@@ -44,9 +44,9 @@ if __name__ == '__main__':
     mesh = '1x'
     element_set_name = 'tooth_root_volume_elements'
     dante_odb_filename = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_' + \
-                         mesh + '/dante_results_tempering_2h_180C_20190129.odb'
+                         mesh + '/dante_results_tempering_2h_180C_JMAT.odb'
     pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
-                       + mesh + '/dante_tempering_2h_180C_20190129/'
+                       + mesh + '/dante_tempering_2h_180C_JMAT/'
 
     pickle_directory_geometry = '/scratch/users/erik/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' \
                                 + mesh + '/geometry/'
