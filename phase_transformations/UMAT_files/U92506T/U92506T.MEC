@@ -98,7 +98,7 @@ U92506T         ! matnam must be UPPERCASE                                      
 **  CTE and Transformation Strain                                                   line 98
 **--Austenite:  a1+a2*C+a3*T                                                        line 99
 **    a1       a2         a3                                                        line 100
-   -1.14e-2,  3.304e-3   2.4e-5                                                     line 101
+   -1.14e-2,  4.22e-3   2.377e-5                                                    line 101
 **--Ferrite:   m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->F)     line 102
 **    m1        m2        m3          m4         m5        m6                       line 103
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
@@ -107,10 +107,10 @@ U92506T         ! matnam must be UPPERCASE                                      
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 107
 **--Upper Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->UB)    line 108
 **    m1        m2        m3          m4         m5        m6                       line 109
-  -1.676e-3, 1.09e-3, 1.287e-5,   0.000000,  0.,      0.00000                       line 110
+  -1.073e-3, 2.043e-3, 1.244e-5,   0.000000,  0.,      0.00000                      line 110
 **--Lower Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->LB)    line 111
 **    m1        m2        m3          m4         m5        m6                       line 112
-  -1.676e-3, 1.09e-3, 1.287e-5,   0.000000,  0.,      0.00000                       line 110
+  -1.073e-3, 2.043e-3, 1.244e-5,   0.000000,  0.,      0.00000                      line 110
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
  -3.41e-3,   1.083e-3, -4.68e-3, 1.6369e-5, -2.13e-5,    0.00,   0.00,    0.00      line 116
