@@ -18,7 +18,8 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
+    # par[2] = 0
+    par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
     #par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     #par[3] = 1.2678425e-5 - par[4] * 0.2
     #par[5:] = 0
@@ -28,7 +29,7 @@ def expansion_martensite(par, c, t):
 
 
 def heat_expanion_martensite(par, c, t):
-    par[3:] = 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12
+    par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4]*0.2
     #par[5:] = 0
@@ -58,18 +59,21 @@ def transformation_strain(par, c, t):
 def residual(par, *data):
     r = 0
     # par[2] = -np.log(0.1)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
-    par[2] = -np.log(0.01)/(176+91)
+    # par[2] = -np.log(0.01)/(176+91)
+    par[0] = 3.9663e-2
+    par[1] = 2.655E-02
+    par[2] = 1.3437E-02
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
-        # ms_temp *= 0.5
+        ms_temp *= 0.5
         e = e[t < ms_temp]
         t = t[t < ms_temp]
         t_interp = np.linspace(t[-1], ms_temp, 1000)
         e_interp = np.interp(t_interp, np.flip(t), np.flip(e))
 
         model_e = transformation_strain(par, exp.carbon, t_interp)
-        r += np.sum((e_interp - model_e)**2)
+        r += np.sum((e_interp - model_e)**2)/(len(model_e))
     return r*1e9
 
 
