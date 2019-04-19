@@ -37,7 +37,7 @@ specimen_name = 'utmis_' + specimen_type
 times = [180, 30]
 temps = [930, 840]
 carbon_levels = [1.1, 0.8]
-tempering = (200, 7200)
+tempering = (180, 7200)
 
 name = ''
 
@@ -48,8 +48,8 @@ simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
                           times=times, temperatures=temps, carbon=carbon_levels, tempering=tempering)]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/U25063/' + specimen_name +
-                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_90C/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/utmis_specimens/' + specimen_name +
+                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_100C_JMAT/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
@@ -68,9 +68,6 @@ diffusion_file_name = 'diffusivity.inc'
 
 # Material, needs a python dict with material composition to generate the diffusion file
 material = SS2506
-
-# Dante material name, list of valid dante materials, check dante_path/DANTEDB3_6/STD and dante_path/DANTEDB3_6/USR
-dante_material = 'U925063'
 
 # writes the necessary geometry files and set files to include_file_directory
 write_geometry_files_for_dante(geometry_data_file=geometry_file_name,
@@ -91,7 +88,7 @@ for simulation in simulations:
                                           include_file_name=specimen_name,
                                           include_file_directory=inc_file_directory)
 
-    toolbox_writer.diffusion_file = diffusion_file_name
+    toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
     toolbox_writer.interaction_property_file = 'interaction_properties.inc'
     toolbox_writer.heating_data.carbon = 0.5
     toolbox_writer.heating_data.time = 90.
@@ -100,11 +97,17 @@ for simulation in simulations:
     toolbox_writer.quenching_data.time = 3600.
     toolbox_writer.quenching_data.temperature = 120.
 
-    toolbox_writer.cooldown_data.temperature = 90
+    toolbox_writer.cooldown_data.temperature = 100
+    toolbox_writer.cooldown_data.time = 3600
+
+    toolbox_writer.material = 'U92506J'
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
-    toolbox_writer.material = dante_material
+
+    toolbox_writer.max_temp_inc = 5.
+    toolbox_writer.max_vf_inc = 0.05
+    toolbox_writer.write_dctrl_file = True
 
     toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                            carbon_levels=simulation.carbon)
