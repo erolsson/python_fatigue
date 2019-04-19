@@ -19,7 +19,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/'
-                                            'root_data/tempering_2h_180C_20190129')
+                                            'root_data/tempering_2h_180C_JMAT')
 residual_stress_multiplier = 1.
 pulsator_loads = np.array([30., 35., 40.])
 
@@ -48,7 +48,6 @@ for pulsator_test in pulsator_tests:
     stress_amplitude = (max(stresses) - min(stresses))/2
     print stress_amplitude
     stress_mean = (max(stresses) + min(stresses))/2
-
 
     kw = hardness/1000
     kf = 0.5
