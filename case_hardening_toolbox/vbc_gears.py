@@ -16,7 +16,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U9250T_180C_2h_60C_cool/')
+                                              '/U9250T_180C_2h_20C_cool/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         toolbox_writer.quenching_data.time = 3600.
         toolbox_writer.quenching_data.temperature = 120.
 
-        toolbox_writer.cooldown_data.temperature = 60
+        toolbox_writer.cooldown_data.temperature = 20
         toolbox_writer.cooldown_data.time = 3600
 
         toolbox_writer.material = 'U92506T'
