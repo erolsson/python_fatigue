@@ -70,8 +70,8 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
         main_path = '/scratch/users/erik/scania_gear_analysis'
-        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C_JMAT.odb'
-        dante_pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_JMAT/' \
+        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C_Tehler.odb'
+        dante_pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_Tehler/' \
                                         'dante_results_' + cd + '.pkl'
         pickle_directory = os.path.dirname(dante_pickle_name)
         if not os.path.isdir(pickle_directory):
