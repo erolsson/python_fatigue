@@ -19,22 +19,24 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def expansion_martensite(par, c, t):
     # par[2] = 0
-    par[3:] = 1.49e-5, -8.74e-6,  0, 0, 0
+    par[3] = 1.3e-5
+    if par[4] < -par[3]:
+        par[4] = -par[3]
     # par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
-    #par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
-    #par[3] = 1.2678425e-5 - par[4] * 0.2
-    #par[5:] = 0
+    # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
+    # par[3] = 1.2678425e-5 - par[4] * 0.2
+    par[5:] = 0
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
 
 
 def heat_expanion_martensite(par, c, t):
-    par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
-    par[3:] = 1.49e-5, -8.74e-6,  0, 0, 0
+    # par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
+    # par[3:] = 1.49e-5, -8.74e-6,  0, 0, 0
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4]*0.2
-    #par[5:] = 0
+    # par[5:] = 0
 
     m1, m2, m3, m4, m5, m6, m7, m8 = par
     return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
@@ -60,11 +62,11 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    # par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     # par[2] = -np.log(0.01)/(176+91)
-    # par[0] = 3.9663e-2
-    # par[1] = 2.655E-02
-    # par[2] = 1.3437E-02
+    par[0] = 3.9663e-2
+    # par[1] = 2.61328405E-02
+    par[2] = 1.70999611E-02
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
