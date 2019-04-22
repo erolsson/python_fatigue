@@ -19,9 +19,8 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def expansion_martensite(par, c, t):
     # par[2] = 0
-    par[3] = 1.3e-5
-    if par[4] < -par[3]:
-        par[4] = -par[3]
+    par[3] = 1.615e-5
+    par[4] = -2.31e-5
     # par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4] * 0.2
@@ -62,11 +61,14 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    # par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     # par[2] = -np.log(0.01)/(176+91)
-    par[0] = 3.9663e-2
+
+    # par[0] = 0.039663
     # par[1] = 2.61328405E-02
-    par[2] = 1.70999611E-02
+    # par[2] = 1.70999611E-02
+    # par[1] = 0.02654
+    # par[2] = 0.013436999999999998
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -133,8 +135,9 @@ if __name__ == '__main__':
                  ':' + experiment.color)
 
         if experiment.mf > temp[-1]:
-            mf_strain = np.interp(experiment.mf, np.flip(temp), np.flip(strain))
-            print (mf_strain - strain[-1])/(experiment.mf - temp[-1])
+            t_mf = np.linspace(temp[-1], experiment.mf, 100)
+            mf_strain = np.interp(t_mf, np.flip(temp), np.flip(strain))
+            print np.polyfit(t_mf, mf_strain, 1)
         ms = SS2506.ms_temperature(experiment.carbon/100) - 273.15
         plt.plot(ms, SS2506.transformation_strain.Austenite(ms, experiment.carbon / 100),
                  'x' + experiment.color, ms=12, mew=2)
@@ -193,12 +196,16 @@ if __name__ == '__main__':
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 
-    t20 = np.array([SS2506.ms_temperature(0.008) - 273.15 + np.log(0.2)/parameters[2]])
+    t20 = np.array([SS2506.ms_temperature(0.008) - 273.15 + np.log(0.25)/parameters[2]])
     expan02 = transformation_strain(parameters, np.array([0.2]), t20) - \
         transformation_strain(parameters, np.array([0.2]), np.array([1000]))
     expan08 = transformation_strain(parameters, np.array([0.8]), t20) - \
         transformation_strain(parameters, np.array([0.8]), np.array([1000]))
     print "20 % Retained Austenite at", t20
+    print "Difference in expansion is", expan08 - expan02
+    expan02 = expansion_martensite(parameters[3:], np.array([0.2]), np.array([20.]))
+    expan08 = 0.75*expansion_martensite(parameters[3:], np.array([0.8]), np.array([20.])) + \
+        0.25*SS2506.transformation_strain.Austenite(20., 0.008)
     print "Difference in expansion is", expan08 - expan02
 
     plt.figure(0)
