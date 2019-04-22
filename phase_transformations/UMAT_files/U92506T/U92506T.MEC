@@ -98,7 +98,7 @@ U92506T         ! matnam must be UPPERCASE                                      
 **  CTE and Transformation Strain                                                   line 98
 **--Austenite:  a1+a2*C+a3*T                                                        line 99
 **    a1       a2         a3                                                        line 100
-   -1.14e-2,  4.22e-3   2.377e-5                                                    line 101
+  -1.146e-2,  4.22e-3,   2.377e-5                                                   line 101
 **--Ferrite:   m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->F)     line 102
 **    m1        m2        m3          m4         m5        m6                       line 103
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
@@ -113,10 +113,10 @@ U92506T         ! matnam must be UPPERCASE                                      
   -1.3e-3,   2.295e-3, 1.26e-5,   0.000000,  0.,      0.00000                       line 110
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
- -3.5994e-3,   1.249e-2, -6.187e-3, 1.615e-5, -2.31e-5, 0.0,   0.0,     0.0         line 116
+ -3.7286e-3,   1.339e-2, -7.519e-3, 1.615e-5, -2.31e-5, 0.0,   0.0,     0.0         line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
- -3.5994e-3,   1.249e-2, -6.187e-3, 1.615e-5, -2.31e-5, 0.0,   0.0,     0.0         line 119
+ -3.7286e-3,   1.339e-2, -7.519e-3, 1.615e-5, -2.31e-5, 0.0,   0.0,     0.0         line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122
