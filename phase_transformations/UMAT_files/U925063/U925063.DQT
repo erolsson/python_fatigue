@@ -12,9 +12,9 @@ U925063        ! matnam must be UPPERCASE
    0.70E+1  0.20E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 3.69410000E+02              !Ms
-3.4403E-02              !mobility
-0.0                         !alpha
-0.0                         !beta
+4.01401765E-02              !mobility
+1.26473302E-02              !alpha
+1.00090224E-02              !beta
  2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                      !1 Lower T Bound  T1
@@ -125,9 +125,9 @@ U925063        ! matnam must be UPPERCASE
    0.70E+1  0.50E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 2.74175000E+02              !Ms
-1.370E-02              !mobility
-0.0                         !alpha
-0.0                         !beta
+2.61328405E-02              !mobility
+1.17997095E-02              !alpha
+1.00765669E-02              !beta
  2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                     !1 Lower T Bound  T1
@@ -238,9 +238,9 @@ U925063        ! matnam must be UPPERCASE
    0.70E+1  0.80E+0  0.84E+0  0.22E+0  0.44E+0  0.54E+0  0.22E+0
 ** Austenite-->Martensite
 1.78940000E+02              !Ms
-1.4487134-02             !mobility
-0.0                         !alpha
-0.0                         !beta
+1.70999611E-02              !mobility
+1.41226079E-02              !alpha
+1.26093293E-02              !beta
  2.000000E-01               !epsilon_m
 ** Austenite-->Ferrite 
  550.0                      !1 Lower T Bound  T1
