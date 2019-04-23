@@ -86,7 +86,7 @@ if __name__ == '__main__':
         toolbox_writer.cooldown_data.temperature = 90
         toolbox_writer.cooldown_data.time = 3600
 
-        toolbox_writer.material = 'U92506T'
+        toolbox_writer.material = 'U925063'
 
         toolbox_writer.tempering_data.temperature = simulation.tempering[0]
         toolbox_writer.tempering_data.time = simulation.tempering[1]
