@@ -83,7 +83,7 @@ if __name__ == '__main__':
         toolbox_writer.quenching_data.time = 3600.
         toolbox_writer.quenching_data.temperature = 120.
 
-        toolbox_writer.cooldown_data.temperature = 85
+        toolbox_writer.cooldown_data.temperature = 90
         toolbox_writer.cooldown_data.time = 3600
 
         toolbox_writer.material = 'U92506T'
