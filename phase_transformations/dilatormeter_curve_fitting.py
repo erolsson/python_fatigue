@@ -19,8 +19,8 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def expansion_martensite(par, c, t):
     # par[2] = 0
-    par[3] = 1.615e-5
-    par[4] = -2.31e-5
+    par[3] = 1.81073388e-5
+    par[4] = -2.53710047e-5
     # par[3:] = 1.6369e-5, -2.1344e-5, 0, 0, 0
     # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
     # par[3] = 1.2678425e-5 - par[4] * 0.2
@@ -61,7 +61,7 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.05)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    # par[2] = -np.log(0.05)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     # par[2] = -np.log(0.01)/(176+91)
 
     # par[0] = 0.039663
