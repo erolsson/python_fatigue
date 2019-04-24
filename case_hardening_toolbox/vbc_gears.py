@@ -16,7 +16,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U925063_200C_2h_90C_cool/')
+                                              '/U925063_200C_2h_80C_cool/')
     include_file_directory = simulation_directory + 'include_files'
 
     if not os.path.isdir(include_file_directory):
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
         toolbox_writer.interaction_property_file = 'interaction_properties.inc'
         toolbox_writer.heating_data.carbon = 0.5
-        toolbox_writer.heating_data.time = 90.
+        toolbox_writer.heating_data.time = 80.
         toolbox_writer.heating_data.temperature = 930.
 
         toolbox_writer.quenching_data.time = 3600.
