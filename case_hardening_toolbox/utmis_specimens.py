@@ -49,7 +49,7 @@ simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
 
 # This is the main directory where all simulation folders will be placed
 simulation_directory = os.path.expanduser('~/scania_gear_analysis/utmis_specimens/' + specimen_name +
-                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_100C_JMAT/')
+                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
