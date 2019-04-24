@@ -37,7 +37,7 @@ specimen_name = 'utmis_' + specimen_type
 times = [120]
 temps = [930]
 carbon_levels = [1.1, 0.8]
-tempering = (180, 7200)
+tempering = (200, 7200)
 
 name = ''
 
@@ -97,10 +97,10 @@ for simulation in simulations:
     toolbox_writer.quenching_data.time = 3600.
     toolbox_writer.quenching_data.temperature = 120.
 
-    toolbox_writer.cooldown_data.temperature = 100
+    toolbox_writer.cooldown_data.temperature = 80
     toolbox_writer.cooldown_data.time = 3600
 
-    toolbox_writer.material = 'U92506J'
+    toolbox_writer.material = 'U925063'
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
