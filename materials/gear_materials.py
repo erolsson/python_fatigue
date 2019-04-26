@@ -27,8 +27,8 @@ class SS2506MaterialTemplate:
                                            Pearlite=self._thermal_exp_fp,
                                            Ferrite=self._thermal_exp_fp)
 
-        self.composition = {'C': 0.23, 'Si': 0.2, 'Mn': 0.97, 'P': 0.01, 'S': 0.033, 'Cr':  0.6, 'Ni': 0.36, 'Mo': 0.7,
-                            'Cu': 0.16, 'Al': 0.27}
+        self.composition = {'C': 0.2, 'Si': 0.28, 'Mn': 0.77, 'P': 0.009, 'S': 0.03, 'Cr':  0.46, 'Ni': 0.42,
+                            'Mo': 0.19, 'Cu': 0.048, 'Al': 0.028}
 
     @staticmethod
     def findley_k(steel_properties):

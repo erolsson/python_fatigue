@@ -50,7 +50,7 @@ for pulsator_test in pulsator_tests:
     stress_mean = (max(stresses) + min(stresses))/2
 
     kw = hardness/1000
-    kf = 0.5
+    kf = 1.
 
     winderlich_stress = stress_amplitude + kw*stress_mean
     findley_stress = 0.5*(kf*(stress_amplitude+stress_mean) +
@@ -63,7 +63,7 @@ for pulsator_test in pulsator_tests:
     plt.figure(1)
     plt.plot(stress_mean, stress_amplitude, pulsator_test.color + 'o', ms=12)
 
-    k = 1.3
+    k = 1000
     sF = 500*(k + np.sqrt(1+k**2))/2
     print 'sF =', sF
     sm = np.linspace(100, 145, 100)
