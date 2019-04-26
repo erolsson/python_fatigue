@@ -14,8 +14,8 @@ from planetary_gear.gear_input_file_functions import write_sets_file
 from case_hardening_toobox import CaseHardeningToolbox
 
 if __name__ == '__main__':
-    mesh = '1x'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
+    mesh = '2x'
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear_2x'
                                               '/U925063_200C_2h_70C_cool_3/')
     include_file_directory = simulation_directory + 'include_file'
 
