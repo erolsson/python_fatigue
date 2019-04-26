@@ -56,7 +56,7 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.20)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
+    par[2] = -np.log(0.10)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
     # par[2] = -np.log(0.01)/(176+91)
 
     # par[0] = 0.039663
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     expan08 = 0.8*expansion_martensite(parameters[3:], np.array([0.8]), np.array([t20])) + \
         0.2*SS2506.transformation_strain.Austenite(t20, 0.008) - \
         transformation_strain(parameters, 0.8, np.array([1000]))
-    print "Difference in expansion is", expan08 - expan02, expan02, expan08
+    print "Difference in expansion is", expan08 - expan02
 
     plt.figure(0)
     plt.xlim(0, 800)
