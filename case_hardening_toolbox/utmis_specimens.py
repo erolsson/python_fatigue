@@ -34,9 +34,9 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-times = [120]
-temps = [930]
-carbon_levels = [1.1, 0.8]
+times = [75, 5, 30]
+temps = [930, 840, 840]
+carbon_levels = [1.1, 0.8, 0.8]
 tempering = (200, 7200)
 
 name = ''
