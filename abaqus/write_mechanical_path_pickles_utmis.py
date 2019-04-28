@@ -12,7 +12,7 @@ from abaqusConstants import INTEGRATION_POINT
 if __name__ == '__main__':
     path_points_y = np.ones((100, 3))*1e-3
     path_points_z = np.ones((100, 3))*1e-3
-    path_points_y[:, 1] = np.linspace(2. - 1e-3, 0, 100)
+    path_points_y[:, 1] = np.linspace(2.5 - 1e-3, 0, 100)
     path_points_z[:, 2] = np.linspace(2. - 1e-3, 0, 100)
     path_points_z[:, 1] = 2.5 - 1e-3
     for path_points, path_name in zip([path_points_y, path_points_z], ['path_y', 'path_z']):
