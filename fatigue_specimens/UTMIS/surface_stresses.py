@@ -18,7 +18,7 @@ heat_treatment_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pic
                                                      'heat_treatment_data/')
 
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/'
-                                                     'mechanical_data/')
+                                                 'mechanical_data/')
 
 for specimen in ['smooth', 'notched']:
     for i, path in enumerate(['y', 'z']):
@@ -34,8 +34,6 @@ for specimen in ['smooth', 'notched']:
         plt.plot(heat_treatment_data['r'], heat_treatment_data['S'])
 
         plt.figure(i+2)
-        plt.plot(mechanical_data[:, 0], mechanical_data[:, 3])
-
-
+        plt.plot(mechanical_data[:, 0], mechanical_data[:, 1])
 
 plt.show()
