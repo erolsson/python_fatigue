@@ -7,7 +7,7 @@ from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
 import odbAccess
-from AbaqusConstants import INTEGRATION_POINT
+from abaqusConstants import INTEGRATION_POINT
 
 if __name__ == '__main__':
     path_points_y = np.ones((100, 3))*1e-3
