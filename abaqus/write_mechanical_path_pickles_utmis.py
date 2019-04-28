@@ -7,6 +7,7 @@ from path_functions import create_path
 from path_functions import get_stress_tensors_from_path
 
 import odbAccess
+from AbaqusConstants import INTEGRATION_POINT
 
 if __name__ == '__main__':
     path_points_y = np.ones((100, 3))*1e-3
@@ -37,4 +38,4 @@ if __name__ == '__main__':
             frame_number = len(odb.steps[step_name].frames)
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
 
-            print get_stress_tensors_from_path(path.name, session, output_position=ELEMENT_NODAL)
+            print get_stress_tensors_from_path(path.name, session, output_position=INTEGRATION_POINT)
