@@ -19,7 +19,11 @@ def create_path(points, path_name, session):
 
 
 def get_stress_tensors_from_path(path, session, output_position=ELEMENT_NODAL):
-    stress_data = np.zeros((100, 3, 3))
+
+    xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
+                               labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
+                               includeIntersections=False)
+    stress_data = np.zeros((len(xy), 3, 3))
     comps = ['S11', 'S22', 'S33', 'S12', 'S13', 'S23']
     for (idx1, idx2), comp in zip([(0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2)], comps):
         session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='S',
