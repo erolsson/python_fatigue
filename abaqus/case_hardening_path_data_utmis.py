@@ -6,6 +6,7 @@ from path_functions import Path
 from write_heat_treatment_path_data import write_case_hardening_data_along_path
 
 from visualization import *
+from abaqusConstants import INTEGRATION_POINT
 
 
 if __name__ == '__main__':
@@ -27,4 +28,4 @@ if __name__ == '__main__':
             pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_' + path_name + '.pkl'
             step_name = 'Tempering'
             write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,
-                                                 session=session)
+                                                 session=session, output_position=INTEGRATION_POINT)

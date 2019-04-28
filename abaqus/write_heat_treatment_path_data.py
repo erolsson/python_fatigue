@@ -15,7 +15,7 @@ from path_functions import get_scalar_field_from_path
 
 
 def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, session,
-                                         step_name=None, frame_number=None):
+                                         step_name=None, frame_number=None, output_position=ELEMENT_NODAL):
     odb = odbAccess.openOdb(data_odb_name)
 
     session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
@@ -34,12 +34,12 @@ def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, sessi
     session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
     path.data[:, 0:2] -= 1e-4
     root_path = create_path(path.data, 'longitudinal_path', session)
-    stress_tensors = get_stress_tensors_from_path(root_path, session)
-    hardness = get_scalar_field_from_path(root_path, session, 'HV')
-    quenched_martensite = get_scalar_field_from_path(root_path, session, 'SDV_Q_MARTENSITE')
-    tempered_martensite = get_scalar_field_from_path(root_path, session, 'SDV_T_MARTENSITE')
-    austenite = get_scalar_field_from_path(root_path, session, 'SDV_AUSTENITE')
-    carbon = get_scalar_field_from_path(root_path, session, 'SDV_CARBON')
+    stress_tensors = get_stress_tensors_from_path(root_path, session, output_position)
+    hardness = get_scalar_field_from_path(root_path, session, 'HV', output_position)
+    quenched_martensite = get_scalar_field_from_path(root_path, session, 'SDV_Q_MARTENSITE', output_position)
+    tempered_martensite = get_scalar_field_from_path(root_path, session, 'SDV_T_MARTENSITE', output_position)
+    austenite = get_scalar_field_from_path(root_path, session, 'SDV_AUSTENITE', output_position)
+    carbon = get_scalar_field_from_path(root_path, session, 'SDV_CARBON', output_position)
 
     data = {'r': np.sqrt(np.sum((path.data - path.data[0, :]) ** 2, 1)),
             'S': np.dot(np.dot(path.normal, stress_tensors), path.normal),
