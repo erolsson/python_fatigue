@@ -20,7 +20,7 @@ if __name__ == '__main__':
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
         for specimen in ['smooth', 'notched']:
-            mechanical_odb = ('/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/unit_load'
+            mechanical_odb = ('/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/unit_load_'
                               + specimen + '.odb')
             odb = odbAccess.openOdb(mechanical_odb)
 
