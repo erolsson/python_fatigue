@@ -20,7 +20,10 @@ heat_treatment_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pic
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/'
                                                  'mechanical_data/')
 
-for specimen in ['smooth', 'notched']:
+fatigue_limits = {'smooth': {-1: 760., 0: 424},
+                  'notched': {-1: 440., 0: 237.}}
+
+for specimen, color in zip(['smooth', 'notched'], ['b', 'r']):
     for i, path in enumerate(['y', 'z']):
         with open(heat_treatment_pickle_directory + 'utmis_' + specimen + '_dante_path_' + path
                   + '.pkl', 'r') as heat_pickle:
@@ -33,7 +36,16 @@ for specimen in ['smooth', 'notched']:
         plt.figure(i)
         plt.plot(heat_treatment_data['r'], heat_treatment_data['S'])
 
-        plt.figure(i+2)
+        plt.figure(i + 2)
         plt.plot(mechanical_data[:, 0], mechanical_data[:, 1])
+
+        plt.figure(i + 4)
+        plt.plot(mechanical_data[:, 0], fatigue_limits[specimen][-1]*mechanical_data[:, 1] +
+                 heat_treatment_data['S'])
+
+        plt.figure(6)
+        for R, su in fatigue_limits[specimen].iteritems():
+            plt.plot(heat_treatment_data['S'] + (1+R)/(1-R)*su*mechanical_data[:, 1],
+                     su*mechanical_data[:, 1], color, lw=2)
 
 plt.show()
