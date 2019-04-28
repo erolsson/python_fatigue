@@ -35,7 +35,7 @@ def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, sessi
     path.data[:, 0:2] -= 1e-4
     root_path = create_path(path.data, 'longitudinal_path', session)
     stress_tensors = get_stress_tensors_from_path(root_path, session, output_position)
-    hardness = get_scalar_field_from_path(root_path, session, 'SDV_HARDNESS', output_position)
+    hardness = get_scalar_field_from_path(root_path, session, 'HV', output_position)
     quenched_martensite = get_scalar_field_from_path(root_path, session, 'SDV_Q_MARTENSITE', output_position)
     tempered_martensite = get_scalar_field_from_path(root_path, session, 'SDV_T_MARTENSITE', output_position)
     austenite = get_scalar_field_from_path(root_path, session, 'SDV_AUSTENITE', output_position)
@@ -70,8 +70,8 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 if __name__ == '__main__':
     for cd in ['0_5', '0_8', '1_1', '1_4']:
         main_path = '/scratch/users/erik/scania_gear_analysis'
-        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_180C_Tehler.odb'
-        dante_pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C_Tehler/' \
+        odb_name = main_path + '/odb_files/heat_treatment/mesh_1x/dante_results_tempering_2h_200C_U25062.odb'
+        dante_pickle_name = main_path + '/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_200C_U25062/' \
                                         'dante_results_' + cd + '.pkl'
         pickle_directory = os.path.dirname(dante_pickle_name)
         if not os.path.isdir(pickle_directory):
