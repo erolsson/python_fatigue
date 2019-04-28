@@ -16,7 +16,7 @@ if __name__ == '__main__':
     path_points_z[:, 2] = np.linspace(2. - 1e-3, 0, 100)
     for path_points, path_name in zip([path_points_y, path_points_z], ['path_y', 'path_z']):
         path = Path(path_name, path_points, np.array([1, 0, 0]))
-        create_path(path.data, path.name, session)
+        abq_path = create_path(path.data, path.name, session)
         pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/'
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
@@ -38,4 +38,4 @@ if __name__ == '__main__':
             frame_number = len(odb.steps[step_name].frames)
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
 
-            print get_stress_tensors_from_path(path.name, session, output_position=INTEGRATION_POINT)
+            print get_stress_tensors_from_path(abq_path, session, output_position=INTEGRATION_POINT)
