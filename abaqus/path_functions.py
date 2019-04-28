@@ -19,7 +19,9 @@ def create_path(points, path_name, session):
 
 
 def get_stress_tensors_from_path(path, session, output_position=ELEMENT_NODAL):
-
+    session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(variableLabel='S',
+                                                                   outputPosition=output_position,
+                                                                   refinement=[COMPONENT, 'S11'])
     xy = xyPlot.XYDataFromPath(name='Stress profile', path=path,
                                labelType=TRUE_DISTANCE, shape=UNDEFORMED, pathStyle=PATH_POINTS,
                                includeIntersections=False)
