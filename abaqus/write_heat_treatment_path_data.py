@@ -51,6 +51,7 @@ def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, sessi
 
     with open(pickle_name, 'wb') as result_pickle_handle:
         pickle.dump(data, result_pickle_handle)
+    odb.close()
 
 
 def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number=None):
