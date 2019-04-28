@@ -41,8 +41,8 @@ if __name__ == '__main__':
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
 
             stress = get_stress_tensors_from_path(abq_path, session, output_position=INTEGRATION_POINT)
-            data = np.zeros((100, 2))
-            data[:, 0] = path_points
-            data[:, 1] = stress[0:100, 0, 0]
+            data = np.zeros((100, 4))
+            data[:, 0:3] = path_points
+            data[:, 3] = stress[0:100, 0, 0]
             with open(pickle_directory + 'unit_load_' + specimen + '_' + path_name + '.pkl') as pickle_file:
                 pickle.dump(data, pickle_file)
