@@ -45,7 +45,7 @@ if __name__ == '__main__':
             if axis == 2:
                 data[:, 0] = np.flipud(path_points[:, axis])
             else:
-                data[:, 0] = np.path_points[:, axis]
+                data[:, 0] = path_points[:, axis]
             data[:, 1] = stress[0:100, 0, 0]
             with open(pickle_directory + 'unit_load_' + specimen + '_' + path_name + '.pkl', 'w') as pickle_file:
                 pickle.dump(data, pickle_file)
