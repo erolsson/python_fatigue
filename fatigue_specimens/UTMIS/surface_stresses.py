@@ -22,6 +22,7 @@ for specimen in ['smooth', 'notched']:
         with open(heat_treatment_pickle_directory + 'utmis_' + specimen + '_dante_path_' + path
                   + '.pkl', 'r') as heat_pickle:
             heat_treatment_data = pickle.load(heat_pickle)
+        print 'utmis_' + specimen + '_dante_path_' + path + '.pkl', i
         plt.figure(i)
         plt.plot(heat_treatment_data['r'], heat_treatment_data['S'])
 

@@ -40,7 +40,7 @@ def write_case_hardening_data_along_path(data_odb_name, path, pickle_name, sessi
     tempered_martensite = get_scalar_field_from_path(root_path, session, 'SDV_T_MARTENSITE', output_position)
     austenite = get_scalar_field_from_path(root_path, session, 'SDV_AUSTENITE', output_position)
     carbon = get_scalar_field_from_path(root_path, session, 'SDV_CARBON', output_position)
-
+    print  np.dot(np.dot(path.normal, stress_tensors), path.normal)
     data = {'r': np.sqrt(np.sum((path.data - path.data[0, :]) ** 2, 1)),
             'S': np.dot(np.dot(path.normal, stress_tensors), path.normal),
             'HV': hardness,
