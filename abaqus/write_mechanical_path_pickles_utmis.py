@@ -16,7 +16,7 @@ if __name__ == '__main__':
     path_points_y[:, 1] = np.linspace(2.5 - 1e-3, 0, 100)
     path_points_z[:, 2] = np.linspace(0, 2. - 1e-3, 100)
     path_points_z[:, 1] = 2.5 - 1e-3
-    for path_points, path_name in zip([path_points_y, path_points_z], ['path_y', 'path_z']):
+    for path_points, path_name, axis in zip([path_points_y, path_points_z], ['path_y', 'path_z'], [1, 2]):
         path = Path(path_name, path_points, np.array([1, 0, 0]))
         abq_path = create_path(path.data, path.name, session)
         pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/'
@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
             stress = get_stress_tensors_from_path(abq_path, session, output_position=INTEGRATION_POINT)
             data = np.zeros((100, 4))
-            data[:, 0:3] = path_points
+            data[:, 0] = path_points[:, axis]
             data[:, 3] = stress[0:100, 0, 0]
-            with open(pickle_directory + 'unit_load_' + specimen + '_' + path_name + '.pkl') as pickle_file:
+            with open(pickle_directory + 'unit_load_' + specimen + '_' + path_name + '.pkl', 'w') as pickle_file:
                 pickle.dump(data, pickle_file)
