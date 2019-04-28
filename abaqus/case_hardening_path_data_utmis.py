@@ -25,7 +25,7 @@ if __name__ == '__main__':
             dante_odb_path = dante_odb_base_path + 'utmis_' + specimen + '_tempering_2h_200_cooldown_80C/'
             dante_odb_path += 'utmis_' + specimen + '_75min930C11wtC5min840C08wtC30min840C08wtC/'
             odb_file_name = dante_odb_path + 'Toolbox_Mechanical_utmis_' + specimen + '.odb'
-            pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_' + path_name + '.pkl'
+            pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
             step_name = 'Tempering'
             write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,
                                                  session=session, output_position=INTEGRATION_POINT)
