@@ -22,7 +22,7 @@ if __name__ == '__main__':
             os.makedirs(pickle_directory)
         for specimen in ['smooth', 'notched']:
             dante_odb_path += 'utmis_' + specimen + '_tempering_2h_200_cooldown_80C/'
-            dante_odb_path += ' utmis_' + specimen + '_75min930C11wtC5min840C08wtC30min840C08wtC/'
+            dante_odb_path += 'utmis_' + specimen + '_75min930C11wtC5min840C08wtC30min840C08wtC/'
             odb_file_name = dante_odb_path + 'Toolbox_Mechanical_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + 'dante_' + path_name + '.pkl'
             step_name = 'Tempering'
