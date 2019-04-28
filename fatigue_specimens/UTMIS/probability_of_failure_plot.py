@@ -19,7 +19,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 if __name__ == '__main__':
     figures = {'smooth': 0, 'notched': 1}
-    colors = {-1: 'b', 0: 'r'}
+    colors = {-1.: 'b', 0.: 'r'}
 
     k = 1.3
     su = 750.
