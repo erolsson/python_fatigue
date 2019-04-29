@@ -89,6 +89,7 @@ for simulation in simulations:
                                           include_file_directory=inc_file_directory)
 
     toolbox_writer.diffusion_file = 'diffusivity.inc'
+    toolbox_writer.initial_carbon = SS2506.composition['C']
     toolbox_writer.interaction_property_file = 'interaction_properties.inc'
     toolbox_writer.heating_data.carbon = 0.5
     toolbox_writer.heating_data.time = 90.
