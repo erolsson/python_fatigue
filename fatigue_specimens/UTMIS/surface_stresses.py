@@ -40,7 +40,7 @@ for specimen, color in zip(['smooth', 'notched'], ['b', 'r']):
         plt.plot(mechanical_data[:, 0], mechanical_data[:, 1])
 
         plt.figure(i + 4)
-        plt.plot(mechanical_data[:, 0], fatigue_limits[specimen][-1]*mechanical_data[:, 1] +
+        plt.plot(mechanical_data[:, 0], -fatigue_limits[specimen][-1]*mechanical_data[:, 1] +
                  heat_treatment_data['S'])
 
         plt.figure(6)

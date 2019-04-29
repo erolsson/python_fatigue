@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
         toolbox_writer.diffusion_file = 'diffusivity_2506.inc'
         toolbox_writer.interaction_property_file = 'interaction_properties.inc'
-        toolbox_writer.initial_carbon = SS2506.composition['C']
+        toolbox_writer.initial_carbon = SS2506.composition['C']/100
         toolbox_writer.heating_data.carbon = 0.5
         toolbox_writer.heating_data.time = 90.
         toolbox_writer.heating_data.temperature = 930.
