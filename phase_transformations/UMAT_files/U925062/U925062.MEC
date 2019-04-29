@@ -135,7 +135,7 @@ U925062         ! matnam must be UPPERCASE                                      
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 135
    560.0,    450.0,    400.0                                                        line 136
 ** HRC-UBAINH--UBAINL--LBAINH--LBAINL  (UBAIN and LBAIN Hardness)                   line 137
-        28.0,   32.0,   34.0,   37.0                                                line 138
+        28.0,   32.0,   25.0,   28.0                                                line 138
 ** Initial Hardness of Bainite and Tempered Martensite                              line 139
    34.0,   41.0                                                                     line 140
 **  Carbon level vpc(i): 0.2% -----------------------------------                   line 141
@@ -147,7 +147,7 @@ U925062         ! matnam must be UPPERCASE                                      
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 147
    560.0,    450.0,    400.0                                                        line 148
 ** HRC-UBAINH--UBAINL--LBAINH--LBAINL  (UBAIN and LBAIN Hardness)                   line 149
-        31.0,   35.0,   35.0,   38.0                                                line 150
+        31.0,   35.0,   27.0,   30.0                                                line 150
 ** Initial Hardness of Bainite and Tempered Martensite                              line 151
    39.0,    46.0                                                                    line 152
 **  Carbon level vpc(i): 0.4% -----------------------------------                   line 153
@@ -159,7 +159,7 @@ U925062         ! matnam must be UPPERCASE                                      
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 159
    560.0,    450.0,    330.0                                                        line 160
 ** HRC-UBAINH--UBAINL--LBAINH--LBAINL  (UBAIN and LBAIN Hardness)                   line 161
-         42.0,   46.0,   48.0,   52.0                                               line 162
+         42.0,   46.0,   41.0,   45.0                                               line 162
 ** Initial Hardness of Bainite and Tempered Martensite                              line 163
    46.0,   56.0                                                                     line 164
 **  Carbon level vpc(i): 0.6% -----------------------------------                   line 165
