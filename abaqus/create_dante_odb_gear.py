@@ -13,11 +13,14 @@ from odb_io_functions import flip_node_order
 from materials.hardess_convertion_functions import HRC2HV
 
 
-def create_dante_step(from_odb_name, to_odb_name, results_step_name):
+def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=None):
     # Inspect the odb to get available data
     from_odb = openOdb(from_odb_name, readOnly=False)
-    last_step_name, last_step = from_odb.steps.items()[-1]
-    scalar_variables = last_step.frames[-1].fieldOutputs.keys()
+    if from_step is None:
+        step_name, _ = from_odb.steps.items()[-1]
+    else:
+        step_name = from_step
+    scalar_variables = from_odb.steps[step_name].frames[-1].fieldOutputs.keys()
     from_odb.close()
     if 'NT11' in scalar_variables:
         scalar_variables.remove('NT11')
@@ -34,8 +37,8 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     data_dict = {}
     for scalar_variable in scalar_variables:
         print "reading variable", scalar_variable
-        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, last_step_name, -1)
-    data_dict['S'] = read_field_from_odb('S', from_odb_name, last_step_name, -1)
+        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, step_name, -1)
+    data_dict['S'] = read_field_from_odb('S', from_odb_name, step_name, -1)
 
     for scalar_field in scalar_variables:
         field = data_dict[scalar_field]
