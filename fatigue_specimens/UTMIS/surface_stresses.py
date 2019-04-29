@@ -20,8 +20,8 @@ heat_treatment_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pic
 mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/'
                                                  'mechanical_data/')
 
-fatigue_limits = {'smooth': {-1: 760., 0: 424},
-                  'notched': {-1: 440., 0: 237.}}
+fatigue_limits = {'smooth': {-1: 760., 0: 415},
+                  'notched': {-1: 460., 0: 250.}}
 
 for specimen, color in zip(['smooth', 'notched'], ['b', 'r']):
     for i, path in enumerate(['y', 'z']):

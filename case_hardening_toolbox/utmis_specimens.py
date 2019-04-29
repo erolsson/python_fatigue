@@ -100,7 +100,7 @@ for simulation in simulations:
     toolbox_writer.cooldown_data.temperature = 80
     toolbox_writer.cooldown_data.time = 3600
 
-    toolbox_writer.material = 'U925063'
+    toolbox_writer.material = 'U925062'
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
