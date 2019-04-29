@@ -88,4 +88,5 @@ if __name__ == '__main__':
         simulation_odb += 'Toolbox_Mechanical_' + str(cd).replace('.', '_') + '_quarter.odb'
         create_dante_step(from_odb_name=simulation_odb,
                           to_odb_name=odb_file_name,
-                          results_step_name='dante_results_' + str(cd).replace('.', '_'))
+                          results_step_name='dante_results_' + str(cd).replace('.', '_'),
+                          from_step='Tempering')
