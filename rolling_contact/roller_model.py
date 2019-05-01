@@ -246,4 +246,4 @@ class Roller:
 if __name__ == '__main__':
     roller = Roller(25./2, 40.2/2, 10.4)
     roller.create_mesh()
-    roller.write_file('roller')
+    roller.write_file('input_files/roller.inp')
