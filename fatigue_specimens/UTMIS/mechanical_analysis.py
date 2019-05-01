@@ -128,6 +128,7 @@ spec.modelDB.ConcentratedForce(name='Force',
                                cf2=P)
 
 # Loading the residual stresses
+os.chdir(simulation_directory)
 spec.modelDB.Stress(name='Residual_stress',
                     distributionType=FROM_FILE,
                     fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
@@ -136,8 +137,6 @@ spec.modelDB.Stress(name='Residual_stress',
 
 if not os.path.isdir(simulation_directory):
     os.makedirs(simulation_directory)
-
-os.chdir(simulation_directory)
 
 job = mdb.Job(name='unit_load_' + specimen_name,
               model=spec.modelDB,
