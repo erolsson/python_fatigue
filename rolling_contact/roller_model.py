@@ -188,7 +188,8 @@ class Roller:
         element_sets['inner_elements'] = mesher.get_elements_by_bounding_box(z_min=bounding_box[5] - 1e-8)
         element_sets['outer_elements'] = mesher.get_elements_by_bounding_box(z_max=bounding_box[4] + 1e-8)
 
-        node_sets['monitor_node'] = mesher.get_nodes_by_bounding_box(x_max=1e-8, y_max=1e-8, z_max=1e-8)
+        node_sets['monitor_node'] = mesher.get_nodes_by_bounding_box(x_max=1e-8, y_max=1e-8,
+                                                                     z_max=bounding_box[4] + 1e-8)
 
         left_nodes = mesher.get_nodes_by_bounding_box()
         mesher.add_to_node_set(left_nodes, 'right_nodes')
