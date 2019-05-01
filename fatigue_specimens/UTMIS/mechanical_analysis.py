@@ -13,6 +13,7 @@ try:
     from abaqus import backwardCompatibility
 
     from abaqusConstants import OFF, ON, THREE_D, DISCRETE_RIGID_SURFACE, WHOLE_SURFACE, DISTRIBUTING, KINEMATIC
+    from abaqusConstants import FROM_FILE
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
     print " ERROR: This script require Abaqus CAE to run"
@@ -22,7 +23,7 @@ from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClas
 from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenClass
 
 simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
-
+dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
 
 specimen_name = sys.argv[-2]
 load = float(sys.argv[-1])
@@ -125,6 +126,13 @@ spec.modelDB.ConcentratedForce(name='Force',
                                createStepName='MechanicalLoad',
                                region=spec.load_node,
                                cf2=P)
+
+# Loading the residual stresses
+spec.modelDB.Stress(name='Residual_stress',
+                    distributionType=FROM_FILE,
+                    fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
+                    step=1,
+                    inc=1)
 
 if not os.path.isdir(simulation_directory):
     os.makedirs(simulation_directory)
