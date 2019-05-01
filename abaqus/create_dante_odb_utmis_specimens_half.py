@@ -34,6 +34,9 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
     if 'S' in scalar_variables:
         scalar_variables.remove('S')
 
+    if 'E' in scalar_variables:
+        scalar_variables.remove('E')
+
     data_dict = {}
     for scalar_variable in scalar_variables:
         print "reading variable", scalar_variable
