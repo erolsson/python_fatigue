@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
         instances = [OdbInstance(name='specimen_part_pos', nodes=nodes_pos, elements=elements_pos),
                      OdbInstance(name='specimen_part_neg', nodes=nodes_neg, elements=elements_neg)]
-        odb_file_name = dante_odb_path + 'utmis_' + specimen + 'half.odb'
+        odb_file_name = dante_odb_path + 'utmis_' + specimen + '_half.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
         simulation_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062/utmis_' + specimen
@@ -99,4 +99,4 @@ if __name__ == '__main__':
                                             + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                             + specimen + '.odb')
         create_dante_step(simulation_odb, odb_file_name,
-                          'dante_results_tempering_2h_')
+                          'dante_results_tempering_2h')
