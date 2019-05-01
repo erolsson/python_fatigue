@@ -1,7 +1,8 @@
 import sys
 
 import os
-from math import sqrt, sin, cos, pi
+
+from math import pi
 
 import numpy as np
 
@@ -221,6 +222,7 @@ class Roller:
             os.makedirs(output_directory)
 
         # Set path as working directory
+        workdir = os.getcwd()
         if output_directory:
             os.chdir(output_directory)
 
@@ -239,9 +241,11 @@ class Roller:
         mdb.jobs[output_file_name_no_ext].writeInput(consistencyChecking=OFF)
         # Remove job
         del mdb.jobs[output_file_name_no_ext]
+        print output_file_name_no_ext + '.inp'
 
         # Fix file name
-        os.rename(output_file_name_no_ext + '.inp', file_name)
+        os.rename(output_file_name_no_ext + '.inp', output_file_name_no_ext + '.' + extension)
+        os.chdir(workdir)
 
 
 if __name__ == '__main__':
