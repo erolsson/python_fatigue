@@ -345,6 +345,8 @@ class CaseHardeningToolbox:
                 '\t\t 6,',
                 '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
                 '\t\t20, 30, 9, 16, 10, 4, 12, 20',
+                '\t*CONTROLS, FIELD=TEMPERATURE, PARAMETERS=FIELD',
+                '\t\t0.05, 0.05',
                 '\t*RESTART, WRITE, FREQ=1000',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
                 '\t\t*ELEMENT OUTPUT',
@@ -375,7 +377,7 @@ class CaseHardeningToolbox:
                 '\t*CONTROLS, PARAMETERS=TIME INCREMENTATION',
                 '\t\t20, 30',
                 '\t*CONTROLS, FIELD=DISPLACEMENT, PARAMETERS=FIELD',
-                '\t\t0.05,0.05',
+                '\t\t0.05, 0.05',
                 '\t*RESTART, WRITE, FREQ=1000',
                 '\t*MONITOR, NODE=MONITOR_NODE, DOF=1, FREQ=1',
                 '\t*OUTPUT, FIELD, FREQ=' + str(output_frequency),
@@ -537,13 +539,12 @@ class CaseHardeningToolbox:
         if self.cooldown_data.time is not None and self.cooldown_data.time > 0.:
             self._add_cooldown_step('Cooldown_1', kinematic_mode=-8, time=self.cooldown_data.time,
                                     temperature=self.cooldown_data.temperature)
-            self._add_cooldown_step('Cooldown_2', kinematic_mode=1, time=self.cooldown_data.time,
-                                    temperature=20)
 
         if self.tempering_data.time is not None and self.tempering_data.time > 0:
             self._add_tempering_step()
 
-        self._add_cooldown_step('Cooldown_3', kinematic_mode=1, time=3600, temperature=self.initial_temperature)
+        self._add_cooldown_step('Cooldown_3', kinematic_mode=1, time=3600,
+                                temperature=self.cooldown_data.temperature)
 
         for name, lines in zip(['Carbon', 'Thermal', 'Mechanical'],
                                [self.carbon_file_lines, self.thermal_file_lines, self.mechanical_file_lines]):

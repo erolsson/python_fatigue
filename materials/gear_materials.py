@@ -27,8 +27,8 @@ class SS2506MaterialTemplate:
                                            Pearlite=self._thermal_exp_fp,
                                            Ferrite=self._thermal_exp_fp)
 
-        self.composition = {'C': 0.23, 'Si': 0.2, 'Mn': 0.97, 'P': 0.01, 'S': 0.033, 'Cr':  0.6, 'Ni': 0.36, 'Mo': 0.7,
-                            'Cu': 0.16, 'Al': 0.27}
+        self.composition = {'C': 0.221, 'Si': 0.24, 'Mn': 0.90, 'P': 0.007, 'S': 0.042, 'Cr':  0.56, 'Ni': 0.44,
+                            'Mo': 0.18, 'Cu': 0.14, 'Al': 0.028}
 
     @staticmethod
     def findley_k(steel_properties):
@@ -60,7 +60,7 @@ class SS2506MaterialTemplate:
     def _trans_strain_austenite(temperature, carbon):
         t, c = np.meshgrid(temperature, carbon)
 
-        e = -1.12383004e-02 + t*2.36206735e-05 + 3.96905007e-01*c
+        e = -1.14649419e-02 + t*2.37764264e-05 + 4.22083943e-01*c
         return np.squeeze(e)
 
     @staticmethod

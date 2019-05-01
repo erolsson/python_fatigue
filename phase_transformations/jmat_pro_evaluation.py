@@ -45,6 +45,7 @@ def read_jmat_data(directory, cooling_rate, carbon_level):
             data_column = np.zeros(rows)
         jmat_data[name] = data_column/100
     jmat_data['temperature'] *= 100
+    jmat_data['expansion'] += 0.0033041*carbon_level
     return jmat_data
 
 
@@ -205,7 +206,7 @@ if __name__ == '__main__':
     phase_data['pearlite'].parameters = ferrite_parameters
     bainite_parameters = fmin(residual, [0.]*6, (bainite_data,), maxfun=1e9, maxiter=1e9)
     phase_data['bainite'].parameters = bainite_parameters
-    martensite_parameters = fmin(residual, [0.]*8, (martensite_data,), maxfun=1e9, maxiter=1e9)
+    martensite_parameters = fmin(residual, [-0.009882, -0.01, 0.01, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12], (martensite_data,), maxfun=1e9, maxiter=1e9)
     phase_data['martensite'].parameters = martensite_parameters
 
     km_parameters = fmin(km_residual, [150, 250, 400, 0.04, 0.02, 0.01], (km_data,), maxfun=1e9, maxiter=1e9)

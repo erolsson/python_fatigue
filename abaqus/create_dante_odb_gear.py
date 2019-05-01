@@ -13,11 +13,14 @@ from odb_io_functions import flip_node_order
 from materials.hardess_convertion_functions import HRC2HV
 
 
-def create_dante_step(from_odb_name, to_odb_name, results_step_name):
+def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=None):
     # Inspect the odb to get available data
     from_odb = openOdb(from_odb_name, readOnly=False)
-    last_step_name, last_step = from_odb.steps.items()[-1]
-    scalar_variables = last_step.frames[-1].fieldOutputs.keys()
+    if from_step is None:
+        step_name, _ = from_odb.steps.items()[-1]
+    else:
+        step_name = from_step
+    scalar_variables = from_odb.steps[step_name].frames[-1].fieldOutputs.keys()
     from_odb.close()
     if 'NT11' in scalar_variables:
         scalar_variables.remove('NT11')
@@ -34,8 +37,8 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     data_dict = {}
     for scalar_variable in scalar_variables:
         print "reading variable", scalar_variable
-        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, last_step_name, -1)
-    data_dict['S'] = read_field_from_odb('S', from_odb_name, last_step_name, -1)
+        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, step_name, -1)
+    data_dict['S'] = read_field_from_odb('S', from_odb_name, step_name, -1)
 
     for scalar_field in scalar_variables:
         field = data_dict[scalar_field]
@@ -65,7 +68,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
 
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
-    simulation_directory = '/scratch/users/erik/scania_gear_analysis/VBC_gear/U92504_180C_2h_90C_cool_20190412/'
+    simulation_directory = '/scratch/users/erik/scania_gear_analysis/VBC_gear/U925062_200C_2h_80C_cool_4/'
 
     input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
                       'input_files/planet_sun/planet_dense_geom_xpos.inc'
@@ -77,7 +80,7 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_180C.odb'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_200C_U25062.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
@@ -85,4 +88,5 @@ if __name__ == '__main__':
         simulation_odb += 'Toolbox_Mechanical_' + str(cd).replace('.', '_') + '_quarter.odb'
         create_dante_step(from_odb_name=simulation_odb,
                           to_odb_name=odb_file_name,
-                          results_step_name='dante_results_' + str(cd).replace('.', '_'))
+                          results_step_name='dante_results_' + str(cd).replace('.', '_'),
+                          from_step='Tempering')

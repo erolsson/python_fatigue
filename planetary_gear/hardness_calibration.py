@@ -20,7 +20,8 @@ plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
-pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/tempering_2h_180C/')
+pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
+                                 'tempering_2h_180C_JMAT/')
 experimental_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/hardness/')
 Simulation = namedtuple('Simulation', ['cd', 'color', 'sym'])
 simulations = [Simulation(cd=0.5, color='b', sym='o'), Simulation(cd=0.8, color='r', sym='s'),
@@ -30,11 +31,11 @@ experimental_data = np.genfromtxt(experimental_path + 'hardness_profiles.csv', d
 distance_from_surface = experimental_data[:, 0]
 
 carbon_levels = np.arange(0.2, 1.2, 0.2)/100
-HRC_austenite = np.array([22., 24., 30., 50., 50.])
-HRC_T_martensite1 = np.array([50, 55., 62.7, 70., 72.])
+HRC_austenite = np.array([22., 30., 33., 35., 40.])
+HRC_T_martensite1 = np.array([40, 54., 60, 68, 71]) + 1.7
 
-austenite_par = [22.,  24.,  40.,  50,  50.]
-martensite_par = [50, 57, 61.5, 71, 74]
+austenite_par = np.array([22.,  26., 29., 35,  40.])
+martensite_par = [40, 49, 61, 69, 71]
 
 
 def hardness_residual(par, *data):
@@ -100,6 +101,9 @@ for i, simulation in enumerate(simulations):
         hardness_from_other_phases = simulated_hardness - np.interp(c_sim, carbon_levels, HRC_austenite)*au_sim - \
             np.interp(c_sim, carbon_levels, HRC_T_martensite1)*mart_sim
 
+        print hardness_from_other_phases/(1 - au_sim - mart_sim)
+
+        # hardness_from_other_phases = 40*(1 - au_sim - mart_sim)
         data_set = HV2HRC(exp_data), c_sim, au_sim, mart_sim, hardness_from_other_phases
         data_sets.append(data_set)
 
@@ -111,6 +115,7 @@ for i, simulation in enumerate(simulations):
 
         hardness_from_other_phases = simulated_hardness - np.interp(c_sim, carbon_levels, HRC_austenite) * au_sim - \
             np.interp(c_sim, carbon_levels, HRC_T_martensite1) * mart_sim
+        # hardness_from_other_phases = 38*(1 - au_sim - mart_sim)
         plt.plot(dante_data['r'], HRC2HV(hardness_from_other_phases), simulation.color)
         new_hrc_aust = np.interp(c_sim, carbon_levels, austenite_par)*au_sim
         new_hrc_mart = np.interp(c_sim, carbon_levels, martensite_par)*mart_sim
@@ -124,8 +129,8 @@ plt.plot(carbon_levels, HRC_T_martensite1, 'r', lw=2)
 carb = np.linspace(0.0, 1.0, 1000, endpoint=True)/100
 
 
-# fit_par = fmin(hardness_residual, np.append(HRC_austenite[3:-1], HRC_T_martensite1), tuple(data_sets),
-#               maxiter=1e6, maxfun=1e6)
+fit_par = fmin(hardness_residual, np.append(HRC_austenite[3:-1], HRC_T_martensite1), tuple(data_sets),
+               maxiter=1e6, maxfun=1e6)
 
-# print fit_par
+print fit_par
 plt.show()

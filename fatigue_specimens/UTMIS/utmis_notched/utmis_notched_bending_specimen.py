@@ -20,7 +20,7 @@ except ImportError:
 
 
 class NotchedBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=15):
+    def __init__(self, t=1.2, load_position_x=8):
         self.length = float(90)
         self.R = float(0.9)
         self.R1 = float(5.5)

@@ -27,7 +27,7 @@ thermal_expansion = np.array([1.2678425108258802e-05,
                               1.92910537738129e-06])
 
 plt.plot(carbon_levels, thermal_expansion, 's', ms=12, label='KTH Thesis')
-par = np.polyfit(carbon_levels[0:3], thermal_expansion[0:3], 1)
+par = np.polyfit(carbon_levels[0:2], thermal_expansion[0:2], 1)
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
 print par
 plt.plot(0.008, 1.17e-5, 's', ms=12, label='JMAT PRO')
@@ -40,8 +40,10 @@ plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e-12*20**2
 plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
-plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO 1st')
-# plt.plot(carbon, 1.5214e-5 - 1.2678e-5*carbon/0.01, label='Dante EO 2nd')
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01), 'g', label='Dante EO 1st')
+# plt.plot(carbon, 1.3e-5 - 1.098e-5*carbon/0.01, 'r',  label='Dante EO 2nd')
+plt.plot(carbon, 1.6369e-5-2.1344e-5*carbon/0.01, 'r',  label='Dante EO 2nd')
+plt.plot(carbon, 1.64224e-5 - 1.87201e-5*carbon/0.01, 'm',  label='Dante EO 3rd')
 
 fig.set_size_inches(12., 6., forward=True)
 ax = plt.subplot(111)

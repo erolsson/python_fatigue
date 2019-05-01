@@ -98,7 +98,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  CTE and Transformation Strain                                                   line 98
 **--Austenite:  a1+a2*C+a3*T                                                        line 99
 **    a1       a2         a3                                                        line 100
-  -0.011238, 0.00396, 2.362e-5                                                      line 101
+  -0.01146, 4.22e-3, 2.38e-5                                                        line 101
 **--Ferrite:   m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                     (A<-->F)     line 102
 **    m1        m2        m3          m4         m5        m6                       line 103
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 104
@@ -107,16 +107,16 @@ U925063         ! matnam must be UPPERCASE                                      
   -3.445e-4, 0.000,      1.287e-5,   0.00000,   2.252-9, 0.0000                     line 107
 **--Upper Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->UB)    line 108
 **    m1        m2        m3          m4         m5        m6                       line 109
-  -1.27e-3, 2.063e-3, 1.2854e-5,   0.000000,  0.,         0.00000                   line 110
+  -1.3e-3, 2.295e-3, 1.26e-5,    0.000000,  0., 0.00000                             line 110
 **--Lower Bainite:  m1+m2*C+m3*T+m4*C*T+m5*T^2+m6*C*T^2                (A<-->LB)    line 111
 **    m1        m2        m3          m4         m5        m6                       line 112
-  -1.27e-3, 2.063e-3, 1.2854e-5,   0.000000,  0.,         0.00000                   line 110
+  -1.3e-3, 2.295e-3, 1.26e-5,    0.000000,  2.252e-9, 0.00000                       line 113
 **--Martensite:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3     (A<-->M)     line 114
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 115
- -3.452e-3, 1.032e-2, -3.796e-3, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12         line 116
+-3.6458e-3, 1.178e-2, -6.04e-3, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12          line 116
 **--Tempered Mart.:  m1+m2*C+m3*C^2+m4*T+m5*C*T+m6*T^2+m7*C*T^2+m8*T^3  (M<-->TM)   line 117
 **    m1         m2         m3      m4       m5      m6      m7       m8            line 118
- -3.452e-3, 1.032e-2, -3.796e-3, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12         line 119
+-3.6458e-3, 1.178e-2, -6.04e-3, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12          line 119
 ** ---------------------------------------------------------                        line 120
 **  Equilibrium Heat up (Austenization) kinetics:  3 kinetics parameters            line 121
 **  explanations                                                                    line 122
@@ -141,7 +141,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.2% -----------------------------------                   line 141
  0.2                                                                                line 142
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 143
-   22.0,       22.0,     27.0,      47.0,    43.0,    40.0                          line 144
+   22.0,       22.0,     27.0,      47.0,    50.0,    47.0                          line 144
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 145
    150.0,   200.0                                                                   line 146
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 147
@@ -165,7 +165,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.6% -----------------------------------                   line 165
  0.6                                                                                line 166
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 167
-   28.0,       28.0,     31.0,      64.0,     61.5,   58.0                          line 168
+   40.0,       28.0,     31.0,      64.0,     61.5,   58.0                          line 168
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 169
    150.0,   200.0                                                                   line 170
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 171
@@ -177,7 +177,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 0.8% -----------------------------------                   line 177
  0.8                                                                                line 178
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 179
-   31.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
+   5.0,       31.0,     35.0,      73.0,     71.0,   68.0                          line 180
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 181
    150.0,   200.0                                                                   line 182
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 183
@@ -189,7 +189,7 @@ U925063         ! matnam must be UPPERCASE                                      
 **  Carbon level vpc(i): 1.0% -----------------------------------                   line 189
  1.0                                                                                line 190
 ** HRC-AUST--HRC-FERR--HRC-PEAR--HRC-MART---TMART1---TMART2  (Hardness)             line 191
-   34.0,       32.0,     39.0,      76.0,     74.0,   71.0                          line 192
+   50.0,       32.0,     39.0,      76.0,     74.0,   71.0                          line 192
 ** Temp1----Temp2  (Temper Temperature in C for Martensite)                         line 193
    150.0,   180.0                                                                   line 194
 ** Bs--------Bm---------Bf(C) (Temperature range for UBAIN and LBAIN formation)     line 195
