@@ -3,8 +3,6 @@ from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import os
 
-import numpy as np
-
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
 from create_odb import create_odb
