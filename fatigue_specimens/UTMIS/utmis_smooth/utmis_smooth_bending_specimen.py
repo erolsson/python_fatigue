@@ -44,7 +44,7 @@ class SmoothBendingSpecimenClass:
         Mdb()
         self.modelDB = mdb.models['Model-1']
         self.modelDB.setValues(noPartsInputFile=ON)
-        self.myAssembly = self.modelDB.rootAssembly
+        self.assembly = self.modelDB.rootAssembly
 
         # Set replay file output format to INDEX for readability
         session.journalOptions.setValues(replayGeometry=INDEX)
@@ -76,9 +76,9 @@ class SmoothBendingSpecimenClass:
             return part
 
         self.my_part_inner = make_profile(self.case_mesh_thickness, 'inner')
-        instance_inner = self.myAssembly.Instance(name='InnerSpecimen', part=self.my_part_inner, dependent=OFF)
+        instance_inner = self.assembly.Instance(name='InnerSpecimen', part=self.my_part_inner, dependent=OFF)
         self.my_part_outer = make_profile(0., 'outer')
-        instance_outer = self.myAssembly.Instance(name='OuterSpecimen', part=self.my_part_outer, dependent=OFF)
+        instance_outer = self.assembly.Instance(name='OuterSpecimen', part=self.my_part_outer, dependent=OFF)
 
         # Create instance from merge of parts
         self.fatigue_part = self.modelDB.rootAssembly.PartFromBooleanMerge(name=part_name,
@@ -366,7 +366,7 @@ class SmoothBendingSpecimenClass:
             sys.exit(" ERROR: Method mesh of class cylinderSpecimenClass was called using incorrect argument, Exiting")
 
         # Assign element type       
-        self.myAssembly.setElementType(regions=(self.fatigue_part.cells,), elemTypes=(elem_type1, elem_type2))
+        self.assembly.setElementType(regions=(self.fatigue_part.cells,), elemTypes=(elem_type1, elem_type2))
       
     def write_file(self, file_name):
         
@@ -379,7 +379,7 @@ class SmoothBendingSpecimenClass:
         if output_directory:
             os.chdir(output_directory)
 
-        self.myAssembly.Instance(name='Specimen', part=self.fatigue_part, dependent=ON)
+        self.assembly.Instance(name='Specimen', part=self.fatigue_part, dependent=ON)
 
         # Create job
         mdb.Job(name=output_file_name_no_ext, model=self.modelDB, description='', type=ANALYSIS,
