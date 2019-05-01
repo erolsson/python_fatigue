@@ -3,6 +3,8 @@ from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import os
 
+import numpy as np
+
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
 from create_odb import create_odb
@@ -58,10 +60,16 @@ if __name__ == '__main__':
     for specimen in ['smooth', 'notched']:
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
                           '/utmis_' + specimen + '.inc'
-        nodes, elements = read_nodes_and_elements(input_file_name)
+        nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
+        nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
+        nodes_neg[:, 2] *= -1
+        elements_neg[1:5], elements_neg[5:9] = elements_neg[5:9], elements_neg[1:5]
+
         instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
         odb_file_name = dante_odb_path + 'utmis_' + specimen + '_oil60.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
+        fdgfdgdg
+
         for carb, temp in [(0.75, 180), (0.8, 180), (0.8, 200)]:
             simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + \
                              '_tempering_2h_' + str(temp) + 'C/' 'utmis_' + specimen + '_oil60_' + \
