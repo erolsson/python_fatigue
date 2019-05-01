@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 
 try:
@@ -28,6 +29,8 @@ dante_odb_path = '../../odb_files/heat_treatment/utmis_specimens/'
 specimen_name = sys.argv[-2]
 load = float(sys.argv[-1])
 specimen_types = {'notched': NotchedBendingSpecimenClass, 'smooth': SmoothBendingSpecimenClass}
+
+job_name = 'utmis_' + specimen_name + '_' + str(load).replace('.', '_') + 'MPa'
 
 spec = specimen_types[specimen_name]()
 spec.modelDB.setValues(noPartsInputFile=OFF)
@@ -129,18 +132,23 @@ spec.modelDB.ConcentratedForce(name='Force',
 
 # Loading the residual stresses
 os.chdir(simulation_directory)
+if not os.path.isdir(simulation_directory):
+    os.makedirs(simulation_directory)
+
+job = mdb.Job(name=job_name,
+              model=spec.modelDB,
+              numCpus=8,
+              numDomains=8)
+
+job.submit(datacheckJob=True)
+job.waitForCompletion()
+shutil.copyfile(job_name + '.prt', dante_odb_path + 'utmis_' + specimen_name + '_half.prt')
+
 spec.modelDB.Stress(name='Residual_stress',
                     distributionType=FROM_FILE,
                     fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
                     step=1,
                     increment=1)
 
-if not os.path.isdir(simulation_directory):
-    os.makedirs(simulation_directory)
-
-job = mdb.Job(name='unit_load_' + specimen_name,
-              model=spec.modelDB,
-              numCpus=8,
-              numDomains=8)
 job.submit()
 job.waitForCompletion()
