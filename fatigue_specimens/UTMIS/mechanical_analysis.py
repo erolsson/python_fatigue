@@ -143,7 +143,7 @@ job = mdb.Job(name=job_name,
 job.submit(datacheckJob=True)
 job.waitForCompletion()
 shutil.copyfile(job_name + '.prt', dante_odb_path + 'utmis_' + specimen_name + '_half.prt')
-sadsad
+
 spec.modelDB.Stress(name='Residual_stress',
                     distributionType=FROM_FILE,
                     fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
