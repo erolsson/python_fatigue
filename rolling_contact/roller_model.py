@@ -241,8 +241,7 @@ class Roller:
         del mdb.jobs[output_file_name_no_ext]
 
         # Fix file name
-
-        os.rename(os.path.join(output_directory, output_file_name_no_ext + '.inp'), file_name)
+        os.rename(output_file_name_no_ext + '.inp', file_name)
 
 
 if __name__ == '__main__':
