@@ -65,8 +65,9 @@ if __name__ == '__main__':
         nodes_neg[:, 2] *= -1
         elements_neg[1:5], elements_neg[5:9] = elements_neg[5:9], elements_neg[1:5]
 
-        instances = [OdbInstance(name='specimen_part', nodes=nodes, elements=elements)]
-        odb_file_name = dante_odb_path + 'utmis_' + specimen + '_oil60.odb'
+        instances = [OdbInstance(name='specimen_part_pos', nodes=nodes_pos, elements=elements_pos),
+                     OdbInstance(name='specimen_part_neg', nodes=nodes_neg, elements=elements_neg)]
+        odb_file_name = dante_odb_path + 'utmis_' + specimen + 'half.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
         fdgfdgdg
 
