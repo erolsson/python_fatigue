@@ -24,7 +24,8 @@ from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenC
 simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
 
 
-specimen_name = sys.argv[-1]
+specimen_name = sys.argv[-2]
+load = float(sys.argv[-1])
 specimen_types = {'notched': NotchedBendingSpecimenClass, 'smooth': SmoothBendingSpecimenClass}
 
 spec = specimen_types[specimen_name]()
@@ -119,7 +120,7 @@ spec.modelDB.Tie(name='Y0Plane',
 
 # The load, assuming unit nominal bending stress
 wb = spec.notch_height**2*spec.thickness/6
-P = wb/(spec.length/2 - spec.R1 - spec.load_position_x)/2
+P = load*wb/(spec.length/2 - spec.R1 - spec.load_position_x)/2
 spec.modelDB.ConcentratedForce(name='Force',
                                createStepName='MechanicalLoad',
                                region=spec.load_node,
