@@ -46,6 +46,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
     scalar_variables.append('S')
 
     for scalar_variable in scalar_variables:
+        print "Write field", scalar_variable
         field = data_dict[scalar_variable]
         write_field_to_odb(field_data=field, field_id=scalar_variable, odb_file_name=to_odb_name,
                            step_name=results_step_name, instance_name='specimen_part_pos', frame_number=0)
@@ -53,6 +54,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
         write_field_to_odb(field_data=field, field_id=scalar_variable, odb_file_name=to_odb_name,
                            step_name=results_step_name, instance_name='specimen_part_neg', frame_number=0)
 
+    print "Write stress"
     stress = data_dict['S']
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=to_odb_name, step_name=results_step_name,
                        instance_name='specimen_part_pos', frame_number=0,
