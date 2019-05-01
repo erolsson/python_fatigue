@@ -44,8 +44,8 @@ sec = spec.modelDB.HomogeneousSolidSection(name='FatigueSpecimen1',
 part1.SectionAssignment(region=(part1.cells,), sectionName='FatigueSpecimen1')
 part2.SectionAssignment(region=(part2.cells,), sectionName='FatigueSpecimen1')
 
-instance_1 = spec.modelDB.rootAssembly.Instance(name='part',   part=part1, dependent=ON)
-instance_2 = spec.modelDB.rootAssembly.Instance(name='mirror', part=part2, dependent=ON)
+instance_1 = spec.modelDB.rootAssembly.Instance(name='specimen_part_pos',   part=part1, dependent=ON)
+instance_2 = spec.modelDB.rootAssembly.Instance(name='specimen_part_neg', part=part2, dependent=ON)
 
 instance_2.rotateAboutAxis(axisPoint=(0, 0, spec.thickness/4),
                            axisDirection=(1, 0, 0),
