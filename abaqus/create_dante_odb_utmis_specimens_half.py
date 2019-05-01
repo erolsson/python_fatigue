@@ -44,6 +44,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
     data_dict['S'] = read_field_from_odb('S', from_odb_name, step_name, -1)
     data_dict['HV'] = HRC2HV(data_dict['SDV_HARDNESS'])
     scalar_variables.append('S')
+    scalar_variables.append('HV')
 
     for scalar_variable in scalar_variables:
         print "Write field", scalar_variable
