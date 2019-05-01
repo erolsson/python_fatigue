@@ -213,8 +213,11 @@ class Roller:
 
         # Set filename and path
         output_file_name = os.path.basename(file_name)
-        output_file_name_no_ext = output_file_name.split('.')[0]
+        output_file_name_no_ext, extension = output_file_name.split('.')[0:2]
+
         output_directory = os.path.dirname(file_name)
+        if not os.path.isdir(output_directory):
+            os.makedirs(output_directory)
 
         # Set path as working directory
         if output_directory:
@@ -238,8 +241,6 @@ class Roller:
 
         # Fix file name
 
-        if os.path.exists(os.path.abspath(file_name)):
-            os.remove(os.path.abspath(file_name))
         os.rename(os.path.join(output_directory, output_file_name_no_ext + '.inp'), file_name)
 
 
