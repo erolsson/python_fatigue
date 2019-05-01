@@ -132,7 +132,7 @@ spec.modelDB.Stress(name='Residual_stress',
                     distributionType=FROM_FILE,
                     fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
                     step=1,
-                    inc=1)
+                    increment=1)
 
 if not os.path.isdir(simulation_directory):
     os.makedirs(simulation_directory)
