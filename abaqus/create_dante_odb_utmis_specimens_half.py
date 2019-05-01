@@ -101,4 +101,4 @@ if __name__ == '__main__':
                                             + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                             + specimen + '.odb')
         create_dante_step(simulation_odb, odb_file_name,
-                          'dante_results_tempering_2h')
+                          'dante_results_tempering_2h', from_step='Tempering')
