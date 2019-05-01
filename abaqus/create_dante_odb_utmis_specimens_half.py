@@ -94,6 +94,6 @@ if __name__ == '__main__':
         simulation_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062/' + specimen
                                             + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
                                             + specimen_name + '_' + name + 'Toolbox_Mechanical_utmis_'
-                                            + specimen + 'odb')
+                                            + specimen + '.odb')
         create_dante_step(simulation_odb, odb_file_name,
                           'dante_results_tempering_2h_')
