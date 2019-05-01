@@ -43,20 +43,20 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     for scalar_variable in scalar_variables:
         field = data_dict[scalar_variable]
         write_field_to_odb(field_data=field, field_id=scalar_variable, odb_file_name=to_odb_name,
-                           step_name=results_step_name, instance_name='specimen_part', frame_number=0)
+                           step_name=results_step_name, instance_name='specimen_part_pos', frame_number=0)
         field = flip_node_order(field, axis='z')
         write_field_to_odb(field_data=field, field_id=scalar_variables, odb_file_name=to_odb_name,
-                           step_name=results_step_name, instance_name='tooth_left', frame_number=0)
+                           step_name=results_step_name, instance_name='specimen_part_neg', frame_number=0)
 
     stress = data_dict['S']
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=to_odb_name, step_name=results_step_name,
-                       instance_name='specimen_part', frame_number=0,
+                       instance_name='specimen_part_pos', frame_number=0,
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
     stress = flip_node_order(stress, axis='z')
     stress[:, 3] *= -1
     stress[:, 5] *= -1
     write_field_to_odb(field_data=stress, field_id='S', odb_file_name=to_odb_name, step_name=results_step_name,
-                       instance_name='tooth_left', frame_number=0,
+                       instance_name='specimen_part_neg', frame_number=0,
                        invariants=[MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL])
 
 
