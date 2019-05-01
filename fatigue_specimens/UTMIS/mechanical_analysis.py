@@ -141,7 +141,7 @@ os.chdir(simulation_directory)
 
 job = mdb.Job(name='unit_load_' + specimen_name,
               model=spec.modelDB,
-              numCpus=7,
-              numDomains=7)
+              numCpus=8,
+              numDomains=8)
 job.submit()
 job.waitForCompletion()
