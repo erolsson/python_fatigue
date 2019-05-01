@@ -63,8 +63,9 @@ if __name__ == '__main__':
         nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
         nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
         nodes_neg[:, 2] *= -1
-        elements_neg[1:5], elements_neg[5:9] = elements_pos[5:9], elements_pos[1:5]
 
+        elements_neg[1:5], elements_neg[5:9] = elements_pos[5:9], elements_pos[1:5]
+        print np.sum(elements_pos == elements_neg)
         instances = [OdbInstance(name='specimen_part_pos', nodes=nodes_pos, elements=elements_pos),
                      OdbInstance(name='specimen_part_neg', nodes=nodes_neg, elements=elements_neg)]
         odb_file_name = dante_odb_path + 'utmis_' + specimen + 'half.odb'
