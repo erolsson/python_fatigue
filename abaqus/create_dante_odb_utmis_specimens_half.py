@@ -45,7 +45,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
         write_field_to_odb(field_data=field, field_id=scalar_variable, odb_file_name=to_odb_name,
                            step_name=results_step_name, instance_name='specimen_part_pos', frame_number=0)
         field = flip_node_order(field, axis='z')
-        write_field_to_odb(field_data=field, field_id=scalar_variables, odb_file_name=to_odb_name,
+        write_field_to_odb(field_data=field, field_id=scalar_variable, odb_file_name=to_odb_name,
                            step_name=results_step_name, instance_name='specimen_part_neg', frame_number=0)
 
     stress = data_dict['S']
