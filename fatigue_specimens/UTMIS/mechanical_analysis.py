@@ -23,7 +23,7 @@ from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClas
 from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenClass
 
 simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
-dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
+dante_odb_path = '../../odb_files/heat_treatment/utmis_specimens/'
 
 specimen_name = sys.argv[-2]
 load = float(sys.argv[-1])
