@@ -15,11 +15,15 @@ from odb_io_functions import flip_node_order
 from materials.hardess_convertion_functions import HRC2HV
 
 
-def create_dante_step(from_odb_name, to_odb_name, results_step_name):
+def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=None):
+    # Inspect the odb to get available data
     # Inspect the odb to get available data
     from_odb = openOdb(from_odb_name, readOnly=False)
-    last_step_name, last_step = from_odb.steps.items()[-1]
-    scalar_variables = last_step.frames[-1].fieldOutputs.keys()
+    if from_step is None:
+        step_name, _ = from_odb.steps.items()[-1]
+    else:
+        step_name = from_step
+    scalar_variables = from_odb.steps[step_name].frames[-1].fieldOutputs.keys()
     from_odb.close()
     if 'NT11' in scalar_variables:
         scalar_variables.remove('NT11')
@@ -33,8 +37,8 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
     data_dict = {}
     for scalar_variable in scalar_variables:
         print "reading variable", scalar_variable
-        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, last_step_name, -1)
-    data_dict['S'] = read_field_from_odb('S', from_odb_name, last_step_name, -1)
+        data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, step_name, -1)
+    data_dict['S'] = read_field_from_odb('S', from_odb_name, step_name, -1)
     data_dict['HV'] = HRC2HV(data_dict['SDV_HARDNESS'])
     scalar_variables.append('S')
 
@@ -61,9 +65,19 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name):
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
 
+    times = [75, 5, 30]
+    temps = [930, 840, 840]
+    carbon_levels = [1.1, 0.8, 0.8]
+    tempering = (200, 7200)
+    name = ''
+
+    for t, T, c in zip(times, temps, carbon_levels):
+        name += str(t) + 'min' + str(T) + 'C' + str(c).replace('.', '') + 'wtC'
+
     if not os.path.isdir(dante_odb_path):
         os.makedirs(dante_odb_path)
     for specimen in ['smooth', 'notched']:
+        specimen_name = 'utmis_' + specimen
         input_file_name = '/scratch/users/erik/python_fatigue/fatigue_specimens/UTMIS/utmis_' + specimen + \
                           '/utmis_' + specimen + '.inc'
         nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
@@ -77,9 +91,9 @@ if __name__ == '__main__':
         odb_file_name = dante_odb_path + 'utmis_' + specimen + 'half.odb'
         create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
-        for carb, temp in [(0.75, 180), (0.8, 180), (0.8, 200)]:
-            simulation_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_' + specimen + \
-                             '_tempering_2h_' + str(temp) + 'C/' 'utmis_' + specimen + '_oil60_' + \
-                             str(carb).replace('.', '_') + 'C/Toolbox_Mechanical_utmis_' + specimen + '.odb'
-            create_dante_step(simulation_odb, odb_file_name,
-                              'dante_results_tempering_2h_' + str(temp) + '_' + str(carb).replace('.', '_') + 'C')
+        simulation_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062/' + specimen
+                                            + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
+                                            + specimen_name + '_' + name + 'Toolbox_Mechanical_utmis_'
+                                            + specimen + 'odb')
+        create_dante_step(simulation_odb, odb_file_name,
+                          'dante_results_tempering_2h_')
