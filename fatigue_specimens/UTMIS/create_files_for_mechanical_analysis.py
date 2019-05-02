@@ -26,9 +26,9 @@ stress, _, labels = read_field_from_odb('S', simulation_odb, step_name='Temperin
                                         position=INTEGRATION_POINT, get_position_numbers=True)
 gp = 1
 with open('residual_stresses_pos', 'w') as stress_file:
-    for elem_stress, label in zip([stress, labels]):
+    for i, label in enumerate(labels):
         line = str(label) + ", " + str(gp)
-        for comp in elem_stress:
+        for comp in stress[i, :]:
             line += ", " + str(comp)
         gp += 1
         if gp == 9:
