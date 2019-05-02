@@ -23,7 +23,7 @@ simulation_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925
                                     + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                     + specimen + '.odb')
 
-stress, labels = read_field_from_odb('S', simulation_odb, step_name='Tempering', frame_number=-1,
-                                     position=INTEGRATION_POINT, get_position_numbers=True)
+stress, _, labels = read_field_from_odb('S', simulation_odb, step_name='Tempering', frame_number=-1,
+                                        position=INTEGRATION_POINT, get_position_numbers=True)
 print stress
 print labels
