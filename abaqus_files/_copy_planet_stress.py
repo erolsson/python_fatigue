@@ -3,9 +3,9 @@ from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
 import sys
 
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import write_field_to_odb
-from create_files_for_mechanical_analysis import CoordinateSystem
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import write_field_to_odb
+from odb_io_functions import CoordinateSystem
 
 
 # There are a lot of argument to abaqus just use the five last ones

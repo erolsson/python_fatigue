@@ -6,10 +6,10 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import write_field_to_odb
-from create_files_for_mechanical_analysis import cylindrical_system_z
-from create_files_for_mechanical_analysis import flip_node_order
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import write_field_to_odb
+from odb_io_functions import cylindrical_system_z
+from odb_io_functions import flip_node_order
 
 
 def create_dante_step(results_odb_name, carbon_odb_name, stress_odb_name, results_step_name):

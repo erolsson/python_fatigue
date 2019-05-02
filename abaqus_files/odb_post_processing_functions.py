@@ -6,8 +6,8 @@ import os
 import pickle
 import numpy as np
 
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import cylindrical_system_z
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import cylindrical_system_z
 
 
 def create_fatigue_sets(odb_file_name, set_data, name='fatigue'):

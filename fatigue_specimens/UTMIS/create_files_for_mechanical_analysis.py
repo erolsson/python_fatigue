@@ -1,7 +1,7 @@
 import os
 import sys
 
-from abaqus_files.create_files_for_mechanical_analysis import read_field_from_odb
+from abaqus_files.odb_io_functions import read_field_from_odb
 
 from abaqusConstants import INTEGRATION_POINT
 
@@ -24,4 +24,12 @@ simulation_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925
 
 stress, _, labels = read_field_from_odb('S', simulation_odb, step_name='Tempering', frame_number=-1,
                                         position=INTEGRATION_POINT, get_position_numbers=True)
-print stress.shape, len(labels)
+gp = 1
+with open('residual_stresses_pos', 'w') as stress_file:
+    for elem_stress, label in zip([stress, labels]):
+        line = str(label) + ", " + str(gp)
+        for comp in elem_stress:
+            line += ", " + str(comp)
+        gp += 1
+        if gp == 9:
+            gp = 1

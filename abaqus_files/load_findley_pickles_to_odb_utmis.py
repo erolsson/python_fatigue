@@ -4,8 +4,8 @@ import pickle
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
-from create_files_for_mechanical_analysis import add_element_set
-from create_files_for_mechanical_analysis import write_field_to_odb
+from odb_io_functions import add_element_set
+from odb_io_functions import write_field_to_odb
 
 from create_odb import create_odb
 from create_odb import OdbInstance

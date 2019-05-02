@@ -5,10 +5,10 @@ import pickle
 
 import numpy as np
 
-from create_files_for_mechanical_analysis import get_nodal_coordinates_from_node_set
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import add_node_set
-from create_files_for_mechanical_analysis import add_element_set
+from odb_io_functions import get_nodal_coordinates_from_node_set
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import add_node_set
+from odb_io_functions import add_element_set
 
 
 def get_list_from_set_file(filename):

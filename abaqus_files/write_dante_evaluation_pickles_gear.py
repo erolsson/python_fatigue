@@ -6,9 +6,9 @@ import pickle
 
 import numpy as np
 
-from create_files_for_mechanical_analysis import add_element_set
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import cylindrical_system_z
+from odb_io_functions import add_element_set
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import cylindrical_system_z
 
 from write_nodal_coordinates import get_list_from_set_file
 

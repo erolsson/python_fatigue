@@ -4,8 +4,8 @@ import pickle
 
 import numpy as np
 
-from create_files_for_mechanical_analysis import read_field_from_odb
-from create_files_for_mechanical_analysis import add_element_set
+from odb_io_functions import read_field_from_odb
+from odb_io_functions import add_element_set
 
 from input_file_reader.input_file_reader import InputFileReader
 
