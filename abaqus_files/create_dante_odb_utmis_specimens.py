@@ -8,8 +8,8 @@ from input_file_reader.input_file_functions import read_nodes_and_elements
 from create_odb import create_odb
 from create_odb import OdbInstance
 
-from odb_io_functions import read_field_from_odb
-from odb_io_functions import write_field_to_odb
+from create_files_for_mechanical_analysis import read_field_from_odb
+from create_files_for_mechanical_analysis import write_field_to_odb
 
 from materials.hardess_convertion_functions import HRC2HV
 

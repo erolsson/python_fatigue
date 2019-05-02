@@ -11,13 +11,13 @@ from abaqusConstants import *
 from create_odb import create_odb
 from create_odb import OdbInstance
 
-from odb_io_functions import write_field_to_odb
+from create_files_for_mechanical_analysis import write_field_to_odb
 
 from planetary_gear.gear_input_file_functions import create_quarter_model
 from planetary_gear.gear_input_file_functions import mirror_quarter_model
 
 from write_nodal_coordinates import get_list_from_set_file
-from odb_io_functions import add_element_set
+from create_files_for_mechanical_analysis import add_element_set
 
 
 def setup_odb_files(odb_file_name, parts, element_set_name='tooth_root_volume_elements'):

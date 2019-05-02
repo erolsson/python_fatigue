@@ -2,8 +2,8 @@ from odbAccess import *
 
 import pickle
 
-from odb_io_functions import add_element_set
-from odb_io_functions import read_field_from_odb
+from create_files_for_mechanical_analysis import add_element_set
+from create_files_for_mechanical_analysis import read_field_from_odb
 
 from write_nodal_coordinates import get_list_from_set_file
 

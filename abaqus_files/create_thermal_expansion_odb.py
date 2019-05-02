@@ -8,8 +8,8 @@ from create_odb import create_odb
 
 from input_file_reader.input_file_functions import read_nodes_and_elements
 
-from odb_io_functions import read_field_from_odb
-from odb_io_functions import write_field_to_odb
+from create_files_for_mechanical_analysis import read_field_from_odb
+from create_files_for_mechanical_analysis import write_field_to_odb
 
 
 def create_node_field_from_element_field(fields, odb_file_name, element_set_name, step_name, frame_number,
