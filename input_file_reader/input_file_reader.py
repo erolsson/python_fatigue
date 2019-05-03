@@ -91,9 +91,9 @@ class InputFileReader:
 
         for set_type, set_data in self.set_data.iteritems():
             for key, data in set_data.iteritems():
-                key = key.replace(str_to_remove_from_setname, '')
+                key = key.upper()
+                key = key.replace(str_to_remove_from_setname.upper(), '')
                 if not key.startswith(skip_prefix) and (key.lower() not in ['all_elements', 'all_nodes']):
-                    print key
                     file_lines.append(('*' + set_type + ', ' + set_type + '=' + key).upper())
                     write_set_rows(data)
 
