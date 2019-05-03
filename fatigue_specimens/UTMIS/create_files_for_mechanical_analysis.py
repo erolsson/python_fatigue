@@ -17,7 +17,8 @@ def write_mechanical_input_file(geom_include_file, directory, load):
         n = e_data.shape[1] - 1
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
-    input_file_reader.write_sets_file(directory + '/include_files/set_data.inc')
+    input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
+                                      skip_prefix='Specimen_')
     file_lines = ['*Heading',
                   '\tMechanical model for the fatigue specimen utmis_ ' + specimen]
 
@@ -27,6 +28,8 @@ def write_mechanical_input_file(geom_include_file, directory, load):
                  '\t*Include, Input=include_files/set_data.inc',
                  '\t*Solid Section, elset=ALL_ELEMENTS, material=SS2506',
                  '\t\t1.0',
+                 '\t*Surface, Name=y_sym_surface, Type=Node',
+                 '\t\tYSYM_NODES',
                  '*End Part']
         return lines
 
