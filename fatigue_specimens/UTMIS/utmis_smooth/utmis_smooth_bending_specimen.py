@@ -345,7 +345,17 @@ class SmoothBendingSpecimenClass:
         monitor_vertex_nodes = monitor_vertex.getNodes()
         monitor_node = monitor_vertex_nodes[0].label-1
         part.Set(nodes=part.nodes[monitor_node:monitor_node+1], name='Monitor_Node')
-        
+
+        load_nodes = part.nodes.getByBoundingBox(xMin=self.load_position_x - 1e-8,
+                                                 xMax=self.load_position_x + 1e-8,
+                                                 yMin=self.height - 1e-8)
+        part.Set(nodes=load_nodes, name='load_nodes')
+
+        support_nodes = part.nodes.getByBoundingBox(xMin=self.length - self.R1 - 1e-8,
+                                                    xMax=self.length - self.R1 + 1e-8,
+                                                    yMin=self.height - 1e-8)
+        part.Set(nodes=support_nodes, name='support_nodes')
+
         session.viewports['Carbon Toolbox Model'].maximize()
         print " Mesh generation completed"
 

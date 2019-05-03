@@ -23,9 +23,9 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines = ['*Heading',
                   '\tMechanical model for the fatigue specimen utmis_ ' + specimen]
 
-    def write_part(sign):
-        lines = ['*Part, name=' + 'specimen_part_' + sign,
-                 '\t*Include, Input=include_files/geom_' + sign + '.inc',
+    def write_part(part_sign):
+        lines = ['*Part, name=' + 'specimen_part_' + part_sign,
+                 '\t*Include, Input=include_files/geom_' + part_sign + '.inc',
                  '\t*Include, Input=include_files/set_data.inc',
                  '\t*Solid Section, elset=ALL_ELEMENTS, material=SS2506',
                  '\t\t1.0',
@@ -47,6 +47,13 @@ def write_mechanical_input_file(geom_include_file, directory, load):
 
     file_lines.append('\t*Tie, name=y_plane')
     file_lines.append('\t\tspecimen_part_pos.ysym_surface, specimen_part_neg.ysym_surface')
+    file_lines.append('*End Assembly')
+    for sign in ['pos', 'neg']:
+        file_lines.append('*Boundary')
+        file_lines.append('\tspecimen_part_' + sign + '.x_sym_nodes, XSYMM')
+        file_lines.append('\tspecimen_part_' + sign + '.z_sym_nodes, ZSYMM')
+
+    file_lines.append('*Boundary')
 
     with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
         for line in file_lines:
