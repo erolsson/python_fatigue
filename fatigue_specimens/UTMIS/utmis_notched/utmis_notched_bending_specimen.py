@@ -20,7 +20,7 @@ except ImportError:
 
 
 class NotchedBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=8):
+    def __init__(self, t=1.2, load_position_x=15):
         self.length = float(90)
         self.R = float(0.9)
         self.R1 = float(5.5)
@@ -382,14 +382,14 @@ class NotchedBendingSpecimenClass:
 
         load_nodes = part.nodes.getByBoundingBox(xMin=self.load_position_x - 1e-8,
                                                  xMax=self.load_position_x + 1e-8,
-                                                 yMin=self.height - 1e-8)
+                                                 yMin=self.height/2 - 1e-8)
         part.Set(nodes=load_nodes, name='load_nodes')
 
-        support_nodes = part.nodes.getByBoundingBox(xMin=self.length - self.R1 - 1e-8,
-                                                    xMax=self.length - self.R1 + 1e-8,
-                                                    yMin=self.height - 1e-8)
+        support_nodes = part.nodes.getByBoundingBox(xMin=self.length/2 - self.R1 - 1e-8,
+                                                    xMax=self.length/2 - self.R1 + 1e-8,
+                                                    yMin=self.height/2 - 1e-8)
         part.Set(nodes=support_nodes, name='support_nodes')
-        
+
         session.viewports['Carbon Toolbox Model'].maximize()
         print " Mesh generation completed"
 

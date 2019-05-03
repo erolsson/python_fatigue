@@ -348,12 +348,12 @@ class SmoothBendingSpecimenClass:
 
         load_nodes = part.nodes.getByBoundingBox(xMin=self.load_position_x - 1e-8,
                                                  xMax=self.load_position_x + 1e-8,
-                                                 yMin=self.height - 1e-8)
+                                                 yMin=self.height/2 - 1e-8)
         part.Set(nodes=load_nodes, name='load_nodes')
 
-        support_nodes = part.nodes.getByBoundingBox(xMin=self.length - self.R1 - 1e-8,
-                                                    xMax=self.length - self.R1 + 1e-8,
-                                                    yMin=self.height - 1e-8)
+        support_nodes = part.nodes.getByBoundingBox(xMin=self.length/2 - self.R1 - 1e-8,
+                                                    xMax=self.length/2 - self.R1 + 1e-8,
+                                                    yMin=self.height/2 - 1e-8)
         part.Set(nodes=support_nodes, name='support_nodes')
 
         session.viewports['Carbon Toolbox Model'].maximize()
