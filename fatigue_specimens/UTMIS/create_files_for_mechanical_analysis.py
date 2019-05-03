@@ -40,7 +40,7 @@ def write_mechanical_input_file(geom_include_file, directory, load):
 
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimen/utmis_' + specimen)
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen)
     geom_filename = 'utmis_' + specimen + '/utmis_' + specimen + '.inc'
     times = [75, 5, 30]
     temps = [930, 840, 840]
