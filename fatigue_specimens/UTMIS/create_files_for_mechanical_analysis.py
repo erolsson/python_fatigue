@@ -47,7 +47,7 @@ def write_mechanical_input_file(geom_include_file, directory, load):
         file_lines.append('\t*End Instance')
 
     file_lines.append('\t*Tie, name=y_plane')
-    file_lines.append('\t\tspecimen_part_pos.y_sym_surface, specimen_part_pos.y_sym_surface')
+    file_lines.append('\t\tspecimen_part_pos.y_sym_surface, specimen_part_neg.y_sym_surface')
 
     with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
         for line in file_lines:
