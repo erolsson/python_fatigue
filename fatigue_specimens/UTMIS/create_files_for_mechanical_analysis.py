@@ -56,7 +56,8 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines.append('\t*Surface, name=load_surface, Type=Node')
     file_lines.append('\t\tspecimen_part_pos.load_nodes')
     file_lines.append('\t*Coupling, Constraint name=load_node_coupling, '
-                      'ref node=jaw_ref_node, surface=load_surface')
+                      'ref node=load_node, surface=load_surface')
+
     file_lines.append('\t\t*Kinematic')
 
     file_lines.append('*End Assembly')
