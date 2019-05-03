@@ -18,7 +18,7 @@ def write_mechanical_input_file(geom_include_file, directory, load):
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
     input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
-                                      skip_prefix='Specimen_')
+                                      str_to_remove_from_setname='SPECIMEN_')
     file_lines = ['*Heading',
                   '\tMechanical model for the fatigue specimen utmis_ ' + specimen]
 
