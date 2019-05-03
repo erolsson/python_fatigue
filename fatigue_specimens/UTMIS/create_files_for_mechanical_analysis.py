@@ -25,13 +25,23 @@ def write_mechanical_input_file(geom_include_file, directory, load):
         lines = ['*Part, name=' + 'specimen_part_' + sign,
                  '\t*Include, Input=include_files/geom_' + sign + '.inc',
                  '\t*Include, Input=include_files/set_data.inc',
-                 '\t*Solid Section, elset=GEARELEMS, material=SS2506',
+                 '\t*Solid Section, elset=ALL_ELEMENTS, material=SS2506',
                  '\t\t1.0',
                  '*End Part']
         return lines
 
     file_lines += write_part('pos')
     file_lines += write_part('neg')
+
+    file_lines.append('**')
+    file_lines.append('*Material, name=SS2506')
+    file_lines.append('\t*Elastic')
+    file_lines.append('\t\t200E3, 0.3')
+
+    file_lines.append('*Assembly, name=pulsator_model')
+    for sign in ['pos', 'neg']:
+        file_lines.append('\t*Instance, name=specimen_part_' + sign + ' , part=specimen_part_' + sign)
+        file_lines.append('\t*End Instance')
 
     with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
         for line in file_lines:
