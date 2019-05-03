@@ -62,8 +62,8 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines.append('*End Assembly')
     for sign in ['pos', 'neg']:
         file_lines.append('*Boundary')
-        file_lines.append('\tspecimen_part_' + sign + '.x_sym_nodes,\tXSYMM')
-        file_lines.append('\tspecimen_part_' + sign + '.z_sym_nodes,\tZSYMM')
+        file_lines.append('\tspecimen_part_' + sign + '.xsym_nodes,\tXSYMM')
+        file_lines.append('\tspecimen_part_' + sign + '.zsym_nodes,\tZSYMM')
 
     file_lines.append('*Boundary')
     file_lines.append('\tspecimen_part_neg.support_nodes,\t2')
