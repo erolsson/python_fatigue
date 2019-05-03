@@ -13,6 +13,8 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     input_file_reader.read_input_file(geom_include_file)
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_pos.inc')
     input_file_reader.nodal_data[:, 2] *= -1
+    load_nodes = input_file_reader.set_data['nset']['Specimen_load_nodes']
+    load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:3]
     for e_data in input_file_reader.elements.values():
         n = e_data.shape[1] - 1
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
@@ -47,13 +49,28 @@ def write_mechanical_input_file(geom_include_file, directory, load):
 
     file_lines.append('\t*Tie, name=y_plane')
     file_lines.append('\t\tspecimen_part_pos.ysym_surface, specimen_part_neg.ysym_surface')
+
+    file_lines.append('\t*Node, nset=load_node')
+    file_lines.append('\t\t999999, ' + str(load_pos[0]) + ',' + str(2*load_pos[1]) + ', 0.0')
+
+    file_lines.append('\t*Surface, name=load_surface, Type=Node')
+    file_lines.append('\t\tspecimen_part_pos.load_nodes')
+    file_lines.append('\t*Coupling, Constraint name=load_node_coupling, '
+                      'ref node=jaw_ref_node, surface=load_surface')
+    file_lines.append('\t\t*Kinematic')
+
     file_lines.append('*End Assembly')
     for sign in ['pos', 'neg']:
         file_lines.append('*Boundary')
-        file_lines.append('\tspecimen_part_' + sign + '.x_sym_nodes, XSYMM')
-        file_lines.append('\tspecimen_part_' + sign + '.z_sym_nodes, ZSYMM')
+        file_lines.append('\tspecimen_part_' + sign + '.x_sym_nodes,\tXSYMM')
+        file_lines.append('\tspecimen_part_' + sign + '.z_sym_nodes,\tZSYMM')
 
     file_lines.append('*Boundary')
+    file_lines.append('\tspecimen_part_neg.support_nodes,\t2')
+
+    file_lines.append('*Boundary')
+    file_lines.append('\tload_node,\t1')
+    file_lines.append('\tload_node,\t3,6')
 
     with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
         for line in file_lines:
