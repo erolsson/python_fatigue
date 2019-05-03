@@ -412,7 +412,7 @@ class SmoothBendingSpecimenClass:
         os.rename(os.path.join(output_directory, output_file_name_no_ext+'.inp'), file_name)
 
     # Function by erolssson
-    def mechanical_material_assignment(self, part_name='fatiguePart'):
+    def mechanical_material_assignment(self, part_name='specimen_part_pos'):
         part = self.modelDB.parts[part_name]
         mat = self.modelDB.Material('Steel')
         mat.Elastic(table=((200E3, 0.3),))
