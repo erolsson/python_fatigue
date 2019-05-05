@@ -79,6 +79,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
                       'ref node=load_node, surface=load_surface')
 
     file_lines.append('\t\t*Kinematic')
+    file_lines.append('\t\t2, 2')
 
     file_lines.append('*End Assembly')
     for sign in ['pos', 'neg']:
