@@ -101,10 +101,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
         file_lines.append('\t*Static')
         file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
         file_lines.append('\t*CLoad')
-        file_lines.append('\t\tjaw_ref_node, 1, -0.5')
-
-        file_lines.append('\t*CLoad')
-        file_lines.append('\t\tjaw_ref_node, 2, ' + str(-force))
+        file_lines.append('\t\tload_node, 2, ' + str(-force))
         file_lines.append('\t*Output, field')
         file_lines.append('\t\t*Element Output')
         file_lines.append('\t\t\tS')
