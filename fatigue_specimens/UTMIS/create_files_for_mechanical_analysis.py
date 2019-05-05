@@ -23,10 +23,9 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
     z = max([input_file_reader.nodal_data[n - 1, 3] for n in x_sym_nodes])
 
     load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:4]
-    support_pos = input_file_reader.nodal_data[support_nodes[0], 1]
+    support_pos = input_file_reader.nodal_data[support_nodes[0]-1, 1]
     wb = (2*y)**2*(2*z)/6
     force = float(stress_level)*wb/(support_pos - load_pos[0])/2
-
     for e_data in input_file_reader.elements.values():
         n = e_data.shape[1] - 1
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
