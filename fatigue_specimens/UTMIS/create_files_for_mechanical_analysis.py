@@ -1,20 +1,33 @@
 import os
 import sys
 
+import numpy as np
+
 from input_file_reader.input_file_reader import InputFileReader
 
 # specimen = sys.argv[-1]
 specimen = 'smooth'
 stress_level = '820'
+R = -1
 
 
-def write_mechanical_input_file(geom_include_file, directory, load):
+def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, initial_inc=1e-2):
     input_file_reader = InputFileReader()
     input_file_reader.read_input_file(geom_include_file)
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_pos.inc')
     input_file_reader.nodal_data[:, 2] *= -1
     load_nodes = input_file_reader.set_data['nset']['Specimen_load_nodes']
-    load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:3]
+    support_nodes = input_file_reader.set_data['nset']['Specimen_support_nodes']
+    x_sym_nodes = input_file_reader.set_data['nset']['Specimen_XSym_Nodes']
+    y = -min([input_file_reader.nodal_data[n-1, 2] for n in x_sym_nodes])
+    z = max([input_file_reader.nodal_data[n - 1, 3] for n in x_sym_nodes])
+
+    load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:4]
+    support_pos = input_file_reader.nodal_data[support_nodes[0], 1]
+    wb = (2*y)**2*(2*z)/6
+    print wb, support_pos, load_pos[0], float(stress_level)
+    force = float(stress_level)*wb/(support_pos - load_pos[0])/2
+
     for e_data in input_file_reader.elements.values():
         n = e_data.shape[1] - 1
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
@@ -42,6 +55,15 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines.append('\t*Elastic')
     file_lines.append('\t\t200E3, 0.3')
 
+    file_lines.append('*Amplitude, name=amp, time=total time')
+    file_lines.append('\t0.0, 0.0')
+    file_lines.append('\t1.0, 1.0')
+    t = 1.
+    for i in range(no_steps):
+        file_lines.append('\t' + str(t + 0.5) + ', ' + str(float(R)))
+        file_lines.append('\t' + str(t + 1.0) + ', 1.0')
+        t += 1.
+
     file_lines.append('*Assembly, name=pulsator_model')
     for sign in ['pos', 'neg']:
         file_lines.append('\t*Instance, name=specimen_part_' + sign + ' , part=specimen_part_' + sign)
@@ -51,7 +73,7 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines.append('\t\tspecimen_part_pos.ysym_surface, specimen_part_neg.ysym_surface')
 
     file_lines.append('\t*Node, nset=load_node')
-    file_lines.append('\t\t999999, ' + str(load_pos[0]) + ',' + str(2*load_pos[1]) + ', 0.0')
+    file_lines.append('\t\t999999, ' + str(load_pos[0]) + ', ' + str(-2*load_pos[1]) + ', 0.0')
 
     file_lines.append('\t*Surface, name=load_surface, Type=Node')
     file_lines.append('\t\tspecimen_part_pos.load_nodes')
@@ -73,6 +95,23 @@ def write_mechanical_input_file(geom_include_file, directory, load):
     file_lines.append('\tload_node,\t1')
     file_lines.append('\tload_node,\t3,6')
 
+    steps = ['first_step'] + ['step_' + str(i+1) for i in range(no_steps)]
+    for step_name in steps:
+        file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
+        file_lines.append('\t*Static')
+        file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
+        file_lines.append('\t*CLoad')
+        file_lines.append('\t\tjaw_ref_node, 1, -0.5')
+
+        file_lines.append('\t*CLoad')
+        file_lines.append('\t\tjaw_ref_node, 2, ' + str(-force))
+        file_lines.append('\t*Output, field')
+        file_lines.append('\t\t*Element Output')
+        file_lines.append('\t\t\tS')
+        file_lines.append('\t\t*Node Output')
+        file_lines.append('\t\t\tU')
+        file_lines.append('*End step')
+
     with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
@@ -93,12 +132,12 @@ if __name__ == '__main__':
     if not os.path.isdir(simulation_directory + '/include_files'):
         os.makedirs(simulation_directory + '/include_files')
 
-    for t, T, c in zip(times, temps, carbon_levels):
-        name += str(t) + 'min' + str(T) + 'C' + str(c).replace('.', '') + 'wtC'
+    for time, temp, c in zip(times, temps, carbon_levels):
+        name += str(time) + 'min' + str(temp) + 'C' + str(c).replace('.', '') + 'wtC'
     specimen_name = 'utmis_' + specimen
     heat_treatment_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062/utmis_' + specimen
                                             + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
                                             + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                             + specimen + '.odb')
-    write_mechanical_input_file(geom_filename, simulation_directory, stress_level)
+    write_mechanical_input_file(geom_filename, simulation_directory, stress_level, no_steps=2)
     # write_dante_files(heat_treatment_odb, simulation_directory)
