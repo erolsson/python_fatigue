@@ -121,9 +121,9 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
 
 def write_run_file(job_names, directory):
     file_lines = ['#!/bin/bash',
-                  '#PBS -V'
-                  '#PBS -z'
-                  '#PBS -l select=1:ncpus=8'
+                  '#PBS -V',
+                  '#PBS -z',
+                  '#PBS -l select=1:ncpus=8',
                   'cd $PBS_O_WORKDIR']
 
     for job_name in job_names:
