@@ -158,6 +158,6 @@ if __name__ == '__main__':
     jobs = []
     for stress_level in loads[specimen][R]:
         jobs.append(write_mechanical_input_file(geom_filename, simulation_directory, stress_level, no_steps=2))
-    shutil.copyfile('subroutine.f', simulation_directory)
+    shutil.copyfile('subroutine.f', simulation_directory + '/subroutine.f')
     write_dante_files(heat_treatment_odb, simulation_directory)
     write_run_file(job_names=jobs, directory=simulation_directory)
