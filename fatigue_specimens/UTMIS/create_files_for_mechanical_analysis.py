@@ -112,7 +112,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
         file_lines.append('\t\t\tU')
         file_lines.append('*End step')
 
-    job_name = 'utmis_' + specimen + '_' + str(load) + '_' + str(int(R))
+    job_name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_' + str(int(R))
     with open(directory + '/' + job_name + '.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
