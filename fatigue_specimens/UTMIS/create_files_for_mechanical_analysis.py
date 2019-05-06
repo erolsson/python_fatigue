@@ -6,7 +6,7 @@ from input_file_reader.input_file_reader import InputFileReader
 
 from write_dante_files import write_dante_files
 
-specimen = sys.argv[-3]
+specimen = sys.argv[-2]
 R = float(sys.argv[-1])
 
 loads = {'smooth': {-1.: [820.], 0.: []},
