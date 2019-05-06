@@ -1,14 +1,16 @@
 import os
+import shutil
 import sys
-
-import numpy as np
 
 from input_file_reader.input_file_reader import InputFileReader
 
-# specimen = sys.argv[-1]
-specimen = 'smooth'
-stress_level = '820'
-R = -1
+from write_dante_files import write_dante_files
+
+specimen = sys.argv[-3]
+R = float(sys.argv[-1])
+
+loads = {'smooth': {-1.: [820.], 0.: []},
+         'notched': {-1.: [], 0.: []}}
 
 
 def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, initial_inc=1e-2):
@@ -25,7 +27,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
     load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:4]
     support_pos = input_file_reader.nodal_data[support_nodes[0]-1, 1]
     wb = (2*y)**2*(2*z)/6
-    force = float(stress_level)*wb/(support_pos - load_pos[0])/2
+    force_max = load*wb/(support_pos - load_pos[0])/2*(1 + (1+R)/(1-R))
     for e_data in input_file_reader.elements.values():
         n = e_data.shape[1] - 1
         e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
@@ -92,15 +94,17 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
 
     file_lines.append('*Boundary')
     file_lines.append('\tload_node,\t1')
-    file_lines.append('\tload_node,\t3,6')
+    file_lines.append('\tload_node,\t3, 6')
+
+    file_lines.append('*Initial Conditions, Type=Stress, User')
 
     steps = ['first_step'] + ['step_' + str(i+1) for i in range(no_steps)]
     for step_name in steps:
         file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
         file_lines.append('\t*Static')
         file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
-        file_lines.append('\t*CLoad')
-        file_lines.append('\t\tload_node, 2, ' + str(-force))
+        file_lines.append('\t*CLoad, Amplitude=amp')
+        file_lines.append('\t\tload_node, 2, ' + str(-force_max))
         file_lines.append('\t*Output, field')
         file_lines.append('\t\t*Element Output')
         file_lines.append('\t\t\tS')
@@ -108,9 +112,25 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
         file_lines.append('\t\t\tU')
         file_lines.append('*End step')
 
-    with open(directory + '/utmis_' + specimen + '_' + load + '.inp', 'w') as input_file:
+    job_name = 'utmis_' + specimen + '_' + str(load) + '_' + str(int(R))
+    with open(directory + '/' + job_name + '.inp', 'w') as input_file:
         for line in file_lines:
             input_file.write(line + '\n')
+    return job_name
+
+
+def write_run_file(job_names, directory):
+    file_lines = ['#!/bin/bash',
+                  '#PBS -V'
+                  '#PBS -z'
+                  '#PBS -l select=1:ncpus=8'
+                  'cd $PBS_O_WORKDIR']
+
+    for job_name in job_names:
+        file_lines.append('abq2018 j=' + job_name + ' cpus=8 user=subroutine.f interactive')
+    with open(directory + '/run_utmis' + specimen + 'R=' + str(int(R)) + 'sh') as shell_file:
+        for line in file_lines:
+            shell_file.write(line + '\n')
 
 
 if __name__ == '__main__':
@@ -135,5 +155,9 @@ if __name__ == '__main__':
                                             + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
                                             + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                             + specimen + '.odb')
-    write_mechanical_input_file(geom_filename, simulation_directory, stress_level, no_steps=2)
-    # write_dante_files(heat_treatment_odb, simulation_directory)
+    jobs = []
+    for stress_level in loads[specimen][R]:
+        jobs.append(write_mechanical_input_file(geom_filename, simulation_directory, stress_level, no_steps=2))
+    shutil.copyfile('subroutine.f', simulation_directory)
+    write_dante_files(heat_treatment_odb, simulation_directory)
+    write_run_file(job_names=jobs, directory=simulation_directory)
