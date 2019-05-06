@@ -124,10 +124,11 @@ def write_run_file(job_names, directory):
                   '#PBS -V',
                   '#PBS -z',
                   '#PBS -l select=1:ncpus=8',
+                  'abq2018=/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher',
                   'cd $PBS_O_WORKDIR']
 
     for job_name in job_names:
-        file_lines.append('abq2018 j=' + job_name + ' cpus=8 user=subroutine.f interactive')
+        file_lines.append('${abq2018} j=' + job_name + ' cpus=8 user=subroutine.f')
     with open(directory + '/run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', 'w') as shell_file:
         for line in file_lines:
             shell_file.write(line + '\n')
