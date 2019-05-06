@@ -128,7 +128,7 @@ def write_run_file(job_names, directory):
 
     for job_name in job_names:
         file_lines.append('abq2018 j=' + job_name + ' cpus=8 user=subroutine.f interactive')
-    with open(directory + '/run_utmis' + specimen + 'R=' + str(int(R)) + 'sh') as shell_file:
+    with open(directory + '/run_utmis_' + specimen + '_R=' + str(int(R)) + 'sh', 'w') as shell_file:
         for line in file_lines:
             shell_file.write(line + '\n')
 
