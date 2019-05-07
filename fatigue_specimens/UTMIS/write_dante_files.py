@@ -28,9 +28,9 @@ def write_dante_files(dante_odb, directory_to_write):
 
     with open(directory_to_write + '/hardening_data_pos.dat', 'w') as data_file:
         for i in range(len(hv_data)):
-            hv = sum(hv_data[i+1])/len(hv_data[i+1])[0]
-            austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])[0]
-            data_file.write(str(i+i) + ', ' + str(hv) + ', ' + str(austenite) + '\n')
+            hv = sum(hv_data[i+1])/len(hv_data[i+1])
+            austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])
+            data_file.write(str(i+i) + ', ' + str(hv[0]) + ', ' + str(austenite[0]) + '\n')
 
     gp = 1
     with open(directory_to_write + '/residual_stresses_pos.dat', 'w') as stress_file:
