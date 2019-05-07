@@ -68,7 +68,7 @@ class SS2506Material:
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2',
                       '\t0., 1., 0., 0., 0., 0.',
                       '\t0., 1., 0., 0., 1000., 0.',
-                      '\t47.6, 1., 0.009346, 0., 0., 0.2'
+                      '\t47.6, 1., 0.009346, 0., 0., 0.2',
                       '\t47.6, 1., 0.009346, 0., 1000., 0.2',
                       '*Drucker Prager Hardening, Type=Compression, Dependencies=1']
 
