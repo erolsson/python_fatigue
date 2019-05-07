@@ -10,12 +10,16 @@ C
 C
       INTEGER N_LINES
       CHARACTER STRESS_FNAME*150
+      CHARACTER HARDENING_FNAME*150
       DIMENSION TIME(2)
 C
       IF (LOP .EQ. 0) THEN
         STRESS_FNAME = '/scratch/users/erik/scania_gear_analysis/' //
      1 'abaqus/utmis_specimens/residual_stresses_pos.dat'
+        HARDENING_FNAME = '/scratch/users/erik/scania_gear_analysis/' //
+     1 'abaqus/utmis_specimens/hardening_data_pos.dat'
         OPEN(15, FILE=TRIM(ADJUSTL(STRESS_FNAME)))
+        OPEN(16, FILE=TRIM(ADJUSTL(HARDENING_FNAME)))
 C     Find out the number of data lines
          N_LINES = 0
          DO
@@ -25,10 +29,13 @@ C     Find out the number of data lines
          END DO
          REWIND(15)
          ALLOCATE(STRESS_DATA(N_LINES, 8))
+         ALLOCATE(HARDENING_DATA(N_LINES, 3))
          DO i=1, N_LINES
             READ(15, FMT=*) STRESS_DATA(i, :)
+            READ(16, FMT=*) HARDENING_DATA(i, :)
          END DO
          CLOSE(15)
+         CLOSE(16)
         END IF
       RETURN
       END
@@ -50,12 +57,12 @@ C
       CHARACTER INSTANCE*80
 C
 C user coding to define SIGMA(NTENS)
-      s11 = 0.
-      s22 = 0.
-      s33 = 0.
-      s12 = 0.
-      s13 = 0.
-      s23 = 0.
+      s11 = 0.d0
+      s22 = 0.d0
+      s33 = 0.d0
+      s12 = 0.d0
+      s13 = 0.d0
+      s23 = 0.d0
       INTPOINTS = 8
       CALL MutexLock(1)
       CALL GETPARTINFO(NOEL, 1, INSTANCE, ELEM_NUMBER, JRCD)
@@ -94,7 +101,10 @@ C
       DIMENSION FIELD(NSECPT,NFIELD), TIME(2), COORDS(3),
      1 TEMP(NSECPT), DTEMP(NSECPT)
 C
-
+      CALL MutexLock(1)
+      CALL GETPARTINFO(NOEL, 0, INSTANCE, ELEM_NUMBER, JRCD)
+      CALL MutexUnlock(1)
+      IF (JRCD .EQ. 0) THEN
 
 
 
