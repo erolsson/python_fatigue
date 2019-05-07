@@ -40,6 +40,7 @@ class MaterialTest:
                       '**   Define material properties',
                       '**',
                       '*Solid Section, elset=all_elements, material=SS2506',
+                      '*Material, name=SS2506',
                       '\t*Include, Input=SS2506material.inc',
                       '*INITIAL CONDITIONS, TYPE=FIELD, VAR=1',
                       '\tALL_NODES , ' + str(self.hardness),
