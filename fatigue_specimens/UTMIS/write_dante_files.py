@@ -34,6 +34,7 @@ def write_dante_files(dante_odb, directory_to_write):
                     data_file.write(instance + '.' + str(i+1) + ', ' + str(value[0]) + '\n')
 
     with open(directory_to_write + '/residual_stresses_pos.dat', 'w') as stress_file:
+        gp = 1
         for i, label in enumerate(labels):
             line = str(label) + ", " + str(gp)
             for comp in stress[i, :]:
