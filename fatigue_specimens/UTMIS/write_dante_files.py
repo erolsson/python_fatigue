@@ -30,7 +30,7 @@ def write_dante_files(dante_odb, directory_to_write):
         for i in range(len(hv_data)):
             hv = sum(hv_data[i+1])/len(hv_data[i+1])
             austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])
-            data_file.write(str(i+i) + ', ' + str(hv[0]) + ', ' + str(austenite[0]) + '\n')
+            data_file.write(str(i+1) + ', ' + str(hv[0]) + ', ' + str(austenite[0]) + '\n')
 
     gp = 1
     with open(directory_to_write + '/residual_stresses_pos.dat', 'w') as stress_file:
