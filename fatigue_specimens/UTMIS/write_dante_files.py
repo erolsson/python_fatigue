@@ -26,10 +26,10 @@ def write_dante_files(dante_odb, directory_to_write):
                 data_dict[label] = []
             data_dict[label].append(data[i])
 
-    with open(directory_to_write + '/hardening_data_pos.dat.dat', 'w') as data_file:
+    with open(directory_to_write + '/hardening_data_pos.dat', 'w') as data_file:
         for i in range(len(hv_data)):
-            hv = sum(hv_data[i+1])/len(hv_data[i+1])
-            austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])
+            hv = sum(hv_data[i+1])/len(hv_data[i+1])[0]
+            austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])[0]
             data_file.write(str(i+i) + ', ' + str(hv) + ', ' + str(austenite) + '\n')
 
     gp = 1
