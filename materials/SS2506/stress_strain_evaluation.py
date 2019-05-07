@@ -21,8 +21,8 @@ class Experiment:
         if compression:
             self.sign = -1
         data = np.genfromtxt(filename, delimiter=delimiter)
-        self.strain = data[:, 0]
-        self.stress = data[:, 1]
+        self.strain = data[:-1, 0]
+        self.stress = data[:-1, 1]
         self.E = 205e3
         self.hardness = hardness
         self.ra = ra
