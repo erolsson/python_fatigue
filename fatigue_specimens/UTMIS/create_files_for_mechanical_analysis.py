@@ -60,9 +60,9 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
     file_lines.append('\t1.0, 1.0')
     t = 1.
     for i in range(no_steps):
-        file_lines.append('\t' + str(t + 0.5) + ', ' + str(float(R)))
-        file_lines.append('\t' + str(t + 1.0) + ', 1.0')
-        t += 1.
+        file_lines.append('\t' + str(t + 1.0) + ', ' + str(float(R)))
+        file_lines.append('\t' + str(t + 2.0) + ', 1.0')
+        t += 2.
 
     file_lines.append('*Assembly, name=pulsator_model')
     for sign in ['pos', 'neg']:
@@ -97,20 +97,25 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
     file_lines.append('\tload_node,\t3, 6')
 
     file_lines.append('*Initial Conditions, Type=Stress, User')
+    file_lines.append('*Initial Conditions, Type=Field, Variable=1')
+    file_lines.append('\t*Include, Input=hardness.dat')
+    file_lines.append('*Initial Conditions, Type=Field, Variable=12')
+    file_lines.append('\t*Include, Input=austenite.dat')
 
-    steps = ['first_step'] + ['step_' + str(i+1) for i in range(no_steps)]
-    for step_name in steps:
-        file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
-        file_lines.append('\t*Static')
-        file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
-        file_lines.append('\t*CLoad, Amplitude=amp')
-        file_lines.append('\t\tload_node, 2, ' + str(-force_max))
-        file_lines.append('\t*Output, field')
-        file_lines.append('\t\t*Element Output')
-        file_lines.append('\t\t\tS')
-        file_lines.append('\t\t*Node Output')
-        file_lines.append('\t\t\tU')
-        file_lines.append('*End step')
+    for step in range(no_steps):
+        for direction in ['loading', 'unloading']:
+            step_name = 'step_' + str(step+1) + '_' + direction
+            file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
+            file_lines.append('\t*Static')
+            file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
+            file_lines.append('\t*CLoad, Amplitude=amp')
+            file_lines.append('\t\tload_node, 2, ' + str(-force_max))
+            file_lines.append('\t*Output, field')
+            file_lines.append('\t\t*Element Output')
+            file_lines.append('\t\t\tS')
+            file_lines.append('\t\t*Node Output')
+            file_lines.append('\t\t\tU')
+            file_lines.append('*End step')
 
     job_name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
     with open(directory + '/' + job_name + '.inp', 'w') as input_file:
