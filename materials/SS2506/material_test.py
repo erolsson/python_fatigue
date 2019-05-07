@@ -81,7 +81,8 @@ class MaterialTest:
 
     def run_material_test(self):
         self._write_input_file()
-        process = Popen('abq2018 j=' + self.name + 'interactive ', shell=True)
+        abq = 'scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher'
+        process = Popen(abq + ' j=' + self.name + 'interactive ', shell=True)
         process.wait()
 
 
