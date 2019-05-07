@@ -6,7 +6,7 @@ class MaterialTest:
         self.strain = strain
         self.hardness = hardness
         self.austenite = austenite
-        self.name = 'material_test_hv=' + str(hardness) + '_au=' + str(austenite)
+        self.name = 'material_test_hv=' + str(hardness) + '_au=' + str(austenite).replace('.', '_')
 
     def _write_input_file(self):
         SS2506.write_material_input_file('SS2506material.inc')
