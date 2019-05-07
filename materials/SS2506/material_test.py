@@ -1,3 +1,5 @@
+from subprocess import Popen
+
 from stress_strain_evaluation import SS2506
 
 
@@ -79,6 +81,8 @@ class MaterialTest:
 
     def run_material_test(self):
         self._write_input_file()
+        process = Popen('abq2018 j=' + self.name + 'interactive ', shell=True)
+        process.wait()
 
 
 if __name__ == '__main__':
