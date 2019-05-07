@@ -71,7 +71,7 @@ class SS2506Material:
             psi = np.arctan(3*a)*180/np.pi
             a1 = 6.4e-3*a/0.25
             psi1 = np.arctan(3*a1)*180/np.pi
-            file_lines.append('\t' + str(psi) + ', 1.0, ' + str(psi1) + ',  , ' + str(au_val))
+            file_lines.append('\t' + str(psi) + ', 1.0, , ' + str(psi1) + ',  , ' + str(au_val))
 
         file_lines.append('*Drucker Prager Hardening, Type=Compression, Dependencies=1')
 
