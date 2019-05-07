@@ -23,6 +23,7 @@ for step_name in step_names:
         field = frame.fieldOutputs['E'].values[0].data  # Gauss pt 0
         data[j, 1:7] = frame.fieldOutputs['E'].values[0].data
         data[j, 7:] = frame.fieldOutputs['S'].values[0].data
+        j += 1
 
 with open('data_' + name + '.pkl', 'wb') as pickle_handle:
     pickle.dump(data, pickle_handle)
