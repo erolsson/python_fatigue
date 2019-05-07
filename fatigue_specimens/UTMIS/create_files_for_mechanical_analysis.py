@@ -99,7 +99,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
     file_lines.append('*Initial Conditions, Type=Stress, User')
     file_lines.append('*Initial Conditions, Type=Field, Variable=1')
     file_lines.append('\t*Include, Input=hardness.dat')
-    file_lines.append('*Initial Conditions, Type=Field, Variable=12')
+    file_lines.append('*Initial Conditions, Type=Field, Variable=2')
     file_lines.append('\t*Include, Input=austenite.dat')
 
     for step in range(no_steps):
