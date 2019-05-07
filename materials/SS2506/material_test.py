@@ -93,6 +93,8 @@ class MaterialTest:
         abq = '/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher'
         process = Popen(abq + ' j=' + self.name + ' interactive ', shell=True)
         process.wait()
+        process = Popen(abq + ' python material_test_post_processing.py ' + self.name, shell=True)
+        process.wait()
 
 
 if __name__ == '__main__':
