@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 from stress_strain_evaluation import SS2506
+from stress_strain_evaluation import experiments
 
 matplotlib.style.use('classic')
 plt.rc('text', usetex=True)
@@ -114,8 +115,11 @@ class MaterialTest:
 
 
 if __name__ == '__main__':
-    test = MaterialTest(-0.025, 750, 0.2)
-    stress_data = test.run_material_test()
-    print stress_data[:, 3], stress_data[:, 9]
-    plt.plot(stress_data[:, 3], stress_data[:, 9])
+    for experiment in experiments:
+        plt.figure(0)
+        experiment.plot()
+
+        test = MaterialTest(experiment.strain[-1], experiment.hardness, experiment.ra/100)
+        stress_data = test.run_material_test()
+        plt.plot(stress_data[:, 3], stress_data[:, 9], '--' + experiment.color, lw=2)
     plt.show()

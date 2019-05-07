@@ -17,10 +17,10 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 class Experiment:
     def __init__(self, filename, color, hardness, ra, delimiter=None, compression=False):
         self.color = color
-        sign = 1
+        self.sign = 1
         if compression:
-            sign = -1
-        data = sign*np.genfromtxt(filename, delimiter=delimiter)
+            self.sign = -1
+        data = np.genfromtxt(filename, delimiter=delimiter)
         self.strain = data[:, 0]
         self.stress = data[:, 1]
         self.E = 205e3
@@ -31,9 +31,9 @@ class Experiment:
         plt.plot(self.strain, self.stress, self.color, lw=2)
 
     def plastic_strain_data(self, threshold=0.0001):
-        epl = self.strain - self.stress/self.E
+        epl = (self.strain - self.stress/self.E)*self.sign
         s = self.stress[epl > threshold]
-        return epl[epl > threshold], s
+        return epl[epl > threshold], s*self.sign
 
 
 class SS2506Material:
