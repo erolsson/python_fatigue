@@ -62,7 +62,7 @@ class SS2506Material:
         return stress/self.E + np.interp(stress, compressive_plastic_stress, self.epl)
 
     def write_material_input_file(self, filename):
-        austenite = np.arange(0.17, 0.18, 0.01)
+        austenite = np.arange(0, 0.31, 0.01)
         file_lines = ['*Elastic',
                       '\t' + str(self.E) + ', 0.3',
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2']
