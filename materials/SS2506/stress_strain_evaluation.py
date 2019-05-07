@@ -42,7 +42,7 @@ class SS2506Material:
         self.plastic_data = np.zeros((1000, len(stress_strain_datasets)))
 
         self.dp_parameter = 2.15
-        self.dp_ra = 0.2
+        self.dp_ra = 0.17
         self.hardness_values = np.zeros(len(stress_strain_datasets))
 
         self.epl = np.linspace(0., 0.025, 1000)
@@ -84,11 +84,11 @@ class SS2506Material:
 
 
 experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', delimiter=',', compression=True,
-                          hardness=750, ra=20.),
+                          hardness=770, ra=17.),
                Experiment(filename='tension_data_case_EN.dat', color='r', delimiter=',',
-                          hardness=750, ra=20.),
+                          hardness=770, ra=17.),
                Experiment(filename='tension_data_case_BA.dat', color='g',
-                          hardness=750, ra=20.),
+                          hardness=770, ra=17.),
                Experiment(filename='tension_data_core_BA.dat', color='k',
                           hardness=450, ra=0.)]
 

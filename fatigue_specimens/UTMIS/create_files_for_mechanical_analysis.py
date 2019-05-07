@@ -6,6 +6,8 @@ from input_file_reader.input_file_reader import InputFileReader
 
 from write_dante_files import write_dante_files
 
+from materials.SS2506.stress_strain_evaluation import SS2506
+
 specimen = sys.argv[-2]
 R = float(sys.argv[-1])
 
@@ -52,8 +54,7 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
 
     file_lines.append('**')
     file_lines.append('*Material, name=SS2506')
-    file_lines.append('\t*Elastic')
-    file_lines.append('\t\t200E3, 0.3')
+    file_lines.append('\t*Include, Input=include_files/SS2506material.inc')
 
     file_lines.append('*Amplitude, name=amp, time=total time')
     file_lines.append('\t0.0, 0.0')
@@ -148,6 +149,8 @@ if __name__ == '__main__':
     carbon_levels = [1.1, 0.8, 0.8]
     tempering = (200, 7200)
     name = ''
+
+    SS2506.write_material_input_file(simulation_directory + '/include_files/SS2506material.inc')
 
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
