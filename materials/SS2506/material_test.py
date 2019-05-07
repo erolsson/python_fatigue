@@ -116,5 +116,6 @@ class MaterialTest:
 if __name__ == '__main__':
     test = MaterialTest(-0.025, 750, 0.2)
     stress_data = test.run_material_test()
+    print stress_data[:, 3], stress_data[:, 9]
     plt.plot(stress_data[:, 3], stress_data[:, 9])
     plt.show()
