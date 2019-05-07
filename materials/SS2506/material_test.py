@@ -69,7 +69,8 @@ class MaterialTest:
                       '\t\t8, 3, 3, ' + str(self.strain),
                       '\t*OUTPUT, FIELD, FREQ=1',
                       '\t\t*ELEMENT OUTPUT, directions=YES',
-                      '\t\t\tS, E, FV']
+                      '\t\t\tS, E, FV',
+                      '*END STEP']
 
         with open(self.name + '.inp', 'w') as inp_file:
             for line in file_lines:
