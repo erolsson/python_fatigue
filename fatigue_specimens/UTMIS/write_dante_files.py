@@ -26,22 +26,12 @@ def write_dante_files(dante_odb, directory_to_write):
                 data_dict[label] = []
             data_dict[label].append(data[i])
 
-    with open(directory_to_write + '/hardening_data_pos.dat', 'w') as data_file:
-        for i in range(len(hv_data)):
-            hv = sum(hv_data[i+1])/len(hv_data[i+1])
-            austenite = sum(austenite_data[i + 1])/len(austenite_data[i + 1])
-            data_file.write(str(i+1) + ', ' + str(hv[0]) + ', ' + str(austenite[0]) + '\n')
-
-    gp = 1
-    with open(directory_to_write + '/residual_stresses_pos.dat', 'w') as stress_file:
-        for i, label in enumerate(labels):
-            line = str(label) + ", " + str(gp)
-            for comp in stress[i, :]:
-                line += ", " + str(comp)
-            stress_file.write(line + '\n')
-            gp += 1
-            if gp == 9:
-                gp = 1
+    for file_name, data in zip(['hardness.dat', 'austenite.dat'],[hv_data, austenite_data]):
+        with open(directory_to_write + '/' + file_name, 'w') as data_file:
+            for instance in ['SPECIMEN_PART_POS', 'SPECIMEN_PART_NEG']:
+                for i in range(len(data)):
+                    value = sum(data[i+1])/len(data[i+1])
+                    data_file.write(instance + '.' + str(i+1) + ', ' + str(value[0]) + '\n')
 
     with open(directory_to_write + '/residual_stresses_pos.dat', 'w') as stress_file:
         for i, label in enumerate(labels):
