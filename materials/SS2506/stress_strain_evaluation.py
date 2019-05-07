@@ -72,8 +72,8 @@ class SS2506Material:
                       '\t47.6, 1., 0.009346, , 1000., 0.2',
                       '*Drucker Prager Hardening, Type=Compression, Dependencies=1']
 
-        for i, epl_val in enumerate(self.epl):
-            for j, hv in enumerate(self.hardness_values):
+        for j, hv in enumerate(self.hardness_values):
+            for i, epl_val in enumerate(self.epl):
                 file_lines.append('\t' + str(self.plastic_data[i, 0]) + ', ' + str(epl_val) + ',  ,'
                                   + str(hv))
 
