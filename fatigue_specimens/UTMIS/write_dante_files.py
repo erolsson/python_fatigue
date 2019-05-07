@@ -42,4 +42,3 @@ def write_dante_files(dante_odb, directory_to_write):
             gp += 1
             if gp == 9:
                 gp = 1
-
