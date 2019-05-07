@@ -84,13 +84,13 @@ class SS2506Material:
 
 
 experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', delimiter=',', compression=True,
-                          hardness=750, ra=20),
+                          hardness=750, ra=20.),
                Experiment(filename='tension_data_case_EN.dat', color='r', delimiter=',',
-                          hardness=750, ra=20),
+                          hardness=750, ra=20.),
                Experiment(filename='tension_data_case_BA.dat', color='g',
-                          hardness=750, ra=20),
+                          hardness=750, ra=20.),
                Experiment(filename='tension_data_core_BA.dat', color='k',
-                          hardness=450, ra=0)]
+                          hardness=450, ra=0.)]
 
 SS2506 = SS2506Material((experiments[3], experiments[0]))
 
