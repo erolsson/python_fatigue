@@ -66,15 +66,15 @@ class SS2506Material:
         file_lines = ['*Elastic',
                       '\t' + str(self.E) + ', 0.3',
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2',
-                      '\t0., 1., 0., 0., 0., 0.',
-                      '\t0., 1., 0., 0., 1000., 0.',
-                      '\t47.6, 1., 0.009346, 0., 0., 0.2',
-                      '\t47.6, 1., 0.009346, 0., 1000., 0.2',
+                      '\t0., 1., 0., , 0., 0.',
+                      '\t0., 1., 0., , 1000., 0.',
+                      '\t47.6, 1., 0.009346, , 0., 0.2',
+                      '\t47.6, 1., 0.009346, , 1000., 0.2',
                       '*Drucker Prager Hardening, Type=Compression, Dependencies=1']
 
         for i, epl_val in enumerate(self.epl):
             for j, hv in enumerate(self.hardness_values):
-                file_lines.append('\t' + str(self.plastic_data[i, 0]) + ', ' + str(epl_val) + ', 0.,'
+                file_lines.append('\t' + str(self.plastic_data[i, 0]) + ', ' + str(epl_val) + ',  ,'
                                   + str(hv))
 
         with open(filename, 'w') as material_file:
