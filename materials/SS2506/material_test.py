@@ -1,6 +1,18 @@
+import pickle
 from subprocess import Popen
 
+import matplotlib.pyplot as plt
+import matplotlib
+
 from stress_strain_evaluation import SS2506
+
+matplotlib.style.use('classic')
+plt.rc('text', usetex=True)
+plt.rc('font', serif='Computer Modern Roman')
+plt.rcParams.update({'font.size': 20})
+plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
+                  'monospace': ['Computer Modern Typewriter']})
 
 
 class MaterialTest:
@@ -96,7 +108,13 @@ class MaterialTest:
         process = Popen(abq + ' python material_test_post_processing.py ' + self.name, shell=True)
         process.wait()
 
+        with open('data_' + self.name + '.pkl', 'r') as pickle_handle:
+            data = pickle.load(pickle_handle)
+        return data
+
 
 if __name__ == '__main__':
     test = MaterialTest(-0.025, 750, 0.2)
-    test.run_material_test()
+    stress_data = test.run_material_test()
+    plt.plot(stress_data[:, 3], stress_data[:, 9])
+    plt.show()

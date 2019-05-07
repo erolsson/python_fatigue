@@ -31,7 +31,8 @@ for model in data_dict.keys():
             j += 1
     data_dict[model]['data'] = data
     odb.close()
-pickleHandle = open('data_' + name + '.pkl', 'wb')
-pickle.dump(data_dict, pickleHandle)
-pickleHandle.close()
+
+with open('data_' + name + '.pkl', 'wb') as pickle_handle:
+    pickle.dump(data_dict, pickle_handle)
+
 

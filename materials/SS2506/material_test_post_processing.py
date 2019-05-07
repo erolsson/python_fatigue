@@ -24,6 +24,5 @@ for step_name in step_names:
         data[j, 1:7] = frame.fieldOutputs['E'].values[0].data
         data[j, 7:] = frame.fieldOutputs['S'].values[0].data
 
-pickleHandle = open('data_' + name + '.pkl', 'wb')
-pickle.dump(data, pickleHandle)
-pickleHandle.close()
+with open('data_' + name + '.pkl', 'wb') as pickle_handle:
+    pickle.dump(data, pickle_handle)
