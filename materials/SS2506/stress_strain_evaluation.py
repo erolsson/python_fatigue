@@ -52,7 +52,6 @@ class SS2506Material:
             self.hardness_values[i] = dataset.hardness
 
     def strain(self, stress, hardness, ra, compression=True):
-        print self.plastic_data
         compressive_plastic_stress = (self.plastic_data[:, 0]
                                       + (self.plastic_data[:, 1] - self.plastic_data[:, 0])
                                       / (np.diff(self.hardness_values)) * (hardness - self.hardness_values[0]))
@@ -63,7 +62,7 @@ class SS2506Material:
         return stress/self.E + np.interp(stress, compressive_plastic_stress, self.epl)
 
     def write_material_input_file(self, filename):
-        austenite = np.arange(0, 0.31, 0.01)
+        austenite = np.arange(0.17, 0.18, 0.01)
         file_lines = ['*Elastic',
                       '\t' + str(self.E) + ', 0.3',
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2']
@@ -79,7 +78,7 @@ class SS2506Material:
 
         for j, hv in enumerate(self.hardness_values):
             for i, epl_val in enumerate(self.epl):
-                file_lines.append('\t' + str(self.plastic_data[i, j]) + ', ' + str(epl_val) + ',  ,'
+                file_lines.append('\t' + str(self.plastic_data[i, j]) + ', ' + str(epl_val) + ',  , '
                                   + str(hv))
 
         with open(filename, 'w') as material_file:
