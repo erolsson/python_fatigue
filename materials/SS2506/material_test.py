@@ -82,5 +82,5 @@ class MaterialTest:
 
 
 if __name__ == '__main__':
-    test = MaterialTest(0.025, 750, 0.2)
+    test = MaterialTest(-0.025, 750, 0.2)
     test.run_material_test()
