@@ -75,8 +75,6 @@ class SS2506Material:
             for i, epl_val in enumerate(self.epl):
                 file_lines.append('\t' + str(epl_val) + ', ' + str(self.plastic_data[i, 0]) + ', 0.,'
                                   + str(hv))
-                file_lines.append('\t' + str(epl_val) + ', ' + str(self.plastic_data[i, 1]) + ', 0.,'
-                                  + str(hv))
 
         with open(filename, 'w') as material_file:
             for line in file_lines:
