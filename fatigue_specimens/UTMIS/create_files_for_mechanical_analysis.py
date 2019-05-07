@@ -112,9 +112,9 @@ def write_mechanical_input_file(geom_include_file, directory, load, no_steps=1, 
             file_lines.append('\t\tload_node, 2, ' + str(-force_max))
             file_lines.append('\t*Output, field')
             file_lines.append('\t\t*Element Output')
-            file_lines.append('\t\t\tS')
+            file_lines.append('\t\t\tS, FV')
             file_lines.append('\t\t*Node Output')
-            file_lines.append('\t\t\tU, FV')
+            file_lines.append('\t\t\tU')
             file_lines.append('*End step')
 
     job_name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
