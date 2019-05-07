@@ -62,6 +62,27 @@ class SS2506Material:
 
         return stress/self.E + np.interp(stress, compressive_plastic_stress, self.epl)
 
+    def write_material_input_file(self, filename):
+        file_lines = ['*Elastic',
+                      '\t' + str(self.E) + ', 0.3',
+                      '*Drucker Prager, Shear Criterion=Linear, Dependencies=2',
+                      '\t0., 1., 0., , 0., 0.',
+                      '\t0., 1., 0., , 1000., 0.',
+                      '\t47.6, 1., 0.009346, , 0., 0.2'
+                      '\t47.6, 1., 0.009346, , 1000., 0.2',
+                      '*Drucker Prager Hardening, Type=Compression, Dependencies=1']
+
+        for i, epl_val in enumerate(self.epl):
+            file_lines.append('\t' + str(epl_val) + ', ' + str(self.plastic_data[i, 0]) + ', ,'
+                              + str(self.hardness_values[0]))
+            file_lines.append('\t' + str(epl_val) + ', ' + str(self.plastic_data[i, 1]) + ', ,'
+                              + str(self.hardness_values[1]))
+
+        with open(filename, 'w') as material_file:
+            for line in file_lines:
+                material_file.write(line + '\n')
+            material_file.write('**EOF')
+
 
 experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', delimiter=',', compression=True,
                           hardness=750, ra=20),
@@ -72,19 +93,19 @@ experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', de
                Experiment(filename='tension_data_core_BA.dat', color='k',
                           hardness=450, ra=0)]
 
-for experiment in experiments:
-    plt.figure(0)
-    experiment.plot()
-
-    e_pl, stress = experiment.plastic_strain_data()
-    plt.figure(1)
-    plt.plot(e_pl, stress, experiment.color, lw=2)
-
 SS2506 = SS2506Material((experiments[3], experiments[0]))
 
-s = np.linspace(0, 1000, 1000)
-plt.figure(0)
-plt.plot(SS2506.strain(s, 450, 0.6, compression=False), s)
+if __name__ == '__main__':
+    for experiment in experiments:
+        plt.figure(0)
+        experiment.plot()
 
+        e_pl, stress = experiment.plastic_strain_data()
+        plt.figure(1)
+        plt.plot(e_pl, stress, experiment.color, lw=2)
 
-plt.show()
+    s = np.linspace(0, 1000, 1000)
+    plt.figure(0)
+    plt.plot(SS2506.strain(s, 450, 0.6, compression=False), s)
+
+    plt.show()
