@@ -79,8 +79,17 @@ class MaterialTest:
                 inp_file.write(line + '\n')
             inp_file.write('**EOF')
 
+    @staticmethod
+    def _write_env_file():
+        file_lines = ['ask_delete = OFF']
+
+        with open('abaqus_v6.env', 'w') as env_file:
+            for line in file_lines:
+                env_file.write(line + '\n')
+
     def run_material_test(self):
         self._write_input_file()
+        self._write_env_file()
         abq = '/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher'
         process = Popen(abq + ' j=' + self.name + ' interactive ', shell=True)
         process.wait()
