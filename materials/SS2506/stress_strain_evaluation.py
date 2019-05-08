@@ -1,17 +1,4 @@
-from collections import namedtuple
-
 import numpy as np
-
-import matplotlib.pyplot as plt
-import matplotlib
-
-matplotlib.style.use('classic')
-plt.rc('text', usetex=True)
-plt.rc('font', serif='Computer Modern Roman')
-plt.rcParams.update({'font.size': 20})
-plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
-plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
-                  'monospace': ['Computer Modern Typewriter']})
 
 
 class Experiment:
@@ -98,6 +85,17 @@ experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', de
 SS2506 = SS2506Material((experiments[3], experiments[0]))
 
 if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    import matplotlib
+
+    matplotlib.style.use('classic')
+    plt.rc('text', usetex=True)
+    plt.rc('font', serif='Computer Modern Roman')
+    plt.rcParams.update({'font.size': 20})
+    plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}"]
+    plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
+                      'monospace': ['Computer Modern Typewriter']})
+
     for experiment in experiments:
         plt.figure(0)
         experiment.plot()
