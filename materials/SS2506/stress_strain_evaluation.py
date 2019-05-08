@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 
@@ -7,7 +9,8 @@ class Experiment:
         self.sign = 1
         if compression:
             self.sign = -1
-        data = np.genfromtxt(filename, delimiter=delimiter)
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        data = np.genfromtxt(dir_path + '/' + filename, delimiter=delimiter)
         self.strain = data[:-1, 0]
         self.stress = data[:-1, 1]
         self.E = 205e3
