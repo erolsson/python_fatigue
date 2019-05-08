@@ -158,12 +158,12 @@ if __name__ == '__main__':
     tempering = (200, 7200)
     name = ''
 
-    SS2506.write_material_input_file(simulation_directory + '/include_files/SS2506material.inc')
-
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     if not os.path.isdir(simulation_directory + '/include_files'):
         os.makedirs(simulation_directory + '/include_files')
+
+    SS2506.write_material_input_file(simulation_directory + '/include_files/SS2506material.inc')
 
     for time, temp, c in zip(times, temps, carbon_levels):
         name += str(time) + 'min' + str(temp) + 'C' + str(c).replace('.', '') + 'wtC'
