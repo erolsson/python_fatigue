@@ -1,5 +1,4 @@
 import os
-import shutil
 from subprocess import Popen
 import sys
 
@@ -153,7 +152,7 @@ def write_subroutine_file(directory):
         for line in lines:
             line = line.rstrip()
             file_lines.append(line)
-            if line == 'Enter STRESS_FNAME here':
+            if 'Enter STRESS_FNAME here' in line:
                 file_lines.append('STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
                 file_lines.append('1\'abaqus/utmis_specimens/utmis_' + specimen
                                   + 'include_files/residual_stresses_pos.dat\'')
