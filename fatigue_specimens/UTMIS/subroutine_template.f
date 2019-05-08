@@ -12,8 +12,7 @@ C
       DIMENSION TIME(2)
 C
       IF (LOP .EQ. 0) THEN
-        STRESS_FNAME = '/scratch/users/erik/scania_gear_analysis/' //
-     1 'abaqus/utmis_specimens/residual_stresses_pos.dat'
+C     Enter STRESS_FNAME here
         OPEN(15, FILE=TRIM(ADJUSTL(STRESS_FNAME)))
 C     Find out the number of data lines
          N_LINES = 0

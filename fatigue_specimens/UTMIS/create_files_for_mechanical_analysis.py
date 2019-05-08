@@ -68,6 +68,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
             file_lines.append('\t' + str(t + 1.0) + ', ' + str(float(R)))
             file_lines.append('\t' + str(t + 2.0) + ', 1.0')
             t += 2.
+        file_lines.append('\t' + str(t + 1.) + ', 0.0')
 
         file_lines.append('*Assembly, name=pulsator_model')
         for sign in ['pos', 'neg']:
@@ -103,9 +104,9 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
 
         file_lines.append('*Initial Conditions, Type=Stress, User')
         file_lines.append('*Initial Conditions, Type=Field, Variable=1')
-        file_lines.append('\t*Include, Input=hardness.dat')
+        file_lines.append('\t*Include, Input=include_files/hardness.dat')
         file_lines.append('*Initial Conditions, Type=Field, Variable=2')
-        file_lines.append('\t*Include, Input=austenite.dat')
+        file_lines.append('\t*Include, Input=include_files/austenite.dat')
 
         for step in range(no_steps):
             for direction in ['loading', 'unloading']:
@@ -122,6 +123,18 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
                 file_lines.append('\t\t\tU')
                 file_lines.append('*End step')
 
+        file_lines.append('*step, name=relax, nlgeom=Yes')
+        file_lines.append('\t*Static')
+        file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
+        file_lines.append('\t*CLoad, Amplitude=amp')
+        file_lines.append('\t\tload_node, 2, 0.')
+        file_lines.append('\t*Output, field')
+        file_lines.append('\t\t*Element Output')
+        file_lines.append('\t\t\tS, FV, PEEQ')
+        file_lines.append('\t\t*Node Output')
+        file_lines.append('\t\t\tU')
+        file_lines.append('*End step')
+
         job_name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
         with open(directory + '/' + job_name + '.inp', 'w') as input_file:
             for line in file_lines:
@@ -131,6 +144,22 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
     for load in loads:
         job_names.append(write_inp_file(load))
     return job_names
+
+
+def write_subroutine_file(directory):
+    file_lines = []
+    with open('subroutine_template.f', 'r') as subroutine_file:
+        lines = subroutine_file.readlines()
+        for line in lines:
+            line = line.rstrip()
+            file_lines.append(line)
+            if line == 'Enter STRESS_FNAME here':
+                file_lines.append('STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
+                file_lines.append('1\'abaqus/utmis_specimens/utmis_' + specimen
+                                  + 'include_files/residual_stresses_pos.dat\'')
+    with open(directory + '/subroutine.f', 'w') as subroutine_file:
+        for line in file_lines:
+            subroutine_file.write(line + '\n')
 
 
 def write_run_file(job_names, directory):
@@ -174,8 +203,8 @@ if __name__ == '__main__':
                                             + specimen + '.odb')
 
     jobs = write_mechanical_input_files(geom_filename, simulation_directory, specimen_loads[specimen][R], no_steps=2)
-    shutil.copyfile('subroutine.f', simulation_directory + '/subroutine.f')
-    write_dante_files(heat_treatment_odb, simulation_directory)
+    write_subroutine_file(simulation_directory)
+    write_dante_files(heat_treatment_odb, simulation_directory + 'include_files/')
     write_run_file(job_names=jobs, directory=simulation_directory)
     current_directory = os.getcwd()
     os.chdir(simulation_directory)
