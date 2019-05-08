@@ -153,9 +153,9 @@ def write_subroutine_file(directory):
             line = line.rstrip()
             file_lines.append(line)
             if 'Enter STRESS_FNAME here' in line:
-                file_lines.append('        STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
-                file_lines.append('       1\'abaqus/utmis_specimens/utmis_' + specimen
-                                  + 'include_files/residual_stresses_pos.dat\'')
+                file_lines.append('       STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
+                file_lines.append('      1\'abaqus/utmis_specimens/utmis_' + specimen
+                                  + '/include_files/residual_stresses_pos.dat\'')
     with open(directory + '/subroutine.f', 'w') as subroutine_file:
         for line in file_lines:
             subroutine_file.write(line + '\n')
