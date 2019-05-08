@@ -119,7 +119,7 @@ if __name__ == '__main__':
         plt.figure(0)
         experiment.plot()
 
-        test = MaterialTest(experiment.strain[-1], experiment.hardness, 2*experiment.ra/100)
+        test = MaterialTest(experiment.strain[-1], experiment.hardness, experiment.ra/100)
         stress_data = test.run_material_test()
         plt.plot(stress_data[:, 3], stress_data[:, 9], '--x' + experiment.color, lw=2)
     plt.show()
