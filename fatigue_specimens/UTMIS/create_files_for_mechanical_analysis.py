@@ -1,5 +1,6 @@
 import os
 import shutil
+from subprocess import Popen
 import sys
 
 from input_file_reader.input_file_reader import InputFileReader
@@ -170,3 +171,7 @@ if __name__ == '__main__':
     shutil.copyfile('subroutine.f', simulation_directory + '/subroutine.f')
     write_dante_files(heat_treatment_odb, simulation_directory)
     write_run_file(job_names=jobs, directory=simulation_directory)
+    current_directory = os.getcwd()
+    os.chdir(simulation_directory)
+    Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
+    os.chdir(current_directory)
