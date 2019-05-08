@@ -179,7 +179,7 @@ def write_run_file(job_names, directory):
 
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen)
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen + '/')
     geom_filename = 'utmis_' + specimen + '/utmis_' + specimen + '.inc'
     times = [75, 5, 30]
     temps = [930, 840, 840]
@@ -204,7 +204,7 @@ if __name__ == '__main__':
 
     jobs = write_mechanical_input_files(geom_filename, simulation_directory, specimen_loads[specimen][R], no_steps=2)
     write_subroutine_file(simulation_directory)
-    write_dante_files(heat_treatment_odb, simulation_directory + 'include_files/')
+    write_dante_files(heat_treatment_odb, simulation_directory + '/include_files/')
     write_run_file(job_names=jobs, directory=simulation_directory)
     current_directory = os.getcwd()
     os.chdir(simulation_directory)
