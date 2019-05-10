@@ -32,7 +32,7 @@ class SS2506Material:
         self.plastic_data = np.zeros((1000, len(stress_strain_datasets)))
 
         self.dp_parameter = 2.15
-        self.dp_ra = 0.17
+        self.dp_ra = 0.19
         self.hardness_values = np.zeros(len(stress_strain_datasets))
 
         self.epl = np.linspace(0., 0.025, 1000)
@@ -57,7 +57,7 @@ class SS2506Material:
                       '\t' + str(self.E) + ', 0.3',
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2']
         for au_val in austenite:
-            a = 1.15/3.15*au_val/0.17
+            a = 1.15/3.15*au_val/0.19
             psi = np.arctan(3*a)*180/np.pi
             a1 = 6.4e-3*a/0.25
             psi1 = np.arctan(3*a1)*180/np.pi
@@ -77,11 +77,11 @@ class SS2506Material:
 
 
 experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', delimiter=',', compression=True,
-                          hardness=770, ra=17.),
+                          hardness=770, ra=19.),
                Experiment(filename='tension_data_case_EN.dat', color='r', delimiter=',',
-                          hardness=770, ra=17.),
+                          hardness=770, ra=19.),
                Experiment(filename='tension_data_case_BA.dat', color='g',
-                          hardness=770, ra=17.),
+                          hardness=770, ra=19.),
                Experiment(filename='tension_data_core_BA.dat', color='k',
                           hardness=450, ra=0.)]
 
@@ -105,10 +105,9 @@ if __name__ == '__main__':
 
         e_pl, stress = experiment.plastic_strain_data()
         plt.figure(1)
-        plt.plot(e_pl, stress, experiment.color, lw=2)
+        plt.plot(e_pl, stress, '--' + experiment.color, lw=2)
 
     s = np.linspace(0, 1000, 1000)
     plt.figure(0)
-    plt.plot(SS2506.strain(s, 450, 0.6, compression=False), s)
 
     plt.show()
