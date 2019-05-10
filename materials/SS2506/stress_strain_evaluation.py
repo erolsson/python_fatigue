@@ -18,6 +18,7 @@ class Experiment:
         self.ra = ra
 
     def plot(self):
+        import matplotlib.pyplot as plt
         plt.plot(self.strain, self.stress, self.color, lw=2)
 
     def plastic_strain_data(self, threshold=0.0001):
@@ -88,8 +89,7 @@ experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', de
 SS2506 = SS2506Material((experiments[3], experiments[0]))
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    import matplotlib
+
 
     matplotlib.style.use('classic')
     plt.rc('text', usetex=True)
