@@ -14,7 +14,7 @@ def write_dante_files(dante_odb, directory_to_write):
     hrc, labels, _ = read_field_from_odb('SDV_HARDNESS', dante_odb, step_name='Tempering', frame_number=-1,
                                          position=ELEMENT_NODAL, get_position_numbers=True)
 
-    au, labels, _ = read_field_from_odb('SDV_AUSTENITE', dante_odb, step_name='Tempering', frame_number=-1,
+    au, labels, _ = read_field_from_odb('SDV_AUSTENITE', dante_odb, step_name='Tempering', frame_number=0,
                                         position=ELEMENT_NODAL, get_position_numbers=True)
 
     hv = HRC2HV(hrc)
