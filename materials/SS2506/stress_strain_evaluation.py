@@ -89,7 +89,8 @@ experiments = [Experiment(filename='compression_data_case_EN.dat', color='b', de
 SS2506 = SS2506Material((experiments[3], experiments[0]))
 
 if __name__ == '__main__':
-
+    import matplotlib.pyplot as plt
+    import matplotlib
 
     matplotlib.style.use('classic')
     plt.rc('text', usetex=True)
