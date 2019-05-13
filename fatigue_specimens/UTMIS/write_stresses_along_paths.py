@@ -5,7 +5,7 @@ import sys
 import numpy as np
 
 if __name__ == '__main__':
-    package_directory = os.path.abspath(os.path.join(os.getcwd(), "../"))
+    package_directory = os.path.abspath(os.path.join(os.getcwd(), "../.."))
     sys.path.append(package_directory)
     from path_functions import Path
     from path_functions import create_path
