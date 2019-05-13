@@ -5,8 +5,10 @@ import sys
 import numpy as np
 
 if __name__ == '__main__':
-    package_directory = os.path.abspath(os.path.join(os.getcwd(), "../.."))
+    package_directory = os.path.expanduser('~/python_fatigue/')
     sys.path.append(package_directory)
+    print sys.path
+
     from path_functions import Path
     from path_functions import create_path
     from path_functions import get_stress_tensors_from_path
