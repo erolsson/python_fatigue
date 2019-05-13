@@ -43,9 +43,9 @@ if __name__ == '__main__':
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
         for specimen, R, stress_level in simulations:
+            simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_')  + '_R=' + str(int(R))
             mechanical_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen \
-                             + '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') \
-                             + '_R=' + str(int(R)) + '.odb'
+                             + simulation_name + '.odb'
             odb = odbAccess.openOdb(mechanical_odb)
             session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                              height=230.809509277344)
@@ -70,7 +70,6 @@ if __name__ == '__main__':
                     data[:, 0] = path_points[:, axis]
                 data[:, 1] = stress[0:100, 0, 0]
                 stress_data[load_level] = data
-            with open(pickle_directory + + specimen + '_' + path_name + 's=' + '_'
-                      + str(stress_level).replace('.', '_') + '_R=' + str(int(R)) + '.pkl', 'w') as pickle_file:
+            with open(pickle_directory + simulation_name + '_' + path_name + '.pkl', 'w') as pickle_file:
                 pickle.dump(stress_data, pickle_file)
             odb.close()
