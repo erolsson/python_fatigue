@@ -43,7 +43,7 @@ if __name__ == '__main__':
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
         for specimen, R, stress_level in simulations:
-            simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_')  + '_R=' + str(int(R))
+            simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') + '_R=' + str(int(R))
             mechanical_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen \
                              + simulation_name + '.odb'
             odb = odbAccess.openOdb(mechanical_odb)
@@ -53,8 +53,8 @@ if __name__ == '__main__':
             session.viewports['Viewport: 1'].maximize()
             o7 = session.odbs[session.odbs.keys()[0]]
             session.viewports['Viewport: 1'].setValues(displayedObject=o7)
-            stress_data = {}
 
+            stress_data = {}
             for load_level in ['loading', 'unloading']:
                 step_name = 'step_' + str(number_of_steps) + '_' + load_level
 
