@@ -108,7 +108,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         file_lines.append('\t*Include, Input=include_files/austenite.dat')
 
         for step in range(no_steps):
-            for direction in ['loading', 'unloading']:
+            for direction in ['max_load', 'min_load']:
                 step_name = 'step_' + str(step+1) + '_' + direction
                 file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
                 file_lines.append('\t*Static')
