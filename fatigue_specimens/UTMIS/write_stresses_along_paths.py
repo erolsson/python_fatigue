@@ -70,7 +70,7 @@ if __name__ == '__main__':
                     data[:, 0] = path_points[:, axis]
                 data[:, 1] = stress[0:100, 0, 0]
                 stress_data[load_level] = data
-            with open(pickle_directory + + specimen + '_' + path_name + 's=' + '_' +
-                      str(stress_level).replace('.', '_') + '_R=' + str(int(R))    + '.pkl', 'w') as pickle_file:
+            with open(pickle_directory + + specimen + '_' + path_name + 's=' + '_'
+                      + str(stress_level).replace('.', '_') + '_R=' + str(int(R)) + '.pkl', 'w') as pickle_file:
                 pickle.dump(stress_data, pickle_file)
             odb.close()
