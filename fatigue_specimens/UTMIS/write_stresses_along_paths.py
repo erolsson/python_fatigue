@@ -46,6 +46,7 @@ if __name__ == '__main__':
             simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') + '_R=' + str(int(R))
             mechanical_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen \
                              + simulation_name + '.odb'
+            print "working with", simulation_name
             odb = odbAccess.openOdb(mechanical_odb)
             session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                              height=230.809509277344)
