@@ -21,7 +21,7 @@ class Experiment:
         import matplotlib.pyplot as plt
         plt.plot(self.strain, self.stress, self.color, lw=2)
 
-    def plastic_strain_data(self, threshold=0.0001):
+    def plastic_strain_data(self, threshold=0.0005):
         epl = (self.strain - self.stress/self.E)*self.sign
         s = self.stress[epl > threshold]
         return epl[epl > threshold], s*self.sign
@@ -111,6 +111,10 @@ if __name__ == '__main__':
         plt.plot(e_pl, stress, '--' + experiment.color, lw=2)
 
     s = np.linspace(0, 1000, 1000)
-    plt.figure(0)
+    plt.figure(2)
+    epl = np.linspace(0, 0.002, 1000)
+    s_comp = np.interp(epl, experiments[0].plastic_strain_data()[0], experiments[0].plastic_strain_data()[1])
+    s_tens = np.interp(epl, experiments[1].plastic_strain_data()[0], experiments[1].plastic_strain_data()[1])
+    plt.plot(epl, s_comp/s_tens)
 
     plt.show()

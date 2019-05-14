@@ -32,7 +32,7 @@ def get_stress_data(specimen_type, stress_ratio, stress_level):
 
 
 if __name__ == '__main__':
-    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
+    specimen_loads = {'smooth': {-1.: [737., 774.], 0.: [425., 440.]},
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
 
     color = ['g', 'b', 'r']
@@ -43,7 +43,7 @@ if __name__ == '__main__':
         for specimen in specimen_loads.keys():
             for i, stress in enumerate(specimen_loads[specimen][R]):
                 stresses = get_stress_data(specimen, R, stress)
-                for path in ['z1', 'z2']:
+                for path in ['y', 'z1', 'z2']:
                     plt.plot(stresses[path]['sm'], stresses[path]['sa'], line[specimen] + color[i])
 
     plt.show()
