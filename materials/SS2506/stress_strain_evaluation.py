@@ -110,9 +110,11 @@ if __name__ == '__main__':
 
     s = np.linspace(0, 1000, 1000)
     plt.figure(2)
-    epl = np.linspace(0, 0.002, 1000)
+    epl = np.linspace(0, 0.005, 1000)
     s_comp = np.interp(epl, experiments[0].plastic_strain_data()[0], experiments[0].plastic_strain_data()[1])
-    s_tens = np.interp(epl, experiments[1].plastic_strain_data()[0], experiments[1].plastic_strain_data()[1])
-    plt.plot(epl, s_comp/s_tens)
+    s_tens1 = np.interp(epl, experiments[1].plastic_strain_data()[0], experiments[1].plastic_strain_data()[1])
+    s_tens2 = np.interp(epl, experiments[2].plastic_strain_data()[0], experiments[2].plastic_strain_data()[1])
+    plt.plot(epl, s_comp/s_tens1)
+    plt.plot(epl, s_comp/s_tens2)
 
     plt.show()

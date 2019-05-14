@@ -34,10 +34,11 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-times = [75, 5, 30]
-temps = [930, 840, 840]
-carbon_levels = [1.1, 0.8, 0.8]
-tempering = (200, 7200)
+std_time = 8
+times = [std_time*12, std_time*3]
+temps = [930., 850.]
+carbon_levels = [0.9, 0.98]
+tempering = (165, 9*std_time*60)
 
 name = ''
 
@@ -48,7 +49,7 @@ simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
                           times=times, temperatures=temps, carbon=carbon_levels, tempering=tempering)]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062_1/' + specimen_name +
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062_2/' + specimen_name +
                                           '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
@@ -92,7 +93,7 @@ for simulation in simulations:
     toolbox_writer.initial_carbon = SS2506.composition['C']/100
     toolbox_writer.interaction_property_file = 'interaction_properties.inc'
     toolbox_writer.heating_data.carbon = 0.5
-    toolbox_writer.heating_data.time = 90.
+    toolbox_writer.heating_data.time = 5*std_time
     toolbox_writer.heating_data.temperature = 930.
 
     toolbox_writer.quenching_data.time = 3600.
