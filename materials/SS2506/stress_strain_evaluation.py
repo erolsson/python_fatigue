@@ -59,10 +59,8 @@ class SS2506Material:
                       '*Drucker Prager, Shear Criterion=Linear, Dependencies=2']
         for au_val in austenite:
             a = 1.15/3.15*au_val/0.19
-            a = 0
             psi = np.arctan(3*a)*180/np.pi
             a1 = 6.4e-3*a/0.25
-            a1 = 0
             psi1 = np.arctan(3*a1)*180/np.pi
             file_lines.append('\t' + str(psi) + ', 1.0, ' + str(psi1) + ',  ,  , ' + str(au_val))
 
