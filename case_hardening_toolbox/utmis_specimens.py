@@ -36,7 +36,7 @@ current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
 std_time = 8
 times = [std_time*12, std_time*3]
-temps = [930., 850.]
+temps = [930, 850]
 carbon_levels = [0.9, 0.98]
 tempering = (165, 9*std_time*60)
 
