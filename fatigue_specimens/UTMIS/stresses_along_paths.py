@@ -24,9 +24,9 @@ def get_stress_data(specimen_type, stress_ratio, stress_level):
     for path_name in ['y', 'z1', 'z2']:
         with open(pickle_path + simulation_name + '_path_' + path_name + '.pkl') as pickle_file:
             stress_data = pickle.load(pickle_file)
-        sa = np.abs(stress_data['loading'][:, 1] - stress_data['unloading'][:, 1])/2
-        sm = (stress_data['loading'][:, 1] + stress_data['unloading'][:, 1])/2
-        pos = stress_data['loading'][:, 0]
+        sa = np.abs(stress_data['max_load'][:, 1] - stress_data['min_load'][:, 1])/2
+        sm = (stress_data['max_load'][:, 1] + stress_data['min_load'][:, 1])/2
+        pos = stress_data['max_load'][:, 0]
         data[path_name] = {'sa': sa, 'sm': sm, 'pos': pos}
     return data
 

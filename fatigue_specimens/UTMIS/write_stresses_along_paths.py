@@ -56,7 +56,7 @@ if __name__ == '__main__':
             session.viewports['Viewport: 1'].setValues(displayedObject=o7)
 
             stress_data = {}
-            for load_level in ['loading', 'unloading']:
+            for load_level in ['min_load', 'max_load']:
                 step_name = 'step_' + str(number_of_steps) + '_' + load_level
 
                 step_index = odb.steps.keys().index(step_name)
