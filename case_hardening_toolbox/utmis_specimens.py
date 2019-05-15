@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 import shutil
+from subprocess import Popen
 import sys
 
 from case_hardening_toobox import CaseHardeningToolbox
@@ -119,6 +120,7 @@ for simulation in simulations:
         os.makedirs(directory_name)
     os.chdir(directory_name)
     toolbox_writer.write_files()
+    Popen('qsub run_heat_treatment_sim.sh', shell=True)
     os.chdir(current_directory)
 
 write_diffusion_file(filename=include_file_directory + diffusion_file_name,
