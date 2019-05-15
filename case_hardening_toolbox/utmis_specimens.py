@@ -39,7 +39,7 @@ std_time = 8
 times = [std_time*12, std_time*3]
 temps = [930, 850]
 carbon_levels = [0.9, 0.98]
-tempering = (165, 9*std_time*60)
+tempering = (200., 9*std_time*60)
 
 name = ''
 
