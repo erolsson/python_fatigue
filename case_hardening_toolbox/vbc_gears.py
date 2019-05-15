@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 import shutil
+from subprocess import Popen
 
 from input_file_reader.input_file_functions import write_geom_include_file
 
@@ -16,7 +17,7 @@ from case_hardening_toobox import CaseHardeningToolbox
 if __name__ == '__main__':
     mesh = '1x'
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/VBC_gear'
-                                              '/U925062_200C_2h_80C_cool_5/')
+                                              '/U925062_200C_2h_80C_cool_6/')
     include_file_directory = simulation_directory + 'include_file'
 
     if not os.path.isdir(include_file_directory):
@@ -104,6 +105,7 @@ if __name__ == '__main__':
             os.makedirs(directory_name)
         os.chdir(directory_name)
         toolbox_writer.write_files()
+        Popen('qsub run_heat_treatment_sim.sh', shell=True)
         os.chdir(current_directory)
 
     write_diffusion_file(include_file_directory + '/diffusivity_2506.inc', SS2506)
