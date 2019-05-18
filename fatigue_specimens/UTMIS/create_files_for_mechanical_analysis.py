@@ -197,7 +197,7 @@ if __name__ == '__main__':
     for time, temp, c in zip(times, temps, carbon_levels):
         name += str(time) + 'min' + str(temp) + 'C' + str(c).replace('.', '') + 'wtC'
     specimen_name = 'utmis_' + specimen
-    heat_treatment_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062/utmis_' + specimen
+    heat_treatment_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062_2/utmis_' + specimen
                                             + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
                                             + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
                                             + specimen + '.odb')
