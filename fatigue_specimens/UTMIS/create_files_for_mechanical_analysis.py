@@ -178,12 +178,13 @@ def write_run_file(job_names, directory):
 
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen + '/')
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens_mechanical/utmis_' + specimen + '/')
     geom_filename = 'utmis_' + specimen + '/utmis_' + specimen + '.inc'
-    times = [75, 5, 30]
-    temps = [930, 840, 840]
-    carbon_levels = [1.1, 0.8, 0.8]
-    tempering = (200, 7200)
+    std_time = 8
+    times = [std_time*12, std_time*3]
+    temps = [930, 850]
+    carbon_levels = [0.9, 0.98]
+    tempering = (200., 9*std_time*60)
     name = ''
 
     if not os.path.isdir(simulation_directory):
@@ -205,7 +206,7 @@ if __name__ == '__main__':
     write_subroutine_file(simulation_directory)
     write_dante_files(heat_treatment_odb, simulation_directory + '/include_files/')
     write_run_file(job_names=jobs, directory=simulation_directory)
-    # current_directory = os.getcwd()
-    # os.chdir(simulation_directory)
-    # Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
-    # os.chdir(current_directory)
+    current_directory = os.getcwd()
+    os.chdir(simulation_directory)
+    Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
+    os.chdir(current_directory)

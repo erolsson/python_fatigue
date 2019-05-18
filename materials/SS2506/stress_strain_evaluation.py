@@ -21,7 +21,7 @@ class Experiment:
         import matplotlib.pyplot as plt
         plt.plot(self.strain, self.stress, self.color, lw=2)
 
-    def plastic_strain_data(self, threshold=0.0001):
+    def plastic_strain_data(self, threshold=20e-6):
         epl = (self.strain - self.stress/self.E)*self.sign
         s = self.stress[epl > threshold]
         return epl[epl > threshold], s*self.sign
