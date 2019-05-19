@@ -110,7 +110,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         for step in range(no_steps):
             for direction in ['max_load', 'min_load']:
                 step_name = 'step_' + str(step+1) + '_' + direction
-                file_lines.append('*step, name=' + step_name + ', nlgeom=Yes')
+                file_lines.append('*step, name=' + step_name + ', nlgeom=Yes, inc=100000')
                 file_lines.append('\t*Static')
                 file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
                 file_lines.append('\t*CLoad, Amplitude=amp')
@@ -122,7 +122,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
                 file_lines.append('\t\t\tU')
                 file_lines.append('*End step')
 
-        file_lines.append('*step, name=relax, nlgeom=Yes')
+        file_lines.append('*step, name=relax, nlgeom=Yes, inc=100000')
         file_lines.append('\t*Static')
         file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, 1.')
         file_lines.append('\t*CLoad, Amplitude=amp')
@@ -206,7 +206,7 @@ if __name__ == '__main__':
     write_subroutine_file(simulation_directory)
     write_dante_files(heat_treatment_odb, simulation_directory + '/include_files/')
     write_run_file(job_names=jobs, directory=simulation_directory)
-    current_directory = os.getcwd()
-    os.chdir(simulation_directory)
-    Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
-    os.chdir(current_directory)
+    # current_directory = os.getcwd()
+    # os.chdir(simulation_directory)
+    # Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
+    # os.chdir(current_directory)
