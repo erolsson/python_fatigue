@@ -154,7 +154,7 @@ def write_subroutine_file(directory):
             file_lines.append(line)
             if 'Enter STRESS_FNAME here' in line:
                 file_lines.append('        STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
-                file_lines.append('     1 \'abaqus/utmis_specimens/utmis_' + specimen
+                file_lines.append('     1 \'abaqus/utmis_specimens_mechanical/utmis_' + specimen
                                   + '/include_files/residual_stresses_pos.dat\'')
     with open(directory + '/subroutine.f', 'w') as subroutine_file:
         for line in file_lines:
@@ -178,7 +178,8 @@ def write_run_file(job_names, directory):
 
 if __name__ == '__main__':
     dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens_mechanical/utmis_' + specimen + '/')
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens_mechanical/'
+                                              'utmis_' + specimen + '/')
     geom_filename = 'utmis_' + specimen + '/utmis_' + specimen + '.inc'
     std_time = 8
     times = [std_time*12, std_time*3]
