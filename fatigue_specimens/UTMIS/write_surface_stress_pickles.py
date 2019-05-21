@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 reader.read_input_file(geom_file)
                 nodal_coords = reader.nodal_data
                 positions = np.zeros((2*n, 3))
-                for i, label in node_labels:
+                for i, label in enumerate(node_labels):
                     positions[i, :] = nodal_coords[label - 1, 1:]
                 positions[n:, :] = positions[:n, :]
                 positions[n:, 1] *= -1
