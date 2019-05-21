@@ -13,7 +13,7 @@ if __name__ == '__main__':
     mechanical_simulation_path = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens_mechanical/'
     FEMSimulation = namedtuple('FEMSimulation', ['specimen', 'stress', 'R'])
     cycle_number = 2
-    specimen_loads = {'smooth': {-1.: [737.], 0.: [425., 440.]},
+    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
     simulations = []
     reader = InputFileReader()
