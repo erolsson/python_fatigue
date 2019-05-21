@@ -10,7 +10,7 @@ from input_file_reader.input_file_reader import InputFileReader
 
 if __name__ == '__main__':
     pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
-
+    mechanical_simulation_path = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens_mechanical/'
     FEMSimulation = namedtuple('FEMSimulation', ['specimen', 'stress', 'R'])
     cycle_number = 2
     specimen_loads = {'smooth': {-1.: [737.], 0.: [425., 440.]},
@@ -27,9 +27,10 @@ if __name__ == '__main__':
         name = 'utmis_' + simulation.specimen + '_' + str(simulation.stress).replace('.', '_') + '_R='  \
                + str(int(simulation.R))
         print "writing data for odb", name
+        odb_name = mechanical_simulation_path + 'utmis_' + simulation.specimen + '/' + name + '.odb'
         for level in ['min', 'max']:
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
-            stress, node_labels, _ = read_field_from_odb('S', name + '.odb', step_name, frame_number=-1,
+            stress, node_labels, _ = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                          element_set_name='EXPOSED_ELEMENTS',
                                                          instance_name='specimen_part_pos',
                                                          get_position_numbers=True)
@@ -45,7 +46,7 @@ if __name__ == '__main__':
                 positions[n:, :] = positions[:n, :]
                 positions[n:, 1] *= -1
             stress_data[level][:n, :] = stress
-            stress_data[level][n:, :] = read_field_from_odb('S', name + '.odb', step_name, frame_number=-1,
+            stress_data[level][n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                             element_set_name='EXPOSED_ELEMENTS',
                                                             instance_name='specimen_part_pos')
         with open(pickle_path + '_surface_stresses_' + name, 'w') as pickle_handle:
