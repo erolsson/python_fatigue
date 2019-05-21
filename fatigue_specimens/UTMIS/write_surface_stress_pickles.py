@@ -50,6 +50,6 @@ if __name__ == '__main__':
             stress_data[level][n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                             element_set_name='EXPOSED_ELEMENTS',
                                                             instance_name='specimen_part_neg'.upper())
-        with open(pickle_path + '_surface_stresses_' + name, 'w') as pickle_handle:
+        with open(pickle_path + 'surface_stresses_' + name + '.pkl', 'w') as pickle_handle:
             pickle.dump(stress_data, pickle_handle)
             pickle.dump(positions[simulation.specimen], pickle_handle)
