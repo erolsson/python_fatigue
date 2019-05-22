@@ -23,19 +23,19 @@ if __name__ == '__main__':
             simulations += [FEMSimulation(specimen=specimen, stress=s, R=R) for s in stress_levels]
 
     for simulation in simulations:
-        stress_data = {}
         name = 'utmis_' + simulation.specimen + '_' + str(simulation.stress).replace('.', '_') + '_R='  \
                + str(int(simulation.R))
         print "writing data for odb", name
         odb_name = mechanical_simulation_path + 'utmis_' + simulation.specimen + '/' + name + '.odb'
-        for level in ['min', 'max']:
+        stress_data = None
+        for i, level in enumerate(['min', 'max']):
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
             stress, node_labels, _ = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                          element_set_name='EXPOSED_ELEMENTS',
                                                          instance_name='specimen_part_pos'.upper(),
                                                          get_position_numbers=True)
             n = stress.shape[0]
-            stress_data[level] = np.zeros((2*n, 6))
+            stress_data = np.zeros((2, 2*n, 6))
             if positions[simulation.specimen] is None:
                 geom_file = 'utmis_' + simulation.specimen + '/utmis_' + simulation.specimen + '.inc'
                 reader.read_input_file(geom_file)
@@ -46,10 +46,10 @@ if __name__ == '__main__':
                 pos[n:, :] = pos[:n, :]
                 pos[n:, 1] *= -1
                 positions[simulation.specimen] = pos
-            stress_data[level][:n, :] = stress
-            stress_data[level][n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
-                                                            element_set_name='EXPOSED_ELEMENTS',
-                                                            instance_name='specimen_part_neg'.upper())
+            stress_data[i, :n, :] = stress
+            stress_data[i, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
+                                                        element_set_name='EXPOSED_ELEMENTS',
+                                                        instance_name='specimen_part_neg'.upper())
         with open(pickle_path + 'surface_stresses_' + name + '.pkl', 'w') as pickle_handle:
             pickle.dump(stress_data, pickle_handle)
             pickle.dump(positions[simulation.specimen], pickle_handle)
