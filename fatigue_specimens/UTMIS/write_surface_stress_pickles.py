@@ -35,7 +35,8 @@ if __name__ == '__main__':
                                                          instance_name='specimen_part_pos'.upper(),
                                                          get_position_numbers=True)
             n = stress.shape[0]
-            stress_data = np.zeros((2, 2*n, 6))
+            if stress_data is None:
+                stress_data = np.zeros((2, 2*n, 6))
             if positions[simulation.specimen] is None:
                 geom_file = 'utmis_' + simulation.specimen + '/utmis_' + simulation.specimen + '.inc'
                 reader.read_input_file(geom_file)
@@ -50,6 +51,7 @@ if __name__ == '__main__':
             stress_data[step, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                            element_set_name='EXPOSED_ELEMENTS',
                                                            instance_name='specimen_part_neg'.upper())
+
         with open(pickle_path + 'surface_stresses_' + name + '.pkl', 'w') as pickle_handle:
             pickle.dump(stress_data, pickle_handle)
             pickle.dump(positions[simulation.specimen], pickle_handle)
