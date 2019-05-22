@@ -28,7 +28,7 @@ if __name__ == '__main__':
         print "writing data for odb", name
         odb_name = mechanical_simulation_path + 'utmis_' + simulation.specimen + '/' + name + '.odb'
         stress_data = None
-        for i, level in enumerate(['min', 'max']):
+        for step, level in enumerate(['min', 'max']):
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
             stress, node_labels, _ = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
                                                          element_set_name='EXPOSED_ELEMENTS',
@@ -46,10 +46,10 @@ if __name__ == '__main__':
                 pos[n:, :] = pos[:n, :]
                 pos[n:, 1] *= -1
                 positions[simulation.specimen] = pos
-            stress_data[i, :n, :] = stress
-            stress_data[i, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
-                                                        element_set_name='EXPOSED_ELEMENTS',
-                                                        instance_name='specimen_part_neg'.upper())
+            stress_data[step, :n, :] = stress
+            stress_data[step, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
+                                                           element_set_name='EXPOSED_ELEMENTS',
+                                                           instance_name='specimen_part_neg'.upper())
         with open(pickle_path + 'surface_stresses_' + name + '.pkl', 'w') as pickle_handle:
             pickle.dump(stress_data, pickle_handle)
             pickle.dump(positions[simulation.specimen], pickle_handle)
