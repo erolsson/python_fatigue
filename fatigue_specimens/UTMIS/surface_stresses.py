@@ -17,7 +17,21 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
 
 
-def get_stress_values(stress_components)
+def get_stress_values(stress_components):
+    stress_tensor = np.zeros((2, 3, 3))
+
+    stress_tensor[0, :, :] = np.diag(0, stress_components[:3])
+    stress_tensor[1, :, :] = np.diag(1, stress_components[:3])
+
+    stress_tensor[:, 0, 1] = stress_components[:, 3]
+    stress_tensor[:, 1, 0] = stress_components[:, 3]
+
+    stress_tensor[:, 0, 2] = stress_components[:, 4]
+    stress_tensor[:, 2, 0] = stress_components[:, 4]
+
+    stress_tensor[:, 1, 2] = stress_components[:, 5]
+    stress_tensor[:, 2, 1] = stress_components[:, 5]
+
 
 FEMSimulation = namedtuple('FEMSimulation', ['specimen', 'stress', 'R'])
 
