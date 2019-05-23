@@ -83,5 +83,5 @@ if __name__ == '__main__':
                                                                     element_set_name=element_set_name,
                                                                     instance_name='specimen_part_neg'.upper())
 
-        with open(pickle_path + 'fatigue_pickle_' + name + '.pkl') as pickle_handle:
+        with open(pickle_path + 'fatigue_pickle_' + name + '.pkl', 'w') as pickle_handle:
             pickle.dump(simulation_data, pickle_handle)
