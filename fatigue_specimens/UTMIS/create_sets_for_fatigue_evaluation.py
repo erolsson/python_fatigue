@@ -1,7 +1,7 @@
 from input_file_reader.input_file_reader import InputFileReader
 from input_file_reader.input_file_functions import write_set_rows
 
-x_pos = {'smooth': 13.08, 'notched': 2.2}
+x_pos = {'smooth': 10.0, 'notched': 2.2}
 
 for specimen in ['smooth', 'notched']:
     input_file_reader = InputFileReader()
