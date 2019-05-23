@@ -11,6 +11,8 @@ from abaqus_files.write_nodal_coordinates import get_list_from_set_file
 
 from input_file_reader.input_file_reader import InputFileReader
 
+from create_sets_for_fatigue_evaluation import create_sets_for_fatigue_evaluation
+
 from abaqusConstants import ELEMENT_NODAL
 
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
@@ -24,7 +26,7 @@ specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
 element_set_name = 'fatigue_volume_elements'
 
 if __name__ == '__main__':
-
+    create_sets_for_fatigue_evaluation()
     simulations = []
     reader = InputFileReader()
     positions = {'smooth': None, 'notched': None}
