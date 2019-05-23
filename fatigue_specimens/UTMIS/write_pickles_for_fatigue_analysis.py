@@ -24,6 +24,7 @@ specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
 element_set_name = 'fatigue_volume_elements'
 
 if __name__ == '__main__':
+
     simulations = []
     reader = InputFileReader()
     positions = {'smooth': None, 'notched': None}
