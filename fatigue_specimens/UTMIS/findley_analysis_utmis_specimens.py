@@ -18,7 +18,7 @@ specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
 loads = specimen_loads[specimen][R]
 for load in loads:
     name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
-    with open(pickle_path + 'fatigue_pickle_' + name + '.pkl', 'w') as pickle_handle:
+    with open(pickle_path + 'fatigue_pickle_' + name + '.pkl') as pickle_handle:
         fatigue_data = pickle.load(pickle_handle)
     nodal_coordinates = fatigue_data['pos']
 
