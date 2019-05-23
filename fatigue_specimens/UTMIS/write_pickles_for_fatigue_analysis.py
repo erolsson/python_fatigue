@@ -56,11 +56,10 @@ if __name__ == '__main__':
                                                                       instance_name='specimen_part_pos'.upper(),
                                                                       get_position_numbers=True)
 
-            print read_field_from_odb('FV1', odb_name, step_name, frame_number=-1,
-                                      element_set_name=element_set_name,
-                                      instance_name='specimen_part_pos'.upper(),
-                                      get_position_numbers=True)
-            fghghff
+            HV = read_field_from_odb('FV1', odb_name, step_name, frame_number=-1,
+                                     element_set_name=element_set_name,
+                                     instance_name='specimen_part_pos'.upper())
+            print stress.shape, HV.shape
             n = stress.shape[0]
             if stress_data is None:
                 stress_data = np.zeros((2, 2*n, 6))
