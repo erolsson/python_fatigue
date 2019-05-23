@@ -35,7 +35,7 @@ if __name__ == '__main__':
         name = 'utmis_' + simulation.specimen + '_' + str(simulation.stress).replace('.', '_') + '_R='  \
                + str(int(simulation.R))
 
-        element_labels = get_list_from_set_file('../fatigue_specimens/UTMIS/utmis_' + simulation.specimen + '/' +
+        element_labels = get_list_from_set_file('utmis_' + simulation.specimen + '/' +
                                                 element_set_name + '_' + simulation.specimen + '.inc')
         print "The element set", element_set_name, "has ", len(element_labels), "elements"
         add_element_set(mechanical_simulation_path + name + '.odb', element_set_name, element_labels,
