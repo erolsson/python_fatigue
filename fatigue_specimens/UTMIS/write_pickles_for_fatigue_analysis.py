@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
         n = HV_pos.shape[0]
         simulation_data['S'] = np.zeros((2, 2*n, 6))
-        simulation_data['HV'] = np.zeros((2, 2*n, 1))
+        simulation_data['HV'] = np.zeros((2*n, 1))
         simulation_data['HV'][:n] = HV_pos
         simulation_data['HV'][n:] = HV_neg
 
