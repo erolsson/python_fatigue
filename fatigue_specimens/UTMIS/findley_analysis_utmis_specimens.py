@@ -9,7 +9,7 @@ from multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 specimen = sys.argv[1]
 R = float(sys.argv[2])
 
-interesting_point = np.array([0., 2.5, 0])
+interesting_point = np.array([0., -2.5, 0])
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
 
 specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
