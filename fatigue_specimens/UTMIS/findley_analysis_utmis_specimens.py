@@ -10,79 +10,38 @@ specimen = sys.argv[1]
 R = float(sys.argv[2])
 
 interesting_point = np.array([0., 2.5, 0])
-carbon = 0.8
-tempering = 200
+pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
 
-dante_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
-                                            'dante_tempering_2h_' + str(tempering) + '_' +
-                                            str(carbon).replace('.', '_') + 'C/')
-mechanical_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/')
-geometry_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/geometry/')
+specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
+                  'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
 
-# load_levels = {'smooth': {-1.: np.array([737., 774, 820]),
-#                          0.0: np.array([425., 440])},
-#               'notched': {-1.: np.array([427., 450]),
-#                           0.0: np.array([225., 240, 255])}}
+loads = specimen_loads[specimen][R]
+for load in loads:
+    name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
+    with open(pickle_path + 'fatigue_pickle_' + name + '.pkl', 'w') as pickle_handle:
+        fatigue_data = pickle.load(pickle_handle)
+    nodal_coordinates = fatigue_data['pos']
 
-load_levels = {'smooth': {-1.:  np.array([720, 740, 760, 780, 800, 820, 840]),
-                          0.0:  np.array([380, 400, 420, 440, 460, 480, 500])},
-               'notched': {-1.: np.array([380, 400, 420, 440, 460, 480, 500]),
-                           0.0: np.array([200, 220, 240, 260, 280, 300, 310])}}
+    distance_to_monitor_node = 0*nodal_coordinates + nodal_coordinates
+    for i in range(3):
+        distance_to_monitor_node[:, i] -= interesting_point[i]
+    monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
 
+    print "The monitor node has coordinates", nodal_coordinates[monitor_node_idx]
 
-with open(mechanical_pickle_directory + 'unit_load_' + specimen + '.pkl') as pickle_handle:
-    mechanical_data = pickle.load(pickle_handle)
+    stress_history = fatigue_data['S']
 
-with open(geometry_pickle_directory + 'nodal_coordinates_' + specimen + '.pkl') as pickle_handle:
-    nodal_coordinates = pickle.load(pickle_handle)
-
-
-distance_to_monitor_node = 0*nodal_coordinates + nodal_coordinates
-for i in range(3):
-    distance_to_monitor_node[:, i] -= interesting_point[i]
-monitor_node_idx = np.argmin(np.sum(np.abs(distance_to_monitor_node), 1))
-
-
-print "The monitor node has coordinates", nodal_coordinates[monitor_node_idx]
-print "The stress in mechanical odb at interesting point is", mechanical_data[monitor_node_idx]
-print np.max(mechanical_data[:, 0])
-with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
-    dante_data = pickle.load(pickle_handle)
-n = dante_data['HV'].shape[0]
-print "The residual stress at interesting point is", dante_data['S'][monitor_node_idx]
-for amplitude_stress in load_levels[specimen][R]:
-    mean_stress = amplitude_stress*(1+R)/(1-R)
-
-    print "======== Mechanical stress state =========="
-    print "sa =", amplitude_stress, "sm=", mean_stress
-
-    max_stress = (mean_stress + amplitude_stress)*mechanical_data
-    min_stress = (mean_stress - amplitude_stress)*mechanical_data
-
-    print "The mechanical stress at interesting point in the x-direction is ", max_stress[monitor_node_idx, 0], "MPa"
-
-    stress_history = np.zeros((2, n, 6))
-    stress_history[0, :, :] = min_stress + dante_data['S']
-    stress_history[1, :, :] = max_stress + dante_data['S']
     print "======== Combined stress state =========="
     print "The maximum stress at interesting point in the x-direction is ", stress_history[1, monitor_node_idx, 0], \
         "MPa"
     print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
         "MPa"
-    # for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
-    for a800 in np.array([1.3]):
+    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
-        findley_pickle_directory = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/stresses/'
-                                                      'findley_tempering_2h_' + str(tempering) + '_' +
-                                                      str(carbon).replace('.', '_') + 'C/'
-                                                      + 'a800=' + str(a800).replace('.', '_') + '/')
 
-        if not os.path.isdir(findley_pickle_directory):
-            os.makedirs(findley_pickle_directory)
-
-        HV = dante_data['HV']
+        HV = fatigue_data['HV']
         b = (a800 - 0.3)/(800-450)
         a = a800 - b*800
 
@@ -95,7 +54,8 @@ for amplitude_stress in load_levels[specimen][R]:
 
         findley_stress = findley_data[:, 2]
         print "Findley stress at interesting point", findley_stress[monitor_node_idx], 'MPa'
-        findley_pickle_name = 'findley_' + specimen + '_R=' + str(int(R)) + '_' + 's=' + str(int(amplitude_stress)) + \
-                              'MPa.pkl'
-        with open(findley_pickle_directory + findley_pickle_name, 'w') as pickle_handle:
+        i_max = np.argmax(findley_stress)
+        print "The maximum findley stress is", findley_stress[i_max], "and occurs at", nodal_coordinates[i_max]
+        findley_pickle_name = 'findley_' + name + '.pkl'
+        with open(pickle_path + findley_pickle_name, 'w') as pickle_handle:
             pickle.dump(findley_stress, pickle_handle)
