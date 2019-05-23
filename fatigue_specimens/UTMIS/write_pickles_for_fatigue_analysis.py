@@ -13,8 +13,6 @@ from input_file_reader.input_file_reader import InputFileReader
 
 from create_sets_for_fatigue_evaluation import create_sets_for_fatigue_evaluation
 
-from abaqusConstants import ELEMENT_NODAL
-
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
 mechanical_simulation_path = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens_mechanical/'
 
@@ -77,10 +75,8 @@ if __name__ == '__main__':
         simulation_data['pos'] = positions[simulation.specimen]
         for step, level in enumerate(['min', 'max']):
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
-            stress, node_labels, element_labels = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
-                                                                      element_set_name=element_set_name,
-                                                                      instance_name='specimen_part_pos'.upper(),
-                                                                      get_position_numbers=True)
+            stress = read_field_from_odb('S', odb_name, step_name, frame_number=-1, element_set_name=element_set_name,
+                                         instance_name='specimen_part_pos'.upper())
 
             simulation_data['S'][step, :n, :] = stress
             simulation_data['S'][step, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
