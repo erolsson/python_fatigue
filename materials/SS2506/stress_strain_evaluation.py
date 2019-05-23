@@ -114,7 +114,7 @@ if __name__ == '__main__':
     s_comp = np.interp(epl, experiments[0].plastic_strain_data()[0], experiments[0].plastic_strain_data()[1])
     s_tens1 = np.interp(epl, experiments[1].plastic_strain_data()[0], experiments[1].plastic_strain_data()[1])
     s_tens2 = np.interp(epl, experiments[2].plastic_strain_data()[0], experiments[2].plastic_strain_data()[1])
-    plt.plot(epl, s_comp/s_tens1)
-    plt.plot(epl, s_comp/s_tens2)
+    plt.plot(epl, (s_comp - s_tens1)/(s_comp + s_tens1))
+    plt.plot(epl, (s_comp - s_tens2)/(s_comp + s_tens2))
 
     plt.show()

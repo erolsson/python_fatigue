@@ -26,7 +26,7 @@ def write_dante_files(dante_odb, directory_to_write):
                 data_dict[label] = []
             data_dict[label].append(data[i])
 
-    for file_name, data in zip(['hardness.dat', 'austenite.dat'],[hv_data, austenite_data]):
+    for file_name, data in zip(['hardness.dat', 'austenite.dat'], [hv_data, austenite_data]):
         with open(directory_to_write + '/' + file_name, 'w') as data_file:
             for instance in ['SPECIMEN_PART_POS', 'SPECIMEN_PART_NEG']:
                 for i in range(len(data)):

@@ -49,7 +49,7 @@ print np.max(mechanical_data[:, 0])
 with open(dante_pickle_directory + 'data_utmis_' + specimen + '.pkl') as pickle_handle:
     dante_data = pickle.load(pickle_handle)
 n = dante_data['HV'].shape[0]
-print "The residual stress interesting point is", dante_data['S'][monitor_node_idx]
+print "The residual stress at interesting point is", dante_data['S'][monitor_node_idx]
 for amplitude_stress in load_levels[specimen][R]:
     mean_stress = amplitude_stress*(1+R)/(1-R)
 
