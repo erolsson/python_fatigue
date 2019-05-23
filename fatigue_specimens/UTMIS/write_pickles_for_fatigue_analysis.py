@@ -46,7 +46,8 @@ if __name__ == '__main__':
 
         odb_name = mechanical_simulation_path + 'utmis_' + simulation.specimen + '/' + name + '.odb'
         stress_data = None
-        add_element_set(odb_name, element_set_name, element_labels, instance_name='PART')
+        add_element_set(odb_name, element_set_name, element_labels, instance_name='SPECIMEN_PART_POS')
+        add_element_set(odb_name, element_set_name, element_labels, instance_name='SPECIMEN_PART_NEG')
 
         for step, level in enumerate(['min', 'max']):
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
