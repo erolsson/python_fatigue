@@ -36,7 +36,7 @@ for load in loads:
         "MPa"
     print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
         "MPa"
-    for a800 in np.array([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]):
+    for a800 in np.array([0.6, 0.8, 1.0, 1.2, 1.4, 1.6]):
         print '======================================================================================================='
         print '          Analyzing a800 =', a800
         print '======================================================================================================='
