@@ -45,10 +45,36 @@ if __name__ == '__main__':
         print "writing data for odb", name
 
         odb_name = mechanical_simulation_path + 'utmis_' + simulation.specimen + '/' + name + '.odb'
-        stress_data = None
         add_element_set(odb_name, element_set_name, element_labels, instance_name='SPECIMEN_PART_POS')
         add_element_set(odb_name, element_set_name, element_labels, instance_name='SPECIMEN_PART_NEG')
+        simulation_data = {'S': None, 'HV': None, 'pos': None}
+        HV_pos, node_labels, _ = read_field_from_odb('FV1', odb_name, 'relax', frame_number=-1,
+                                                     element_set_name=element_set_name,
+                                                     instance_name='specimen_part_pos'.upper(),
+                                                     get_position_numbers=True)
 
+        HV_neg = read_field_from_odb('FV1', odb_name, 'relax', frame_number=-1,
+                                     element_set_name=element_set_name,
+                                     instance_name='specimen_part_pos'.upper())
+
+        n = HV_pos.shape[0]
+        simulation_data['S'] = np.zeros((2, 2*n, 6))
+        simulation_data['HV'] = np.zeros((2, 2*n, 1))
+        simulation_data['HV'][:n] = HV_pos
+        simulation_data['HV'][n:] = HV_neg
+
+        if positions[simulation.specimen] is None:
+            geom_file = 'utmis_' + simulation.specimen + '/utmis_' + simulation.specimen + '.inc'
+            reader.read_input_file(geom_file)
+            nodal_coords = reader.nodal_data
+            pos = np.zeros((2*n, 3))
+            for i, label in enumerate(node_labels):
+                pos[i, :] = nodal_coords[label - 1, 1:]
+            pos[n:, :] = pos[:n, :]
+            pos[n:, 1] *= -1
+            positions[simulation.specimen] = pos
+
+        simulation_data['pos'] = positions[simulation.specimen]
         for step, level in enumerate(['min', 'max']):
             step_name = 'step_' + str(cycle_number) + '_' + level + '_load'
             stress, node_labels, element_labels = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
@@ -56,26 +82,10 @@ if __name__ == '__main__':
                                                                       instance_name='specimen_part_pos'.upper(),
                                                                       get_position_numbers=True)
 
-            HV = read_field_from_odb('FV1', odb_name, step_name, frame_number=-1,
-                                     element_set_name=element_set_name,
-                                     instance_name='specimen_part_pos'.upper())
-            print stress.shape, HV.shape
-            n = stress.shape[0]
-            if stress_data is None:
-                stress_data = np.zeros((2, 2*n, 6))
-            if positions[simulation.specimen] is None:
-                geom_file = 'utmis_' + simulation.specimen + '/utmis_' + simulation.specimen + '.inc'
-                reader.read_input_file(geom_file)
-                nodal_coords = reader.nodal_data
-                pos = np.zeros((2*n, 3))
-                for i, label in enumerate(node_labels):
-                    pos[i, :] = nodal_coords[label - 1, 1:]
-                pos[n:, :] = pos[:n, :]
-                pos[n:, 1] *= -1
-                positions[simulation.specimen] = pos
-            stress_data[step, :n, :] = stress
-            stress_data[step, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
-                                                           element_set_name=element_set_name,
-                                                           instance_name='specimen_part_neg'.upper())
+            simulation_data['S'][step, :n, :] = stress
+            simulation_data['S'][step, n:, :] = read_field_from_odb('S', odb_name, step_name, frame_number=-1,
+                                                                    element_set_name=element_set_name,
+                                                                    instance_name='specimen_part_neg'.upper())
 
-
+        with open(pickle_path + 'fatigue_pickle_' + name + '.pkl') as pickle_handle:
+            pickle.dump(simulation_data, pickle_handle)
