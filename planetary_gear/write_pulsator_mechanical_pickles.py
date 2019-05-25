@@ -7,7 +7,7 @@ import pickle
 from abaqus_files.odb_io_functions import add_element_set
 from abaqus_files.odb_io_functions import read_field_from_odb
 
-from write_nodal_coordinates import get_list_from_set_file
+from abaqus_files.write_nodal_coordinates import get_list_from_set_file
 
 
 if __name__ == '__main__':
