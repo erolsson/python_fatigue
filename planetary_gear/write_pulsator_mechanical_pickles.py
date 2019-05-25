@@ -20,7 +20,7 @@ if __name__ == '__main__':
                        + mesh + '/pulsator_stresses/'
     pulsator_odb = openOdb(pulsator_odb_filename)
     step_names = pulsator_odb.steps.keys()
-    if element_set_name.lower() is not 'all_elements':
+    if element_set_name.lower() != 'all_elements':
         if element_set_name not in pulsator_odb.rootAssembly.instances['tooth_left'].elementSets:
             element_labels = get_list_from_set_file(
                 '../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
