@@ -13,10 +13,6 @@ load = float(sys.argv[3])
 interesting_point = np.array([0., -2.5, 0])
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/')
 
-specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
-                  'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
-
-loads = specimen_loads[specimen][R]
 name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(int(R))
 with open(pickle_path + 'fatigue_pickle_' + name + '.pkl') as pickle_handle:
     fatigue_data = pickle.load(pickle_handle)
@@ -32,10 +28,8 @@ print "The monitor node has coordinates", nodal_coordinates[monitor_node_idx]
 stress_history = fatigue_data['S']
 
 print "======== Combined stress state =========="
-print "The maximum stress at interesting point in the x-direction is ", stress_history[1, monitor_node_idx, 0], \
-    "MPa"
-print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0], \
-    "MPa"
+print "The maximum stress at interesting point in the x-direction is ", stress_history[1, monitor_node_idx, 0],  "MPa"
+print "The minimum stress at interesting point in the x-direction is ", stress_history[0, monitor_node_idx, 0],  "MPa"
 for a800 in np.array([0.6, 0.8, 1.0, 1.2, 1.4, 1.6]):
     print '======================================================================================================='
     print '          Analyzing a800 =', a800
@@ -47,8 +41,7 @@ for a800 in np.array([0.6, 0.8, 1.0, 1.2, 1.4, 1.6]):
 
     print "The findley parameter coefficients are a={} and b={}".format(a, b)
     findley_k = a + b*HV
-    print "The maximum value of the findley parameter is", np.max(findley_k), "and the minimum is", \
-        np.min(findley_k)
+    print "The maximum value of the findley parameter is", np.max(findley_k), "and the minimum is", np.min(findley_k)
     findley_data = evaluate_findley(combined_stress=stress_history, a_cp=findley_k, worker_run_out_time=80000,
                                     num_workers=8, chunk_size=1000, search_grid=10)
 
