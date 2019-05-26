@@ -4,11 +4,15 @@ from odbAccess import openOdb
 
 import pickle
 
+import numpy as np
+
+from gear_input_file_functions import create_quarter_model
+from gear_input_file_functions import mirror_quarter_model
+
 from abaqus_files.odb_io_functions import add_element_set
 from abaqus_files.odb_io_functions import read_field_from_odb
 
 from abaqus_files.write_nodal_coordinates import get_list_from_set_file
-
 
 if __name__ == '__main__':
     mesh = '1x'
@@ -23,7 +27,7 @@ if __name__ == '__main__':
     if element_set_name.lower() != 'all_elements':
         if element_set_name not in pulsator_odb.rootAssembly.instances['tooth_left'].elementSets:
             element_labels = get_list_from_set_file(
-                '../planetary_gear/input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
+                'input_files/gear_models/planet_gear/mesh_' + mesh + '/' +
                 element_set_name + '.inc')
             add_element_set(pulsator_odb_filename, element_set_name, element_labels, 'tooth_left')
         e_set_name = element_set_name
@@ -32,9 +36,24 @@ if __name__ == '__main__':
     pulsator_odb.close()
 
     stress_dict = {'min_load': {}, 'max_load': {}}
+    positions_written = False
+
     for step_name in step_names:
-        min_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 0,
-                                       element_set_name=e_set_name, instance_name='tooth_left')
+        if not positions_written:
+            min_load, node_labels, _ = read_field_from_odb('S', pulsator_odb_filename, step_name, 0,
+                                                           element_set_name=e_set_name, instance_name='tooth_left',
+                                                           get_position_numbers=True)
+            nodes, elements = create_quarter_model('input_files/gear_models/planet_gear/mesh_' + mesh
+                                                   + '/mesh_planet.inc')
+            nodes, elements = mirror_quarter_model(nodes, elements)
+            nodal_coordinates = np.zeros((min_load.shape[0], 3))
+            for i, label in enumerate(node_labels):
+                nodal_coordinates[i, :] = nodes[label - 1, 1:]
+            stress_dict['pos'] = nodal_coordinates
+            positions_written = True
+        else:
+            min_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 0,
+                                           element_set_name=e_set_name, instance_name='tooth_left')
         max_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 1,
                                        element_set_name=e_set_name, instance_name='tooth_left')
 
@@ -42,6 +61,6 @@ if __name__ == '__main__':
         stress_dict['min_load'][load] = min_load
         stress_dict['max_load'][load] = max_load
 
-    pickle_file_name = 'pulsator_stresses_' + element_set_name +  '.pkl'
+    pickle_file_name = 'pulsator_stresses_' + element_set_name + '.pkl'
     with open(pickle_directory + pickle_file_name, 'w') as pickle_handle:
         pickle.dump(stress_dict, pickle_handle)
