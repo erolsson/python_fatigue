@@ -48,6 +48,8 @@ if __name__ == '__main__':
             nodes, elements = mirror_quarter_model(nodes, elements)
             nodal_coordinates = np.zeros((min_load.shape[0], 3))
             for i, label in enumerate(node_labels):
+                print label - 1, nodes.shape
+                print nodes[label - 1, :]
                 nodal_coordinates[i, :] = nodes[label - 1, 1:]
             stress_dict['pos'] = nodal_coordinates
             positions_written = True
