@@ -51,7 +51,6 @@ if __name__ == '__main__':
             for i in range(nodes.shape[0]):
                 nodal_coordinates[nodes[i, 0]] = nodes[i, 1:]
             for i, label in enumerate(node_labels):
-                print label, nodal_coordinates[label]
                 nodal_data[i, :] = nodal_coordinates[label]
             stress_dict['pos'] = nodal_data
             positions_written = True
