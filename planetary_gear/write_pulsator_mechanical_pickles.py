@@ -49,8 +49,8 @@ if __name__ == '__main__':
             nodal_coordinates = np.zeros((min_load.shape[0], 3))
             nodal_coordinates = {n[0]: n[1:] for n in nodal_coordinates}
             for i, label in enumerate(node_labels):
-                print label, nodes[label]
-                nodal_coordinates[i, :] = nodes[label]
+                print label, nodal_coordinates[label]
+                nodal_coordinates[i, :] = nodal_coordinates[label]
             stress_dict['pos'] = nodal_coordinates
             positions_written = True
         else:
