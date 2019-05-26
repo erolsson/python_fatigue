@@ -46,12 +46,14 @@ if __name__ == '__main__':
             nodes, elements = create_quarter_model('input_files/gear_models/planet_gear/mesh_' + mesh
                                                    + '/mesh_planet.inc')
             nodes, elements = mirror_quarter_model(nodes, elements)
-            nodal_coordinates = np.zeros((min_load.shape[0], 3))
-            nodal_coordinates = {n[0]: n[1:] for n in nodal_coordinates}
+            nodal_data = np.zeros((min_load.shape[0], 3))
+            nodal_coordinates = {}
+            for i in range(nodes.shape[0]):
+                nodal_coordinates[nodes[i, 0]] = nodes[i, 1:]
             for i, label in enumerate(node_labels):
                 print label, nodal_coordinates[label]
-                nodal_coordinates[i, :] = nodal_coordinates[label]
-            stress_dict['pos'] = nodal_coordinates
+                nodal_data[i, :] = nodal_coordinates[label]
+            stress_dict['pos'] = nodal_data
             positions_written = True
         else:
             min_load = read_field_from_odb('S', pulsator_odb_filename, step_name, 0,
