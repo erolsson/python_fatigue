@@ -47,10 +47,10 @@ if __name__ == '__main__':
                                                    + '/mesh_planet.inc')
             nodes, elements = mirror_quarter_model(nodes, elements)
             nodal_coordinates = np.zeros((min_load.shape[0], 3))
+            nodal_coordinates = {n[0]: n[1:] for n in nodal_coordinates}
             for i, label in enumerate(node_labels):
-                print label - 1, nodes.shape
-                print nodes[label - 1, :]
-                nodal_coordinates[i, :] = nodes[label - 1, 1:]
+                print nodes[label]
+                nodal_coordinates[i, :] = nodes[label]
             stress_dict['pos'] = nodal_coordinates
             positions_written = True
         else:
