@@ -1,6 +1,7 @@
 from collections import namedtuple
 import os
 import shutil
+from subprocess import Popen
 import sys
 
 from case_hardening_toobox import CaseHardeningToolbox
@@ -34,11 +35,23 @@ Simulation = namedtuple('Simulation', ['simulation_directory', 'times', 'tempera
 
 current_directory = os.getcwd()
 specimen_name = 'utmis_' + specimen_type
-simulations = [Simulation(simulation_directory=specimen_name + '_270_min_0_8C',
-                          times=[270], temperatures=[840.], carbon=[0.8], tempering=(200, 7200))]
+std_time = 8
+times = [std_time*12, std_time*3]
+temps = [930, 850]
+carbon_levels = [0.9, 0.98]
+tempering = (200., 9*std_time*60)
+
+name = ''
+
+for t, T, c in zip(times, temps, carbon_levels):
+    name += str(t) + 'min' + str(T) + 'C' + str(c).replace('.', '') + 'wtC'
+
+simulations = [Simulation(simulation_directory=specimen_name + '_' + name,
+                          times=times, temperatures=temps, carbon=carbon_levels, tempering=tempering)]
 
 # This is the main directory where all simulation folders will be placed
-simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/' + specimen_name + '_tempering_2h_200C/')
+simulation_directory = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062_2/' + specimen_name +
+                                          '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/')
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = simulation_directory + 'include_files/'
@@ -57,9 +70,6 @@ diffusion_file_name = 'diffusivity.inc'
 
 # Material, needs a python dict with material composition to generate the diffusion file
 material = SS2506
-
-# Dante material name, list of valid dante materials, check dante_path/DANTEDB3_6/STD and dante_path/DANTEDB3_6/USR
-dante_material = 'U925062'
 
 # writes the necessary geometry files and set files to include_file_directory
 write_geometry_files_for_dante(geometry_data_file=geometry_file_name,
@@ -80,20 +90,27 @@ for simulation in simulations:
                                           include_file_name=specimen_name,
                                           include_file_directory=inc_file_directory)
 
-    toolbox_writer.diffusion_file = diffusion_file_name
+    toolbox_writer.diffusion_file = 'diffusivity.inc'
+    toolbox_writer.initial_carbon = SS2506.composition['C']/100
     toolbox_writer.interaction_property_file = 'interaction_properties.inc'
     toolbox_writer.heating_data.carbon = 0.5
-    toolbox_writer.heating_data.time = 90.
+    toolbox_writer.heating_data.time = 5*std_time
     toolbox_writer.heating_data.temperature = 930.
 
     toolbox_writer.quenching_data.time = 3600.
     toolbox_writer.quenching_data.temperature = 120.
 
     toolbox_writer.cooldown_data.temperature = 80
+    toolbox_writer.cooldown_data.time = 3600
+
+    toolbox_writer.material = 'U925062'
 
     toolbox_writer.tempering_data.temperature = simulation.tempering[0]
     toolbox_writer.tempering_data.time = simulation.tempering[1]
-    toolbox_writer.material = dante_material
+
+    toolbox_writer.max_temp_inc = 5.
+    toolbox_writer.max_vf_inc = 0.05
+    toolbox_writer.write_dctrl_file = True
 
     toolbox_writer.add_carburization_steps(times=simulation.times, temperatures=simulation.temperatures,
                                            carbon_levels=simulation.carbon)
@@ -103,6 +120,7 @@ for simulation in simulations:
         os.makedirs(directory_name)
     os.chdir(directory_name)
     toolbox_writer.write_files()
+    Popen('qsub run_heat_treatment_sim.sh', shell=True)
     os.chdir(current_directory)
 
 write_diffusion_file(filename=include_file_directory + diffusion_file_name,

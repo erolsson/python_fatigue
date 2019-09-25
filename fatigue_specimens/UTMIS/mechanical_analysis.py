@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 
 try:
@@ -12,7 +13,8 @@ try:
     import regionToolset
     from abaqus import backwardCompatibility
 
-    from abaqusConstants import OFF, ON, THREE_D, DISCRETE_RIGID_SURFACE, WHOLE_SURFACE, DISTRIBUTING
+    from abaqusConstants import OFF, ON, THREE_D, DISCRETE_RIGID_SURFACE, WHOLE_SURFACE, DISTRIBUTING, KINEMATIC
+    from abaqusConstants import FROM_FILE
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
     print " ERROR: This script require Abaqus CAE to run"
@@ -22,16 +24,19 @@ from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClas
 from utmis_notched.utmis_notched_bending_specimen import NotchedBendingSpecimenClass
 
 simulation_directory = r'/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/'
+dante_odb_path = '../../odb_files/heat_treatment/utmis_specimens/'
 
-
-specimen_name = sys.argv[-1]
+specimen_name = sys.argv[-2]
+load = float(sys.argv[-1])
 specimen_types = {'notched': NotchedBendingSpecimenClass, 'smooth': SmoothBendingSpecimenClass}
+
+job_name = 'utmis_' + specimen_name + '_' + str(load).replace('.', '_') + 'MPa'
 
 spec = specimen_types[specimen_name]()
 spec.modelDB.setValues(noPartsInputFile=OFF)
 spec.mesh(analysis_type='Mechanical')
 part1 = spec.fatigue_part
-part2 = spec.make_part(part_name='mirror')
+part2 = spec.make_part(part_name='specimen_part_neg', flip=True)
 spec.mesh(part=part2, flip=True, analysis_type='Mechanical')
 
 mat = spec.modelDB.Material('Steel')
@@ -42,8 +47,8 @@ sec = spec.modelDB.HomogeneousSolidSection(name='FatigueSpecimen1',
 part1.SectionAssignment(region=(part1.cells,), sectionName='FatigueSpecimen1')
 part2.SectionAssignment(region=(part2.cells,), sectionName='FatigueSpecimen1')
 
-instance_1 = spec.modelDB.rootAssembly.Instance(name='part',   part=part1, dependent=ON)
-instance_2 = spec.modelDB.rootAssembly.Instance(name='mirror', part=part2, dependent=ON)
+instance_1 = spec.modelDB.rootAssembly.Instance(name='specimen_part_pos',   part=part1, dependent=ON)
+instance_2 = spec.modelDB.rootAssembly.Instance(name='specimen_part_neg', part=part2, dependent=ON)
 
 instance_2.rotateAboutAxis(axisPoint=(0, 0, spec.thickness/4),
                            axisDirection=(1, 0, 0),
@@ -67,7 +72,21 @@ spec.modelDB.Coupling(name='Coupling loadNode',
                       controlPoint=spec.load_node,
                       surface=Load_region,
                       influenceRadius=WHOLE_SURFACE,
-                      couplingType=DISTRIBUTING)
+                      couplingType=KINEMATIC,
+                      u1=OFF,
+                      u3=OFF,
+                      ur1=OFF,
+                      ur2=OFF,
+                      ur3=OFF)
+
+spec.modelDB.DisplacementBC(name='load_node',
+                            createStepName='Initial',
+                            region=spec.load_node,
+                            u1=0.0,
+                            u3=0.0,
+                            ur1=0.,
+                            ur2=0,
+                            ur3=0)
 
 support_nodes = instance_2.sets['Exposed_Nodes'].nodes.getByBoundingBox(xMin=0.999*(spec.length/2-spec.R1),
                                                                         xMax=1.001*(spec.length/2-spec.R1),
@@ -81,7 +100,7 @@ spec.modelDB.DisplacementBC(name='support',
                             u2=0.0)
 
 x_symmetry_region = regionToolset.Region(nodes=instance_1.sets['XSym_Nodes'].nodes +
-                                               instance_2.sets['XSym_Nodes'].nodes)
+                                         instance_2.sets['XSym_Nodes'].nodes)
 spec.modelDB.DisplacementBC(name='XSym',
                             createStepName='Initial',
                             region=x_symmetry_region,
@@ -105,22 +124,31 @@ spec.modelDB.Tie(name='Y0Plane',
 
 # The load, assuming unit nominal bending stress
 wb = spec.notch_height**2*spec.thickness/6
-P = wb/(spec.length/2 - spec.R1 - spec.load_position_x)/2
+P = load*wb/(spec.length/2 - spec.R1 - spec.load_position_x)/2
 spec.modelDB.ConcentratedForce(name='Force',
                                createStepName='MechanicalLoad',
                                region=spec.load_node,
                                cf2=P)
 
+# Loading the residual stresses
+os.chdir(simulation_directory)
 if not os.path.isdir(simulation_directory):
     os.makedirs(simulation_directory)
 
-os.chdir(simulation_directory)
-
-job = mdb.Job(name='unit_load_' + specimen_name,
+job = mdb.Job(name=job_name,
               model=spec.modelDB,
-              numCpus=7,
-              numDomains=7)
+              numCpus=8,
+              numDomains=8)
+
+job.submit(datacheckJob=True)
+job.waitForCompletion()
+shutil.copyfile(job_name + '.prt', dante_odb_path + 'utmis_' + specimen_name + '_half.prt')
+
+spec.modelDB.Stress(name='Residual_stress',
+                    distributionType=FROM_FILE,
+                    fileName=dante_odb_path + 'utmis_' + specimen_name + '_half.odb',
+                    step=1,
+                    increment=1)
+
 job.submit()
 job.waitForCompletion()
-
-

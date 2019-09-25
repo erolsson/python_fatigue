@@ -52,7 +52,10 @@ class InputFileReader:
                 node_string = node_string + str(n_data) + ', '
             file_lines.append(node_string[:-2])
         for element_type, element_data in self.elements.iteritems():
+            if element_type.endswith('R'):
+                element_type = element_type[:-1]
             e_type = element_type
+
             if simulation_type != 'Mechanical':
                 if element_type[1] == 'P':
                     e_type = 'DC2D' + element_type[-1]
@@ -88,7 +91,8 @@ class InputFileReader:
 
         for set_type, set_data in self.set_data.iteritems():
             for key, data in set_data.iteritems():
-                key = key.replace(str_to_remove_from_setname, '')
+                key = key.upper()
+                key = key.replace(str_to_remove_from_setname.upper(), '')
                 if not key.startswith(skip_prefix) and (key.lower() not in ['all_elements', 'all_nodes']):
                     file_lines.append(('*' + set_type + ', ' + set_type + '=' + key).upper())
                     write_set_rows(data)

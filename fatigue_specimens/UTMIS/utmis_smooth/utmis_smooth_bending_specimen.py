@@ -11,7 +11,7 @@ try:
     import interaction
     from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
     from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
-    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE
+    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE, XYPLANE
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
@@ -20,7 +20,7 @@ except ImportError:
 
 
 class SmoothBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=15, analysisType='Mechanical'):
+    def __init__(self, t=1.2, load_position_x=15):
         self.length = float(90)
         self.R = float(30.)
         self.R1 = float(5.5)
@@ -44,7 +44,7 @@ class SmoothBendingSpecimenClass:
         Mdb()
         self.modelDB = mdb.models['Model-1']
         self.modelDB.setValues(noPartsInputFile=ON)
-        self.myAssembly = self.modelDB.rootAssembly
+        self.assembly = self.modelDB.rootAssembly
 
         # Set replay file output format to INDEX for readability
         session.journalOptions.setValues(replayGeometry=INDEX)
@@ -52,7 +52,7 @@ class SmoothBendingSpecimenClass:
 
         self.make_part()
 
-    def make_part(self, part_name='fatiguePart'):
+    def make_part(self, part_name='specimen_part_pos', flip=False):
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
@@ -76,9 +76,9 @@ class SmoothBendingSpecimenClass:
             return part
 
         self.my_part_inner = make_profile(self.case_mesh_thickness, 'inner')
-        instance_inner = self.myAssembly.Instance(name='InnerSpecimen', part=self.my_part_inner, dependent=OFF)
+        instance_inner = self.assembly.Instance(name='InnerSpecimen', part=self.my_part_inner, dependent=OFF)
         self.my_part_outer = make_profile(0., 'outer')
-        instance_outer = self.myAssembly.Instance(name='OuterSpecimen', part=self.my_part_outer, dependent=OFF)
+        instance_outer = self.assembly.Instance(name='OuterSpecimen', part=self.my_part_outer, dependent=OFF)
 
         # Create instance from merge of parts
         self.fatigue_part = self.modelDB.rootAssembly.PartFromBooleanMerge(name=part_name,
@@ -103,6 +103,14 @@ class SmoothBendingSpecimenClass:
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical5.id],
                                                     cells=self.fatigue_part.cells)
 
+        offset = 1.3
+        if flip:
+            offset = self.thickness/2 - 1.3
+        datum_plane_vertical6 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE,
+                                                                             offset=offset)
+        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical6.id],
+                                                    cells=self.fatigue_part.cells)
+
         return self.fatigue_part
 
     def mesh(self, part=None, flip=False, analysis_type='ThermalDiffusion'):
@@ -110,11 +118,10 @@ class SmoothBendingSpecimenClass:
             part = self.fatigue_part
         
         nr = 25
-        nd = 20
         nx1 = 40      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
         n_fillet = 2  # filletRadius
-        n_height = 30
+        n_height = 10
         size_length_direction = 2
         n_radius = 10
 
@@ -165,11 +172,14 @@ class SmoothBendingSpecimenClass:
         
         # Edges in the hardness gradient
         # y-coord key, data x-coords
-        xy = {self.notch_height/2 - self.case_mesh_thickness/2:   [0.],
-              self.height/2 - self.case_mesh_thickness/2:         [self.x, self.load_position_x, self.length / 2 - self.R1],
-              0.:                                                 [self.length/2 - self.case_mesh_thickness/2]}
+        xy = {self.notch_height/2 - self.case_mesh_thickness/2: [0.],
+              self.height/2 - self.case_mesh_thickness/2:       [self.x, self.load_position_x, self.length / 2 - self.R1],
+              0.:                                               [self.length/2 - self.case_mesh_thickness/2]}
 
-        z_coordinates = [0, self.thickness/2]
+        z_line = 1.3
+        if flip:
+            z_line = self.thickness/2 - 1.3
+        z_coordinates = [0, z_line, self.thickness/2]
         edges = []
         for y, x_coordinates in xy.iteritems():
             for x in x_coordinates:
@@ -185,7 +195,9 @@ class SmoothBendingSpecimenClass:
                             constraint=FIXED)
 
         # Edges in the z-direction
-        z = self.thickness/4
+        z = 1.9
+        if flip:
+            z = 0.1
         x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
         y_coordinates = [self.notch_height/2, self.height/2, self.height/2, self.height/2]
         edges = []
@@ -194,7 +206,7 @@ class SmoothBendingSpecimenClass:
             edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
             edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
 
-        edges.append(part.edges.findAt((self.length/2, 0, self.thickness/4)))
+        edges.append(part.edges.findAt((self.length/2, 0, z)))
         edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
 
         if flip is True:
@@ -202,9 +214,26 @@ class SmoothBendingSpecimenClass:
         part.seedEdgeByBias(biasMethod=SINGLE, 
                             end1Edges=edges1,
                             end2Edges=edges2,
-                            number=nd,
-                            ratio=4,
+                            number=25,
+                            ratio=20,
                             constraint=FIXED)
+
+        z = 0.1
+        if flip:
+            z = 1.9
+        x_coordinates = [0, self.x, self.load_position_x, self.length / 2 - self.R1]
+        y_coordinates = [self.notch_height / 2, self.height / 2, self.height / 2, self.height / 2]
+        edges = []
+        for i, x in enumerate(x_coordinates):
+            edges.append(part.edges.findAt((x, 0, z)))
+            edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
+            edges.append(part.edges.findAt((x, y_coordinates[i], z)))
+
+        edges.append(part.edges.findAt((self.length / 2, 0, z)))
+
+        part.seedEdgeByNumber(number=5,
+                              edges=edges,
+                              constraint=FIXED)
 
         # Seeding the notch
         num = [nx1, nx2, n_fillet]
@@ -212,7 +241,7 @@ class SmoothBendingSpecimenClass:
         y_coordinates = [self.notch_height / 2 + self.R*(1 - cos(15*pi/180))]
         for x, y, n in zip(x_coordinates, y_coordinates, num):
             edges = []
-            for z in [0, self.thickness/2]:
+            for z in z_coordinates:
                 edges.append(part.edges.findAt((x, 0,                            z)))
                 edges.append(part.edges.findAt((x, y - self.case_mesh_thickness, z)))
                 edges.append(part.edges.findAt((x, y,                            z)))
@@ -223,7 +252,6 @@ class SmoothBendingSpecimenClass:
         # Mid section
         x_coordinates = [self.load_position_x + (self.length / 2 - self.R1) / 2, (self.x + self.load_position_x) / 2]
         y_coordinates = [0, self.height/2 - self.case_mesh_thickness, self.height/2]
-        z_coordinates = [0, self.thickness/2]
         edges = []
         for x in x_coordinates:
             for y in y_coordinates:
@@ -238,18 +266,17 @@ class SmoothBendingSpecimenClass:
         z_coordinates = [0, self.thickness/2]
         y = 0.001*self.height/2
         edges = []
-        for x in x_coordinates:
-            for z in z_coordinates:
+        for z in z_coordinates:
+            for x in x_coordinates:
                 edges.append(part.edges.findAt((x, y, z)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, 0)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, self.thickness/2)))
+            edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, z)))
         part.seedEdgeByNumber(edges=edges,
-                              number=n_height)
+                              number=n_height,
+                              constraint=FIXED)
 
         # Outermost radius
         x0 = self.length / 2 - self.R1
         radius = [self.R1, self.R1 - self.case_mesh_thickness]
-        z_coordinates = [0, self.thickness/2]
         edges = []
         
         for r in radius:
@@ -318,7 +345,17 @@ class SmoothBendingSpecimenClass:
         monitor_vertex_nodes = monitor_vertex.getNodes()
         monitor_node = monitor_vertex_nodes[0].label-1
         part.Set(nodes=part.nodes[monitor_node:monitor_node+1], name='Monitor_Node')
-        
+
+        load_nodes = part.nodes.getByBoundingBox(xMin=self.load_position_x - 1e-8,
+                                                 xMax=self.load_position_x + 1e-8,
+                                                 yMin=self.height/2 - 1e-8)
+        part.Set(nodes=load_nodes, name='load_nodes')
+
+        support_nodes = part.nodes.getByBoundingBox(xMin=self.length/2 - self.R1 - 1e-8,
+                                                    xMax=self.length/2 - self.R1 + 1e-8,
+                                                    yMin=self.height/2 - 1e-8)
+        part.Set(nodes=support_nodes, name='support_nodes')
+
         session.viewports['Carbon Toolbox Model'].maximize()
         print " Mesh generation completed"
 
@@ -339,7 +376,7 @@ class SmoothBendingSpecimenClass:
             sys.exit(" ERROR: Method mesh of class cylinderSpecimenClass was called using incorrect argument, Exiting")
 
         # Assign element type       
-        self.myAssembly.setElementType(regions=(self.fatigue_part.cells,), elemTypes=(elem_type1, elem_type2))
+        self.assembly.setElementType(regions=(self.fatigue_part.cells,), elemTypes=(elem_type1, elem_type2))
       
     def write_file(self, file_name):
         
@@ -352,7 +389,7 @@ class SmoothBendingSpecimenClass:
         if output_directory:
             os.chdir(output_directory)
 
-        self.myAssembly.Instance(name='Specimen', part=self.fatigue_part, dependent=ON)
+        self.assembly.Instance(name='Specimen', part=self.fatigue_part, dependent=ON)
 
         # Create job
         mdb.Job(name=output_file_name_no_ext, model=self.modelDB, description='', type=ANALYSIS,
@@ -375,7 +412,7 @@ class SmoothBendingSpecimenClass:
         os.rename(os.path.join(output_directory, output_file_name_no_ext+'.inp'), file_name)
 
     # Function by erolssson
-    def mechanical_material_assignment(self, part_name='fatiguePart'):
+    def mechanical_material_assignment(self, part_name='specimen_part_pos'):
         part = self.modelDB.parts[part_name]
         mat = self.modelDB.Material('Steel')
         mat.Elastic(table=((200E3, 0.3),))

@@ -81,7 +81,7 @@ if __name__ == '__main__':
     teeth = []
     for i in range(number_of_teeth):
         teeth.append(GearTooth(instance_name='tooth' + str(i),
-                               rotation=18*i - 90. + 9,  # 9 degrees is a 1/2 tooth
+                               rotation=(180/number_of_teeth)*i - 90. + (180/2/number_of_teeth),  # 9 degrees is a 1/2 tooth
                                part_names=['coarse_tooth_pos', 'coarse_tooth_neg']))
 
     # Tooth number 1 is the interesting tooth for fatigue, give it a denser mesh and a different name

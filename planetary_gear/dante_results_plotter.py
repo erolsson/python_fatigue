@@ -16,7 +16,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                 'tempering_2h_180C_20190129/')
+                                 'tempering_2h_200C_U25062/')
 experimental_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/hardness/')
 Simulation = namedtuple('Simulation', ['cd', 'color', 'sym'])
 simulations = [Simulation(cd=0.5, color='b', sym='o'), Simulation(cd=0.8, color='r', sym='s'),
@@ -46,6 +46,9 @@ for i, simulation in enumerate(simulations):
         leg_h = plt.plot(dante_data['r'], dante_data['S'], '--' + simulation.color, lw=2,
                          label='CHD = ' + str(simulation.cd) + ' mm')
         legend_handles[1 + 2*j].append(leg_h[0])
+
+        plt.figure(5)
+        plt.plot(dante_data['r'], dante_data['Carbon'], '--' + simulation.color, lw=2)
 
 for i in range(2):
     fig = plt.figure(2*i)

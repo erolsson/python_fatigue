@@ -117,7 +117,7 @@ def write_gear_assembly(gears, assembly_name):
 
 def create_quarter_model(full_model_file):
     nodal_data, elements = read_nodes_and_elements(full_model_file)
-    # Only using nodes on positive z and positive z
+    # Only using nodes on positive z and positive x
     nodal_data = nodal_data[nodal_data[:, 1] >= -1e-5, :]
     nodal_data = nodal_data[nodal_data[:, 3] >= -1e-5, :]
 
@@ -139,7 +139,8 @@ def mirror_quarter_model(nodes, elements):
     return nodes, elements
 
 
-def write_sets_file(filename, full_model_sets_file, nodal_data, element_data, monitor_node=None):
+def write_sets_file(filename, full_model_sets_file, nodal_data, element_data, monitor_node=None,
+                    element_label_mapping=None):
     exposed_surface = []
     exposed_nodes = []
     read_exposed_nodes = False
@@ -201,6 +202,11 @@ def write_sets_file(filename, full_model_sets_file, nodal_data, element_data, mo
                     'Exposed_surface': exposed_surface,
                     'x0_elements': np.unique(x0_elements),
                     'x1_elements': np.unique(x1_elements)}
+
+    if element_label_mapping:
+        for element_list in element_sets.values():
+            for i in range(len(element_list)):
+                element_list[i] = element_label_mapping[element_list[i]]
 
     file_lines = write_sets(node_sets, element_sets)
     file_lines.append('*Surface, type = ELEMENT, name=Exposed_Surface, TRIM=YES')

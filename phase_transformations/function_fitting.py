@@ -21,22 +21,18 @@ for i, carbon_level in enumerate(carbon_levels):
     data_point = np.genfromtxt('heat_expansion_' + str(carbon_level).replace('.', '_'), delimiter=',')
     thermal_expansion[i] = (data_point[1, 1] - data_point[0, 1])/(data_point[1, 0] - data_point[0, 0])
 
+thermal_expansion = np.array([1.2678425108258802e-05,
+                              9.683202737506953e-06,
+                              4.559703619264866e-06,
+                              1.92910537738129e-06])
+
 plt.plot(carbon_levels, thermal_expansion, 's', ms=12, label='KTH Thesis')
+par = np.polyfit(carbon_levels[0:2], thermal_expansion[0:2], 1)
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
+print par
 plt.plot(0.008, 1.17e-5, 's', ms=12, label='JMAT PRO')
-plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
+# plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
 
-
-# Trying an linear - exponential function
-c0 = 0.0065
-a1 = 1.6369e-5
-a2 = - 2.1344e-3
-b1 = a1 + a2*c0
-b2 = -a2/(a1 + a2*c0)
-f = 0*carbon
-f[carbon <= c0] = a1 + a2*carbon[carbon <= c0]
-f[carbon > c0] = b1*np.exp(-b2*(carbon[carbon > c0] - c0))
-# plt.plot(carbon, f)
 
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*200 + 2*1.4e-9*carbon*100*200 + 3*1.091e-12*200**2
 plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
@@ -44,7 +40,10 @@ plt.plot(carbon, f, label=r'Dante 200 $^{\circ}$C')
 f = 1.3e-5 - 4.3e-6*carbon*100 + 2*2.9e-9*20 + 2*1.4e-9*carbon*100*20 + 3*1.091e-12*20**2
 plt.plot(carbon, f, label=r'Dante 20 $^{\circ}$C')
 
-plt.plot(carbon, 1.3e-5*(1-carbon/0.01), label='Dante EO')
+plt.plot(carbon, 1.3e-5*(1-carbon/0.01), 'g', label='Dante EO 1st')
+# plt.plot(carbon, 1.3e-5 - 1.098e-5*carbon/0.01, 'r',  label='Dante EO 2nd')
+plt.plot(carbon, 1.6369e-5-2.1344e-5*carbon/0.01, 'r',  label='Dante EO 2nd')
+plt.plot(carbon, 1.64224e-5 - 1.87201e-5*carbon/0.01, 'm',  label='Dante EO 3rd')
 
 fig.set_size_inches(12., 6., forward=True)
 ax = plt.subplot(111)
@@ -55,7 +54,7 @@ plt.gca().add_artist(legend)
 plt.xlabel('Carbon')
 plt.ylabel(r'Heat Expansion [$\mathrm{K}^{-1}$]')
 plt.ylim(0, 0.000015)
-plt.savefig(r'D:\Meeting Dante 20190122\heat_expansion.png')
+plt.savefig(r'heat_expansion.png')
 
 # Fitting parameter a in Koistinen-Marburger equation
 plt.figure(1)
@@ -63,6 +62,7 @@ data = np.zeros((5, 2))
 data[0:4, :] = np.genfromtxt('koistinen_marburger_a', delimiter=',')
 data[4, 0] = 0.008
 data[4, 1] = -np.log(0.01)/(176+91)   # Point from Erland
+print data[4, 1]
 carbon_levels = data[:, 0]
 
 plt.plot(data[:, 0], data[:, 1], 's', ms=12)
@@ -80,7 +80,8 @@ data = np.zeros((9, 2))
 data[0:8, :] = np.genfromtxt('ms_temperature', delimiter=',')
 data[8, 0] = 0.008
 data[8, 1] = 176+273.15
-plt.plot(data[:, 0], data[:, 1], 's', ms=12)
-plt.plot(carbon, SS2506.ms_temperature(carbon))
+plt.plot(data[:, 0], data[:, 1] - 273.15, 's', ms=12)
+plt.plot(carbon, SS2506.ms_temperature(carbon) - 273.15)
+plt.plot([0.002, 0.0036, 0.0052, 0.0065, 0.008], [348.532, 317.2, 266.175, 215.2, 164.19], 'o', ms=12)
 
 plt.show()

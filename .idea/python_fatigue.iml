@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.idea" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.idea/inspectionProfiles" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/abaqus" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/abaqus_files" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/case_hardening_toolbox" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/case_hardening_toolbox/dante_quarter_1x" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/case_hardening_toolbox/utmis_notched" isTestSource="false" />
