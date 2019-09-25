@@ -31,15 +31,17 @@
       <sourceFolder url="file://$MODULE_DIR$/testing" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/venv" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/venv/bin" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/venv/Include" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/venv/Lib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/venv/include" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/venv/lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/venv/local" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/weakest_link" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/fatigue_specimens/UTMIS" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/inspectionProfiles" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/venv/Include" />
-      <excludeFolder url="file://$MODULE_DIR$/venv/Lib" />
       <excludeFolder url="file://$MODULE_DIR$/venv/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/include" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/lib" />
       <excludeFolder url="file://$MODULE_DIR$/venv/local" />
     </content>
     <orderEntry type="jdk" jdkName="Python 2.7" jdkType="Python SDK" />
