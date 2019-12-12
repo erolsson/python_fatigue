@@ -14,4 +14,6 @@ Pm = Pa*(1 + R)/(1-R)
 Pmax = Pm + Pa
 Pmin = Pm - Pa
 
+
+
 print "stress amplitude", sa, 'MPa and R =', R, "results in minimum force", Pmin, 'kN and maximum force', Pmax, 'kN'
