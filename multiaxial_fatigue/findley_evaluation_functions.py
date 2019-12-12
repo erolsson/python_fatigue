@@ -28,19 +28,19 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num
         # Submit workloads for evaluation of Findley stress
         print " Computing critical plane stress:"
         findley_load_step_jobs = []
-        for workLoad in range(0, len(work_loads) - 1):
+        for work_load in range(0, len(work_loads) - 1):
             findley_load_step_jobs.append(worker_pool.apply_async(findley_worker,
-                                                                  [[a_cp[work_loads[workLoad]:work_loads[workLoad + 1]],
-                                                                    combined_stress[:, work_loads[workLoad]:
-                                                                                    work_loads[workLoad + 1], :],
+                                                                  [[a_cp[work_loads[work_load]:work_loads[work_load + 1]],
+                                                                    combined_stress[:, work_loads[work_load]:
+                                                                                    work_loads[work_load + 1], :],
                                                                     search_grid]]))
         # Retrieve results for workloads
-        for workLoad, findley_load_step_job in enumerate(findley_load_step_jobs):
-            # print "Working with workload " + str(workLoad)
-            fatigue_results[work_loads[workLoad]:work_loads[workLoad + 1], 0:3] = findley_load_step_job.get(
+        for work_load, findley_load_step_job in enumerate(findley_load_step_jobs):
+            # print "Working with workload " + str(work_load)
+            fatigue_results[work_loads[work_load]:work_loads[work_load + 1], 0:3] = findley_load_step_job.get(
                 worker_run_out_time)
             print ".",
-            # print "Done with workload " + str(workLoad)
+            # print "Done with workload " + str(work_load)
             sys.stdout.flush()  # Force output of buffered content
         print "\n Done, Total Time: %1.2f" % (time.time() - s_time)
 
