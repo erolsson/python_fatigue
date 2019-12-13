@@ -17,7 +17,7 @@ from weakest_link.weakest_link_evaluator import FEM_data
 
 def calc_pf_for_simulation(cd, load, par):
 
-    fit_material = SS2506MaterialTemplate(par[0], 0, 11)
+    fit_material = SS2506MaterialTemplate(par[0], par[1], par[2])
     findley_file_name = '/findley_CD=' + str(cd).replace('.', '_') + '_Pamp=' + str(load).replace('.', '_') + 'kN.pkl'
     with open(findley_data_directory + findley_file_name) as findley_pickle:
         stress = pickle.load(findley_pickle)
@@ -50,10 +50,10 @@ def residual(par, *data):
 if __name__ == '__main__':
     mesh = '1x'
     findley_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                                mesh + '/findley_tempering_2h_180C_a800=0_6/pulsator/')
+                                                mesh + '/findley/pulsator/')
 
     dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                              mesh + '/dante_tempering_2h_180C_JMAT/')
+                                              mesh + '/dante_tempering_2h/')
 
     geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/geometry/')
@@ -63,4 +63,4 @@ if __name__ == '__main__':
                    SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
                    SimulationsToProcess(cd=1.4, load=35., pf_experimental=0.6)]
 
-    print fmin(residual, [1000], tuple(simulations))
+    print fmin(residual, [], tuple(simulations))

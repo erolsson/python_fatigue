@@ -173,6 +173,8 @@ if __name__ == '__main__':
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 
+    print (expansion_martensite(parameters[3:], 0.8, 22) - (austenite_parameters[0] +
+                                                            austenite_parameters[1]*0.8 + austenite_parameters[2]*22))*3
     t20 = np.array([SS2506.ms_temperature(0.008) - 273.15 + np.log(0.20)/parameters[2]])
     print "20 % Retained Austenite at", t20
     expan02 = expansion_martensite(parameters[3:], np.array([0.2]), np.array([t20])) - \
