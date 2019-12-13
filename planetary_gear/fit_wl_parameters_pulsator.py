@@ -53,7 +53,7 @@ if __name__ == '__main__':
                                                 mesh + '/findley/pulsator/')
 
     dante_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
-                                              mesh + '/dante_tempering_2h/')
+                                              mesh + '/dante_tempering_2h_180C/')
 
     geometry_data_directory = os.path.expanduser('~/scania_gear_analysis/pickles/tooth_root_fatigue_analysis/mesh_' +
                                                  mesh + '/geometry/')
