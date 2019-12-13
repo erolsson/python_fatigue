@@ -59,8 +59,8 @@ if __name__ == '__main__':
                                                  mesh + '/geometry/')
 
     SimulationsToProcess = namedtuple('SimulationsToProcess', ['cd', 'load', 'pf_experimental'])
-    simulations = [SimulationsToProcess(cd=0.8, load=32., pf_experimental=0.6),
-                   SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
-                   SimulationsToProcess(cd=1.4, load=35., pf_experimental=0.6)]
+    simulations = [SimulationsToProcess(cd=0.8, load=33., pf_experimental=0.5),
+                   SimulationsToProcess(cd=1.1, load=36., pf_experimental=0.50),
+                   SimulationsToProcess(cd=1.4, load=37., pf_experimental=0.5)]
 
     print fmin(residual, [140, 0.71, 11e6], tuple(simulations))

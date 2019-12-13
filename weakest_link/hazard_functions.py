@@ -26,6 +26,7 @@ def _weibull_life_haiback(stress, cycles, steel_properties, material):
         sw = material.weibull_sw(steel_properties)
         k = _k
         m = material.weibull_m(steel_properties)*(cycles/np.exp(ne))**(-1./_k)
+
     else:
         k = material.b
         ne = material.ne
