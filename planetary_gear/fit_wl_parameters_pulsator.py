@@ -63,4 +63,4 @@ if __name__ == '__main__':
                    SimulationsToProcess(cd=1.1, load=34., pf_experimental=0.50),
                    SimulationsToProcess(cd=1.4, load=35., pf_experimental=0.6)]
 
-    print fmin(residual, [], tuple(simulations))
+    print fmin(residual, [140, 0.71, 11e6], tuple(simulations))
