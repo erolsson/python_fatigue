@@ -19,6 +19,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def expansion_martensite(par, c, t):
     m1, m2, m3, m4, m5 = par
+    m3 = 0
     return m1 + m2*t + m3*t**2 + m4*c + m5*c**2
 
 
@@ -31,6 +32,7 @@ def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     par = np.abs(par)
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
 

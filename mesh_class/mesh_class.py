@@ -1,4 +1,4 @@
-from math import atan2, sin, cos, pi, floor, atan
+from math import atan2, sin, cos
 
 import numpy as np
 
