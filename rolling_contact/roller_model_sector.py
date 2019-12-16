@@ -31,8 +31,8 @@ class Roller:
             self.fine_thickness = 0.5
             self.size_fine_thickness = self.fine_thickness/self.number_fine_thickness
 
-            self.number_fine_length = 60 + 8*9
-            self.fine_length = 2.0
+            self.number_fine_length = 60
+            self.fine_length = 1.
             self.size_fine_length = self.fine_length/self.number_fine_length
 
             self.number_fine_width = 27
@@ -75,64 +75,9 @@ class Roller:
 
         surfz2 = mesher.create_transition_plate(nodes[:, :, -1], 'z', d=self.mesh_parameters.size_fine_thickness,
                                                 order=1, direction=1)
+        """
         surfz = np.empty(shape=(surfz2.shape[0] + 1, surfz2.shape[1]), dtype=object)
         surfz[:-1, :] = surfz2
-        for side, direction in zip([-1], [1]):
-            surfx1 = mesher.create_transition_plate(nodes[side, :, :], 'x', d=self.mesh_parameters.size_fine_length,
-                                                    order=1, direction=direction)
-
-            corner = mesher.create_transition_corner_out(nodes[side, :, -1],
-                                                         d1=self.mesh_parameters.size_fine_length,
-                                                         d2=self.mesh_parameters.size_fine_thickness,
-                                                         axis1='x',
-                                                         axis2='z',
-                                                         axis3='y',
-                                                         order=1)
-
-            surfx = np.empty(shape=(surfx1.shape[0], surfx1.shape[1]+1), dtype=object)
-
-            surfx[:, 0:-1] = surfx1
-            surfx[:, -1] = corner
-            surfx2 = np.empty(shape=((surfx1.shape[0] - 1)/3 + 1, (surfx1.shape[1])/3 + 2), dtype=object)
-            surfx2[:, 0:-1] = mesher.create_transition_plate(surfx, 'x', d=3*self.mesh_parameters.size_fine_length,
-                                                             order=1, direction=direction)
-
-            surfz[side, :] = corner
-
-            surfx2[:, -1] = mesher.create_transition_corner_out(surfz[side, :],
-                                                                d1=3*self.mesh_parameters.size_fine_length,
-                                                                d2=3*self.mesh_parameters.size_fine_thickness,
-                                                                axis1='x',
-                                                                axis2='z',
-                                                                axis3='y',
-                                                                order=1)
-
-            x = surfx2[0, 0].x
-            xl = self.outer_radius*pi/2*direction
-            dx = (xl - x)/(self.mesh_parameters.number_coarse_length - 1)
-            dy = surfx2[1, 1].y - surfx2[0, 0].y
-            dz = surfx2[1, 1].z - surfx2[0, 0].z
-
-            mesher.create_block(nx=self.mesh_parameters.number_coarse_length,
-                                ny=surfx2.shape[0],
-                                nz=surfx2.shape[1],
-                                dx=dx,
-                                dy=dy,
-                                dz=dz,
-                                x0=surfx2[0, 0].x,
-                                y0=surfx2[0, 0].y,
-                                z0=surfx2[0, 0].z)
-
-            dz = (-self.inner_radius - surfx2[0, -1].z)/(self.mesh_parameters.number_coarse_thickness - 1)
-            mesher.create_block(nx=self.mesh_parameters.number_coarse_length,
-                                ny=surfx2.shape[0],
-                                nz=self.mesh_parameters.number_coarse_thickness,
-                                dx=dx,
-                                dy=dy,
-                                dz=dz,
-                                x0=surfx2[0, 0].x,
-                                y0=surfx2[0, 0].y,
-                                z0=surfx2[0, -1].z)
 
         surfz2 = mesher.create_transition_plate(surfz, 'z', d=3*self.mesh_parameters.size_fine_thickness,
                                                 order=1, direction=1)
@@ -146,7 +91,7 @@ class Roller:
                             x0=0,
                             y0=surfz2[0, 0].y,
                             z0=surfz2[0, 0].z)
-
+        """
         nodes, elements = mesher.lists_for_part()
         self.part = self.modelDB.PartFromNodesAndElements(name='_tmp',
                                                           dimensionality=THREE_D,

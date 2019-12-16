@@ -1,4 +1,4 @@
-from math import atan2, sin, cos, pi, floor, atan
+from math import atan2, sin, cos, asin, pi, floor, atan
 
 import numpy as np
 
@@ -255,14 +255,11 @@ class MeshClass:
     def transform_block_radially(self, node_set, rotation_axis, rotation_point, circ_axis):
         radial_axis = 'xyz'.replace(rotation_axis, '').replace(circ_axis, '')
         nodes = self.node_sets[node_set]
-        r_max = max([abs(getattr(n, radial_axis)) for n in nodes])
+        r_max = max([abs(getattr(n, radial_axis)) - rotation_point[xyz_idx[radial_axis]] for n in nodes])
         for n in nodes:
-            n1 = getattr(n, radial_axis)   # Coordinate of node along radial axis
-            n2 = getattr(n, circ_axis)   # Coordinate of node along other axis
-            r = abs(n1)
-
-            # q = 0
-            # if n1 != 0:
+            n1 = getattr(n, radial_axis) - rotation_point[xyz_idx[radial_axis]]   # Coordinate of node along radial axis
+            n2 = getattr(n, circ_axis) - rotation_point[xyz_idx[circ_axis]]  # Coordinate of node along other axis
+            r = abs(n1) - rotation_point[xyz_idx[radial_axis]]
             q = abs(n2/r_max)
             if n1 != 0:
                 d1 = r*cos(q)*n1/abs(n1) - n1
@@ -270,6 +267,19 @@ class MeshClass:
             if n2 != 0:
                 d2 = r*sin(q)*n2/abs(n2) - n2
                 setattr(n, circ_axis, getattr(n, circ_axis) + d2)
+
+    def apply_fillet_radius(self, node_set, axis1, axis2, radius, zero_point):
+        nodes = self.node_sets[node_set]
+        r_max = max([abs(getattr(n, axis1)) for n in nodes])
+        for n in nodes:
+            n1 = getattr(n, axis1)   # Coordinate of node along radial axis
+            n2 = getattr(n, axis2)   # Coordinate of node along other axis
+            q = abs(n2/r_max)
+            k = (abs(n1) - abs(zero_point))/(r_max - abs(zero_point))
+            r = radius*abs(n1)/r_max
+            if n1 != 0:
+                d1 = r*cos(q)*n1/abs(n1)*abs(n1)/r_max - n1 - (r - r_max)*n1/abs(n1)
+                setattr(n, axis1, getattr(n, axis1) + d1*k)
 
     def create_transition_cell(self, transition_block, axis, element_set='', node_set=''):
         # The mid element
@@ -465,6 +475,7 @@ class MeshClass:
     @staticmethod
     def _refinement(ns, order):
         ns = np.array(ns)
+        print ns
         orders = (np.log(ns - 1)/np.log(3))
         max_order = int(np.min(orders))
         if order is None:
