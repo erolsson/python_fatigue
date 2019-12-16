@@ -272,8 +272,8 @@ class MeshClass:
         nodes = self.node_sets[node_set]
         r_max = max([abs(getattr(n, axis1)) for n in nodes])
         for n in nodes:
-            n1 = getattr(n, axis1)   # Coordinate of node along radial axis
-            n2 = getattr(n, axis2)   # Coordinate of node along other axis
+            n1 = getattr(n, axis1)    # Coordinate of node along radial axis
+            n2 = getattr(n, axis2)    # Coordinate of node along other axis
             q = abs(n2/r_max)
             k = (abs(n1) - abs(zero_point))/(r_max - abs(zero_point))
             r = radius*abs(n1)/r_max
