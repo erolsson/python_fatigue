@@ -31,9 +31,11 @@ def axi_symmetric_cylinder(function_values, r, h):
 
 
 if __name__ == '__main__':
-    f = np.ones((1, 8))
+    f = np.ones((2, 8))
     x = np.array([[[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0],
                    [0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]],
-
+                  [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0],
+                   [0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]]
                   ])
+    print x
     print gauss_integration_3d(f, x)

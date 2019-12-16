@@ -35,25 +35,23 @@ class SS2506MaterialTemplate:
         return -1.37143 + 0.0037143*steel_properties.HV
 
     def weibull_sw(self, steel_properties):
-        # return self.sw_par[0] + self.sw_par[1]*steel_properties.HV
-        return self.sw_par[0]
+        return self.sw_par[0] + self.sw_par[1]*steel_properties.HV
 
     def weibull_m(self, steel_properties):
-        return self.m_par[0]
-        # return self.m_par[0]/steel_properties.HV**2
+        return self.m_par[0]/steel_properties.HV**2
 
     # Phase transformation data
     def _trans_strain_martensite(self, temperature, carbon):
-        temperature = temperature + 273.15
         t, c = np.meshgrid(temperature, carbon)
-        e = t*(self._thermal_exp_martensite(temperature-273.15, carbon)) - 6.12e-3 + 1.05*c
+        e = - 2.86675380e-03 + 1.01552103e-05*t + 5.99517668e-09*t**2 + 7.72779661e-01*c - \
+            1.20775388e-04*(c/100)**2
         return np.squeeze(e)
 
     @staticmethod
     def _thermal_exp_martensite(temperature, carbon):
         temperature = temperature + 273.15
-        _, c = np.meshgrid(temperature, carbon)
-        a = 1.6369e-5 - 2.1344e-3*carbon
+        t, _ = np.meshgrid(temperature, carbon)
+        a = 1.01552103e-05 + 5.99517668e-09*temperature
         return np.squeeze(a)
 
     @staticmethod
@@ -114,7 +112,7 @@ class SS2506MaterialTemplate:
 
 
 # SS2506 = SS2506MaterialTemplate(swa=138, swb=0.71, mb=11.06e6)
-#SS2506 = SS2506MaterialTemplate(swa=378, swb=0.175, mb=6.15e6)
+# SS2506 = SS2506MaterialTemplate(swa=378, swb=0.175, mb=6.15e6)
 SS2506 = SS2506MaterialTemplate(swa=900, swb=0, mb=15.)
 
 if __name__ == '__main__':

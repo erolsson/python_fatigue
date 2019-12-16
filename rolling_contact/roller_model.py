@@ -173,8 +173,8 @@ class Roller:
 
         for set_list, func in zip([node_sets['exposed_nodes'], element_sets['exposed_elements']],
                                   [mesher.get_nodes_by_bounding_box, mesher.get_elements_by_bounding_box]):
-            set_list += func(z_max=bounding_box[4]+1e-5)
-            set_list += func(z_min=bounding_box[5]-1e-5)
+            set_list += func(z_max=bounding_box[4] + 1e-5)
+            set_list += func(z_min=bounding_box[5] - 1e-5)
             set_list += func(y_min=bounding_box[3] - 1e-5)
 
         node_sets['x0_nodes'] = mesher.get_nodes_by_bounding_box(x_max=1e-8)

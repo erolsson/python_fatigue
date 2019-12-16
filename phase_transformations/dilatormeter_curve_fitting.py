@@ -18,28 +18,21 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 def expansion_martensite(par, c, t):
-    # par[2] = 0
-    # par[3] = 1.64224531e-05
-    # par[4] = -1.87201398e-05
-    par[3:] = 1.30e-5, -4.30e-6,  2.90e-9, 1.4e-9,  1.091e-12
-    # par[3:] = 1.49e-5, -8.739e-6, 0, 0, 0
-    # par[4] = (- 1.2678425108258802e-05)/(1.2 - 0.2)
-    # par[3] = 1.2678425e-5 - par[4] * 0.2
-    # par[5:] = 0
-
-    m1, m2, m3, m4, m5, m6, m7, m8 = par
-    return m1 + m2*c + m3*c**2 + m4*t + m5*c*t + m6*t**2 + m7*c*t**2 + m8*t**3
+    m1, m2, m3, m4, m5 = par
+    m3 = 0
+    return m1 + m2*t + m3*t**2 + m4*c + m5*c**2
 
 
 def heat_expanion_martensite(par, c, t):
-    m1, m2, m3, m4, m5, m6, m7, m8 = par
-    return m4 + m5*c + 2*m6*t + 2*m7*c*t + 3*m8*t**2
+    m1, m2, m3, m4, m5 = par
+    return m2 + 2*m3*t
 
 
 def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     par = np.abs(par)
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
 
@@ -56,14 +49,6 @@ def transformation_strain(par, c, t):
 
 def residual(par, *data):
     r = 0
-    par[2] = -np.log(0.07)/(SS2506.ms_temperature(0.008) - 273.15 - 20)
-    # par[2] = -np.log(0.01)/(176+91)
-
-    # par[0] = 0.039663
-    # par[1] = 2.61328405E-02
-    # par[2] = 1.70999611E-02
-    # par[1] = 0.02654
-    # par[2] = 0.013436999999999998
     for data_set in data[0]:
         exp, t, e = data_set
         ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
@@ -102,7 +87,6 @@ def austenite_residual(par, *data):
 
 
 if __name__ == '__main__':
-
     Experiment = namedtuple('Experiment', ['carbon', 'color', 'included_martensite', 'included_bainite', 'mf'])
     experiments = [Experiment(carbon=0.2, color='k', included_martensite=True, included_bainite=True, mf=200),
                    Experiment(carbon=0.36, color='b', included_martensite=True, included_bainite=False, mf=90),
@@ -156,7 +140,7 @@ if __name__ == '__main__':
 
     parameters = fmin(residual,
                       [0.04, 0.02, 0.015,
-                       -0.009882, -0.01, 0.01, 1.3e-5, -4.3e-6, 2.9e-9, 1.4e-9, 1.091e-12],
+                       -0.01225, 1.20e-5, 2.9e-9, 0.0124015, -7.56E-05],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
     bainite_parameters = fmin(bainite_residual, [-1.44e-3, 1.893e-3, 1.323e-5, 0.000000], (bainite_data_sets,))
@@ -191,6 +175,8 @@ if __name__ == '__main__':
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 
+    print (expansion_martensite(parameters[3:], 0.8, 22) - (austenite_parameters[0] +
+                                                            austenite_parameters[1]*0.8 + austenite_parameters[2]*22))*3
     t20 = np.array([SS2506.ms_temperature(0.008) - 273.15 + np.log(0.20)/parameters[2]])
     print "20 % Retained Austenite at", t20
     expan02 = expansion_martensite(parameters[3:], np.array([0.2]), np.array([t20])) - \
@@ -216,13 +202,6 @@ if __name__ == '__main__':
     plt.legend(loc='best')
     plt.tight_layout()
     plt.savefig('martensite_transformation.png')
-
-    plt.figure(2)
-    carbon = np.linspace(0, 1.2, 100)
-    for temperature in [20., 200.]:
-        plt.plot(carbon, heat_expanion_martensite(parameters[3:], carbon, temperature))
-
-    plt.ylim(0, 15e-6)
 
     for carbon in [0.2, 0.5, 0.8]:
         print '-------- Carbon,', carbon, '% -----------------'
