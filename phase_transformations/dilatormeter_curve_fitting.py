@@ -166,8 +166,8 @@ if __name__ == '__main__':
         mart = fraction_martensite(parameters, temperature, experiment.carbon)
         label = str(experiment.carbon) + r' wt. \%C'
         if experiment.carbon > 0.7:
-            label += '\nExtrapolated'
-        plt.plot(temperature, mart, experiment.color, lw=2, label=label)
+            # label += '\nExtrapolated'
+            plt.plot(temperature, mart, experiment.color, lw=2, label=label)
 
         plt.figure(3)
         temperature = np.linspace(0, 600, 1000)
@@ -197,7 +197,7 @@ if __name__ == '__main__':
     plt.savefig('dilatometer_sim.png')
 
     plt.figure(1)
-    plt.xlim(0, 400)
+    plt.xlim(0, 200)
     plt.xlabel(r'Temperature [ $\degree$C]')
     plt.ylabel(r'Fraction Martensite [-]')
     plt.legend(loc='best')
