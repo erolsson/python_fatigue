@@ -31,11 +31,11 @@ class Roller:
             self.fine_thickness = 0.5
             self.size_fine_thickness = self.fine_thickness/self.number_fine_thickness
 
-            self.number_fine_length = 60 + 8*9
-            self.fine_length = 2.0
+            self.number_fine_length = 60
+            self.fine_length = 1.5
             self.size_fine_length = self.fine_length/self.number_fine_length
 
-            self.number_fine_width = 27
+            self.number_fine_width = 27*2
             self.size_fine_width = width/self.number_fine_width/2
 
             self.number_coarse_length = 20
@@ -188,6 +188,7 @@ class Roller:
 
         element_sets['inner_elements'] = mesher.get_elements_by_bounding_box(z_min=bounding_box[5] - 1e-8)
         element_sets['outer_elements'] = mesher.get_elements_by_bounding_box(z_max=bounding_box[4] + 1e-8)
+        element_sets['x0_elements'] = mesher.get_elements_by_bounding_box(x_max=1e-8)
 
         node_sets['monitor_node'] = mesher.get_nodes_by_bounding_box(x_max=1e-8, y_max=1e-8,
                                                                      z_max=bounding_box[4] + 1e-8)
