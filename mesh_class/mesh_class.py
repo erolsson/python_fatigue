@@ -278,9 +278,8 @@ class MeshClass:
             n2 = getattr(n, axis2)    # Coordinate of node along other axis
             q = np.arctan(abs(n2/r))
             k = (abs(n1) - n_min)/(n_max - n_min)
-            if n1 != 0:
-                d1 = r*cos(q) - abs(n1) - (radius - n_min)
-                setattr(n, axis1, getattr(n, axis1) + d1*k)
+            d1 = (r*cos(q) + (n_max - radius))*n1/abs(n1) - n1
+            setattr(n, axis1, getattr(n, axis1) + d1*k)
 
     def create_transition_cell(self, transition_block, axis, element_set='', node_set=''):
         # The mid element
