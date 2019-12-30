@@ -195,7 +195,7 @@ class Roller:
 
         left_nodes = mesher.get_nodes_by_bounding_box()
         mesher.add_to_node_set(left_nodes, 'right_nodes')
-        mesher.round('right_nodes', 'z', 'y', 46, -25./2)
+        mesher.round('right_nodes', 'z', 'y', 46)
         mesher.transform_block_radially('right_nodes', 'y', [0, 0, 0], 'x')
 
         nodal_data, element_data = mesher.lists_for_part()
