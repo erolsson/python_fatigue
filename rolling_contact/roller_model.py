@@ -180,8 +180,9 @@ class Roller:
         node_sets['x0_nodes'] = mesher.get_nodes_by_bounding_box(x_max=1e-8)
         node_sets['y0_nodes'] = mesher.get_nodes_by_bounding_box(y_max=1e-8)
 
-        # These will be the z0 nodes after rot
+        # These will be the z0 nodes and elements after rot
         node_sets['z0_nodes'] = mesher.get_nodes_by_bounding_box(x_min=bounding_box[1] - 1e-8)
+        element_sets['z0_elements'] = mesher.get_elements_by_bounding_box(x_min=bounding_box[1] - 1e-8)
 
         node_sets['inner_nodes'] = mesher.get_nodes_by_bounding_box(z_min=bounding_box[5] - 1e-8)
         node_sets['outer_nodes'] = mesher.get_nodes_by_bounding_box(z_max=bounding_box[4] + 1e-8)
