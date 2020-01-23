@@ -41,9 +41,10 @@ class Roller:
             self.number_coarse_length = 20
             self.number_coarse_thickness = 10
 
-    def __init__(self, inner_radius, outer_radius, width, angle=180.):
+    def __init__(self, inner_radius, outer_radius, width, curvature, angle=5.):
         self.inner_radius = float(inner_radius)
         self.outer_radius = float(outer_radius)
+        self.curvature = float(curvature)
         self.width = float(width)
         self.angle = float(angle)
 
@@ -54,108 +55,6 @@ class Roller:
         self.modelDB.setValues(noPartsInputFile=OFF)
         self.assembly = mdb.models['Model-1'].rootAssembly
         self.part = None
-
-    def create_mesh(self):
-        package_directory = os.path.abspath(os.path.join(os.getcwd(), "../"))
-        sys.path.append(package_directory)
-        import mesh_class.mesh_class
-        reload(mesh_class.mesh_class)
-        from mesh_class.mesh_class import MeshClass
-
-        mesher = MeshClass()
-        nodes, _ = mesher.create_block(nx=self.mesh_parameters.number_fine_length + 1,
-                                       ny=self.mesh_parameters.number_fine_width + 1,
-                                       nz=self.mesh_parameters.number_fine_thickness + 1,
-                                       dx=self.mesh_parameters.size_fine_length,
-                                       dy=self.mesh_parameters.size_fine_width,
-                                       dz=self.mesh_parameters.size_fine_thickness,
-                                       x0=0,
-                                       y0=0,
-                                       z0=-self.outer_radius)
-
-        surfz2 = mesher.create_transition_plate(nodes[:, :, -1], 'z', d=self.mesh_parameters.size_fine_thickness,
-                                                order=1, direction=1)
-        """
-        surfz = np.empty(shape=(surfz2.shape[0] + 1, surfz2.shape[1]), dtype=object)
-        surfz[:-1, :] = surfz2
-
-        surfz2 = mesher.create_transition_plate(surfz, 'z', d=3*self.mesh_parameters.size_fine_thickness,
-                                                order=1, direction=1)
-
-        mesher.create_block(nx=surfz2.shape[0] + 1,
-                            ny=surfz2.shape[1],
-                            nz=self.mesh_parameters.number_coarse_thickness,
-                            dx=surfz2[1, 1].x - surfz2[0, 0].x,
-                            dy=surfz2[1, 1].y - surfz2[0, 0].y,
-                            dz=dz,
-                            x0=0,
-                            y0=surfz2[0, 0].y,
-                            z0=surfz2[0, 0].z)
-        """
-        nodes, elements = mesher.lists_for_part()
-        self.part = self.modelDB.PartFromNodesAndElements(name='_tmp',
-                                                          dimensionality=THREE_D,
-                                                          type=DEFORMABLE_BODY,
-                                                          nodes=nodes,
-                                                          elements=elements)
-        self.part.mergeNodes(nodes=self.part.nodes, tolerance=1E-8)
-
-        mesher = MeshClass()
-        for n in self.part.nodes:
-            mesher.create_node(n.coordinates[0], n.coordinates[1], n.coordinates[2], label=n.label)
-        for e in self.part.elements:
-            e_nodes = []
-            for n in e.getNodes():
-                e_nodes.append(mesher.nodes[n.label])
-            mesher.create_element(nodes=e_nodes, label=e.label)
-
-        del mdb.models['Model-1'].parts['_tmp']
-
-        bounding_box = mesher.get_bounding_box()
-
-        node_sets = {'exposed_nodes': []}
-        element_sets = {'exposed_elements': []}
-
-        for set_list, func in zip([node_sets['exposed_nodes'], element_sets['exposed_elements']],
-                                  [mesher.get_nodes_by_bounding_box, mesher.get_elements_by_bounding_box]):
-            set_list += func(z_max=bounding_box[4]+1e-5)
-            set_list += func(z_min=bounding_box[5]-1e-5)
-            set_list += func(y_min=bounding_box[3] - 1e-5)
-
-        node_sets['x0_nodes'] = mesher.get_nodes_by_bounding_box(x_max=1e-8)
-        node_sets['y0_nodes'] = mesher.get_nodes_by_bounding_box(y_max=1e-8)
-
-        # These will be the z0 nodes after rot
-        node_sets['z0_nodes'] = mesher.get_nodes_by_bounding_box(x_min=bounding_box[1] - 1e-8)
-
-        node_sets['inner_nodes'] = mesher.get_nodes_by_bounding_box(z_min=bounding_box[5] - 1e-8)
-        node_sets['outer_nodes'] = mesher.get_nodes_by_bounding_box(z_max=bounding_box[4] + 1e-8)
-
-        element_sets['inner_elements'] = mesher.get_elements_by_bounding_box(z_min=bounding_box[5] - 1e-8)
-        element_sets['outer_elements'] = mesher.get_elements_by_bounding_box(z_max=bounding_box[4] + 1e-8)
-
-        node_sets['monitor_node'] = mesher.get_nodes_by_bounding_box(x_max=1e-8, y_max=1e-8,
-                                                                     z_max=bounding_box[4] + 1e-8)
-
-        left_nodes = mesher.get_nodes_by_bounding_box()
-        mesher.add_to_node_set(left_nodes, 'right_nodes')
-        mesher.round('right_nodes', 'z', 'y', 46, -25./2)
-        mesher.transform_block_radially('right_nodes', 'y', [0, 0, 0], 'x')
-
-        nodal_data, element_data = mesher.lists_for_part()
-        self.part = self.modelDB.PartFromNodesAndElements(name='roller',
-                                                          dimensionality=THREE_D,
-                                                          type=DEFORMABLE_BODY,
-                                                          nodes=nodal_data,
-                                                          elements=element_data)
-
-        for name, node_list in node_sets.iteritems():
-            label_list = [n.label for n in node_list]
-            self.part.SetFromNodeLabels(name=name, nodeLabels=label_list)
-
-        for name, element_list in element_sets.iteritems():
-            label_list = [e.label for e in element_list]
-            self.part.SetFromElementLabels(name=name, elementLabels=label_list)
 
     def write_file(self, file_name):
 
@@ -195,6 +94,6 @@ class Roller:
 
 
 if __name__ == '__main__':
-    roller = Roller(25./2, 40.2/2, 10.4)
-    roller.create_mesh()
+    roller = Roller(inner_radius=25./2, outer_radius=40.2/2, width=10.4, curvature=46., angle=5.)
+
     roller.write_file('input_files/roller.inp')
