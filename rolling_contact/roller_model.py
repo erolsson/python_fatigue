@@ -31,11 +31,11 @@ class Roller:
             self.fine_thickness = 0.5
             self.size_fine_thickness = self.fine_thickness/self.number_fine_thickness
 
-            self.number_fine_length = 60 + 8*9
-            self.fine_length = 2.0
+            self.number_fine_length = 60
+            self.fine_length = 1.5
             self.size_fine_length = self.fine_length/self.number_fine_length
 
-            self.number_fine_width = 27
+            self.number_fine_width = 27*2
             self.size_fine_width = width/self.number_fine_width/2
 
             self.number_coarse_length = 20
@@ -180,21 +180,25 @@ class Roller:
         node_sets['x0_nodes'] = mesher.get_nodes_by_bounding_box(x_max=1e-8)
         node_sets['y0_nodes'] = mesher.get_nodes_by_bounding_box(y_max=1e-8)
 
-        # These will be the z0 nodes after rot
+        # These will be the z0 nodes and elements after rot
         node_sets['z0_nodes'] = mesher.get_nodes_by_bounding_box(x_min=bounding_box[1] - 1e-8)
+        element_sets['z0_elements'] = mesher.get_elements_by_bounding_box(x_min=bounding_box[1] - 1e-8)
 
         node_sets['inner_nodes'] = mesher.get_nodes_by_bounding_box(z_min=bounding_box[5] - 1e-8)
         node_sets['outer_nodes'] = mesher.get_nodes_by_bounding_box(z_max=bounding_box[4] + 1e-8)
 
         element_sets['inner_elements'] = mesher.get_elements_by_bounding_box(z_min=bounding_box[5] - 1e-8)
         element_sets['outer_elements'] = mesher.get_elements_by_bounding_box(z_max=bounding_box[4] + 1e-8)
+        element_sets['x0_elements'] = mesher.get_elements_by_bounding_box(x_max=1e-8)
+        element_sets['fatigue_elements'] = mesher.get_elements_by_bounding_box(x_max=0.75, y_max=bounding_box[2] + 1.,
+                                                                               z_max=bounding_box[4] + 0.5)
 
         node_sets['monitor_node'] = mesher.get_nodes_by_bounding_box(x_max=1e-8, y_max=1e-8,
                                                                      z_max=bounding_box[4] + 1e-8)
 
         left_nodes = mesher.get_nodes_by_bounding_box()
         mesher.add_to_node_set(left_nodes, 'right_nodes')
-        mesher.apply_fillet_radius('right_nodes', 'z', 'y', 46, -25./2)
+        mesher.round('right_nodes', 'z', 'y', 46)
         mesher.transform_block_radially('right_nodes', 'y', [0, 0, 0], 'x')
 
         nodal_data, element_data = mesher.lists_for_part()
