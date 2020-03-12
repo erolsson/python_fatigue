@@ -28,7 +28,7 @@ for experiment in experiments:
     label = 'Tehler' if experiment.carbon == 0.2 else None
     plt.plot(temp, strain, experiment.color, lw=2, label=label)
 
-    data = np.genfromtxt('data_jmat_pro_tehler/jmat_pro_theler_' + str(experiment.carbon).replace('.', '_') + '.csv',
+    data = np.genfromtxt('data_jmat_pro_tehler/50C/jmat_pro_tehler_' + str(experiment.carbon).replace('.', '_') + '.csv',
                          delimiter=',')
     temperature = data[:, 0]
     strain = data[:, experiment.column]/100

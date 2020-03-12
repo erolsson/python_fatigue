@@ -34,5 +34,3 @@ for model in data_dict.keys():
 
 with open('data_' + name + '.pkl', 'wb') as pickle_handle:
     pickle.dump(data_dict, pickle_handle)
-
-
