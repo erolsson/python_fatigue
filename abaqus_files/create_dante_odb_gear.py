@@ -1,7 +1,11 @@
-from odbAccess import *
+from __future__ import print_function
+
+import os
+
+from odbAccess import openOdb
 from abaqusConstants import MISES, MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL
 
-from input_file_reader.input_file_functions import read_nodes_and_elements
+from python_fatigue.input_file_reader.input_file_functions import read_nodes_and_elements
 
 from create_odb import create_odb
 from create_odb import OdbInstance
@@ -10,7 +14,8 @@ from odb_io_functions import read_field_from_odb
 from odb_io_functions import write_field_to_odb
 from odb_io_functions import flip_node_order
 
-from materials.hardess_convertion_functions import HRC2HV
+from python_fatigue.materials.hardess_convertion_functions import HRC2HV
+from python_fatigue.planetary_gear.gear_input_file_functions import create_quarter_model, mirror_quarter_model
 
 
 def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=None):
@@ -36,7 +41,7 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
 
     data_dict = {}
     for scalar_variable in scalar_variables:
-        print "reading variable", scalar_variable
+        print("reading variable", scalar_variable)
         data_dict[scalar_variable] = read_field_from_odb(scalar_variable, from_odb_name, step_name, -1)
     data_dict['S'] = read_field_from_odb('S', from_odb_name, step_name, -1)
 
@@ -65,28 +70,34 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
     write_field_to_odb(field_data=hv, field_id='HV', odb_file_name=to_odb_name, step_name=results_step_name,
                        instance_name='tooth_left', frame_number=0)
 
+    bainite = data_dict['SDV_UBAINITE'] + data_dict['SDV_LBAINITE']
+    write_field_to_odb(field_data=bainite, field_id='BAINITE', odb_file_name=to_odb_name, step_name=results_step_name,
+                       instance_name='tooth_right', frame_number=0)
+    bainite = flip_node_order(bainite, 'z')
+    write_field_to_odb(field_data=bainite, field_id='BAINITE', odb_file_name=to_odb_name, step_name=results_step_name,
+                       instance_name='tooth_left', frame_number=0)
+
 
 if __name__ == '__main__':
-    dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
-    simulation_directory = '/scratch/users/erik/scania_gear_analysis/VBC_gear/U925062_200C_2h_80C_cool_5/'
+    dante_odb_path = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/')
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/tempering/')
 
-    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                      'input_files/planet_sun/planet_dense_geom_xpos.inc'
-    nodes_pos, elements_pos = read_nodes_and_elements(input_file_name)
-    input_file_name = '/scratch/users/erik/python_fatigue/planetary_gear/' \
-                      'input_files/planet_sun/planet_dense_geom_xneg.inc'
-    nodes_neg, elements_neg = read_nodes_and_elements(input_file_name)
+    input_file_name = os.path.expanduser('~/python_projects/python_fatigue/planetary_gear/'
+                                         'input_files/gear_models/planet_gear/mesh_1x/mesh_planet.inc')
+
+    nodes_pos, elements_pos = create_quarter_model(input_file_name)
+    nodes_neg, elements_neg = mirror_quarter_model(nodes_pos, elements_pos)
 
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_2h_200C_U25062.odb'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_72min_200C.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
-        simulation_odb = simulation_directory + 'VBC_fatigue_' + str(cd).replace('.', '_') + '/'
-        simulation_odb += 'Toolbox_Mechanical_' + str(cd).replace('.', '_') + '_quarter.odb'
+        simulation_odb = simulation_directory + 'CD' + str(cd).replace('.', '') + '/'
+        simulation_odb += 'Toolbox_Cooling_VBC_gear.odb'
         create_dante_step(from_odb_name=simulation_odb,
                           to_odb_name=odb_file_name,
                           results_step_name='dante_results_' + str(cd).replace('.', '_'),
-                          from_step='Tempering')
+                          from_step='cooling')

@@ -41,7 +41,7 @@ class InputFileReader:
         for i, node in enumerate(nodes):
             self.nodal_data[i, :] = node
 
-        for element_type, data in elements.iteritems():
+        for element_type, data in elements.items():
             self.elements[element_type] = np.array(data, dtype=int)
 
     def write_geom_include_file(self, filename, simulation_type='Mechanical'):
@@ -51,7 +51,7 @@ class InputFileReader:
             for n_data in node[1:]:
                 node_string = node_string + str(n_data) + ', '
             file_lines.append(node_string[:-2])
-        for element_type, element_data in self.elements.iteritems():
+        for element_type, element_data in self.elements.tems():
             if element_type.endswith('R'):
                 element_type = element_type[:-1]
             e_type = element_type
@@ -89,8 +89,8 @@ class InputFileReader:
                     counter = 0
                     data_line = '\t'
 
-        for set_type, set_data in self.set_data.iteritems():
-            for key, data in set_data.iteritems():
+        for set_type, set_data in self.set_data.items():
+            for key, data in set_data.items():
                 key = key.upper()
                 key = key.replace(str_to_remove_from_setname.upper(), '')
                 if not key.startswith(skip_prefix) and (key.lower() not in ['all_elements', 'all_nodes']):

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys
 import os
 from math import sqrt, sin, cos, pi
@@ -15,7 +17,7 @@ try:
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
-    print " ERROR: This script require Abaqus CAE to run"
+    print(" ERROR: This script require Abaqus CAE to run")
     raise
 
 
@@ -193,7 +195,7 @@ class NotchedBendingSpecimenClass:
             elem_type1 = mesh.ElemType(elemCode=C3D8, elemLibrary=STANDARD)
             elem_type2 = mesh.ElemType(elemCode=C3D6, elemLibrary=STANDARD)
         else:    
-            print " ERROR: The analysis types supported are: ThermalDiffusion or Mechanical"
+            print(" ERROR: The analysis types supported are: ThermalDiffusion or Mechanical")
             sys.exit(" ERROR: Method mesh of class cylinderSpecimenClass was called using incorrect argument, Exiting")
 
         # Assign element type       
@@ -391,7 +393,7 @@ class NotchedBendingSpecimenClass:
         part.Set(nodes=support_nodes, name='support_nodes')
 
         session.viewports['Carbon Toolbox Model'].maximize()
-        print " Mesh generation completed"
+        print(" Mesh generation completed")
 
     def change_analysis_type(self, analysis_type='Mechanical'):
         """
@@ -406,7 +408,7 @@ class NotchedBendingSpecimenClass:
             elem_type2 = mesh.ElemType(elemCode=C3D6, elemLibrary=STANDARD)
             
         else: 
-            print " ERROR: The analysis types supported are: ThermalDiffusion or Mechanical"
+            print(" ERROR: The analysis types supported are: ThermalDiffusion or Mechanical")
             sys.exit(" ERROR: Method mesh of class cylinderSpecimenClass was called using incorrect argument, Exiting")
 
         # Assign element type       

@@ -21,10 +21,18 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 MartensiteData = namedtuple('MartensiteData', ['martensite', 'temperature', 'ferrite', 'ms', 'carbon'])
 carbon_par_levels = [0.2, 0.5, 0.8]
 
-m80 = 0.93
+m20 = 0.93
+full_transformation = {0.2: 200, 0.36: 100., 0.52: 50, 0.65: 30}
 
 
 class Experiment:
+
+    f_start = 707
+    f_finish = 600
+
+    b_start = 550
+    b_finish = 368
+
     def __init__(self, carbon, color, cooling_rate, ms):
         self.carbon = carbon
         self.color = color
@@ -36,25 +44,41 @@ class Experiment:
         self.strain = exp_data[:, 1]/1e4
         self.temperature = exp_data[:, 0] - 273.15
 
+        print(self.strain[0], self.temperature[0])
         self.time = -(self.temperature - self.temperature[-1])/self.cooling_rate
 
         self.austenite_strain = SS2506.transformation_strain.Austenite(self.temperature, self.carbon/100)
         self.ferrite_strain = SS2506.transformation_strain.Ferrite(self.temperature, self.carbon/100)
+        self.bainite_strain = SS2506.transformation_strain.Bainite(self.temperature, self.carbon/100)
 
-        ferrite_idx = np.logical_and(self.temperature < 700, self.temperature > self.ms)
+        self.ferrite_idx = np.logical_and(self.temperature > self.f_finish, self.temperature < self.f_start)
+        self.bainite_idx = np.logical_and(self.temperature > self.b_finish, self.temperature < self.b_start)
 
         self.ferrite = 0*self.strain
         if self.carbon < 0.5:
-            self.ferrite[ferrite_idx] = ((self.strain[ferrite_idx] - self.austenite_strain[ferrite_idx])
-                                         / (self.ferrite_strain[ferrite_idx] - self.austenite_strain[ferrite_idx]))
+            self.ferrite = (self.strain - self.austenite_strain)/(self.ferrite_strain - self.austenite_strain)
+            self.ferrite[self.temperature > 800] = 0
+            self.ferrite[self.temperature < self.f_finish] = 0
+            self.ferrite[self.temperature < self.f_finish] = np.max(self.ferrite)
+            self.ferrite[self.ferrite < 0] = 0
 
-        self.ferrite[self.temperature < self.ms] = self.ferrite[np.where(ferrite_idx)[0][0]]
-        self.strain_af = (1 - self.ferrite)*self.austenite_strain + self.ferrite*self.ferrite_strain
+        if self.carbon < 0.5:
+            self.bainite = (self.strain - (1 - self.ferrite)*self.austenite_strain
+                            - self.ferrite*self.ferrite_strain)/(self.bainite_strain - self.austenite_strain)
+            self.bainite[np.logical_not(self.bainite_idx)] = 0
+            self.bainite[self.temperature < self.b_finish] = np.max(self.bainite)
+        else:
+            self.bainite = 0*self.temperature
+        print(self.bainite[0], self.ferrite[0])
+        self.strain_af = ((1 - self.ferrite - self.bainite)*self.austenite_strain
+                          + self.ferrite*self.ferrite_strain
+                          + self.bainite*self.bainite_strain)
 
     def fraction_martensite(self, expansion_parameters):
         m_strain = martensite_strain(self.temperature, self.carbon, expansion_parameters)
-        martensite = ((self.strain - self.austenite_strain
-                       - self.ferrite[0]*(self.ferrite_strain - self.austenite_strain))
+        martensite = ((self.strain - self.ferrite*self.ferrite_strain
+                       - self.bainite*self.bainite_strain
+                       - (1 - self.ferrite - self.bainite)*self.austenite_strain)
                       / (m_strain - self.austenite_strain))
         martensite[self.temperature > self.ms] = 0
         return martensite
@@ -68,8 +92,8 @@ def martensite_residual(par, *data):
         ms_temp = np.interp(data_set.carbon, carbon_par_levels, ms_par)
         temperature = np.linspace(data_set.temperature[0], ms_temp, 100)
         martensite_exp = np.interp(temperature, data_set.temperature, data_set.fraction_martensite(expansion_par))
-        ferrite = np.interp(temperature, data_set.temperature, data_set.ferrite)
-        mart_calc = koistinen_marburger(temperature, data_set.carbon, ms_par, par, ferrite)
+        fb = np.interp(temperature, data_set.temperature, data_set.ferrite + data_set.bainite)
+        mart_calc = koistinen_marburger(temperature, data_set.carbon, ms_par, par, fb)
         residual += np.sum((mart_calc - martensite_exp)**2)
     return residual
 
@@ -81,15 +105,15 @@ def ms_temperature_residual(par, *data):
         ms[i] = data_set.ms
         carbon[i] = data_set.carbon
     ms_calc = np.interp(carbon, carbon_par_levels, par)
-    return np.sum((1 - ms/ms_calc)**2)
+    return np.sum((ms - ms_calc)**2)
 
 
 def koistinen_marburger(temperature, carbon, ms_par, km_par, other_phases=None):
     martensite = 0*temperature
     if other_phases is None:
         other_phases = 0*temperature
-    km_par[-1] = -np.log(1 - m80)/(ms_par[-1] - 22.)
-    km_par = [0.021150422801106586,  0.01884986437450156, 0.018174240914351353]
+    km_par[-1] = -np.log(1 - m20)/(ms_par[-1] - 22.)
+    # km_par = [0.021150422801106586,  0.01884986437450156, 0.018174240914351353]
     ms = np.interp(carbon, carbon_par_levels, ms_par)
     k = np.interp(carbon, carbon_par_levels, km_par)
     martensite[temperature < ms] = ((1 - np.exp(-k*(ms - temperature[temperature < ms])))
@@ -100,32 +124,51 @@ def koistinen_marburger(temperature, carbon, ms_par, km_par, other_phases=None):
 def expansion_residual(par, *data):
     residual = 0.
     for data_set in data[0]:
-        if data_set.carbon < 0.6:
-            temperature = np.linspace(data_set.temperature[0], 50, 10)
+        if data_set.carbon < 0.8:
+            temperature = np.linspace(data_set.temperature[0], full_transformation[data_set.carbon], 100)
+            print(temperature)
             strain = np.interp(temperature, data_set.temperature, data_set.strain)
-            calc_strain = (martensite_strain(temperature, data_set.carbon, par)*(1 - np.max(data_set.ferrite))
-                           + data_set.ferrite[0]*SS2506.transformation_strain.Ferrite(temperature, data_set.carbon))
-            residual += np.sum((1 - calc_strain/strain)**2)
+            calc_strain = (martensite_strain(temperature, data_set.carbon, par)*(1 - data_set.ferrite[0]
+                                                                                 - data_set.bainite[0])
+                           + data_set.ferrite[0]*SS2506.transformation_strain.Ferrite(temperature, data_set.carbon/100)
+                           + data_set.bainite[0]*SS2506.transformation_strain.Bainite(temperature, data_set.carbon/100))
+            residual += np.sum((calc_strain - strain)**2)*100
     return residual
 
 
 def martensite_strain(t, carbon, par):
-    return par[0] + 1.20e-5*t + 2.9e-9*t**2 + par[1]*carbon*(1 + 0*t) + par[2]*carbon**2*(1 + 0*t)
+    par[0] = -0.00389193
+    par[1] = 0.00939213
+    par[2] = -0.00175278
+    # par[3] = 1.3e-5
+    # par[4] = 2.9e-9
+    # par[5] = -4.3e-6
+    # par[3] = 1.2e-5
+    # par[4] = 2.9e-9
+    # par[5] = 0
+    par[3] = abs(par[3])
+    par[4] = abs(par[4])
+    par[5] = -abs(par[5])
+
+    # return par[0] + 1.20e-5*t + 2.9e-9*t**2 + par[1]0.0001*carbon*(1 + 0*t) + par[2]*carbon**2*(1 + 0*t)
+    return par[0] + par[3]*t + par[4]*t**2 + par[1]*carbon*(1 + 0*t) + par[2]*carbon**2*(1 + 0*t) + par[5]*carbon*t
 
 
 def main():
     experiments = [Experiment(carbon=0.2, color='k', cooling_rate=100, ms=639 - 273.15),
                    Experiment(carbon=0.36, color='b', cooling_rate=50, ms=306),
-                   Experiment(carbon=0.52, color='m', cooling_rate=30, ms=270),
+                   Experiment(carbon=0.52, color='m', cooling_rate=30, ms=260),
                    Experiment(carbon=0.65, color='r', cooling_rate=30, ms=220)]
-    expansion_par = fmin(expansion_residual, [-0.0005, 0.01, 0.0001], args=(experiments,))
+    expansion_par = fmin(expansion_residual, [-0.00469669, 0.01496356, -0.00949088, 1.2e-5, 2.2e-9, 4.3e-6],
+                         args=(experiments,))
+    print(expansion_par)
     ms_temperature_parameters = fmin(ms_temperature_residual, [220, 220, 220], args=(experiments, ))
-    km_parameters = fmin(martensite_residual, [0.04, 0.02, 0.01],
+    print(ms_temperature_parameters)
+    km_parameters = fmin(martensite_residual, [0.02, 0.02, 0.01],
                          args=(experiments, ms_temperature_parameters, expansion_par))
 
-    km_parameters[-1] = -np.log(1 - m80)/(ms_temperature_parameters[-1] - 22.)
-    print km_parameters
-    print expansion_par
+    km_parameters[-1] = -np.log(1 - m20)/(ms_temperature_parameters[-1] - 22.)
+    print(km_parameters)
     for experiment in experiments:
         plt.figure(0)
         plt.plot(experiment.temperature, experiment.strain, '-x' + experiment.color)
@@ -151,16 +194,20 @@ def main():
         plt.xlim(0, 400)
         plt.plot(experiment.temperature,
                  koistinen_marburger(experiment.temperature, experiment.carbon, ms_temperature_parameters,
-                                     km_parameters, experiment.ferrite))
+                                     km_parameters, experiment.ferrite + experiment.bainite))
 
         plt.figure(4)
         plt.plot(experiment.temperature, experiment.strain, experiment.color, lw=2)
         martensite = koistinen_marburger(experiment.temperature, experiment.carbon, ms_temperature_parameters,
-                                         km_parameters, other_phases=experiment.ferrite)
-        austenite = 1 - martensite - experiment.ferrite
+                                         km_parameters, other_phases=experiment.ferrite + experiment.bainite)
+        austenite = 1 - martensite - experiment.ferrite - experiment.bainite
         strain = (austenite*experiment.austenite_strain + experiment.ferrite*experiment.ferrite_strain
+                  + experiment.bainite*experiment.bainite_strain
                   + martensite*martensite_strain(experiment.temperature, experiment.carbon, expansion_par))
         plt.plot(experiment.temperature, strain, '--' + experiment.color, lw=2)
+
+        plt.figure(5)
+        plt.plot(experiment.temperature, experiment.bainite, experiment.color, lw=2)
 
     temperature = np.linspace(20, 1000, 1000)
     plt.figure(3)

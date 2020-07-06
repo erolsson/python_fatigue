@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from collections import namedtuple
 import numpy as np
 
@@ -81,9 +83,10 @@ class SS2506MaterialTemplate:
         a = 2*2.2520e-9*t + 1.1643e-5
         return np.squeeze(a)
 
-    def _trans_strain_bainite(self, temperature, carbon):
-        _, c = np.meshgrid(temperature, carbon)
-        e = self._trans_strain_fp(temperature, carbon) - 1.3315e-3 + 0.10908*c
+    @staticmethod
+    def _trans_strain_bainite(temperature, carbon):
+        t, c = np.meshgrid(temperature, carbon)
+        e = 2.38388172e-04 + 1.02978980e-05*t + 7.62158599e-09*t**2 - 5.39839566e-04*c - 1.13198683e-03*c**2
         return np.squeeze(e)
 
     def _thermal_exp_bainite(self, temperature, carbon):
@@ -122,10 +125,10 @@ if __name__ == '__main__':
     temp = 300
 
     for trans_strain_func in SS2506.transformation_strain:
-        print trans_strain_func, trans_strain_func(temp, carb)
+        print(trans_strain_func, trans_strain_func(temp, carb))
 
     carb = np.linspace(0.002, 0.01, 10)
     temp = np.linspace(0, 1000, 100)
     SS2506.martensite_fraction(temp, carb)
 
-    print SS2506.transformation_strain.Martensite(0, 0)
+    print(SS2506.transformation_strain.Martensite(0, 0))

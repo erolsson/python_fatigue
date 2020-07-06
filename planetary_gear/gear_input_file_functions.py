@@ -1,9 +1,9 @@
 import numpy as np
 
-from input_file_reader.input_file_functions import write_geom_include_file
-from input_file_reader.input_file_functions import read_nodes_and_elements
-from input_file_reader.input_file_functions import get_elements_from_nodes
-from input_file_reader.input_file_functions import write_sets
+from python_fatigue.input_file_reader.input_file_functions import write_geom_include_file
+from python_fatigue.input_file_reader.input_file_functions import read_nodes_and_elements
+from python_fatigue.input_file_reader.input_file_functions import get_elements_from_nodes
+from python_fatigue.input_file_reader.input_file_functions import write_sets
 
 
 class GearTooth:

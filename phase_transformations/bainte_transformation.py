@@ -19,7 +19,7 @@ temperatures = np.arange(650, 850, 50)
 
 experiments = [Experiment(temperature=t, color=c) for t, c in zip(temperatures, colors)]
 for experiment in experiments:
-    data = np.genfromtxt('data_tehler/bainite_transformation/C02_' + str(int(experiment.temperature)) + 'K',
+    data = np.genfromtxt('data_tehler/bainite_transformation/C036_' + str(int(experiment.temperature)) + 'K',
                          delimiter=',')
     time = 10**data[:, 0]
     bainite = 10**data[:, 1]/(1 + 10**data[:, 1])

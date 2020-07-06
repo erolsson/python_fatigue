@@ -29,7 +29,7 @@ thermal_expansion = np.array([1.2678425108258802e-05,
 plt.plot(carbon_levels, thermal_expansion, 's', ms=12, label='KTH Thesis')
 par = np.polyfit(carbon_levels[0:2], thermal_expansion[0:2], 1)
 carbon = np.linspace(0.002, 0.012, 1000, endpoint=True)
-print par
+print(par)
 plt.plot(0.008, 1.17e-5, 's', ms=12, label='JMAT PRO')
 # plt.plot(carbon, SS2506.thermal_expansion.Martensite(20, carbon))
 
@@ -62,7 +62,7 @@ data = np.zeros((5, 2))
 data[0:4, :] = np.genfromtxt('koistinen_marburger_a', delimiter=',')
 data[4, 0] = 0.008
 data[4, 1] = -np.log(0.01)/(176+91)   # Point from Erland
-print data[4, 1]
+print(data[4, 1])
 carbon_levels = data[:, 0]
 
 plt.plot(data[:, 0], data[:, 1], 's', ms=12)
@@ -71,7 +71,7 @@ plt.plot(carbon, 4.8405e-2 - 4.3710*carbon)
 # Trying an linear - exponential function
 par = np.polyfit(carbon_levels, np.log(data[:, 1]), 1)
 f = np.exp(par[1])*np.exp(par[0]*carbon)
-print np.exp(par[1]), par[0]
+print(np.exp(par[1]), par[0])
 plt.plot(carbon, f)
 
 # Fitting ms-temperature

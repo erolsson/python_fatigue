@@ -5,12 +5,14 @@ from abaqusConstants import *
 
 import os
 
-from input_file_reader.input_file_functions import read_nodes_and_elements
+from python_fatigue.input_file_reader.input_file_functions import read_nodes_and_elements
 
 OdbInstance = namedtuple('OdbInstance', ['name', 'nodes', 'elements'])
 
 
 def create_odb(odb_file_name, instance_data):
+    if not os.path.isdir(os.path.dirname(odb_file_name)):
+        os.makedirs(os.path.dirname(odb_file_name))
     odb = Odb(name=os.path.basename(odb_file_name), path=odb_file_name)
 
     for instance in instance_data:
