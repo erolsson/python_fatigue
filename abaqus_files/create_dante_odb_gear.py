@@ -87,7 +87,7 @@ if __name__ == '__main__':
                                          'input_files/quarter_tooth_1x.inp')
     reader = InputFileReader()
     reader.read_input_file(input_file_name)
-    nodes_pos, elements_pos = reader.nodal_data, reader.elements
+    nodes_pos, elements_pos = reader.nodal_data, reader.elements['C3D8']
     nodes_neg, elements_neg = mirror_quarter_model(nodes_pos, elements_pos)
 
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
