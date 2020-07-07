@@ -15,6 +15,7 @@ from odb_io_functions import write_field_to_odb
 from odb_io_functions import flip_node_order
 
 from python_fatigue.materials.hardess_convertion_functions import HRC2HV
+from python_fatigue.input_file_reader.input_file_reader import InputFileReader
 from python_fatigue.planetary_gear.gear_input_file_functions import create_quarter_model, mirror_quarter_model
 
 
@@ -83,15 +84,16 @@ if __name__ == '__main__':
     simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/tempering/')
 
     input_file_name = os.path.expanduser('~/python_projects/python_fatigue/planetary_gear/'
-                                         'input_files/gear_models/planet_gear/mesh_1x/mesh_planet.inc')
-
-    nodes_pos, elements_pos = create_quarter_model(input_file_name)
+                                         'input_files/quarter_tooth_1x.inp')
+    reader = InputFileReader()
+    reader.read_input_file(input_file_name)
+    nodes_pos, elements_pos = reader.nodal_data, reader.elements
     nodes_neg, elements_neg = mirror_quarter_model(nodes_pos, elements_pos)
 
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_60min_200C.odb'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_60min_180C.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
