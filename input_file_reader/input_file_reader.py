@@ -51,7 +51,7 @@ class InputFileReader:
             for n_data in node[1:]:
                 node_string = node_string + str(n_data) + ', '
             file_lines.append(node_string[:-2])
-        for element_type, element_data in self.elements.tems():
+        for element_type, element_data in self.elements.items():
             if element_type.endswith('R'):
                 element_type = element_type[:-1]
             e_type = element_type

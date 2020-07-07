@@ -6,7 +6,7 @@ import numpy as np
 def read_nodes_and_elements(model_filename):
     nodes = []
     elements = []
-    with open(model_filename) as full_model_file:
+    with open(model_filename, 'r') as full_model_file:
         lines = full_model_file.readlines()
         reading_nodes = False
         reading_elements = False
@@ -62,11 +62,11 @@ def write_set_rows(data_to_write, file_lines):
 def write_sets(node_sets, element_sets):
     file_lines = ['** Include file for sets in a quarter model of a planetary gear for dante sim']
 
-    for key, data in element_sets.iteritems():
+    for key, data in element_sets.items():
         file_lines.append('*Elset, elset=' + key)
         write_set_rows(data, file_lines)
 
-    for key, data in node_sets.iteritems():
+    for key, data in node_sets.items():
         file_lines.append('*Nset, nset=' + key)
         write_set_rows(data, file_lines)
     return file_lines
