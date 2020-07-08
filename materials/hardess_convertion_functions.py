@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import numpy as np
 
 
@@ -12,4 +14,4 @@ def HV2HRC(HV):
 if __name__ == '__main__':
     HRC_data = np.arange(45., 65., 1.)
     for HRC in HRC_data:
-        print 'HRC:', HRC, '-> HV:', HRC2HV(HRC)
+        print('HRC:', HRC, '-> HV:', HRC2HV(HRC))

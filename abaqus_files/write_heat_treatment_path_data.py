@@ -71,9 +71,9 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 
 def main():
     odb_file = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
-                                  'dante_results_tempering_60min_180C.odb')
+                                  'dante_results_tempering_60min_200C.odb')
     pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                     'tempering_60min_180C/')
+                                     'tempering_60min_200C/')
     if not os.path.isdir(pickle_path):
         os.makedirs(pickle_path)
     for cd in [0.5, 0.8, 1.1, 1.4]:
@@ -85,7 +85,7 @@ def main():
         paths = [Path(name='flank', data=flank_data, normal=normal_flank),
                  Path(name='root', data=root_data, normal=normal_root)]
         step_name = 'dante_results_' + str(cd).replace('.', '_')
-        fields = ['HV', 'SDV_CARBON', 'S']
+        fields = ['HV', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
         for path in paths:
             write_case_hardening_data_along_path(odb_file, path,
                                                  pickle_path + 'dante_results_' + str(cd).replace('.', '_')

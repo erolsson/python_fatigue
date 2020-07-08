@@ -93,7 +93,7 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_60min_200C.odb'
+    odb_file_name = dante_odb_path + 'dante_results_tempering_60min_200C_HRD.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
