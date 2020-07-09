@@ -21,7 +21,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def main():
     pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                     'tempering_60min_200C/')
+                                     'tempering_60min_200C_HRD/')
     experiment_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/')
     Simulation = namedtuple('Simulation', ['cd', 'color', 'sym'])
     simulations = [Simulation(cd=0.5, color='b', sym='o'), Simulation(cd=0.8, color='r', sym='s'),
@@ -31,7 +31,7 @@ def main():
 
     carbon_levels = np.array([0.1, 0.2, 0.4, 0.6, 0.8, 1.0])/100
     t_mart_old = np.array([38., 45., 52., 59., 65., 67.])
-    t_mart_new = np.array([38., 45., 54., 61., 67.5, 70.])
+    t_mart_new = np.array([38., 52., 54., 61., 67.5, 70.])
     austenite_old = np.array([21., 23., 26., 29., 32., 35.])
 
     for i, simulation in enumerate(simulations):
@@ -56,9 +56,10 @@ def main():
         plt.plot(root_data['r'], root_data['SDV_AUSTENITE'], '--' + simulation.color, lw=2)
 
         plt.figure(4)
-        plt.plot(root_data['r'], root_data['SDV_UBAINITE'] + root_data['SDV_LBAINITE'], '--' + simulation.color, lw=2)
+        plt.plot(root_data['r'], flank_data['SDV_UBAINITE'] + flank_data['SDV_LBAINITE'], '--' + simulation.color, lw=2)
 
         plt.figure(5)
+        plt.plot(flank_data['r'], flank_data['SDV_T_MARTENSITE'], '--' + simulation.color, lw=2)
         plt.plot(root_data['r'], root_data['SDV_T_MARTENSITE'], '--' + simulation.color, lw=2)
 
         interp_exp = np.interp(root_data['r'], experimental_hardness[:, 0], experimental_hardness[:, 2*i + 4])
@@ -77,7 +78,7 @@ def main():
         hv_mart_aust_new = (hv_mart_new*root_data['SDV_T_MARTENSITE'][:, 0]
                             + hv_austenite*root_data['SDV_AUSTENITE'][:, 0])
         plt.figure(1)
-        plt.plot(root_data['r'], root_data['HV'][:, 0] - hv_mart_aust_old + hv_mart_aust_new, '--' + simulation.color, lw=2)
+        # plt.plot(root_data['r'], root_data['HV'][:, 0] - hv_mart_aust_old + hv_mart_aust_new, '--' + simulation.color, lw=2)
     plt.show()
 
 
