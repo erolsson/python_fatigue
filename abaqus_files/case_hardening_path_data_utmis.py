@@ -22,7 +22,7 @@ if __name__ == '__main__':
         pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/heat_treatment_data/'
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
-        for specimen in ['smooth', 'notched']:
+        for specimen in ['smooth']:
             dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen + '/CD05/')
             odb_file_name = dante_odb_path + 'Toolbox_Cooling_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
