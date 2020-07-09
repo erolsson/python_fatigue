@@ -10,7 +10,7 @@ from abaqusConstants import INTEGRATION_POINT
 
 
 if __name__ == '__main__':
-    fields = ['HV', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
+    fields = ['SDV_HARDNESS', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
 
     dante_odb_base_path = '/scratch/users/erik/scania_gear_analysis/utmis_specimens_U925062/'
 
