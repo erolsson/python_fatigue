@@ -12,8 +12,6 @@ from abaqusConstants import INTEGRATION_POINT
 if __name__ == '__main__':
     fields = ['SDV_HARDNESS', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
 
-    dante_odb_base_path = '/scratch/users/erik/scania_gear_analysis/utmis_specimens_U925062/'
-
     path_points_y = np.ones((100, 3))*1e-3
     path_points_z = np.ones((100, 3))*1e-3
     path_points_y[:, 1] = np.linspace(2.5 - 1e-3, 0, 100)
@@ -25,7 +23,7 @@ if __name__ == '__main__':
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
         for specimen in ['smooth', 'notched']:
-            dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen + '/t=8min/')
+            dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen + '/CD05/')
             odb_file_name = dante_odb_path + 'Toolbox_Cooling_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
             step_name = 'cooling'
