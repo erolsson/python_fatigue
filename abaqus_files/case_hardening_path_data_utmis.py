@@ -28,6 +28,6 @@ if __name__ == '__main__':
             dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen + '/t=8min/')
             odb_file_name = dante_odb_path + 'Toolbox_Cooling_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
-            step_name = 'Cooling'
+            step_name = 'cooling'
             write_case_hardening_data_along_path(odb_file_name, path, pickle_name, step_name=step_name,
                                                  fields=fields, session=session, output_position=INTEGRATION_POINT)
