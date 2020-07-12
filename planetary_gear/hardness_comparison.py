@@ -30,7 +30,7 @@ def main():
     experimental_hardness = np.genfromtxt(experiment_path + 'hardness/hardness_scania.csv')
 
     carbon_levels = np.array([0.1, 0.2, 0.4, 0.6, 0.8, 1.0])/100
-    t_mart_old = np.array([38., 45., 52., 59., 65., 67.])
+    t_mart_old = np.array([38., 45., 52., 59., 71.5, 72.])
     t_mart_new = np.array([38., 52., 54., 61., 67.5, 70.])
     austenite_old = np.array([21., 23., 26., 29., 32., 35.])
 
@@ -77,8 +77,8 @@ def main():
                             + hv_austenite*root_data['SDV_AUSTENITE'][:, 0])
         hv_mart_aust_new = (hv_mart_new*root_data['SDV_T_MARTENSITE'][:, 0]
                             + hv_austenite*root_data['SDV_AUSTENITE'][:, 0])
-        plt.figure(1)
-        # plt.plot(root_data['r'], root_data['HV'][:, 0] - hv_mart_aust_old + hv_mart_aust_new, '--' + simulation.color, lw=2)
+        plt.figure(10)
+        plt.plot(root_data['r'], root_data['HV'][:, 0] - hv_mart_aust_old, '--' + simulation.color, lw=2)
     plt.show()
 
 
