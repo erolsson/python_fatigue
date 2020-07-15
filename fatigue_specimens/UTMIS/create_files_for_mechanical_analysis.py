@@ -2,14 +2,16 @@ import os
 from subprocess import Popen
 import sys
 
+try:
+    import distro
+except ImportError:
+    import platform as distro
+
 from input_file_reader.input_file_reader import InputFileReader
-
-from write_dante_files import write_dante_files
-
 from materials.SS2506.stress_strain_evaluation import SS2506
 
-specimen = sys.argv[-2]
-R = float(sys.argv[-1])
+specimen = 'smooth'  # specimen = sys.argv[-2]
+R = -1   # R = float(sys.argv[-1])
 
 specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                   'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
@@ -32,7 +34,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
 
     for e_data in input_file_reader.elements.values():
         n = e_data.shape[1] - 1
-        e_data[:, n/2+1:n+1], e_data[:, 1:n/2+1] = e_data[:, 1:n/2+1], e_data[:, n/2+1:n+1].copy()
+        e_data[:, n//2 + 1: n + 1], e_data[:, 1: n//2 + 1] = e_data[:, 1: n//2 + 1], e_data[:, n//2 + 1: n + 1].copy()
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
     input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
                                       str_to_remove_from_setname='SPECIMEN_',
@@ -56,7 +58,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         file_lines += write_part('neg')
 
         file_lines.append('**')
-        file_lines.append('*Material, name=SS2506')
+        file_lines.append('*Material, name=SS2506, user')
         file_lines.append('\t*Include, Input=include_files/SS2506material.inc')
 
         file_lines.append('*Amplitude, name=amp, time=total time')
@@ -101,12 +103,11 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         file_lines.append('\tload_node,\t1')
         file_lines.append('\tload_node,\t3, 6')
 
-        file_lines.append('*Initial Conditions, Type=Stress, User')
-        file_lines.append('*Initial Conditions, Type=Field, Variable=1')
-        file_lines.append('\t*Include, Input=include_files/hardness.dat')
-        file_lines.append('*Initial Conditions, Type=Field, Variable=2')
-        file_lines.append('\t*Include, Input=include_files/austenite.dat')
-
+        file_lines.append('*Initial Conditions, type=Solution, user')
+        file_lines.append('*Initial Conditions, type=Stress, user')
+        file_lines.append('*Initial conditions, type=temperature')
+        file_lines.append('\tspecimen_part_pos.ALL_NODES, 22')
+        file_lines.append('\tspecimen_part_neg.ALL_NODES, 22')
         for step in range(no_steps):
             for direction in ['max_load', 'min_load']:
                 step_name = 'step_' + str(step+1) + '_' + direction
@@ -117,7 +118,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
                 file_lines.append('\t\tload_node, 2, ' + str(-force_max))
                 file_lines.append('\t*Output, field')
                 file_lines.append('\t\t*Element Output')
-                file_lines.append('\t\t\tS, FV, PEEQ')
+                file_lines.append('\t\t\tS, SDV, PEEQ')
                 file_lines.append('\t\t*Node Output')
                 file_lines.append('\t\t\tU')
                 file_lines.append('*End step')
@@ -129,7 +130,7 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         file_lines.append('\t\tload_node, 2, 0.')
         file_lines.append('\t*Output, field')
         file_lines.append('\t\t*Element Output')
-        file_lines.append('\t\t\tS, FV, PEEQ')
+        file_lines.append('\t\t\tS, SDV, PEEQ')
         file_lines.append('\t\t*Node Output')
         file_lines.append('\t\t\tU')
         file_lines.append('*End step')
@@ -145,48 +146,34 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
     return job_names
 
 
-def write_subroutine_file(directory):
-    file_lines = []
-    with open('subroutine_template.f', 'r') as subroutine_file:
-        lines = subroutine_file.readlines()
-        for line in lines:
-            line = line.rstrip()
-            file_lines.append(line)
-            if 'Enter STRESS_FNAME here' in line:
-                file_lines.append('        STRESS_FNAME = \'/scratch/users/erik/scania_gear_analysis/\'//')
-                file_lines.append('     1 \'abaqus/utmis_specimens_mechanical/utmis_' + specimen
-                                  + '/include_files/residual_stresses_pos.dat\'')
-    with open(directory + '/subroutine.f', 'w') as subroutine_file:
-        for line in file_lines:
-            subroutine_file.write(line + '\n')
+def write_run_file(job_names, heat_treatment_file, directory):
+    file_lines = ['#!/bin/bash']
+    if distro.linux_distribution()[0] == 'Ubuntu':
+        abq = '\"singularity exec --nv ' + os.path.expanduser('~/imgs/sing/abaqus-2018-centos-7.img') + \
+                   ' vglrun /opt/abaqus/2018/Commands/abq2018\"'
+    else:
+        abq = '/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher'
+        file_lines.extend(['#PBS -V',
+                           '#PBS -z',
+                           '#PBS -l select=1:ncpus=8',
+                           'cd $PBS_O_WORKDIR'])
 
-
-def write_run_file(job_names, directory):
-    file_lines = ['#!/bin/bash',
-                  '#PBS -V',
-                  '#PBS -z',
-                  '#PBS -l select=1:ncpus=8',
-                  'abq2018=/scratch/users/erik/SIMULIA/CAE/2018/linux_a64/code/bin/ABQLauncher',
-                  'cd $PBS_O_WORKDIR']
+    file_lines.append('abq=' + abq)
+    file_lines.append('subroutine=' + os.path.expanduser('~/python_projects/transformation_fatigue/'
+                                                         'transformation_subroutine/transformation_subroutine.o'))
 
     for job_name in job_names:
-        file_lines.append('${abq2018} j=' + job_name + ' cpus=8 user=subroutine.f interactive')
+        file_lines.append('cp ' + heat_treatment_file + ' ' + job_name + '.htd')
+        file_lines.append('${abq} j=' + job_name + ' cpus=8 user=${subroutine} interactive')
     with open(directory + '/run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', 'w') as shell_file:
         for line in file_lines:
             shell_file.write(line + '\n')
 
 
 if __name__ == '__main__':
-    dante_odb_path = '/scratch/users/erik/scania_gear_analysis/odb_files/heat_treatment/utmis_specimens/'
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/abaqus/utmis_specimens_mechanical/'
-                                              'utmis_' + specimen + '/')
+    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/smooth/Toolbox_Cooling_utmis_smooth.htd')
+    simulation_directory = os.path.expanduser('~/utmis_specimens/smooth/mechanical_analysis/')
     geom_filename = 'utmis_' + specimen + '/utmis_' + specimen + '.inc'
-    std_time = 8
-    times = [std_time*12, std_time*3]
-    temps = [930, 850]
-    carbon_levels = [0.9, 0.98]
-    tempering = (200., 9*std_time*60)
-    name = ''
 
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
@@ -195,18 +182,10 @@ if __name__ == '__main__':
 
     SS2506.write_material_input_file(simulation_directory + '/include_files/SS2506material.inc')
 
-    for time, temp, c in zip(times, temps, carbon_levels):
-        name += str(time) + 'min' + str(temp) + 'C' + str(c).replace('.', '') + 'wtC'
     specimen_name = 'utmis_' + specimen
-    heat_treatment_odb = os.path.expanduser('~/scania_gear_analysis/utmis_specimens_U925062_2/utmis_' + specimen
-                                            + '_tempering_2h_' + str(tempering[0]) + '_cooldown_80C/'
-                                            + specimen_name + '_' + name + '/Toolbox_Mechanical_utmis_'
-                                            + specimen + '.odb')
 
     jobs = write_mechanical_input_files(geom_filename, simulation_directory, specimen_loads[specimen][R], no_steps=2)
-    write_subroutine_file(simulation_directory)
-    write_dante_files(heat_treatment_odb, simulation_directory + '/include_files/')
-    write_run_file(job_names=jobs, directory=simulation_directory)
+    write_run_file(job_names=jobs, directory=simulation_directory, heat_treatment_file=heat_treatment_data_file)
     # current_directory = os.getcwd()
     # os.chdir(simulation_directory)
     # Popen('qsub run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', shell=True)
