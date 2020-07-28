@@ -21,7 +21,7 @@ if __name__ == '__main__':
         path = Path(path_name, path_points, np.array([1, 0, 0]))
 
         for specimen in ['smooth']:
-            pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/heat_treatment_data')
+            pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/heat_treatment_data/')
             if not os.path.isdir(pickle_directory):
                 os.makedirs(pickle_directory)
             dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen
