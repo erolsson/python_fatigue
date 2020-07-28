@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+from scipy.interpolate import interp1d
 from scipy.optimize import fmin
 
 from materials.gear_materials import SS2506
@@ -19,7 +20,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 MartensiteData = namedtuple('MartensiteData', ['martensite', 'temperature', 'ferrite', 'ms', 'carbon'])
-carbon_par_levels = [0.2, 0.5, 0.8]
+carbon_par_levels = [0.2, 0.5, 1.0]
 
 m20 = 0.93
 full_transformation = {0.2: 200, 0.36: 100., 0.52: 50, 0.65: 30}
@@ -44,7 +45,6 @@ class Experiment:
         self.strain = exp_data[:, 1]/1e4
         self.temperature = exp_data[:, 0] - 273.15
 
-        print(self.strain[0], self.temperature[0])
         self.time = -(self.temperature - self.temperature[-1])/self.cooling_rate
 
         self.austenite_strain = SS2506.transformation_strain.Austenite(self.temperature, self.carbon/100)
@@ -69,7 +69,6 @@ class Experiment:
             self.bainite[self.temperature < self.b_finish] = np.max(self.bainite)
         else:
             self.bainite = 0*self.temperature
-        print(self.bainite[0], self.ferrite[0])
         self.strain_af = ((1 - self.ferrite - self.bainite)*self.austenite_strain
                           + self.ferrite*self.ferrite_strain
                           + self.bainite*self.bainite_strain)
@@ -89,7 +88,8 @@ def martensite_residual(par, *data):
     expansion_par = data[2]
     residual = 0.
     for data_set in data[0]:
-        ms_temp = np.interp(data_set.carbon, carbon_par_levels, ms_par)
+        # ms_temp = np.interp(data_set.carbon, carbon_par_levels, ms_par)
+        ms_temp = interp1d(carbon_par_levels, ms_par, fill_value='extrapolate')(data_set.carbon)
         temperature = np.linspace(data_set.temperature[0], ms_temp, 100)
         martensite_exp = np.interp(temperature, data_set.temperature, data_set.fraction_martensite(expansion_par))
         fb = np.interp(temperature, data_set.temperature, data_set.ferrite + data_set.bainite)
@@ -112,9 +112,10 @@ def koistinen_marburger(temperature, carbon, ms_par, km_par, other_phases=None):
     martensite = 0*temperature
     if other_phases is None:
         other_phases = 0*temperature
-    km_par[-1] = -np.log(1 - m20)/(ms_par[-1] - 22.)
+    # km_par[-1] = 0.01
     # km_par = [0.021150422801106586,  0.01884986437450156, 0.018174240914351353]
-    ms = np.interp(carbon, carbon_par_levels, ms_par)
+    # ms = np.interp(carbon, carbon_par_levels, ms_par)
+    ms = interp1d(carbon_par_levels, ms_par, fill_value='extrapolate')(carbon)
     k = np.interp(carbon, carbon_par_levels, km_par)
     martensite[temperature < ms] = ((1 - np.exp(-k*(ms - temperature[temperature < ms])))
                                     * (1 - other_phases[temperature < ms]))
@@ -126,7 +127,6 @@ def expansion_residual(par, *data):
     for data_set in data[0]:
         if data_set.carbon < 0.8:
             temperature = np.linspace(data_set.temperature[0], full_transformation[data_set.carbon], 100)
-            print(temperature)
             strain = np.interp(temperature, data_set.temperature, data_set.strain)
             calc_strain = (martensite_strain(temperature, data_set.carbon, par)*(1 - data_set.ferrite[0]
                                                                                  - data_set.bainite[0])
@@ -137,9 +137,9 @@ def expansion_residual(par, *data):
 
 
 def martensite_strain(t, carbon, par):
-    par[0] = -0.00389193
-    par[1] = 0.00939213
-    par[2] = -0.00175278
+    # par[0] = -0.00389193
+    # par[1] = 0.00939213
+    # par[2] = -0.00175278
     # par[3] = 1.3e-5
     # par[4] = 2.9e-9
     # par[5] = -4.3e-6
@@ -164,10 +164,12 @@ def main():
     print(expansion_par)
     ms_temperature_parameters = fmin(ms_temperature_residual, [220, 220, 220], args=(experiments, ))
     print(ms_temperature_parameters)
-    km_parameters = fmin(martensite_residual, [0.02, 0.02, 0.01],
-                         args=(experiments, ms_temperature_parameters, expansion_par))
+    km_parameters = [0.02, 0.02, 0.01]
+    for _ in range(5):
+        km_parameters = fmin(martensite_residual, km_parameters,
+                             args=(experiments, ms_temperature_parameters, expansion_par))
 
-    km_parameters[-1] = -np.log(1 - m20)/(ms_temperature_parameters[-1] - 22.)
+    # km_parameters[-1] = -np.log(1 - m20)/(ms_temperature_parameters[-1] - 22.)
     print(km_parameters)
     for experiment in experiments:
         plt.figure(0)
@@ -214,10 +216,21 @@ def main():
     martensite = koistinen_marburger(temperature, 0.8, ms_temperature_parameters, km_parameters)
     plt.plot(temperature, martensite)
 
+    martensite = koistinen_marburger(temperature, 1.0, ms_temperature_parameters, km_parameters)
+    plt.plot(temperature, martensite)
+
     plt.figure(4)
+    martensite = koistinen_marburger(temperature, 0.8, ms_temperature_parameters, km_parameters)
     austenite = 1 - martensite
     strain = (austenite*SS2506.transformation_strain.Austenite(temperature, 0.008) +
               + martensite*martensite_strain(temperature, 0.8, expansion_par))
+    plt.plot(temperature, strain, '--', lw=2)
+
+    plt.figure(4)
+    martensite = koistinen_marburger(temperature, 1.0, ms_temperature_parameters, km_parameters)
+    austenite = 1 - martensite
+    strain = (austenite*SS2506.transformation_strain.Austenite(temperature, 0.01) +
+              + martensite*martensite_strain(temperature, 1.0, expansion_par))
     plt.plot(temperature, strain, '--', lw=2)
 
     plt.figure(3)
@@ -230,6 +243,7 @@ def main():
               + martensite*martensite_strain(temperature, 0.2, expansion_par))
     plt.plot(temperature, strain, '--', lw=2)
 
+    print(np.log(interp1d(carbon_par_levels, np.exp(ms_temperature_parameters))(0.65)))
     plt.show()
 
 
