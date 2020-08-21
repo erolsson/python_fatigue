@@ -5,10 +5,7 @@ import sys
 import numpy as np
 
 if __name__ == '__main__':
-    package_directory = os.path.expanduser('~/python_fatigue/')
-    sys.path.append(package_directory)
-    print sys.path
-
+    sys.path.append('../../')
     from abaqus_files.path_functions import Path
     from abaqus_files.path_functions import create_path
     from abaqus_files.path_functions import get_stress_tensors_from_path
@@ -29,8 +26,8 @@ if __name__ == '__main__':
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
     simulations = []
 
-    for specimen, data in specimen_loads.iteritems():
-        for R, stress_levels in data.iteritems():
+    for specimen, data in specimen_loads.items():
+        for R, stress_levels in data.items():
             simulations += [(specimen, R, s) for s in stress_levels]
     number_of_steps = 2
 
@@ -38,14 +35,17 @@ if __name__ == '__main__':
                                             ['path_y', 'path_z1', 'path_z2'], [1, 2, 2]):
         path = Path(path_name, path_points, np.array([1, 0, 0]))
         abq_path = create_path(path.data, path.name, session)
-        pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/'
-        if not os.path.isdir(pickle_directory):
-            os.makedirs(pickle_directory)
+
         for specimen, R, stress_level in simulations:
+            pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/pickles/')
+            if not os.path.isdir(pickle_directory):
+                os.makedirs(pickle_directory)
+
             simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') + '_R=' + str(int(R))
-            mechanical_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen \
-                             + simulation_name + '.odb'
-            print "working with", simulation_name
+            mechanical_odb = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/' +
+                                                'utmis_ ' + specimen + '_' + str(stress_level).replace('.', '_')
+                                                + '=' + str(int(R)) + '.odb')
+            print("working with", simulation_name)
             odb = odbAccess.openOdb(mechanical_odb)
             session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                              height=230.809509277344)
