@@ -30,7 +30,7 @@ if __name__ == '__main__':
     for specimen, data in specimen_loads.items():
         for R, stress_levels in data.items():
             simulations += [(specimen, R, s) for s in stress_levels]
-    number_of_steps = 2
+    number_of_steps = 5
 
     for path_points, path_name, axis in zip([path_points_y, path_points_z1, path_points_z2],
                                             ['path_y', 'path_z1', 'path_z2'], [1, 2, 2]):
