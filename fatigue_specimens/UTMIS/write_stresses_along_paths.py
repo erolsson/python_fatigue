@@ -44,7 +44,7 @@ if __name__ == '__main__':
             simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') + '_R=' + str(int(R))
             mechanical_odb = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/' +
                                                 'utmis_' + specimen + '_' + str(stress_level).replace('.', '_')
-                                                + 'R=' + str(int(R)) + '.odb')
+                                                + '_R=' + str(int(R)) + '.odb')
             print("working with", simulation_name)
             odb = odbAccess.openOdb(mechanical_odb)
             session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
