@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import os
 import pickle
 import sys
@@ -68,6 +69,7 @@ if __name__ == '__main__':
                     data[:, 0] = np.flipud(path_points[:, axis])
                 else:
                     data[:, 0] = path_points[:, axis]
+                print(stress.shape)
                 data[:, 1] = stress[0:100, 0, 0]
                 stress_data[load_level] = data
             with open(pickle_directory + simulation_name + '_' + path_name + '.pkl', 'w') as pickle_file:
