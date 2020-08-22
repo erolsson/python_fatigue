@@ -33,7 +33,7 @@ def get_stress_data(specimen_type, stress_ratio, stress_level):
 
 
 def main():
-    specimen_loads = {'smooth': {-1.: [737.], 0.: [425., 440.]},
+    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
 
     color = ['g', 'b', 'r']

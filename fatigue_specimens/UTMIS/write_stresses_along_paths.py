@@ -23,7 +23,7 @@ if __name__ == '__main__':
     path_points_z2 = np.copy(path_points_z1)
     path_points_z2[:, 1] *= -1
 
-    specimen_loads = {'smooth': {-1.: [737.], 0.: [425., 440.]},
+    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
     simulations = []
 
