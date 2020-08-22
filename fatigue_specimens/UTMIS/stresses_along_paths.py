@@ -44,7 +44,7 @@ def main():
         for specimen in specimen_loads.keys():
             for i, stress in enumerate(specimen_loads[specimen][R]):
                 stresses = get_stress_data(specimen, R, stress)
-                for path in ['z2']:
+                for path in ['y', 'z1', 'z2']:
                     plt.plot(stresses[path]['sm'], stresses[path]['sa'], line[specimen] + color[i])
 
     plt.show()
