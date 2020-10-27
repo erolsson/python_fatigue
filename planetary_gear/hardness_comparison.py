@@ -36,14 +36,16 @@ def main():
 
     for i, simulation in enumerate(simulations):
         plt.figure(0)
-        plt.plot(experimental_hardness[:, 0], experimental_hardness[:, 2*i+3], simulation.color, lw=2)
+        plt.plot(experimental_hardness[:, 0], experimental_hardness[:, 2*i + 3],
+                 '-' + simulation.sym + simulation.color, lw=2, ms=12, label='CD=' + str(simulation.cd) + 'mm')
         flank_pickle_name = pickle_path + 'dante_results_' + str(simulation.cd).replace('.', '_') + '_flank.pkl'
         with open(flank_pickle_name, 'rb') as flank_pickle:
             flank_data = pickle.load(flank_pickle, encoding='latin1')
         plt.plot(flank_data['r'], flank_data['HV'], '--' + simulation.color, lw=2)
 
         plt.figure(1)
-        plt.plot(experimental_hardness[:, 0], experimental_hardness[:, 2*i + 4], simulation.color, lw=2)
+        plt.plot(experimental_hardness[:, 0], experimental_hardness[:, 2*i + 4],
+                 '-' + simulation.sym + simulation.color, lw=2, ms=12, label='CHD = ' + str(simulation.cd) + ' mm')
         root_pickle_name = pickle_path + 'dante_results_' + str(simulation.cd).replace('.', '_') + '_root.pkl'
         with open(root_pickle_name, 'rb') as root_pickle:
             root_data = pickle.load(root_pickle, encoding='latin1')
@@ -79,6 +81,22 @@ def main():
                             + hv_austenite*root_data['SDV_AUSTENITE'][:, 0])
         plt.figure(10)
         plt.plot(root_data['r'], root_data['HV'][:, 0] - hv_mart_aust_old, '--' + simulation.color, lw=2)
+
+    fig = plt.figure(1)
+    plt.plot([-1, -2], [0, 0], 'k', lw=2, label='Exp.')
+    plt.plot([-1, -2], [0, 0], '--k', lw=2, label='Model')
+    plt.xlabel('Distance from surface [mm]')
+    plt.ylabel('Hardness [HV]')
+    fig.set_size_inches(11., 6., forward=True)
+    plt.xlim(0, 3)
+    plt.ylim(300, 800)
+    ax = plt.subplot(111)
+    box = ax.get_position()
+    ax.set_position([0.1, 0.12, 0.55, box.height])
+    legend = ax.legend(loc='upper left', bbox_to_anchor=(1., 1.035), numpoints=1)
+
+    plt.gca().add_artist(legend)
+    plt.savefig('hardness_root.png')
     plt.show()
 
 

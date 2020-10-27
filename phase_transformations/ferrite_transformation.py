@@ -137,12 +137,12 @@ def expansion_residual(par, *data):
 
 
 def martensite_strain(t, carbon, par):
-    # par[0] = -0.00389193
-    # par[1] = 0.00939213
-    # par[2] = -0.00175278
-    # par[3] = 1.3e-5
-    # par[4] = 2.9e-9
-    # par[5] = -4.3e-6
+    par[0] = -0.00389193
+    par[1] = 0.00939213
+    par[2] = -0.00175278
+    par[3] = 1.3e-5
+    par[4] = 2.9e-9
+    par[5] = -4.30000e-06
     # par[3] = 1.2e-5
     # par[4] = 2.9e-9
     # par[5] = 0

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import shutil
 import sys
@@ -17,7 +19,7 @@ try:
     from abaqusConstants import FROM_FILE
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
-    print " ERROR: This script require Abaqus CAE to run"
+    print(" ERROR: This script require Abaqus CAE to run")
     raise
 
 from utmis_smooth.utmis_smooth_bending_specimen import SmoothBendingSpecimenClass
