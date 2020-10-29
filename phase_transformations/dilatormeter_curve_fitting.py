@@ -15,12 +15,15 @@ plt.rcParams.update({'font.size': 20})
 plt.rcParams['text.latex.preamble'] = [r"\usepackage{amsmath}", r"\usepackage{gensymb}"]
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
                   'monospace': ['Computer Modern Typewriter']})
+M20 = 0.2
+
+ferrite = {0.2: 0.325, 0.36: 0.22, 0.52: 0., 0.65: 0., 0.8: 0.}
 
 
 def expansion_martensite(par, c, t):
     m1, m2, m3, m4, m5 = par
-    m2 = 1.2e-5
-    m3 = 2.9e-9
+    # m2 = 0.9e-5
+    # m3 = 2.9e-9
     return m1 + m2*t + m3*t**2 + m4*c + m5*c**2
 
 
@@ -33,26 +36,32 @@ def fraction_martensite(par, t, c):
     # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
     par = np.abs(par)
     a = np.interp(c, np.array([0.2, 0.5, 0.8]), par[0:3])
-    # a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], 0.016]))
-    ms_temp = SS2506.ms_temperature(c / 100) - 273.15
+    ms_temp = np.interp(c, np.array([0.2, 0.5, 0.8]), par[3:6])
+    a80 = -np.log(M20)/(ms_temp - 20)
+    a = np.interp(c, np.array([0.2, 0.5, 0.8]), np.array([par[0], par[1], par[2]]))
+
+    # ms_temp = SS2506.ms_temperature(c / 100) - 273.15
     martensite = 0*t
 
-    martensite[t < ms_temp] = 1 - np.exp(-a*(ms_temp - t[t < ms_temp]))
+    martensite[t < ms_temp] = (1 - np.exp(-a*(ms_temp - t[t < ms_temp])))*(1-ferrite[c])
     return martensite
 
 
 def transformation_strain(par, c, t):
     martensite = fraction_martensite(par, t, c)
-    austenite = 1 - martensite
+    austenite = 1 - martensite - ferrite[c]
     expansion_austenite = SS2506.transformation_strain.Austenite(t, c/100)
-    return austenite*expansion_austenite + martensite*expansion_martensite(par[3:], c, t)
+    expansion_ferrite = SS2506.transformation_strain.Ferrite(t, c/100)
+    return austenite*expansion_austenite + martensite*expansion_martensite(par[6:], c, t) + ferrite[c]*expansion_ferrite
 
 
 def residual(par, *data):
     r = 0
     for data_set in data[0]:
         exp, t, e = data_set
-        ms_temp = SS2506.ms_temperature(exp.carbon/100) - 273.15
+        ms_temp = par
+        ms_temp = np.interp(exp.carbon, [0.2, 0.5, 0.8], par[3:6])
+        par[3] = 368.8
         e = e[t < ms_temp]
         t = t[t < ms_temp]
         t_interp = np.linspace(t[-1], ms_temp, 1000)
@@ -92,7 +101,7 @@ if __name__ == '__main__':
     experiments = [Experiment(carbon=0.2, color='k', included_martensite=True, included_bainite=True, mf=200),
                    Experiment(carbon=0.36, color='b', included_martensite=True, included_bainite=False, mf=90),
                    Experiment(carbon=0.52, color='m', included_martensite=True, included_bainite=False, mf=40),
-                   Experiment(carbon=0.65, color='r', included_martensite=True, included_bainite=True, mf=-20)]
+                   Experiment(carbon=0.65, color='r', included_martensite=True, included_bainite=True, mf=20)]
 
     data_sets = []
     bainite_data_sets = []
@@ -114,17 +123,14 @@ if __name__ == '__main__':
         plt.plot(temperature, SS2506.transformation_strain.Martensite(temperature, experiment.carbon/100),
                  ':' + experiment.color)
 
+        plt.plot(temperature, SS2506.transformation_strain.Ferrite(temperature, experiment.carbon/100), '.-')
+
         if experiment.mf > temp[-1]:
             t_mf = np.linspace(temp[-1], experiment.mf, 100)
             mf_strain = np.interp(t_mf, np.flip(temp), np.flip(strain))
-            print np.polyfit(t_mf, mf_strain, 1)
-        ms = SS2506.ms_temperature(experiment.carbon/100) - 273.15
-        plt.plot(ms, SS2506.transformation_strain.Austenite(ms, experiment.carbon / 100),
-                 'x' + experiment.color, ms=12, mew=2)
 
         if experiment.included_martensite:
             data_sets.append((experiment, temp, strain))
-
         austenite_data_sets.append((experiment, temp[temp > 600], strain[temp > 600]))
 
         plt.figure(3)
@@ -140,8 +146,8 @@ if __name__ == '__main__':
             bainite_data_sets.append([experiment, temp, strain])
 
     parameters = fmin(residual,
-                      [0.04, 0.02, 0.015,
-                       -0.01225, 1.20e-5, 2.9e-9, 0.0124015, -7.56E-05],
+                      [0.04, 0.02, 0.015, 370, 274, 179,
+                       -2e-3, 1.30e-5, 2.9e-9, 7e-3, 1E-05],
                       (data_sets,), maxiter=1e6, maxfun=1e6)
 
     bainite_parameters = fmin(bainite_residual, [-1.44e-3, 1.893e-3, 1.323e-5, 0.000000], (bainite_data_sets,))
@@ -162,12 +168,12 @@ if __name__ == '__main__':
         plt.plot(temperature, austenite_strain, '--' + experiment.color, lw=2, label=label)
 
         plt.figure(1)
-        ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15
+        # ms = SS2506.ms_temperature(experiment.carbon / 100) - 273.15
         mart = fraction_martensite(parameters, temperature, experiment.carbon)
         label = str(experiment.carbon) + r' wt. \%C'
-        if experiment.carbon > 0.7:
-            # label += '\nExtrapolated'
-            plt.plot(temperature, mart, experiment.color, lw=2, label=label)
+
+        # label += '\nExtrapolated'
+        plt.plot(temperature, mart, experiment.color, lw=2, label=label)
 
         plt.figure(3)
         temperature = np.linspace(0, 600, 1000)
@@ -176,13 +182,14 @@ if __name__ == '__main__':
 
         plt.plot(temperature, bainite_strain, '--' + experiment.color, lw=2)
 
-    print (expansion_martensite(parameters[3:], 0.8, 22) - (austenite_parameters[0] +
+    print (expansion_martensite(parameters[6:], 0.8, 22) - (austenite_parameters[0] +
                                                             austenite_parameters[1]*0.8 + austenite_parameters[2]*22))*3
-    t20 = np.array([SS2506.ms_temperature(0.008) - 273.15 + np.log(0.20)/parameters[2]])
+    a80 = -np.log(M20)/(parameters[5] - 20)
+    t20 = np.array([parameters[5] + np.log(0.20)/parameters[2]])
     print "20 % Retained Austenite at", t20
-    expan02 = expansion_martensite(parameters[3:], np.array([0.2]), np.array([t20])) - \
+    expan02 = expansion_martensite(parameters[6:], np.array([0.2]), np.array([t20])) - \
         transformation_strain(parameters, 0.2, np.array([1000]))
-    expan08 = 0.8*expansion_martensite(parameters[3:], np.array([0.8]), np.array([t20])) + \
+    expan08 = 0.8*expansion_martensite(parameters[6:], np.array([0.8]), np.array([t20])) + \
         0.2*SS2506.transformation_strain.Austenite(t20, 0.008) - \
         transformation_strain(parameters, 0.8, np.array([1000]))
     print "Difference in expansion is", expan08 - expan02
@@ -197,20 +204,24 @@ if __name__ == '__main__':
     plt.savefig('dilatometer_sim.png')
 
     plt.figure(1)
-    plt.xlim(0, 200)
+    # plt.xlim(0, 200)
     plt.xlabel(r'Temperature [ $\degree$C]')
     plt.ylabel(r'Fraction Martensite [-]')
     plt.legend(loc='best')
     plt.tight_layout()
     plt.savefig('martensite_transformation.png')
 
-    for carbon in [0.2, 0.5, 0.8]:
+    for i, carbon in enumerate([0.2, 0.5, 0.8]):
         print '-------- Carbon,', carbon, '% -----------------'
-        print "\tMs temperature:\t", SS2506.ms_temperature(carbon/100) - 273.15
-        print "\tMobility:\t\t", np.interp(carbon, [0.2, 0.5, 0.8], parameters[0:3])
-
+        ms = parameters[i+3]
+        print "\tMs temperature:\t", ms
+        if carbon == 1.2:
+            a = -np.log(M20)/(ms - 20)
+        else:
+            a = parameters[i]
+        print "\tMobility:\t\t", a
     print "Expansion parameters of Martensite is"
-    print parameters[3:]
+    print parameters[6:]
 
     print "Expansion parameters of Bainite is"
     print bainite_parameters

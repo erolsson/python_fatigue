@@ -26,3 +26,6 @@ def create_sets_for_fatigue_evaluation():
         with open('utmis_' + specimen + '/fatigue_volume_elements_' + specimen + '.inc', 'w') as set_file:
             for line in file_lines:
                 set_file.write(line + '\n')
+
+
+create_sets_for_fatigue_evaluation()

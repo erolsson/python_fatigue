@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import os
 import pickle
 import sys
@@ -5,10 +6,7 @@ import sys
 import numpy as np
 
 if __name__ == '__main__':
-    package_directory = os.path.expanduser('~/python_fatigue/')
-    sys.path.append(package_directory)
-    print sys.path
-
+    sys.path.append('../../')
     from abaqus_files.path_functions import Path
     from abaqus_files.path_functions import create_path
     from abaqus_files.path_functions import get_stress_tensors_from_path
@@ -25,27 +23,30 @@ if __name__ == '__main__':
     path_points_z2 = np.copy(path_points_z1)
     path_points_z2[:, 1] *= -1
 
-    specimen_loads = {'smooth': {-1.: [737.], 0.: [425., 440.]},
+    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                       'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
     simulations = []
 
-    for specimen, data in specimen_loads.iteritems():
-        for R, stress_levels in data.iteritems():
+    for specimen, data in specimen_loads.items():
+        for R, stress_levels in data.items():
             simulations += [(specimen, R, s) for s in stress_levels]
-    number_of_steps = 2
+    number_of_steps = 5
 
     for path_points, path_name, axis in zip([path_points_y, path_points_z1, path_points_z2],
                                             ['path_y', 'path_z1', 'path_z2'], [1, 2, 2]):
         path = Path(path_name, path_points, np.array([1, 0, 0]))
         abq_path = create_path(path.data, path.name, session)
-        pickle_directory = '/scratch/users/erik/scania_gear_analysis/pickles/utmis_specimens/mechanical_data/'
-        if not os.path.isdir(pickle_directory):
-            os.makedirs(pickle_directory)
+
         for specimen, R, stress_level in simulations:
+            pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/pickles/')
+            if not os.path.isdir(pickle_directory):
+                os.makedirs(pickle_directory)
+
             simulation_name = '/utmis_' + specimen + '_' + str(stress_level).replace('.', '_') + '_R=' + str(int(R))
-            mechanical_odb = '/scratch/users/erik/scania_gear_analysis/abaqus/utmis_specimens/utmis_' + specimen \
-                             + simulation_name + '.odb'
-            print "working with", simulation_name
+            mechanical_odb = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/' +
+                                                'utmis_' + specimen + '_' + str(stress_level).replace('.', '_')
+                                                + '_R=' + str(int(R)) + '.odb')
+            print("working with", simulation_name)
             odb = odbAccess.openOdb(mechanical_odb)
             session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                              height=230.809509277344)
@@ -68,8 +69,9 @@ if __name__ == '__main__':
                     data[:, 0] = np.flipud(path_points[:, axis])
                 else:
                     data[:, 0] = path_points[:, axis]
-                data[:, 1] = stress[0:100, 0, 0]
+                data[:, 1] = stress[0:100, 1]
                 stress_data[load_level] = data
             with open(pickle_directory + simulation_name + '_' + path_name + '.pkl', 'w') as pickle_file:
                 pickle.dump(stress_data, pickle_file)
+            print(stress_data)
             odb.close()

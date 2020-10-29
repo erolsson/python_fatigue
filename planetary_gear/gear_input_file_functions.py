@@ -1,9 +1,9 @@
 import numpy as np
 
-from input_file_reader.input_file_functions import write_geom_include_file
-from input_file_reader.input_file_functions import read_nodes_and_elements
-from input_file_reader.input_file_functions import get_elements_from_nodes
-from input_file_reader.input_file_functions import write_sets
+from python_fatigue.input_file_reader.input_file_functions import write_geom_include_file
+from python_fatigue.input_file_reader.input_file_functions import read_nodes_and_elements
+from python_fatigue.input_file_reader.input_file_functions import get_elements_from_nodes
+from python_fatigue.input_file_reader.input_file_functions import write_sets
 
 
 class GearTooth:
@@ -74,13 +74,13 @@ def write_load_step(step_name, torque_gear_name='sun', applied_torque=None, plan
 def write_gear_assembly(gears, assembly_name):
     file_lines = ['*Assembly, name=' + assembly_name]
 
-    for gear in gears.itervalues():
+    for gear in gears.values():
         for tooth in gear.teeth_array:
             file_lines += tooth.write_input()
 
     # Combining surfaces to master contact and slave surfaces
     # Sun gear master due to coarser mesh
-    for gear_idx, (name, gear) in enumerate(gears.iteritems()):
+    for gear_idx, (name, gear) in enumerate(gears.items()):
         for i in range(gear.teeth_to_model):
             file_lines.append('\t*Tie, name=tie_' + name + '_mid_tooth' + str(i))
             file_lines.append('\t\t' + gear.teeth_array[i].instance_name +

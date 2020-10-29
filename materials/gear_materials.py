@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from collections import namedtuple
 import numpy as np
 
@@ -43,8 +45,7 @@ class SS2506MaterialTemplate:
     # Phase transformation data
     def _trans_strain_martensite(self, temperature, carbon):
         t, c = np.meshgrid(temperature, carbon)
-        e = - 2.86675380e-03 + 1.01552103e-05*t + 5.99517668e-09*t**2 + 7.72779661e-01*c - \
-            1.20775388e-04*(c/100)**2
+        e = -3.15814370e-03 + 1.2e-05*t + 2.9e-09*t**2 + 8.19710239e-03*c*100 - 1.67270626e-04*(c*100)**2
         return np.squeeze(e)
 
     @staticmethod
@@ -82,9 +83,10 @@ class SS2506MaterialTemplate:
         a = 2*2.2520e-9*t + 1.1643e-5
         return np.squeeze(a)
 
-    def _trans_strain_bainite(self, temperature, carbon):
-        _, c = np.meshgrid(temperature, carbon)
-        e = self._trans_strain_fp(temperature, carbon) - 1.3315e-3 + 0.10908*c
+    @staticmethod
+    def _trans_strain_bainite(temperature, carbon):
+        t, c = np.meshgrid(temperature, carbon)
+        e = 2.38388172e-04 + 1.02978980e-05*t + 7.62158599e-09*t**2 - 5.39839566e-04*c - 1.13198683e-03*c**2
         return np.squeeze(e)
 
     def _thermal_exp_bainite(self, temperature, carbon):
@@ -93,7 +95,7 @@ class SS2506MaterialTemplate:
 
     @staticmethod
     def ms_temperature(carbon):
-        return 706.05 - 31745 * carbon
+        return np.interp(carbon, [0.002, 0.005, 0.008], [383.4953141884797, 272.5661649983974, 164.870608528147])
 
     def martensite_fraction(self, temperature, carbon, austenite_fraction=None):
         temperature = temperature + 273.15
@@ -123,10 +125,10 @@ if __name__ == '__main__':
     temp = 300
 
     for trans_strain_func in SS2506.transformation_strain:
-        print trans_strain_func, trans_strain_func(temp, carb)
+        print(trans_strain_func, trans_strain_func(temp, carb))
 
     carb = np.linspace(0.002, 0.01, 10)
     temp = np.linspace(0, 1000, 100)
     SS2506.martensite_fraction(temp, carb)
 
-    print SS2506.transformation_strain.Martensite(0, 0)
+    print(SS2506.transformation_strain.Martensite(0, 0))
