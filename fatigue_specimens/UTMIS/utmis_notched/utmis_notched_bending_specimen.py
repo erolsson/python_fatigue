@@ -20,7 +20,7 @@ except ImportError:
 
 
 class NotchedBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=15):
+    def __init__(self, t=0.8, load_position_x=15):
         self.length = float(90)
         self.R = float(0.9)
         self.R1 = float(5.5)
@@ -222,7 +222,7 @@ class NotchedBendingSpecimenClass:
                             end1Edges=edges1,
                             end2Edges=edges2,
                             number=nr,
-                            ratio=10,
+                            ratio=20,
                             constraint=FIXED)
 
         # Edges in the z-direction

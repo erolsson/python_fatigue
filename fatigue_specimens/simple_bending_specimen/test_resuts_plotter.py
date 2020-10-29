@@ -15,7 +15,7 @@ data = np.genfromtxt(r'D:\Aforsk2018\4pb.csv', delimiter=',', skip_header=1)
 
 plt.semilogx(data[data[:, 2] < 2e6, 2],  data[data[:, 2] < 2e6, 1], 'x', ms=16, mew=2)
 plt.semilogx(data[data[:, 2] >= 2e6, 2],  data[data[:, 2] >= 2e6, 1], 'o', ms=16, mew=2)
-plt.ylim(350, 600)
+plt.ylim(300, 500)
 plt.xlabel('Cycles')
 plt.ylabel('Stress amplitude [MPa]')
 plt.grid(True)
