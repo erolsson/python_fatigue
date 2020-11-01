@@ -22,7 +22,7 @@ except ImportError:
 
 
 class SmoothBendingSpecimenClass:
-    def __init__(self, t=1.2, load_position_x=15):
+    def __init__(self, t=0.8, load_position_x=15):
         self.length = float(90)
         self.R = float(30.)
         self.R1 = float(5.5)

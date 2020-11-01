@@ -20,10 +20,10 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 
 MartensiteData = namedtuple('MartensiteData', ['martensite', 'temperature', 'ferrite', 'ms', 'carbon'])
-carbon_par_levels = [0.2, 0.5, 1.0]
+carbon_par_levels = [0.2, 0.52, 1.0]
 
-m20 = 0.93
-full_transformation = {0.2: 200, 0.36: 100., 0.52: 50, 0.65: 30}
+m20 = 0.65
+full_transformation = {0.2: 200, 0.36: 100., 0.52: 50, 0.65: 20}
 
 
 class Experiment:
@@ -34,9 +34,10 @@ class Experiment:
     b_start = 550
     b_finish = 368
 
-    def __init__(self, carbon, color, cooling_rate, ms):
+    def __init__(self, carbon, color, cooling_rate, ms, austenite):
         self.carbon = carbon
         self.color = color
+        self.austenite = austenite
         self.cooling_rate = cooling_rate
         self.ms = ms
 
@@ -55,7 +56,7 @@ class Experiment:
         self.bainite_idx = np.logical_and(self.temperature > self.b_finish, self.temperature < self.b_start)
 
         self.ferrite = 0*self.strain
-        if self.carbon < 0.5:
+        if self.carbon < 0.36:
             self.ferrite = (self.strain - self.austenite_strain)/(self.ferrite_strain - self.austenite_strain)
             self.ferrite[self.temperature > 800] = 0
             self.ferrite[self.temperature < self.f_finish] = 0
@@ -131,20 +132,21 @@ def expansion_residual(par, *data):
             calc_strain = (martensite_strain(temperature, data_set.carbon, par)*(1 - data_set.ferrite[0]
                                                                                  - data_set.bainite[0])
                            + data_set.ferrite[0]*SS2506.transformation_strain.Ferrite(temperature, data_set.carbon/100)
-                           + data_set.bainite[0]*SS2506.transformation_strain.Bainite(temperature, data_set.carbon/100))
-            residual += np.sum((calc_strain - strain)**2)*100
+                           + data_set.bainite[0]*SS2506.transformation_strain.Bainite(temperature, data_set.carbon/100)
+                           + data_set.austenite*SS2506.transformation_strain.Austenite(temperature, data_set.carbon/100))
+            residual += np.sum((strain - calc_strain)**2)*10000
     return residual
 
 
 def martensite_strain(t, carbon, par):
-    par[0] = -0.00389193
-    par[1] = 0.00939213
-    par[2] = -0.00175278
+    # par[0] = -0.00389193
+    # par[1] = 0.00939213
+    # par[2] = -0.00175278
+    # par[3] = 1.3e-5
+    # par[4] = 2.9e-9
+    par[5] = -4.30000e-06
     par[3] = 1.3e-5
     par[4] = 2.9e-9
-    par[5] = -4.30000e-06
-    # par[3] = 1.2e-5
-    # par[4] = 2.9e-9
     # par[5] = 0
     par[3] = abs(par[3])
     par[4] = abs(par[4])
@@ -155,12 +157,12 @@ def martensite_strain(t, carbon, par):
 
 
 def main():
-    experiments = [Experiment(carbon=0.2, color='k', cooling_rate=100, ms=639 - 273.15),
-                   Experiment(carbon=0.36, color='b', cooling_rate=50, ms=306),
-                   Experiment(carbon=0.52, color='m', cooling_rate=30, ms=260),
-                   Experiment(carbon=0.65, color='r', cooling_rate=30, ms=220)]
+    experiments = [Experiment(carbon=0.2, color='k', cooling_rate=100, ms=639 - 273.15, austenite=0),
+                   Experiment(carbon=0.36, color='b', cooling_rate=50, ms=306, austenite=0),
+                   Experiment(carbon=0.52, color='m', cooling_rate=30, ms=260, austenite=0.0),
+                   Experiment(carbon=0.65, color='r', cooling_rate=30, ms=220, austenite=0.04)]
     expansion_par = fmin(expansion_residual, [-0.00469669, 0.01496356, -0.00949088, 1.2e-5, 2.2e-9, 4.3e-6],
-                         args=(experiments,))
+                         args=(experiments,), maxfun=1e6, maxiter=1e6)
     print(expansion_par)
     ms_temperature_parameters = fmin(ms_temperature_residual, [220, 220, 220], args=(experiments, ))
     print(ms_temperature_parameters)
@@ -169,7 +171,7 @@ def main():
         km_parameters = fmin(martensite_residual, km_parameters,
                              args=(experiments, ms_temperature_parameters, expansion_par))
 
-    # km_parameters[-1] = -np.log(1 - m20)/(ms_temperature_parameters[-1] - 22.)
+    km_parameters[-1] = -np.log(1 - m20)/(ms_temperature_parameters[-1] - 22.)
     print(km_parameters)
     for experiment in experiments:
         plt.figure(0)
