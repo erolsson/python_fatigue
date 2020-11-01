@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 
 import sys
 import os
@@ -13,12 +13,15 @@ try:
     import interaction
     from abaqusConstants import COORDINATE, STANDALONE, ON, DEFORMABLE_BODY, AXISYM, OFF, THREE_D, DELETE, GEOMETRY
     from abaqusConstants import SINGLE, FIXED, SWEEP, MEDIAL_AXIS, DC3D8, DC3D6, C3D8, C3D6, STANDARD, ANALYSIS
-    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE, XYPLANE
+    from abaqusConstants import PERCENTAGE, DOMAIN, DEFAULT, INDEX, YZPLANE, XYPLANE, LEFT, SIDE1, REVERSE, NUMBER
+    from abaqusConstants import HEX_DOMINATED, FORWARD
     from abaqus import backwardCompatibility
     backwardCompatibility.setValues(reportDeprecated=False)
 except ImportError:
     print(" ERROR: This script require Abaqus CAE to run")
     raise
+
+import numpy as np
 
 
 class NotchedBendingSpecimenClass:
@@ -50,18 +53,19 @@ class NotchedBendingSpecimenClass:
         self.myAssembly = self.modelDB.rootAssembly
 
         # Set replay file output format to INDEX for readability
-        session.journalOptions.setValues(replayGeometry=INDEX)
+        session.journalOptions.setValues(replayGeometry=COORDINATE)
         self.x = self.R * sqrt(3) / 2
         self.y = self.notch_height / 2 + self.R / 2
 
         self.make_part()
 
-    def make_part(self, part_name='fatiguePart', flip=False, analysis_type='ThermalDiffusion'):
+    def make_part(self, part_name='fatiguePart', analysis_type='ThermalDiffusion'):
 
         def make_profile(d, profile_name):
             p0 = (0., 0.)
             p1 = (0, self.notch_height/2 - d)
-            p2 = (self.R*sqrt(3)/2, self.notch_height/2 + self.R/2 - d)
+            q = pi/3
+            p2 = ((self.R+d)*sin(q), (self.notch_height/2 - d) + (self.R+d)*(1 - cos(q)))
 
             x2 = p2[0] + 1./sqrt(3)*(self.height/2 - p2[1] - d)
             p3 = (x2, self.height/2 - d)
@@ -82,6 +86,7 @@ class NotchedBendingSpecimenClass:
             # fixing the fillet
             e1 = g.findAt(((p2[0] + p3[0])/2, (p2[1] + p3[1])/2))
             e2 = g.findAt(((p3[0] + p4[0])/2, self.height/2 - d))
+
             my_sketch.FilletByRadius(radius=self.R2,
                                      curve1=e1,
                                      nearPoint1=e1.pointOn,
@@ -98,6 +103,13 @@ class NotchedBendingSpecimenClass:
             part.BaseSolidExtrude(sketch=my_sketch, depth=self.thickness / 2)
             return part
 
+        def edge_is_curve(edge):
+            try:
+                edge.getRadius()
+            except AbaqusException:
+                return True
+            return False
+
         self.my_part_inner = make_profile(self.case_mesh_thickness, 'inner')
         instance_inner = self.myAssembly.Instance(name='InnerSpecimen', part=self.my_part_inner, dependent=OFF)
         self.my_part_outer = make_profile(0., 'outer')
@@ -112,16 +124,106 @@ class NotchedBendingSpecimenClass:
         del self.modelDB.parts['inner']
         del self.modelDB.parts['outer']
 
-        datum_plane_vertical1 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=self.x)
+        v1 = self.fatigue_part.vertices.findAt((self.R*sqrt(3)/2, self.notch_height/2 + self.R/2, 0))
+        v2 = self.fatigue_part.vertices.findAt((self.R*sqrt(3)/2, self.notch_height/2 + self.R/2, self.thickness/2))
+        R = self.R + self.case_mesh_thickness
+        v3 = self.fatigue_part.vertices.findAt((R*sqrt(3)/2,
+                                                (self.notch_height/2 - self.case_mesh_thickness) + R/2,
+                                                0.))
+        plane1 = self.fatigue_part.DatumPlaneByThreePoints(point1=v1, point2=v2, point3=v3)
+        cell_point = (1e-6, self.notch_height/2 - 1e-6, 1e-6)
+        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[plane1.id],
+                                                    cells=self.fatigue_part.cells.findAt(cell_point))
+
+        faces_to_partition = self.fatigue_part.faces.findAt(((1e-6, 1e-6, 2.),))
+        up_edge = self.fatigue_part.edges.findAt((0, 1e-6, 2.))
+        t = self.fatigue_part.MakeSketchTransform(sketchPlane=faces_to_partition[0],
+                                                  sketchUpEdge=up_edge,
+                                                  sketchPlaneSide=SIDE1,
+                                                  sketchOrientation=LEFT,
+                                                  origin=(0.0, 0.0, 2.0))
+        partition_sketch = self.modelDB.ConstrainedSketch(name="partition_sketch_1", sheetSize=800.0, transform=t)
+        q = pi/3
+        p1 = ((self.R+self.case_mesh_thickness)*sin(q),
+              (self.notch_height/2 - self.case_mesh_thickness) + (self.R+self.case_mesh_thickness)*(1 - cos(q)))
+        r = p1[1]/sin(pi/3)
+        x = p1[1]/tan(pi/3)
+        center_point = (p1[0] - x, 0)
+        p2 = (center_point[0] + r, 0)
+        partition_sketch.ArcByCenterEnds(center=center_point, point1=p2, point2=p1)
+
+        self.fatigue_part.PartitionFaceBySketch(sketchUpEdge=up_edge,
+                                                faces=faces_to_partition, sketch=partition_sketch,
+                                                sketchOrientation=LEFT)
+        picked_edges = self.fatigue_part.edges.findAt(coordinates=(center_point[0] + r*cos(1e-6), r*sin(1e-6), 2.0))
+        self.fatigue_part.PartitionCellByExtrudeEdge(line=self.fatigue_part.edges.findAt(coordinates=(0.0, 0.0, 0.5)),
+                                                     cells=self.fatigue_part.cells.findAt(((1e-6, 1e-6, 1e-6),)),
+                                                     edges=(picked_edges, ), sense=REVERSE)
+
+        # Creating the next partitioning plane in the same way with three points
+        # Finding the first point using the diagonal edge from the previous plane
+        diagonal_edge = None
+        v0 = self.fatigue_part.vertices.findAt((p1[0], p1[1], 0.))
+        for edge_idx in v0.getEdges():
+            edge = self.fatigue_part.edges[edge_idx]
+            if edge.pointOn[0][2] == 0 and edge_is_curve(edge):
+                diagonal_edge = edge
+        v1 = None
+        for v_idx in diagonal_edge.getVertices():
+            if v_idx != v0.index:
+                v1 = self.fatigue_part.vertices[v_idx]
+        v1_coordinates = v1.pointOn[0]
+
+        plane2 = self.fatigue_part.DatumPlaneByOffset(plane=self.fatigue_part.datum[plane1.id], point=v1)
+        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[plane2.id],
+                                                    cells=self.fatigue_part.cells.findAt(((self.length/4,
+                                                                                           self.height/2 - 1e-6,
+                                                                                           1e-6), )))
+
+        faces_to_partition = self.fatigue_part.faces.findAt(((self.length/4, 1e-6, 2.),))
+        up_edge = self.fatigue_part.edges.findAt((0, 1e-6, 2.))
+        t = self.fatigue_part.MakeSketchTransform(sketchPlane=faces_to_partition[0],
+                                                  sketchUpEdge=up_edge,
+                                                  sketchPlaneSide=SIDE1,
+                                                  sketchOrientation=LEFT,
+                                                  origin=(0.0, 0.0, 2.0))
+        partition_sketch = self.modelDB.ConstrainedSketch(name="partition_sketch_2", sheetSize=800.0, transform=t)
+        p1 = (v1_coordinates[0], v1_coordinates[1])
+        r = p1[1]/sin(pi/3)
+        x = p1[1]/tan(pi/3)
+        center_point = (p1[0] - x, 0)
+        p2 = (center_point[0] + r, 0)
+        partition_sketch.ArcByCenterEnds(center=center_point, point1=p2, point2=p1)
+
+        self.fatigue_part.PartitionFaceBySketch(sketchUpEdge=up_edge,
+                                                faces=faces_to_partition, sketch=partition_sketch,
+                                                sketchOrientation=LEFT)
+        picked_edges = self.fatigue_part.edges.findAt(coordinates=(center_point[0] + r*cos(1e-6), r*sin(1e-6), 2.0))
+        direction = self.fatigue_part.edges.findAt(coordinates=(self.length/2 - self.case_mesh_thickness, 0.0, 1.0))
+        cell = self.fatigue_part.cells.findAt(((self.length/4, 1e-6, 1e-6),))
+        self.fatigue_part.PartitionCellByExtrudeEdge(line=direction,
+                                                     cells=cell,
+                                                     edges=(picked_edges,), sense=REVERSE)
+
+        # Find the length of the next two outer edges
+        # The common face
+        face = self.fatigue_part.faces.findAt((self.length/4, self.height/2 - 1e-6, 2.))
+        vertices = [self.fatigue_part.vertices[vertex_id] for vertex_id in face.getVertices()]
+        vertices.sort(key=lambda v: v.pointOn[0][0])
+        edge_length = 0
+        x_left = -1e99
+        for edge_idx in vertices[1].getEdges():
+            edge = self.fatigue_part.edges[edge_idx]
+            if edge.pointOn[0][2] == 2.:
+                edge_length += edge.getSize(printResults=False)
+                x_coords = [self.fatigue_part.vertices[edge.getVertices()[0]].pointOn[0][0],
+                            self.fatigue_part.vertices[edge.getVertices()[1]].pointOn[0][0],
+                            x_left]
+                x_left = max(x_coords)
+
+        x_plane = edge_length + 2*(center_point[0] + r) - x_left
+        datum_plane_vertical1 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=x_plane)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical1.id],
-                                                    cells=self.fatigue_part.cells)
-
-        datum_plane_vertical2 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=self.x2)
-        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical2.id],
-                                                    cells=self.fatigue_part.cells)
-
-        datum_plane_vertical3 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=self.x3)
-        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical3.id],
                                                     cells=self.fatigue_part.cells)
 
         datum_plane_vertical4 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE,
@@ -129,14 +231,7 @@ class NotchedBendingSpecimenClass:
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical4.id],
                                                     cells=self.fatigue_part.cells)
 
-        datum_plane_vertical5 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE,
-                                                                             offset=self.load_position_x)
-        self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical5.id],
-                                                    cells=self.fatigue_part.cells)
-
-        offset = 1.3
-        if flip:
-            offset = self.thickness/2 - 1.3
+        offset = self.thickness/2 - self.case_mesh_thickness
         datum_plane_vertical6 = self.fatigue_part.DatumPlaneByPrincipalPlane(principalPlane=XYPLANE,
                                                                              offset=offset)
         self.fatigue_part.PartitionCellByDatumPlane(datumPlane=self.fatigue_part.datum[datum_plane_vertical6.id],
@@ -144,10 +239,10 @@ class NotchedBendingSpecimenClass:
 
         return self.fatigue_part
 
-    def mesh(self, part=None, flip=False, analysis_type='ThermalDiffusion'):
+    def mesh(self, part=None, analysis_type='ThermalDiffusion'):
         if part is None:
             part = self.fatigue_part
-        
+
         nr = 25
         nx1 = 20      # x - dir closest to the notch
         nx2 = 20      # x - dir second to the notch
@@ -173,15 +268,14 @@ class NotchedBendingSpecimenClass:
             return elements
         # ----------------------------------------------------------------
 
-        def edges_direction_part(part_object=None, edges_to_sort=None):
+        def edges_direction_part(part_object, edges_to_sort, sort_function):
             case_edges_pos = []
             case_edges_neg = []
             for edge in edges_to_sort:
                 v1, v2 = edge.getVertices()
-                point_1 = part_object.vertices[v1].pointOn
-                point_2 = part_object.vertices[v2].pointOn
-                vector = [point_2[0][0]-point_1[0][0], point_2[0][1]-point_1[0][1], point_2[0][2]-point_1[0][2]]
-                if (vector[0] < 0) or (vector[1] < 0) or (vector[2] < 0):
+                point_1 = part_object.vertices[v1].pointOn[0]
+                point_2 = part_object.vertices[v2].pointOn[0]
+                if sort_function(point_1, point_2):
                     case_edges_pos.append(edge)
                 else:
                     case_edges_neg.append(edge)
@@ -202,24 +296,24 @@ class NotchedBendingSpecimenClass:
         part.setElementType(regions=(part.cells,), elemTypes=(elem_type1, elem_type2))
         
         # Edges in the hardness gradient
-        # y-coord key, data x-coords
-        xy = {self.notch_height/2 - self.case_mesh_thickness/2:   [0.],
-              self.y - self.case_mesh_thickness/2:                [self.x],
-              self.y2 - self.case_mesh_thickness/2:               [self.x2],
-              self.height/2 - self.case_mesh_thickness/2:         [self.x3, self.load_position_x, self.length / 2 - self.R1],
-              0.:                                                 [self.length/2 - self.case_mesh_thickness/2]}
-        z_line = 1.3
-        if flip:
-            z_line = self.thickness/2 - 1.3
+        top_faces = self.fatigue_part.faces.findAt((self.length/2 - 1.01*self.R1, self.height/2, self.thickness/2))
+        top_faces = top_faces.getFacesByFaceAngle(89)
+        top_vertices_idx = set([idx for face in top_faces for idx in face.getVertices()])
+        top_edges_idx = set([idx for face in top_faces for idx in face.getEdges()])
+        case_edges = []
+        for edge in self.fatigue_part.edges:
+            z_point = edge.pointOn[0][2]
+            if z_point in [0, self.thickness/2 - self.case_mesh_thickness, self.thickness/2]:
+                if edge.index not in top_edges_idx:
+                    if edge.getVertices()[0] in top_vertices_idx or edge.getVertices()[1] in top_vertices_idx:
+                        case_edges.append(edge)
 
-        z_coordinates = [0, z_line, self.thickness/2]
-        edges = []
-        for y, x_coordinates in xy.iteritems():
-            for x in x_coordinates:
-                for z in z_coordinates:
-                    edges.append(part.edges.findAt((x, y, z)))
-
-        edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
+        def case_edges_sort(p1, p2):
+            if p1[1] == p2[1]:
+                return p1[0] > p2[0]
+            else:
+                return p1[1] > p2[1]
+        edges1, edges2 = edges_direction_part(self.fatigue_part, case_edges, case_edges_sort)
         part.seedEdgeByBias(biasMethod=SINGLE, 
                             end1Edges=edges1,
                             end2Edges=edges2,
@@ -228,22 +322,16 @@ class NotchedBendingSpecimenClass:
                             constraint=FIXED)
 
         # Edges in the z-direction
-        z = 1.9
-        if flip:
-            z = 0.1
-        x_coordinates = [0, self.x, self.x2, self.x3, self.load_position_x, self.length / 2 - self.R1]
-        y_coordinates = [self.notch_height/2, self.y, self.y2, self.height/2, self.height/2, self.height/2]
-        edges = []
-        for i, x in enumerate(x_coordinates):
-            edges.append(part.edges.findAt((x, 0,                                           z)))
-            edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
-            edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
+        z0 = 0
+        z1 = self.thickness/2 - self.case_mesh_thickness
+        z2 = self.thickness/2
 
-        edges.append(part.edges.findAt((self.length / 2, 0, z)))
-        edges1, edges2 = edges_direction_part(self.fatigue_part, edges)
+        z_edges = [edge for edge in self.fatigue_part.edges if z1 < edge.pointOn[0][2] < z2]
 
-        if flip is True:
-            edges2, edges1 = edges1, edges2
+        def z_edges_sort(p1, p2):
+            return p1[2] > p2[2]
+        edges1, edges2 = edges_direction_part(self.fatigue_part, z_edges, z_edges_sort)
+
         part.seedEdgeByBias(biasMethod=SINGLE, 
                             end1Edges=edges1,
                             end2Edges=edges2,
@@ -251,77 +339,110 @@ class NotchedBendingSpecimenClass:
                             ratio=20,
                             constraint=FIXED)
 
-        # Edges in the z-direction
-        z = 0.1
-        if flip:
-            z = 1.9
-        x_coordinates = [0, self.x, self.x2, self.x3, self.load_position_x, self.length / 2 - self.R1]
-        y_coordinates = [self.notch_height/2, self.y, self.y2, self.height/2, self.height/2, self.height/2]
-        edges = []
-        for i, x in enumerate(x_coordinates):
-            edges.append(part.edges.findAt((x, 0,                                           z)))
-            edges.append(part.edges.findAt((x, y_coordinates[i] - self.case_mesh_thickness, z)))
-            edges.append(part.edges.findAt((x, y_coordinates[i],                            z)))
-
-        edges.append(part.edges.findAt((self.length / 2, 0, z)))
-
-        part.seedEdgeByNumber(edges=edges,
+        z_edges = [edge for edge in self.fatigue_part.edges if z0 < edge.pointOn[0][2] < z1]
+        part.seedEdgeByNumber(edges=z_edges,
                               number=5,
                               constraint=FIXED)
 
+        # Finding points on the upper_line
+        # Vertices common to top face and side face
+        side_faces = self.fatigue_part.faces.findAt((1e-6, 1e-6, 0)).getFacesByFaceAngle(0)
+        bottom_faces = self.fatigue_part.faces.findAt((1e-6, 0, 1e-6)).getFacesByFaceAngle(0)
+        side_vertices_idx = set([idx for face in side_faces for idx in face.getVertices()])
+        bottom_vertices_idx = set([idx for face in bottom_faces for idx in face.getVertices()])
+        top_line_vertices_idx = top_vertices_idx & side_vertices_idx
+        bottom_line_vertices_idx = bottom_vertices_idx & side_vertices_idx
+        case_line_vertices_idx = side_vertices_idx - top_vertices_idx - bottom_vertices_idx
+
+        def get_xy_from_vertex_list(vertex_list):
+            vertices = [self.fatigue_part.vertices[idx] for idx in vertex_list]
+            return np.array(sorted([[v.pointOn[0][0], v.pointOn[0][1]] for v in vertices]))
+        top_points = get_xy_from_vertex_list(top_line_vertices_idx)
+        bottom_points = get_xy_from_vertex_list(bottom_line_vertices_idx)
+        case_points = get_xy_from_vertex_list(case_line_vertices_idx)
+
         # Seeding the notch
-        num = [nx1, nx2, n_fillet]
-        x_coordinates = [self.R*sin(15*pi/180), (self.x2 + self.x)/2, self.x3 - self.R2*sin(1E-3)]
-        y_coordinates = [self.notch_height / 2 + self.R*(1 - cos(15*pi/180)),
-                         (self.y2 + self.y) / 2,
-                         self.height/2 - self.R2 * (1 - cos(1E-3))]
-        for x, y, n in zip(x_coordinates, y_coordinates, num):
-            edges = []
-            for z in z_coordinates:
-                edges.append(part.edges.findAt((x, 0,                            z)))
-                edges.append(part.edges.findAt((x, y - self.case_mesh_thickness, z)))
-                edges.append(part.edges.findAt((x, y,                            z)))
+        edges_notch_1 = []
+        edges_notch_2 = []
+        y_edges = []
+        mid_section_edges = []
+        outer_edges = []
+        bottom_transition_edges = []
+        for z in [0, self.thickness/2 - self.case_mesh_thickness, self.thickness/2]:
+            edges_notch_1.append(part.edges.findAt((1e-6, 0,                            z)))
+            y_center = self.notch_height/2 + self.R
+            r = self.R + self.case_mesh_thickness
+            edges_notch_1.append(part.edges.findAt((r*sin(pi/6), y_center - r*cos(pi/6), z)))
+            r = self.R
+            edges_notch_1.append(part.edges.findAt((r*sin(pi/6), y_center - r*cos(pi/6), z)))
+            for line in [top_points, case_points, bottom_points]:
+                mid_p = np.sum(line[1:3, :], axis=0)/2
+                edges_notch_2.append(part.edges.findAt((mid_p[0], mid_p[1], z)))
 
-            part.seedEdgeByNumber(edges=edges,
-                                  number=n)
+            for i in range(5):
+                point = (bottom_points[i, 0], bottom_points[i, 1] + 1e-3, z)
+                y_edges.append(part.edges.getClosest((point,))[0][0])
+            y_edges.append(part.edges.findAt((bottom_points[-1, 0] - 1e-3, 0, z)))
 
-        # Mid section
-        x_coordinates = [self.load_position_x + (self.length / 2 - self.R1) / 2, (self.x + self.load_position_x) / 2]
-        y_coordinates = [0, self.height/2 - self.case_mesh_thickness, self.height/2]
-        edges = []
-        for x in x_coordinates:
-            for y in y_coordinates:
-                for z in z_coordinates:
-                    edges.append(part.edges.findAt((x, y, z)))
+            for y in [0, self.height/2 - self.case_mesh_thickness, self.height/2]:
+                mid_section_edges.append(part.edges.findAt((self.length/4, y, z)))
 
-        part.seedEdgeBySize(edges=edges,
-                            size=size_length_direction)
+            x0 = self.length/2 - self.R1
+            radius = [self.R1, self.R1 - self.case_mesh_thickness]
+            for r in radius:
+                outer_edges.append(part.edges.findAt((x0 + r/sqrt(2), r/sqrt(2), z)))
+            bottom_transition_edges.append(part.edges.findAt((bottom_points[2, 0] + 1e-3, 0, z)))
 
-        # Vertical edges
-        x_coordinates = [0, self.x, self.x2, self.x3, self.load_position_x, self.length / 2 - self.R1]
-        y = 0.001*self.height/2
-        edges = []
-        for x in x_coordinates:
-            for z in z_coordinates:
-                edges.append(part.edges.findAt((x, y, z)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, 0)))
-        edges.append(part.edges.findAt((self.length/2 - self.R1/2, 0, self.thickness/2)))
-        part.seedEdgeByNumber(edges=edges,
-                              number=n_height,
-                              constraint=FIXED)
+        part.seedEdgeByNumber(edges=edges_notch_1, number=nx1)
+        part.seedEdgeByNumber(edges=edges_notch_2, number=nx2)
+        part.seedEdgeByNumber(edges=y_edges, number=n_height, constraint=FIXED)
 
-        # Outermost radius
-        x0 = self.length / 2 - self.R1
-        radius = [self.R1, self.R1 - self.case_mesh_thickness]
-        edges = []
-        
-        for r in radius:
-            for z in z_coordinates:
-                edges.append(part.edges.findAt((x0+r/sqrt(2), r/sqrt(2), z)))
+        part.seedEdgeBySize(edges=mid_section_edges, size=size_length_direction)
 
-        part.seedEdgeByNumber(edges=edges,
-                              number=n_radius,
-                              constraint=FIXED)
+        part.seedEdgeByNumber(edges=outer_edges, number=n_radius, constraint=FIXED)
+        part.seedEdgeBySize(edges=bottom_transition_edges, size=size_length_direction/17)
+
+        no_trans_elems = part.getEdgeSeeds(bottom_transition_edges[0], attribute=NUMBER)
+        # Finding the length of the two case line edges to mesh
+        for z in [0, self.thickness/2 - self.case_mesh_thickness, self.thickness/2]:
+            point1 = np.sum(case_points[2:4, :], axis=0)/2
+            case_edge_1 = part.edges.getClosest(((point1[0], point1[1], z), ))[0][0]
+            case_edge_2 = part.edges.findAt((case_points[3, 0] + 1e-3, self.height/2 - self.case_mesh_thickness, z))
+            l1 = case_edge_1.getSize(printResults=False)
+            l2 = case_edge_2.getSize(printResults=False)
+            n1 = int(round(no_trans_elems*l1/(l1+l2)))
+            n2 = int(round(no_trans_elems*l2/(l1+l2)))
+            part.seedEdgeByNumber(edges=[case_edge_1], number=n1, constraint=FIXED)
+            part.seedEdgeByNumber(edges=[case_edge_2], number=n2, constraint=FIXED)
+
+            top_point_1 = np.sum(top_points[2:4, :], axis=0)/2
+            top_edge_1 = part.edges.findAt((top_point_1[0], top_point_1[1], z))
+
+            top_point_2 = np.sum(top_points[3:5, :], axis=0)/2
+            top_edge_2 = part.edges.getClosest(((top_point_2[0], top_point_2[1], z),))[0][0]
+            top_edge_3 = part.edges.findAt((top_points[4, 0] + 1e-3, self.height/2, z))
+            l1 = top_edge_1.getSize(printResults=False)
+            l2 = top_edge_2.getSize(printResults=False)
+            l3 = top_edge_3.getSize(printResults=False)
+
+            n1 = int(round(no_trans_elems*l1/(l1+l2+l3)))
+            n2 = int(round(no_trans_elems*l2/(l1 + l2 + l3)))
+            n3 = int(round(no_trans_elems*l3/(l1 + l2 + l3)))
+
+            part.seedEdgeByNumber(edges=[top_edge_1], number=n1, constraint=FIXED)
+            part.seedEdgeByNumber(edges=[top_edge_2], number=n2, constraint=FIXED)
+            part.seedEdgeByNumber(edges=[top_edge_3], number=n3, constraint=FIXED)
+
+        for z in [1e-3, self.thickness/2 - 1e-3]:
+            for y in [1e-3, self.height/2 - 1e-3]:
+                cell = self.fatigue_part.cells.findAt((bottom_points[3, 0] - 1e-3, y, z))
+                sweep_edge = self.fatigue_part.edges.findAt((bottom_points[3, 0],
+                                                             self.height/2 - self.case_mesh_thickness, z))
+                self.fatigue_part.setMeshControls(regions=(cell, ), elemShape=HEX_DOMINATED,
+                                                  algorithm=MEDIAL_AXIS)
+                self.fatigue_part.setSweepPath(region=cell,
+                                               edge=sweep_edge, sense=FORWARD)
+
         # Mesh assembly
         part.generateMesh(seedConstraintOverride=OFF)
         self.viewPort.setValues(displayedObject=part)
@@ -334,8 +455,6 @@ class NotchedBendingSpecimenClass:
         part.Set(elements=part.elements[0:], name='All_Elements')
         z1 = self.thickness/2
         z2 = 0
-        if flip is True:
-            z1, z2 = z2, z1
         #       - Exposed Elements and Nodes
         #              Pick surface on arc at failure point
         f1 = part.faces.findAt((1.001*self.x3, self.height/2, self.thickness/4))
@@ -381,11 +500,6 @@ class NotchedBendingSpecimenClass:
         monitor_vertex_nodes = monitor_vertex.getNodes()
         monitor_node = monitor_vertex_nodes[0].label-1
         part.Set(nodes=part.nodes[monitor_node:monitor_node+1], name='Monitor_Node')
-
-        load_nodes = part.nodes.getByBoundingBox(xMin=self.load_position_x - 1e-8,
-                                                 xMax=self.load_position_x + 1e-8,
-                                                 yMin=self.height/2 - 1e-8)
-        part.Set(nodes=load_nodes, name='load_nodes')
 
         support_nodes = part.nodes.getByBoundingBox(xMin=self.length/2 - self.R1 - 1e-8,
                                                     xMax=self.length/2 - self.R1 + 1e-8,
