@@ -35,6 +35,7 @@ class Experiment:
     b_finish = 368
 
     def __init__(self, carbon, color, cooling_rate, ms, austenite):
+        print(carbon)
         self.carbon = carbon
         self.color = color
         self.austenite = austenite
