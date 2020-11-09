@@ -20,12 +20,12 @@ if __name__ == '__main__':
     for path_points, path_name in zip([path_points_y, path_points_z], ['path_y', 'path_z']):
         path = Path(path_name, path_points, np.array([1, 0, 0]))
 
-        for specimen in ['smooth']:
+        for specimen in ['smooth', 'notched']:
             pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/heat_treatment_data/')
             if not os.path.isdir(pickle_directory):
                 os.makedirs(pickle_directory)
             dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen
-                                                + '/t=9_min_cooltemp=40C/')
+                                                + '/new/')
             odb_file_name = dante_odb_path + 'Toolbox_Cooling_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
             step_name = 'cooling'
