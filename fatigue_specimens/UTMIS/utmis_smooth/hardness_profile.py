@@ -56,7 +56,7 @@ plt.figure(100)
 print(HV2HRC(818))
 print(HV2HRC(272))
 hrc_a = np.interp(c, [0.006, 0.008, 0.01], np.array([29, 32, 35]))
-hrc_m = np.interp(c, [0.006, 0.008, 0.01], np.array([60, 67, 78]))
+hrc_m = np.interp(c, [0.006, 0.008, 0.01], np.array([57, 68, 72]))
 print(hv_a, hv_m)
 print(m, a)
 hrc1 = a*hrc_a + m*hrc_m
