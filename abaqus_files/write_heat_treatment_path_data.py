@@ -85,7 +85,8 @@ def main():
         paths = [Path(name='flank', data=flank_data, normal=normal_flank),
                  Path(name='root', data=root_data, normal=normal_root)]
         step_name = 'dante_results_' + str(cd).replace('.', '_')
-        fields = ['HV', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
+        fields = ['HV', 'SDV_CARBON', 'S', 'SDV_AUSTENITE', 'SDV_Q_MARTENSITE',
+                  'SDV_T_MARTENSITE', 'SDV_UBAINITE', 'SDV_LBAINITE']
         for path in paths:
             write_case_hardening_data_along_path(odb_file, path,
                                                  pickle_path + 'dante_results_' + str(cd).replace('.', '_')
