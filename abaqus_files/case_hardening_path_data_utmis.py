@@ -25,7 +25,7 @@ if __name__ == '__main__':
             if not os.path.isdir(pickle_directory):
                 os.makedirs(pickle_directory)
             dante_odb_path = os.path.expanduser('~/utmis_specimens/' + specimen
-                                                + '/t=9_min_cooltemp=40C/')
+                                                + '/CD05_65C/')
             odb_file_name = dante_odb_path + 'Toolbox_Cooling_utmis_' + specimen + '.odb'
             pickle_name = pickle_directory + 'utmis_' + specimen + '_dante_' + path_name + '.pkl'
             step_name = 'cooling'

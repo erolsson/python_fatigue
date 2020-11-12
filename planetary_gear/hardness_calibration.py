@@ -23,6 +23,15 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
                                  'tempering_60min_200C_HRD_1/')
 
+carbon_levels = np.array([0.002, 0.004, 0.006, 0.008, 0.01])
+old_t_martensite_par = np.array([53, 52, 59, 69, 72])
+old_q_martensite_par = np.array([58, 59, 65, 74, 77])
+old_austenite_par = np.array([23, 26, 29, 32, 35])
+
+old_parameters = np.zeros(10)
+old_parameters[0:5] = old_austenite_par
+old_parameters[5:] = old_t_martensite_par
+
 
 class Simulation:
     def __init__(self, cd, color, sym, position):
@@ -41,38 +50,72 @@ class Simulation:
         self.t_martensite = simulation_data['SDV_T_MARTENSITE'].flatten()
         self.q_martensite = simulation_data['SDV_Q_MARTENSITE'].flatten()
 
+    def hv_ma(self, parameters):
+        au_par = parameters[0:5]
+        tm_par = parameters[5:]
 
-def hardness_residual(par):
-    pass
+        hrc_ma = (self.t_martensite*np.interp(self.carbon, carbon_levels, tm_par)
+                  + self.q_martensite*np.interp(self.carbon, carbon_levels, old_q_martensite_par)
+                  + self.austenite*np.interp(self.carbon, carbon_levels, au_par))
+        return HRC2HV(hrc_ma)
+
+    def hv_bf(self, parameters):
+        return self.hv - self.hv_ma(parameters)
+
+
+class Experiment:
+    def __init__(self, cd, color, sym, position, data_array):
+        self.r = data_array[:, 0]
+        if position == 'flank':
+            idx = 2*np.where(np.array([0.2, 0.5, 0.8, 1.1, 1.4]) == cd)[0] + 1
+        else:
+            idx = 2*np.where(np.array([0.2, 0.5, 0.8, 1.1, 1.4]) == cd)[0] + 2
+        self.hv = data_array[:, idx].flatten()
+        self.color = color
+        self.sym = sym
+
+
+def hardness_residual(parameters, experiments, simulations, min_bounds, max_bounds):
+    parameters[parameters < min_bounds] = min_bounds[parameters < min_bounds]
+    parameters[parameters > max_bounds] = max_bounds[parameters > max_bounds]
+
+    residual = 0
+    for exp, sim in zip(experiments, simulations):
+        hv_bf = np.interp(exp.r, sim.r, sim.hv_bf(old_parameters))
+        sim_hrc_ma = sim.hv_ma(parameters)
+        sim_hv = np.interp(exp.r, sim.r, sim_hrc_ma) + hv_bf
+        residual += np.sum((1 - sim_hv/exp.hv)**2)
+    return residual
 
 
 def main():
-    position = 'root'
+    position = 'flank'
     experiment_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/')
-    simulations = [Simulation(cd=0.5, color='b', sym='o', position=position),
-                   Simulation(cd=0.8, color='r', sym='s', position=position),
-                   Simulation(cd=1.1, color='g', sym='d', position=position),
-                   Simulation(cd=1.4, color='k', sym='p', position=position)]
-
     experimental_hardness = np.genfromtxt(experiment_path + 'hardness/hardness_scania.csv')
+    simulations = []
+    experiments = []
+    for cd, c, sym in zip([0.5, 0.8, 1.1, 1.4], 'brgk', 'osdp'):
+        simulations.append(Simulation(cd=cd, sym=sym, color=c, position=position))
+        experiments.append(Experiment(cd=cd, color=c, sym=sym, position=position, data_array=experimental_hardness))
 
-    carbon_levels = [0.002, 0.004, 0.006, 0.008, 0.01]
-    old_t_martensite_par = np.array([53, 52, 59, 69, 72])
-    old_q_martensite_par = np.array([58, 59, 65, 74, 77])
-    old_austenite_par = [23, 26, 29, 32, 35]
-
-    for i, simulation in enumerate(simulations):
+    for simulation, experiment in zip(simulations, experiments):
         plt.figure(0)
-        plt.plot(experimental_hardness[:, 0], experimental_hardness[:, 2*i + 3],
-                 '-' + simulation.sym + simulation.color, lw=2, ms=12, label='CD=' + str(simulation.cd) + 'mm')
+
+        plt.plot(experiment.r, experiment.hv, '-' + experiment.sym + experiment.color, lw=2, ms=12,
+                 label='CD=' + str(simulation.cd) + 'mm')
         plt.plot(simulation.r, simulation.hv, '--' + simulation.color, lw=2)
-        print(simulation.t_martensite)
-        hrc_ma = (simulation.t_martensite*np.interp(simulation.carbon, carbon_levels, old_t_martensite_par),
-                  + simulation.q_martensite*np.interp(simulation.carbon, carbon_levels, old_q_martensite_par)
-                  + simulation.austenite*np.interp(simulation.carbon, carbon_levels, old_austenite_par))
-        hv_ma = HRC2HV(hrc_ma)
-        print(hv_ma)
-        plt.plot(simulation.r, hv_ma, ':', simulation.color, lw=2)
+        # plt.plot(simulation.r, simulation.hv_ma(old_parameters), ':'+simulation.color, lw=2)
+
+        # plt.plot(simulation.r, simulation.hv_bf(old_parameters), simulation.color + ':', lw=2)
+
+    min_bounds = np.array([20, 20, 20, 20, 20, 50, 50, 55, 60, 60])
+    max_bounds = np.array([30, 30, 35, 32, 35, 60, 65, 70, 75, 80])
+    new_par = fmin(hardness_residual, old_parameters,
+                   args=(experiments, simulations, min_bounds, max_bounds), maxfun=1e6, maxiter=1e6)
+
+    print(new_par)
+    for sim in simulations:
+        plt.plot(sim.r, sim.hv_bf(old_parameters) + sim.hv_ma(new_par), sim.color + ':', lw=2)
     plt.show()
 
 
