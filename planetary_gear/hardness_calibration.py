@@ -24,7 +24,7 @@ pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/
                                  'tempering_60min_200C_HRD_1/')
 
 carbon_levels = np.array([0.002, 0.004, 0.006, 0.008, 0.01])
-old_t_martensite_par = np.array([53, 52, 59, 69, 72])
+old_t_martensite_par = np.array([53, 52, 60, 71, 72])
 old_q_martensite_par = np.array([58, 59, 65, 74, 77])
 old_austenite_par = np.array([23, 26, 29, 32, 35])
 
