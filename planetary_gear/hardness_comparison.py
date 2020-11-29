@@ -50,8 +50,16 @@ def main():
         plt.plot(root_data['r'], root_data['HV'], '--' + simulation.color, lw=2)
 
         plt.figure(2)
-        plt.plot(root_data['r'], root_data['SDV_CARBON'], '--' + simulation.color, lw=2)
+        plt.plot(flank_data['r'], flank_data['SDV_CARBON'], '--' + simulation.color, lw=2)
 
+        plt.figure(3)
+        plt.plot(flank_data['r'], flank_data['SDV_UBAINITE'] + flank_data['SDV_LBAINITE'],
+                 '--' + simulation.color, lw=2)
+        plt.figure(4)
+        plt.plot(flank_data['r'], root_data['SDV_UBAINITE'] + root_data['SDV_LBAINITE'],
+                 '--' + simulation.color, lw=2)
+
+        plt.figure(2)
         plt.plot(experimental_carbon[:, 1], experimental_carbon[:, 3+i]/100, '-' + simulation.sym + simulation.color,
                  lw=2, ms=12)
 

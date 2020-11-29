@@ -71,9 +71,9 @@ def write_root_pickle(data_odb_name, result_pickle_name, step_name, frame_number
 
 def main():
     odb_file = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/'
-                                  'carbon_transfer.odb')
+                                  'carbon_transfer_decarburization.odb')
     pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                     'carbon_transfer/')
+                                     'carbon_transfer_decarburization/')
     if not os.path.isdir(pickle_path):
         os.makedirs(pickle_path)
     for cd in [0.5, 0.8, 1.1, 1.4]:

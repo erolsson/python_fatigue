@@ -24,7 +24,7 @@ pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/
                                  'carbon_transfer/')
 
 carbon_levels = np.array([0.002, 0.004, 0.006, 0.008, 0.01])
-old_t_martensite_par = np.array([51, 57.2, 61.4, 71.2, 72])
+old_t_martensite_par = np.array([51, 56.4, 61.2, 71.2, 72])
 old_q_martensite_par = np.array([56, 63, 68, 76, 77])
 old_austenite_par = np.array([23, 26, 29, 32, 35])
 
@@ -109,13 +109,14 @@ def main():
         # plt.plot(simulation.r, simulation.hv_bf(old_parameters), simulation.color + ':', lw=2)
 
     min_bounds = np.array([20, 20, 20, 20, 20, 50, 50, 55, 60, 60])
-    max_bounds = np.array([30, 30, 35, 32, 35, 60, 65, 70, 75, 80])
+    max_bounds = np.array([30, 30, 35, 32, 35, 80, 65, 70, 75, 80])
     new_par = fmin(hardness_residual, old_parameters,
                    args=(experiments, simulations, min_bounds, max_bounds), maxfun=1e6, maxiter=1e6)
 
     print(new_par)
 
     new_par[5] = 51
+    new_par[6] = 56
     for sim in simulations:
         plt.plot(sim.r, sim.hv_bf(old_parameters) + sim.hv_ma(new_par), sim.color + ':', lw=2)
     plt.show()

@@ -81,7 +81,8 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
 
 if __name__ == '__main__':
     dante_odb_path = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/')
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/carbon_transfer/')
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/carbon_transfer_'
+                                              'decarburization/')
 
     input_file_name = os.path.expanduser('~/python_projects/python_fatigue/planetary_gear/'
                                          'input_files/quarter_tooth_tilt2.inp')
