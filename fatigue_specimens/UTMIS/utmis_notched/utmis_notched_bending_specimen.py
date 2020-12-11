@@ -506,6 +506,11 @@ class NotchedBendingSpecimenClass:
                                                     yMin=self.height/2 - 1e-8)
         part.Set(nodes=support_nodes, name='support_nodes')
 
+        fatigue_elements = part.elements.getByBoundingBox(xMax=3.)
+        fatigue_nodes = part.nodes.getByBoundingBox(xMax=3.)
+        part.Set(elements=fatigue_elements, name='fatigue_elements')
+        part.Set(nodes=fatigue_nodes, name='fatigue_nodes')
+
         session.viewports['Carbon Toolbox Model'].maximize()
         print(" Mesh generation completed")
 
