@@ -81,10 +81,11 @@ def create_dante_step(from_odb_name, to_odb_name, results_step_name, from_step=N
 
 if __name__ == '__main__':
     dante_odb_path = os.path.expanduser('~/scania_gear_analysis/odb_files/heat_treatment/mesh_1x/')
-    simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/heat_transfer/')
+    simulation_directory = os.path.expanduser('~/scania_gear_analysis/heat_simulation_dante_3/carbon_transfer_'
+                                              'decarburization/')
 
     input_file_name = os.path.expanduser('~/python_projects/python_fatigue/planetary_gear/'
-                                         'input_files/quarter_tooth_1x.inp')
+                                         'input_files/quarter_tooth_tilt2.inp')
     reader = InputFileReader()
     reader.read_input_file(input_file_name)
     nodes_pos, elements_pos = reader.nodal_data, reader.elements['C3D8']
@@ -93,7 +94,7 @@ if __name__ == '__main__':
     instances = [OdbInstance(name='tooth_right', nodes=nodes_pos, elements=elements_pos),
                  OdbInstance(name='tooth_left', nodes=nodes_neg, elements=elements_neg)]
 
-    odb_file_name = dante_odb_path + 'dante_results_tempering_60min_200C_HRD_1.odb'
+    odb_file_name = dante_odb_path + 'carbon_transfer.odb'
     create_odb(odb_file_name=odb_file_name, instance_data=instances)
 
     for cd in [0.5, 0.8, 1.1, 1.4]:
