@@ -21,7 +21,7 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern Roman'],
 
 def main():
     pickle_path = os.path.expanduser('~/scania_gear_analysis/pickles/heat_treatment/mesh_1x/root_data/'
-                                     'carbon_transfer/')
+                                     'carbon_transfer_decarburization/')
     experiment_path = os.path.expanduser('~/scania_gear_analysis/experimental_data/')
     Simulation = namedtuple('Simulation', ['cd', 'color', 'sym'])
     simulations = [Simulation(cd=0.5, color='b', sym='o'), Simulation(cd=0.8, color='r', sym='s'),

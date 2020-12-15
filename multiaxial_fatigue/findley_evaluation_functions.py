@@ -14,19 +14,19 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num
 
     # Get size of the read data
     load_steps, rows, columns = combined_stress.shape
-    print " Read %2i load steps with %i stress tensors" % (load_steps, rows)
+    print(" Read %2i load steps with %i stress tensors" % (load_steps, rows))
 
     # Create workload vector
-    work_loads = range(0, rows, chunk_size)
+    work_loads = list(range(0, rows, chunk_size))
     if not work_loads[-1] == rows:
         work_loads.append(rows)
-    print " Number or work pieces to process: ", len(work_loads)
+    print(" Number or work pieces to process: ", len(work_loads))
 
     # Create storage point for Findley results
-    fatigue_results = np.empty([work_loads[-1], 3], dtype=float)  # f,sigma_n,tau_n,Nf50,Nf99
+    fatigue_results = np.empty([work_loads[-1], 5], dtype=float)  # f,sigma_n,tau_n,Nf50,Nf99
     if True:
         # Submit workloads for evaluation of Findley stress
-        print " Computing critical plane stress:"
+        print(" Computing critical plane stress:")
         findley_load_step_jobs = []
         for work_load in range(0, len(work_loads) - 1):
             findley_load_step_jobs.append(worker_pool.apply_async(findley_worker,
@@ -37,12 +37,12 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time, chunk_size, num
         # Retrieve results for workloads
         for work_load, findley_load_step_job in enumerate(findley_load_step_jobs):
             # print "Working with workload " + str(work_load)
-            fatigue_results[work_loads[work_load]:work_loads[work_load + 1], 0:3] = findley_load_step_job.get(
+            fatigue_results[work_loads[work_load]:work_loads[work_load + 1], 0:5] = findley_load_step_job.get(
                 worker_run_out_time)
-            print ".",
+            print(".",)
             # print "Done with workload " + str(work_load)
             sys.stdout.flush()  # Force output of buffered content
-        print "\n Done, Total Time: %1.2f" % (time.time() - s_time)
+        print("\n Done, Total Time: %1.2f" % (time.time() - s_time))
 
         # # Save to pickle dump file    
         # print " Pickle Findly stresses to file,",
@@ -116,7 +116,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
             radius = sqrt((xo[0] - xc) ** 2 + (yo[0] - yc) ** 2)
             return xc, yc, radius
         else:
-            print "warning... caught an unexpected mode... in elif 1"
+            print("warning... caught an unexpected mode... in elif 1")
             raise RuntimeError
 
         # Check if points are within the circle
@@ -134,7 +134,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
                             xo = [xo[0], xo[1], xp[i]]
                             yo = [yo[0], yo[1], yp[i]]
                         else:
-                            print "warning... caught an unexpected mode... in elif 2"
+                            print("warning... caught an unexpected mode... in elif 2")
                             raise RuntimeError
 
                         [xc, yc, radius] = smallest_enclosing_circle(xp[0:i + 1], yp[0:i + 1], xo, yo)
@@ -232,7 +232,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
     #    F = max_sigma_n  +  a_cp * max_tau_amplitude
     # findley_vec[:,4]=findley_vec[:,2]+a_cp*findley_vec[:,3]
 
-    return findley_vec[:, 2:5]  # Do not return angles only [max_sigma_n , max_tau_amplitude , F]
+    return findley_vec[:, 0:5]  # Do not return angles only [max_sigma_n , max_tau_amplitude , F]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ def findley_worker(job_arguments):
     except KeyboardInterrupt:
         raise KeyboardInterrupt
     except:
-        print "Problem with computing Findley stress:"
-        print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
-        print sys.exc_info()[1]  # - Exit type:', sys.exc_info()[0]
+        print("Problem with computing Findley stress:")
+        print(sys.exc_info()[0])  # - Exit type:', sys.exc_info()[0]
+        print(sys.exc_info()[1])  # - Exit type:', sys.exc_info()[0]
         raise
