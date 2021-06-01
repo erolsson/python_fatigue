@@ -70,7 +70,8 @@ def write_jaw_set_file(jaw_node_data, jaw_element_data, set_file_name):
 
 
 if __name__ == '__main__':
-    gear_model_dir = 'input_files/gear_models/planet_gear/'
+    geometry_file_name = os.path.expanduser('~/python_projects/python_fatigue/planetary_gear/input_files/'
+                                            'quarter_tooth_tilt2.inp')
     simulation_dir = 'input_files/pulsator_model/'
 
     number_of_teeth = 10
@@ -90,12 +91,11 @@ if __name__ == '__main__':
     teeth[1].part_names = ['dense_tooth_pos', 'dense_tooth_neg']
     teeth[2].part_names = ['dense_tooth_pos', 'coarse_tooth_neg']
 
-    for mesh in ['coarse', 'dense']:
-        write_include_files_for_tooth(full_model_file_name=gear_model_dir + mesh + '_mesh_planet.inc',
-                                      include_file_names=[simulation_dir + mesh + '_geom_xpos.inc',
-                                                          simulation_dir + mesh + '_geom_xneg.inc'],
-                                      full_set_file_name=gear_model_dir + mesh + '_mesh_planet_sets.inc',
-                                      set_include_file_name=simulation_dir + mesh + '_geom_sets.inc')
+    write_include_files_for_tooth(full_model_file_name=geometry_file_name,
+                                  include_file_names=[simulation_dir + '_geom_xpos.inc',
+                                                      simulation_dir + '_geom_xneg.inc'],
+                                  full_set_file_name=gear_model_dir + mesh + '_mesh_planet_sets.inc',
+                                  set_include_file_name=simulation_dir + mesh + '_geom_sets.inc')
 
     # Reading the pulsator jaw file
     jaw_nodes, jaw_elements = read_nodes_and_elements(gear_model_dir + '/pulsator_jaw.inp')

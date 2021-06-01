@@ -475,7 +475,6 @@ class MeshClass:
     @staticmethod
     def _refinement(ns, order):
         ns = np.array(ns)
-        print ns
         orders = (np.log(ns - 1)/np.log(3))
         max_order = int(np.min(orders))
         if order is None:
